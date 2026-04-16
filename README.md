@@ -1,23 +1,4 @@
-# hercules-cli
-## Structure
-```
-hercules/
-├── modules/
-│   ├── sca/
-│   ├── sast/
-│   ├── fuzz/
-│   └── auth/                    # auth
-│       ├── models/
-│       │   ├── user.js          #user
-│       │   |──requestHistory.js # history
-│       ├── middleware/
-│       │   └── auth.middleware.js
-│       └── routes/
-│           └── auth.routes.js
-├── public/
-├── server.js
-└── package.json
-```
+# Hercules
 ```
 # Первая установка
 make install
@@ -42,32 +23,28 @@ make clean
 ```
 ## SCA
 ### Анализатор поддерживает:
-Поддерживаемые менеджеры пакетов
-Экосистема	Менеджеры	Файлы
-JavaScript/TypeScript	npm, yarn, pnpm	package.json, yarn.lock, pnpm-lock.yaml
-Python	pip, poetry	requirements.txt, Pipfile, pyproject.toml
-Go	go modules	go.mod
-Java	Maven, Gradle	pom.xml, build.gradle
-PHP	Composer	composer.json
-Ruby	Bundler	Gemfile
-Rust	Cargo	Cargo.toml
-🚀 Источники для анализа
-✅ GitHub репозитории
+| Экосистема | Менеджеры | Файлы |
+|------------|-----------|-------|
+| JavaScript/TypeScript | npm, yarn, pnpm | package.json, yarn.lock, pnpm-lock.yaml |
+| Python | pip, poetry | requirements.txt, Pipfile, pyproject.toml |
+| Go | go modules | go.mod |
+| Java | Maven, Gradle | pom.xml, build.gradle |
+| PHP | Composer | composer.json |
+| Ruby | Bundler | Gemfile |
+| Rust | Cargo | Cargo.toml |
 
-✅ GitLab репозитории
+### Источники для анализа
+1. GitHub репозитории
+2. GitLab репозитории
+3. Локальные папки (распакованные архивы)
+4. Загруженные архивы (ZIP, TAR, TAR.GZ)
 
-✅ Локальные папки (распакованные архивы)
+### Формат вывода
+1. CycloneDX 1.6 SBOM
+2. Уязвимости через OSV API
+3. Статистика по критичности
+4. Рекомендации по исправлению
 
-✅ Загруженные архивы (ZIP, TAR, TAR.GZ)
-
-📊 Формат вывода
-✅ CycloneDX 1.6 SBOM
-
-✅ Уязвимости через OSV API
-
-✅ Статистика по критичности
-
-✅ Рекомендации по исправлению
 ## SAST
 ## FUZZ
 ### Common
