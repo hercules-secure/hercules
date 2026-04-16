@@ -1,0 +1,434 @@
+
+        /* Стили для навигационных ссылок */
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            font-family: 'Ubuntu';
+        }
+        .nav-link {
+            color: #4b5563;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            font-size: 0.8rem;
+        }
+        .nav-link:hover {
+            color: #2563eb;
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                gap: 1rem;
+            }
+            .nav-link {
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Стили для карточек расширений */
+        .extensions-section {
+            background: black;
+            padding: 4rem 2rem;
+            color: white;
+        }
+        .extensions-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .extension-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 240px;
+            max-width: 280px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .extension-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.2);
+            border-color: #e0e7ff;
+        }
+        .extension-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 3rem;
+            transition: all 0.3s;
+        }
+        /* VS Code иконка */
+        .extension-card:nth-child(1) .extension-icon {
+            background: linear-gradient(135deg, #1e88e5 0%, #0d47a1 100%);
+            box-shadow: 0 8px 20px rgba(30, 136, 229, 0.3);
+        }
+        .extension-card:nth-child(1) .extension-icon i {
+            color: white;
+            font-size: 3.2rem;
+        }
+        /* Chrome иконка */
+        .extension-card:nth-child(2) .extension-icon {
+            background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+            box-shadow: 0 8px 20px rgba(219, 68, 55, 0.2);
+            border: 1px solid #ffcdb2;
+        }
+        .extension-card:nth-child(2) .extension-icon i {
+            color: #DB4437;
+            font-size: 3.2rem;
+        }
+        /* Firefox иконка */
+        .extension-card:nth-child(3) .extension-icon {
+            background: linear-gradient(135deg, #ff7139 0%, #e55c2a 100%);
+            box-shadow: 0 8px 20px rgba(255, 113, 57, 0.35);
+        }
+        .extension-card:nth-child(3) .extension-icon i {
+            color: white;
+            font-size: 3.2rem;
+        }
+        .extension-name {
+            font-weight: 700;
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+        .extension-desc {
+            font-size: 0.9rem;
+            color: #5a6e8a;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        .extension-badge {
+            background: #f0f4ff;
+            padding: 0.5rem 1.25rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #1e40af;
+            transition: all 0.2s;
+            margin-top: auto;
+        }
+        .extension-card:hover .extension-badge {
+            background: #1e40af;
+            color: white;
+            transform: scale(1.02);
+        }
+        
+        /* Стили для CI/CD интеграций */
+        .integrations-section {
+            background:  white;
+            padding: 4rem 2rem;
+        }
+        .integrations-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .integration-card {
+            background: white;
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            flex: 1;
+            min-width: 240px;
+            max-width: 280px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .integration-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 40px -12px rgba(0,0,0,0.2);
+            border-color: black;
+        }
+        .integration-icon {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+        }
+        .sca-icon {
+            background: white;
+            color: white;
+        }
+        .sast-icon {
+            background: white;
+            color: white;
+        }
+        .dast-icon {
+            background: white;
+            color: white;
+        }
+        .fuzz-icon {
+            background: white;
+            color: white;
+        }
+        .integration-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+        .integration-desc {
+            font-size: 0.85rem;
+            color: #5a6e8a;
+            margin-bottom: 1.5rem;
+            line-height: 1.5;
+        }
+        .integration-badge {
+            background: #f0f4ff;
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #1e40af;
+            transition: all 0.2s;
+            margin-top: auto;
+        }
+        .integration-card:hover .integration-badge {
+            background: #1e40af;
+            color: white;
+        }
+        .section-tag-ext {
+            display: inline-block;
+            background: white;
+            padding: 0.4rem 1.25rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: black;
+            margin-bottom: 1rem;
+        }
+        .section-tag-integrations {
+            display: inline-block;
+            background: black;
+            padding: 0.4rem 1.25rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+        }
+        .section-header-center {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        /* Плавный скролл */
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        @media (max-width: 768px) {
+            .extensions-section,
+            .integrations-section {
+                padding: 3rem 1rem;
+            }
+            .extensions-grid,
+            .integrations-grid {
+                gap: 1.5rem;
+            }
+            .extension-card,
+            .integration-card {
+                min-width: 220px;
+                padding: 1.5rem;
+            }
+            .extension-icon,
+            .integration-icon {
+                width: 70px;
+                height: 70px;
+                font-size: 2.5rem;
+            }
+            .extension-icon i {
+                font-size: 2.8rem !important;
+            }
+            .extension-name,
+            .integration-name {
+                font-size: 1.1rem;
+            }
+        }
+                .black-icon {
+            color: black;
+        }
+
+/* карусель */
+.carousel-section {
+    padding: 2rem 1rem;
+    background: black;
+    position: relative;
+    overflow: hidden;
+}
+
+.carousel-container {
+    max-width: 100vw;
+    margin: 0 auto;
+    position: relative;
+    padding: 0 60px;
+}
+
+.carousel-track {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+    will-change: transform;
+}
+
+.carousel-slide {
+    flex: 0 0 100%;
+    text-align: center;
+    padding: 2rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    transition: all 0.3s ease;
+    margin-right: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap:1vh;
+}
+
+.slide-icon {
+    font-size: 4rem;
+    color: orange;
+    margin-bottom: 1.5rem;
+}
+
+.slide-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #fff 0%, #ffd700 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: white;
+}
+
+.slide-desc {
+    font-size: 1.2rem;
+    color: #ccc;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.5;
+}
+
+.slide-badge {
+    display: inline-block;
+    padding: 0.5rem 1.2rem;
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 40px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: orange;
+    letter-spacing: 0.5px;
+}
+
+.carousel-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: rgba(0,0,0,0.5);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: orange;
+    font-size: 24px;
+    z-index: 10;
+    transition: all 0.2s;
+}
+
+.carousel-button:hover {
+    background: rgba(255,215,0,0.3);
+}
+
+.carousel-button-prev {
+    left: 10px;
+}
+
+.carousel-button-next {
+    right: 10px;
+}
+
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.dot.active {
+    background: rgb(190, 124, 2);
+    transform: scale(1.3);
+}
+
+@media (max-width: 768px) {
+    .carousel-container {
+        padding: 0 20px;
+    }
+
+    .slide-title {
+        font-size: 1.5rem;
+    }
+    .slide-desc {
+        font-size: 1rem;
+    }
+    .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.4);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+}
+
+.dot.active {
+    background: rgb(190, 124, 2);
+    transform: scale(1.3);
+}
+}

@@ -1,0 +1,31 @@
+===========================================
+СБОРКА ГЕРКУЛЕС
+===========================================
+Режим: LOCAL
+Версия: 1.0.0
+Дата: 2026-04-16 15:33:34
+===========================================
+Исключенные файлы:
+  - main.html
+  - admin.html
+  - dashboard.html
+  - .env
+  - .env.local
+  - config.local.js
+  - build.sh
+  - release.sh
+Исключенные папки:
+  - node_modules
+  - .git
+  - build
+  - release
+  - .vscode
+  - .github
+  - .idea
+  - logs
+  - tmp
+  - temp
+  - coverage
+  - .nyc_output
+  - downloads
+===========================================
