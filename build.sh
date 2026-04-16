@@ -21,6 +21,8 @@ EXCLUDE_FILES=(
     ".env"
     ".env.local"
     "config.local.js"
+    'build.sh'
+    "release.sh"
 )
 
 EXCLUDE_DIRS=(
@@ -36,6 +38,7 @@ EXCLUDE_DIRS=(
     "temp"
     "coverage"
     ".nyc_output"
+    "downloads"
 )
 
 EXCLUDE_EXTENSIONS=(
