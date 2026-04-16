@@ -1,0 +1,606 @@
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Ubuntu';
+            background: #0a0a0f;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        
+        .api-header {
+            background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #2a2a3a;
+        }
+        
+        .api-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: #9ca3af;
+            font-size: 11px;
+        }
+        
+        .api-version {
+            background: #2a2a3a;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+        }
+        
+        /* Token Panel */
+        .token-panel {
+            background: #1a1a2a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid #2a2a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .token-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .token-label {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+        
+        .token-value {
+            background: #0a0a0f;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #10b981;
+            border: 1px solid #2a2a3a;
+        }
+        
+        .token-status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            font-family: 'Ubuntu';
+        }
+        
+        .token-status-valid {
+            background: #10b98120;
+            color: #10b981;
+        }
+        
+        .token-status-invalid {
+            background: #ef444420;
+            color: #ef4444;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: 'Ubuntu';
+        }
+        
+        .get-token-btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Ubuntu';
+        }
+        
+        .get-token-btn:hover {
+            background: #0a0a0f;
+            transform: translateY(-1px);
+            color: white;
+        }
+        
+        .api-grid {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 2rem;
+        }
+        
+        @media (max-width: 768px) {
+            .api-grid {
+                grid-template-columns: 1fr;
+            }
+            body {
+                padding: 12px;
+            }
+            .api-header {
+                padding: 1.5rem;
+            }
+            .token-panel {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+        
+        .api-sidebar {
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+            background: #1a1a2a;
+            border-radius: 16px;
+            padding: 1.5rem;
+            border: 1px solid #2a2a3a;
+        }
+        
+        @media (max-width: 768px) {
+            .api-sidebar {
+                position: relative;
+                top: 0;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+        }
+        
+        .sidebar-section {
+            margin-bottom: 1.5rem;
+        }
+        
+        .sidebar-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9ca3af;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .endpoint-list {
+            list-style: none;
+        }
+        
+        .endpoint-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .endpoint-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .endpoint-link:hover {
+            background: #2a2a3a;
+        }
+        
+        .endpoint-link.active {
+            background: #667eea;
+        }
+        
+        .endpoint-link.active .endpoint-path-short {
+            color: white;
+        }
+        
+        .endpoint-method {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            min-width: 48px;
+            text-align: center;
+        }
+        
+        .method-post {
+            background: #10b981;
+            color: white;
+        }
+        
+        .endpoint-path-short {
+            font-size: 0.875rem;
+            font-family: monospace;
+            color: #e0e0e0;
+        }
+        
+        .api-content {
+            background: #1a1a2a;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #2a2a3a;
+        }
+        
+        .endpoint-section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        
+        .endpoint-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .endpoint-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+        }
+        
+        .badge-post {
+            background: #10b981;
+            color: white;
+        }
+        
+        .endpoint-path {
+            font-family: monospace;
+            font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+        
+        .endpoint-description {
+            color: #9ca3af;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .try-it-out {
+            background: #0a0a0f;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            border: 1px solid #2a2a3a;
+        }
+        
+        .try-it-out h4 {
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        
+        .param-group {
+            margin-bottom: 1rem;
+        }
+        
+        .param-label {
+            display: block;
+            color: #e0e0e0;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .param-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #1a1a2a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            color: #e0e0e0;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+        
+        .param-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .param-textarea {
+            min-height: 90px;
+            resize: vertical;
+            font-family: monospace;
+            resize: none;
+        }
+        
+        .request-btn {
+            background: white;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Ubuntu';
+        }
+        
+        .request-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        
+        .response-area {
+            margin-top: 1rem;
+            background: #0a0a0f;
+            border-radius: 8px;
+            border: 1px solid #2a2a3a;
+            overflow: hidden;
+        }
+        
+        .response-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: #1a1a2a;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        
+        .response-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+        
+        .status-success {
+            background: #10b98120;
+            color: #10b981;
+        }
+        
+        .status-error {
+            background: #ef444420;
+            color: #ef4444;
+        }
+        
+        .status-loading {
+            background: #f59e0b20;
+            color: #f59e0b;
+        }
+        
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-family: 'Ubuntu';
+        }
+        
+        .copy-btn:hover {
+            background: #2a2a3a;
+            color: white;
+        }
+        
+        .response-body {
+            padding: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .response-body pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        /* Auth Modal */
+        .auth-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .auth-modal {
+            background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid #2a2a3a;
+            animation: slideUp 0.3s ease;
+            overflow: hidden;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .auth-header {
+            padding: 24px 28px;
+            text-align: center;
+            border-bottom: 1px solid #2a2a3a;
+        }
+        
+        .auth-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+        
+        .auth-header p {
+            color: #9ca3af;
+            font-size: 14px;
+        }
+        
+        .auth-body {
+            padding: 28px;
+        }
+        
+        .providers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .provider-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 20px;
+            background: #0a0a0f;
+            border: 1px solid #2a2a3a;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: white;
+            transition: background-color 0.1s ease;
+            border-radius: 5px;
+            font-family: 'Ubuntu';
+        }
+        
+        .provider-btn svg {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
+        
+        .provider-btn.google {
+            background: #0a0a0f;
+            color: white
+        }
+        
+        .provider-btn.google:hover {
+            background: #0a0a0f;
+            transform: translateY(-1px);
+        }
+        
+        .provider-btn.yandex {
+            background: #0a0a0f;
+            color: white;
+        }
+        
+        .provider-btn.yandex:hover {
+            background: #0a0a0f;
+            transform: translateY(-1px);
+        }
+        
+.provider-btn.mailru:hover:not(:disabled) {
+    background: #0a0a0f;
+}
+        
+.provider-btn.mailru:hover {
+            background: #0a0a0f;
+            transform: translateY(-1px);
+        }
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .auth-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .auth-close:hover {
+            color: white;
+        }
+        
+        .notification-toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 10001;
+            animation: slideInRight 0.3s ease;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }

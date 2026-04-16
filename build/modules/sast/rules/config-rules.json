@@ -1,0 +1,286 @@
+{
+  "name": "SAST Rules",
+  "version": "1.0.0",
+  "description": "Security rules for config",
+  "rules": [
+    {
+      "id": "config/password",
+      "message": "Hardcoded password detected in configuration",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(password|pass|pwd)\\s*[=:]\\s*['\"]?[^'\"\\s]+['\"]?",
+      "recommendation": "Use environment variables or secrets manager",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/api_key",
+      "message": "API key exposed in configuration",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(api[_-]?key|apikey|api_secret|api_token)\\s*[=:]\\s*['\"]?[^'\"\\s]+['\"]?",
+      "recommendation": "Store API keys in environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/token",
+      "message": "Authentication token in plain text",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(token|jwt|auth_token|access_token|refresh_token)\\s*[=:]\\s*['\"]?[^'\"\\s]+['\"]?",
+      "recommendation": "Use secure token storage or environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/aws_key",
+      "message": "AWS access key detected",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(AKIA[0-9A-Z]{16})",
+      "recommendation": "Use AWS IAM roles or environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/private_key",
+      "message": "Private key found in configuration",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----",
+      "recommendation": "Store private keys in secure vault with proper permissions",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/url_credentials",
+      "message": "URL contains embedded credentials",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(https?|ftp):\\/\\/[^:]+:[^@]+@",
+      "recommendation": "Use environment variables for credentials",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/jwt_token",
+      "message": "JWT token detected in configuration",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+",
+      "recommendation": "Never commit JWT tokens - use environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/potential_secret",
+      "message": "Possible secret value detected (long random string)",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "['\"][a-zA-Z0-9!@#$%^&*()_+]{20,}['\"]",
+      "recommendation": "Verify this is not a secret; consider using environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/db_connection",
+      "message": "Database connection string with credentials",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(mongodb|postgresql|mysql|redis):\\/\\/[^:]+:[^@]+@",
+      "recommendation": "Use environment variables for database credentials",
+      "languages": ["config"]
+    },
+      {
+      "id": "config/dependency-log4j",
+      "message": "Vulnerable Log4j version detected (Log4Shell)",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "<version>2\\.(0|1[0-7]|14)\\.[0-9]+<\\/version>",
+      "recommendation": "Upgrade to Log4j 2.17.1 or higher",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/dependency-spring",
+      "message": "Old Spring Framework version with known vulnerabilities",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "<version>5\\.2\\.(0|1[0-9]|20)\\.RELEASE<\\/version>",
+      "recommendation": "Upgrade to Spring 5.2.22 or higher",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/dependency-jackson",
+      "message": "Vulnerable Jackson Databind version",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "<version>2\\.10\\.[0-9.]+<\\/version>",
+      "recommendation": "Upgrade to Jackson 2.13.4 or higher",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/dependency-struts",
+      "message": "Vulnerable Struts2 version",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "<version>2\\.5\\.(0|1[0-9]|2[0-6])<\\/version>",
+      "recommendation": "Upgrade to Struts 2.5.30 or higher",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/dependency-tomcat",
+      "message": "Vulnerable Tomcat version",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "<version>8\\.5\\.[0-9]+<\\/version>",
+      "recommendation": "Upgrade to Tomcat 9.0.80 or higher",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/dependency-fileupload",
+      "message": "Vulnerable Commons FileUpload version",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "<version>1\\.3\\.[0-9]+<\\/version>",
+      "recommendation": "Upgrade to Commons FileUpload 1.5 or higher",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/dependency-mysql",
+      "message": "Old MySQL Connector version",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "<version>5\\.1\\.[0-9]+<\\/version>",
+      "recommendation": "Upgrade to MySQL Connector 8.0.33",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/password",
+      "message": "Hardcoded password detected in configuration",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(password|pass|pwd)\\s*[=:]\\s*['\"]?[^'\"\\s]+['\"]?",
+      "recommendation": "Use environment variables or secrets manager",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/api_key",
+      "message": "API key exposed in configuration",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(api[_-]?key|apikey|api_secret|api_token)\\s*[=:]\\s*['\"]?[^'\"\\s]+['\"]?",
+      "recommendation": "Store API keys in environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/token",
+      "message": "Authentication token in plain text",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(token|jwt|auth_token|access_token|refresh_token)\\s*[=:]\\s*['\"]?[^'\"\\s]+['\"]?",
+      "recommendation": "Use secure token storage or environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/aws_key",
+      "message": "AWS access key detected",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "AKIA[0-9A-Z]{16}",
+      "recommendation": "Use AWS IAM roles or environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/private_key",
+      "message": "Private key found in configuration",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "-----BEGIN (RSA|DSA|EC|OPENSSH) PRIVATE KEY-----",
+      "recommendation": "Store private keys in secure vault with proper permissions",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/url_credentials",
+      "message": "URL contains embedded credentials",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(https?|ftp)://[^:]+:[^@]+@",
+      "recommendation": "Use environment variables for credentials",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/jwt_token",
+      "message": "JWT token detected in configuration",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+",
+      "recommendation": "Never commit JWT tokens - use environment variables",
+      "languages": ["config"]
+    },
+    {
+      "id": "config/db_connection",
+      "message": "Database connection string with credentials",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(mongodb|postgresql|mysql|redis)://[^:]+:[^@]+@",
+      "recommendation": "Use environment variables for database credentials",
+      "languages": ["config"]
+    },
+    {
+  "id": "config/gradle-log4j",
+  "message": "Vulnerable Log4j version detected (Log4Shell)",
+  "severity": "critical",
+  "type": "regex",
+  "pattern": "org\\.apache\\.logging\\.log4j:log4j-core:2\\.(0|1[0-7]|14)\\.[0-9]+",
+  "recommendation": "Upgrade to Log4j 2.17.1 or higher",
+  "languages": ["config"]
+},
+{
+  "id": "config/gradle-spring",
+  "message": "Old Spring Framework version with known vulnerabilities",
+  "severity": "high",
+  "type": "regex",
+  "pattern": "org\\.springframework:spring-(core|context|webmvc):5\\.2\\.(0|1[0-9]|20)\\.RELEASE",
+  "recommendation": "Upgrade to Spring 5.2.22 or higher",
+  "languages": ["config"]
+},
+{
+  "id": "config/gradle-jackson",
+  "message": "Vulnerable Jackson Databind version",
+  "severity": "high",
+  "type": "regex",
+  "pattern": "com\\.fasterxml\\.jackson\\.core:jackson-databind:2\\.10\\.[0-9.]+",
+  "recommendation": "Upgrade to Jackson 2.13.4 or higher",
+  "languages": ["config"]
+},
+{
+  "id": "config/gradle-struts",
+  "message": "Vulnerable Struts2 version",
+  "severity": "critical",
+  "type": "regex",
+  "pattern": "org\\.apache\\.struts:struts2-core:2\\.5\\.(0|1[0-9]|2[0-6])",
+  "recommendation": "Upgrade to Struts 2.5.30 or higher",
+  "languages": ["config"]
+},
+{
+  "id": "config/gradle-tomcat",
+  "message": "Vulnerable Tomcat version",
+  "severity": "high",
+  "type": "regex",
+  "pattern": "org\\.apache\\.tomcat:tomcat-(catalina|embed-core):8\\.5\\.[0-9]+",
+  "recommendation": "Upgrade to Tomcat 9.0.80 or higher",
+  "languages": ["config"]
+},
+{
+  "id": "config/gradle-fileupload",
+  "message": "Vulnerable Commons FileUpload version",
+  "severity": "high",
+  "type": "regex",
+  "pattern": "commons-fileupload:commons-fileupload:1\\.3\\.[0-9]+",
+  "recommendation": "Upgrade to Commons FileUpload 1.5 or higher",
+  "languages": ["config"]
+},
+{
+  "id": "config/gradle-mysql",
+  "message": "Old MySQL Connector version",
+  "severity": "medium",
+  "type": "regex",
+  "pattern": "mysql:mysql-connector-java:5\\.1\\.[0-9]+",
+  "recommendation": "Upgrade to MySQL Connector 8.0.33",
+  "languages": ["config"]
+}
+  ]
+}
