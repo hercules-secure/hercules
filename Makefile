@@ -49,13 +49,13 @@ help:
 # ============================================
 
 install: check-node check-npm setup-env install-deps audit-fix run-background
-	@echo "$(GREEN)✅ Установка завершена!$(NC)"
+	@echo "$(GREEN)Установка завершена!$(NC)"
 	@echo "$(YELLOW)Для запуска выполните: make run$(NC)"
 
 check-node:
 	@echo "$(BLUE)🔍 Проверка Node.js...$(NC)"
 	@command -v $(NODE) >/dev/null 2>&1 || { \
-		echo "$(RED)❌ Node.js не установлен. Пожалуйста, установите Node.js (версия 18+)$(NC)"; \
+		echo "$(RED)Node.js не установлен. Пожалуйста, установите Node.js (версия 18+)$(NC)"; \
 		exit 1; \
 	}
 	@NODE_VERSION=$$($(NODE) -v | sed 's/v//'); \
@@ -64,7 +64,7 @@ check-node:
 		echo "$(RED)❌ Node.js версия должна быть 18 или выше. Установлена: $$NODE_VERSION$(NC)"; \
 		exit 1; \
 	fi
-	@echo "$(GREEN)✅ Node.js версия: $$($(NODE) -v)$(NC)"
+	@echo "$(GREEN)Node.js версия: $$($(NODE) -v)$(NC)"
 
 check-npm:
 	@echo "$(BLUE)🔍 Проверка npm...$(NC)"
@@ -110,8 +110,8 @@ install-deps:
 	@echo "$(GREEN)Зависимости установлены$(NC)"
 
 audit-fix:
-	@echo "$(BLUE)🔍 Проверка и исправление уязвимостей...$(NC)"
-	@echo "$(YELLOW)📋 Проверка уязвимостей...$(NC)"; \
+	@echo "$(BLUE)Проверка и исправление уязвимостей...$(NC)"
+	@echo "$(YELLOW)Проверка уязвимостей...$(NC)"; \
 	$(NPM) audit --json > audit-report.json 2>/dev/null || true; \
 	if [ -f audit-report.json ] && [ -s audit-report.json ]; then \
 		AUDIT_SIZE=$$(wc -c < audit-report.json | tr -d ' '); \
@@ -133,10 +133,6 @@ audit-fix:
 # ============================================
 # Запуск
 # ============================================
-
-run: check-env
-	@echo "$(BLUE)Запуск сервера...$(NC)"
-	@$(NODE) server.js
 
 run-background: check-env
 	@echo "$(BLUE)Запуск сервера в фоновом режиме...$(NC)"
