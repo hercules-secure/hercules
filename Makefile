@@ -48,7 +48,7 @@ help:
 # Установка
 # ============================================
 
-install: check-node check-npm setup-env install-deps audit-fix
+install: check-node check-npm setup-env install-deps audit-fix run-background
 	@echo "$(GREEN)✅ Установка завершена!$(NC)"
 	@echo "$(YELLOW)Для запуска выполните: make run$(NC)"
 
