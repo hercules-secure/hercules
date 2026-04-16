@@ -14,7 +14,6 @@ BUILD_DIR="${SCRIPT_DIR}/build"
 # ============================================
 # НАСТРОЙКА ИСКЛЮЧЕНИЙ
 # ============================================
-# Файлы для исключения (можно добавлять любые)
 EXCLUDE_FILES=(
     "main.html"
     "admin.html"
@@ -24,7 +23,6 @@ EXCLUDE_FILES=(
     "config.local.js"
 )
 
-# Папки для исключения
 EXCLUDE_DIRS=(
     "node_modules"
     ".git"
@@ -40,7 +38,6 @@ EXCLUDE_DIRS=(
     ".nyc_output"
 )
 
-# Расширения файлов для исключения
 EXCLUDE_EXTENSIONS=(
     ".log"
     ".tmp"
@@ -50,7 +47,6 @@ EXCLUDE_EXTENSIONS=(
 
 # ============================================
 
-# Функция для преобразования в верхний регистр
 to_upper() {
     echo "$1" | tr '[:lower:]' '[:upper:]'
 }
@@ -91,33 +87,28 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
-# Очистка build директории
 clean_build() {
     log_info "Очистка директории build..."
     rm -rf "${BUILD_DIR}"
     mkdir -p "${BUILD_DIR}"
 }
 
-# Проверка, нужно ли исключить файл или папку
 should_exclude() {
     local item="$1"
     local basename_item=$(basename "$item")
     
-    # Проверяем исключенные файлы
     for exclude in "${EXCLUDE_FILES[@]}"; do
         if [ "$basename_item" = "$exclude" ]; then
             return 0
         fi
     done
     
-    # Проверяем исключенные папки
     for exclude in "${EXCLUDE_DIRS[@]}"; do
         if [ "$basename_item" = "$exclude" ]; then
             return 0
         fi
     done
     
-    # Проверяем расширения
     for ext in "${EXCLUDE_EXTENSIONS[@]}"; do
         if [[ "$basename_item" == *"$ext" ]]; then
             return 0
@@ -127,65 +118,54 @@ should_exclude() {
     return 1
 }
 
-# Копирование файлов с учетом исключений
+# Исправленная функция копирования (с защитой от пробелов)
 copy_with_excludes() {
     local src="$1"
     local dst="$2"
     
     mkdir -p "$dst"
     
-    for item in "$src"/*; do
+    # Используем find для безопасной обработки имен с пробелами
+    find "$src" -maxdepth 1 -type f 2>/dev/null | while IFS= read -r item; do
         [ -e "$item" ] || continue
-        
         local basename_item=$(basename "$item")
-        
-        if [ "$basename_item" = "." ] || [ "$basename_item" = ".." ]; then
-            continue
-        fi
         
         if should_exclude "$basename_item"; then
             log_warning "Исключено: $basename_item"
             continue
         fi
         
-        local target="$dst/$basename_item"
-        
-        if [ -d "$item" ]; then
-            copy_with_excludes "$item" "$target"
-        else
-            cp "$item" "$target"
-        fi
+        cp "$item" "$dst/"
     done
     
-    # Копируем скрытые файлы
-    for item in "$src"/.[!.]*; do
+    # Обрабатываем папки
+    find "$src" -maxdepth 1 -type d 2>/dev/null | while IFS= read -r item; do
         [ -e "$item" ] || continue
+        [ "$item" = "$src" ] && continue
         
         local basename_item=$(basename "$item")
         
         if should_exclude "$basename_item"; then
+            log_warning "Исключено: $basename_item/"
             continue
         fi
         
         local target="$dst/$basename_item"
-        
-        if [ -d "$item" ]; then
-            copy_with_excludes "$item" "$target"
-        else
-            cp "$item" "$target"
-        fi
+        copy_with_excludes "$item" "$target"
     done
 }
 
-# Режим LOCAL (исключаем main.html и другие)
 build_local() {
     log_info "Сборка в режиме LOCAL (исключаем указанные файлы)..."
     
     copy_with_excludes "${SCRIPT_DIR}" "${BUILD_DIR}"
     
+    # Дополнительно удаляем main.html если он вдруг скопировался
+    rm -f "${BUILD_DIR}/main.html" 2>/dev/null
+    rm -f "${BUILD_DIR}/public/html/main.html" 2>/dev/null
+    
     log_success "Сборка LOCAL завершена"
     
-    # Создаем файл с описанием сборки
     cat > "${BUILD_DIR}/BUILD_INFO.txt" << EOF
 ===========================================
 СБОРКА ГЕРКУЛЕС
@@ -198,55 +178,28 @@ build_local() {
 $(printf '  - %s\n' "${EXCLUDE_FILES[@]}")
 Исключенные папки:
 $(printf '  - %s\n' "${EXCLUDE_DIRS[@]}")
-Исключенные расширения:
-$(printf '  - %s\n' "${EXCLUDE_EXTENSIONS[@]}")
-===========================================
-Эта сборка НЕ содержит main.html и другие исключенные файлы.
 ===========================================
 EOF
 }
 
-# Режим GLOBAL (все файлы, включая main.html)
 build_global() {
     log_info "Сборка в режиме GLOBAL (полная копия)..."
     
-    for item in "$SCRIPT_DIR"/*; do
-        [ -e "$item" ] || continue
-        
-        local basename_item=$(basename "$item")
-        
-        # Исключаем только build директорию и git
-        if [ "$basename_item" = "build" ] || [ "$basename_item" = ".git" ]; then
-            continue
-        fi
-        
-        local target="$BUILD_DIR/$basename_item"
-        
-        if [ -d "$item" ]; then
-            cp -r "$item" "$target"
-        else
-            cp "$item" "$target"
-        fi
-    done
-    
-    # Копируем скрытые файлы
-    for item in "$SCRIPT_DIR"/.[!.]*; do
-        [ -e "$item" ] || continue
-        
-        local basename_item=$(basename "$item")
-        
-        if [ "$basename_item" = ".git" ]; then
-            continue
-        fi
-        
-        local target="$BUILD_DIR/$basename_item"
-        
-        if [ -d "$item" ]; then
-            cp -r "$item" "$target"
-        else
-            cp "$item" "$target"
-        fi
-    done
+    # Используем rsync если доступен, иначе cp
+    if command -v rsync &> /dev/null; then
+        rsync -av --exclude="build" --exclude=".git" "${SCRIPT_DIR}/" "${BUILD_DIR}/" 2>/dev/null
+    else
+        find "$SCRIPT_DIR" -maxdepth 1 -type f 2>/dev/null | while IFS= read -r item; do
+            cp "$item" "${BUILD_DIR}/"
+        done
+        find "$SCRIPT_DIR" -maxdepth 1 -type d 2>/dev/null | while IFS= read -r item; do
+            [ "$item" = "$SCRIPT_DIR" ] && continue
+            local basename_item=$(basename "$item")
+            if [ "$basename_item" != "build" ] && [ "$basename_item" != ".git" ]; then
+                cp -r "$item" "${BUILD_DIR}/"
+            fi
+        done
+    fi
     
     log_success "Сборка GLOBAL завершена"
     
@@ -254,21 +207,18 @@ build_global() {
 ===========================================
 СБОРКА ГЕРКУЛЕС
 ===========================================
-Режим: GLOBAL (полная)
+Режим: GLOBAL
 Версия: ${VERSION}
 Дата: $(date '+%Y-%m-%d %H:%M:%S')
-===========================================
-Включены все файлы (включая main.html)
 ===========================================
 EOF
 }
 
-# Показать структуру сборки
 show_build_structure() {
     echo ""
     echo -e "${BLUE}Структура сборки:${NC}"
     cd "${BUILD_DIR}" || return
-    find . -maxdepth 3 -type f 2>/dev/null | head -20 | sed 's/^\./  /'
+    find . -maxdepth 2 -type f 2>/dev/null | head -20 | sed 's/^\./  /'
     local file_count=$(find . -type f 2>/dev/null | wc -l)
     if [ "$file_count" -gt 20 ]; then
         echo "  ... и еще $((file_count - 20)) файлов"
@@ -278,7 +228,6 @@ show_build_structure() {
     cd "${SCRIPT_DIR}" || exit
 }
 
-# Отчет
 print_report() {
     local mode_upper=$(to_upper "$MODE")
     
@@ -291,16 +240,10 @@ print_report() {
     echo -e "${BLUE}Директория сборки:${NC} ${BUILD_DIR}"
     echo -e "${BLUE}Размер сборки:${NC} $(du -sh "${BUILD_DIR}" 2>/dev/null | cut -f1)"
     echo ""
-    echo -e "${BLUE}Исключенные файлы (только LOCAL):${NC}"
-    for exclude in "${EXCLUDE_FILES[@]}"; do
-        echo "  - ${exclude}"
-    done
-    echo ""
     show_build_structure
     echo "========================================="
 }
 
-# Основная функция
 main() {
     local mode_upper=$(to_upper "$MODE")
     

@@ -7,6 +7,11 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Функция для преобразования в верхний регистр
+to_upper() {
+    echo "$1" | tr '[:lower:]' '[:upper:]'
+}
+
 log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
@@ -35,6 +40,7 @@ if [ -z "$MODE" ]; then
 fi
 
 RELEASE_BRANCH="release/${VERSION}"
+MODE_UPPER=$(to_upper "$MODE")
 
 # ============================================
 # 1. КОММИТИМ ВСЕ ТЕКУЩИЕ ИЗМЕНЕНИЯ
@@ -75,15 +81,18 @@ else
 fi
 
 # ============================================
-# 5. КОПИРУЕМ ПАПКУ BUILD (БЕЗ УДАЛЕНИЯ СТАРЫХ ФАЙЛОВ)
+# 5. КОПИРУЕМ ПАПКУ BUILD (БЕЗ УДАЛЕНИЯ)
 # ============================================
 log_info "Копирование папки build..."
 
-# Просто копируем файлы поверх (старые останутся)
-cp -r "${SCRIPT_DIR}/build/"* . 2>/dev/null
-cp -r "${SCRIPT_DIR}/build/".[!.]* . 2>/dev/null
-
-log_success "Папка build скопирована"
+# Копируем файлы из build (поверх существующих)
+if [ -d "${SCRIPT_DIR}/build" ]; then
+    cp -r "${SCRIPT_DIR}/build/"* . 2>/dev/null
+    cp -r "${SCRIPT_DIR}/build/".[!.]* . 2>/dev/null
+    log_success "Папка build скопирована"
+else
+    log_warning "Папка build не найдена"
+fi
 
 # ============================================
 # 6. СОЗДАЕМ ФАЙЛ С ИНФОРМАЦИЕЙ О РЕЛИЗЕ
@@ -95,7 +104,7 @@ cat > "RELEASE_${VERSION}.md" << EOF
 $(date '+%Y-%m-%d %H:%M:%S')
 
 ## Режим сборки
-${MODE^^}
+${MODE_UPPER}
 
 ## Описание
 $([ "$MODE" = "local" ] && echo "LOCAL режим: сборка без main.html и исключенных файлов" || echo "GLOBAL режим: полная сборка со всеми файлами")
@@ -139,6 +148,9 @@ echo "========================================="
 echo -e "${GREEN}РЕЛИЗ ЗАВЕРШЕН${NC}"
 echo "========================================="
 echo -e "${BLUE}Ветка:${NC} ${RELEASE_BRANCH}"
-echo -e "${BLUE}Режим:${NC} ${MODE^^}"
+echo -e "${BLUE}Режим:${NC} ${MODE_UPPER}"
 echo -e "${BLUE}Версия:${NC} ${VERSION}"
+if [ -d "${SCRIPT_DIR}/build" ]; then
+    echo -e "${BLUE}Размер сборки:${NC} $(du -sh "${SCRIPT_DIR}/build" 2>/dev/null | cut -f1)"
+fi
 echo "========================================="
