@@ -1,35 +1,18 @@
 # Hercules
 
-## Установка
-
-### Первая установка
+# Установка и запуск
 ```
-make install 
+make install && make run ( or make run-background)
 ```
-### Запуск в фоне
+## Дополнительные команды
 ```
-make run-background
+make status-server // Проверка статуса
+make logs // Просмотр логов
+make stop // Остановка
+make restart //Перезапуск
+make clean // Очистка
 ```
-### Проверка статуса
-```
-make status-server
-```
-### Просмотр логов
-```
-make logs
-```
-### Остановка
-```
-make stop
-```
-### Перезапуск
-```
-make restart
-```
-### Очистка
-```
-make clean
-```
+# Mодули
 ## SCA
 ### Анализатор поддерживает:
 | Экосистема | Менеджеры | Файлы |
@@ -55,165 +38,66 @@ make clean
 4. Рекомендации по исправлению
 
 ## SAST
-## FUZZ
-### Common
-| Тест	| Описание	| Severity|
-|-------|-----------|---------|
-| Cache Poisoning	| Отравление кэша через заголовки | HIGH |
-| Cache Deception	| Кэширование приватного контента | HIGH |
-| Session Fixation	| Фиксация сессии до логина	| HIGH |
-| CSRF	| Подделка межсайтовых запросов	HIGH |
-| SSRF	| Подделка серверных запросов | CRITICAL |
-| XXE	| XML External Entity атаки | CRITICAL |
-| Open Redirect	| Открытые редиректы | MEDIUM |
-| Subdomain Takeover | Захват поддоменов | CRITICAL |
-| CORS Misconfiguration	| Небезопасные CORS настройки | HIGH |
+## FUZZ 
 
 ### ReST API
-```
-```
+1. 
+
 ### WebSocket/Socket.IO
-```
-Основные возможности модуля:
 
-Поддержка WebSocket и Socket.IO
+1. Malformed frames (некорректные фреймы)
+2. Fragmentation attack (фрагментация)
+3. Slowloris attack (медленные сообщения)
+4. Message flood (флуд)
+5. Large messages (большие сообщения)
+6. SQL/NoSQL инъекции
+7. XSS
+8. Path traversal
+9. Command injection
+10. Prototype pollution
+11. Детекция уязвимостей в реальном времени
 
-Специфичные для WebSocket атаки:
-
-Malformed frames (некорректные фреймы)
-
-Fragmentation attack (фрагментация)
-
-Slowloris attack (медленные сообщения)
-
-Message flood (флуд)
-
-Large messages (большие сообщения)
-
-Универсальные инъекции:
-
-SQL/NoSQL инъекции
-
-XSS
-
-Path traversal
-
-Command injection
-
-Prototype pollution
-
-Детекция уязвимостей в реальном времени
-```
 ### GraphQL
-```
-Основные возможности:
 
-Автоматическая интроспекция - получает схему GraphQL
+1. Автоматическая интроспекция - получает схему GraphQL
+2. Генерация фазз-данных - SQLi, XSS, path traversal, protoype pollution и др.
+3. Alias Attack (DoS)
+4. Depth Attack (рекурсивные запросы)
+5. Batch Attack (множество операций)
+6. Circular Fragment Attack
+7. Утечка стека
+8. SQL ошибки
+9. Медленные запросы (DoS)
+10. Раскрытие чувствительных данных
+11. Поддержка Query и Mutation
 
-Генерация фазз-данных - SQLi, XSS, path traversal, protoype pollution и др.
-
-Специфичные атаки:
-
-Alias Attack (DoS)
-
-Depth Attack (рекурсивные запросы)
-
-Batch Attack (множество операций)
-
-Circular Fragment Attack
-
-Детектор уязвимостей:
-
-Утечка стека
-
-SQL ошибки
-
-Медленные запросы (DoS)
-
-Раскрытие чувствительных данных
-
-Поддержка Query и Mutation
-```
 ### gRPC
-```
-Основные возможности:
+1. Основные возможности:
+2. Автоматическая загрузка proto файлов
+3. Генерация фазз-данных для всех типов protobuf
+4. Поддержка unary, client stream, server stream, bidi stream
+5. Детекция уязвимостей (SQLi, RCE, path traversal и др.)
+6. Нагрузочное тестирование
+7. Экспорт результатов в JSON/CSV
 
-Автоматическая загрузка proto файлов
-
-Генерация фазз-данных для всех типов protobuf
-
-Поддержка unary, client stream, server stream, bidi stream
-
-Детекция уязвимостей (SQLi, RCE, path traversal и др.)
-
-Нагрузочное тестирование
-
-Экспорт результатов в JSON/CSV
-```
 ### jRPC
-```
-Основные возможности модуля:
 
-Стратегии мутации :
-
-Type Confusion — подмена типов данных
-
-Boundary Values — граничные значения
-
-Deep Nesting — глубокая вложенность
-
-Unicode Injection — Unicode символы
-
-Invalid ID — некорректные ID запросов
-
-Malformed Version — неверная версия JSON-RPC
-
-Unknown Method — энумерация методов
-
-Missing/Extra Fields — отсутствие/лишние поля
-
-Специфичные для JSON-RPC атаки :
-
-Batch атаки (множество операций в одном запросе)
-
-Resource Exhaustion (большие payloads)
-
-Метод энумерация
-
-Детекция уязвимостей:
-
-SQL Injection
-
-XSS
-
-Path Traversal
-
-Stack Trace утечка
-
-DoS через медленные запросы
-
-Prototype Pollution
-
-Информация о типах
-
-Авто-обнаружение методов через энумерацию популярных имен
-```
-## SAMM
-## Learn
-## API
-### Auth
-1. Пользователь → Frontend: клик "Войти через Google"
-2. Frontend → Auth Service: GET /auth/google
-3. Auth Service → Google: redirect на страницу входа
-4. Пользователь → Google: вводит учетные данные
-5. Google → Auth Service: callback с кодом
-6. Auth Service → Google: обмен кода на токены
-7. Auth Service: создает пользователя в MongoDB
-8. Auth Service: генерирует JWT (24h)
-9. Auth Service: сохраняет JWT в Redis
-10. Auth Service → Frontend: redirect с токеном
-11. Frontend: сохраняет токен в localStorage/HttpOnly cookie
-12. Frontend → API Service: запросы с Bearer токеном
-13. API Service: проверяет токен в Redis
-14. API Service: логирует запрос в MongoDB
-15. API Service → Frontend: ответ с данными
+1. Type Confusion — подмена типов данных
+2. Boundary Values — граничные значения
+3. Deep Nesting — глубокая вложенность
+4. Unicode Injection — Unicode символы
+5. Invalid ID — некорректные ID запросов
+6. Malformed Version — неверная версия JSON-RPC
+7. Unknown Method — энумерация методов
+8. Missing/Extra Fields — отсутствие/лишние поля
+9. Batch атаки (множество операций в одном запросе)
+10. Resource Exhaustion (большие payloads)
+11. Метод энумерация
+12. SQL Injection
+13. XSS
+14. Path Traversal
+15. Stack Trace утечка
+16. DoS через медленные запросы
+17. Prototype Pollution
+18. Информация о типах
+19. Авто-обнаружение методов через энумерацию популярных имен
