@@ -28,13 +28,9 @@ jobs:
           git checkout -b release/${{ github.event.inputs.version }}
           git push origin release/${{ github.event.inputs.version }}
 
-      - name: Update version file (create a change)
+      - name: Update version file
         run: |
-          # Создаем или обновляем файл с версией
           echo "{\"version\": \"${{ github.event.inputs.version }}\", \"releaseDate\": \"$(date -Iseconds)\"}" > version.json
-          
-          # Или если нет файла version.json, можно обновить README
-          # echo "## Release ${{ github.event.inputs.version }}" >> RELEASE_NOTES.md
           
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -43,10 +39,13 @@ jobs:
           git commit -m "Bump version to ${{ github.event.inputs.version }}"
           git push origin release/${{ github.event.inputs.version }}
 
-      - name: Create Pull Request to main
+      - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr create \
             --title "Release v${{ github.event.inputs.version }}" \
-            --body "## Что входит в релиз v${{ github.event.inputs.version }}
+            --body "Релиз версии ${{ github.event.inputs.version }}" \
+            --base main \
+            --head release/${{ github.event.inputs.version }} \
+            --repo ${{ github.repository }}
