@@ -1,11 +1,15 @@
 # Hercules
+
+## Установка
+
+### Первая установка
 ```
-# Первая установка
-make install
-
-# Запуск в фоне
+make install 
+```
+### Запуск в фоне
+```
 make run-background
-
+```
 # Проверка статуса
 make status-server
 
