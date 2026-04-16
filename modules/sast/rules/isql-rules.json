@@ -1,0 +1,262 @@
+
+
+{
+  "name": "SAST Rules",
+  "version": "1.0.0",
+  "description": "OWASP TOP 10",
+  "rules": 
+  [
+  {
+    "id": "sql-injection/concatenation-python",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(execute|executemany)\\s*\\(\\s*['\"](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER|TRUNCATE)[^'\"]*\\+\\s*",
+    "recommendation": "Use parameterized queries with placeholders (%s, ?) and pass parameters as tuple/dict",
+    "languages": ["python"]
+  },
+  {
+    "id": "sql-injection/f-strings-python",
+    "message": "SQL injection: f-string formatting in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(execute|executemany)\\s*\\(\\s*f['\"].*\\{[^}]+\\}.*['\"]",
+    "recommendation": "Use parameterized queries with placeholders (%s, ?) instead of f-strings",
+    "languages": ["python"]
+  },
+  {
+    "id": "sql-injection/format-python",
+    "message": "SQL injection: .format() in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(execute|executemany)\\s*\\(\\s*['\"].*\\{\\}.*['\"]\\.format\\(",
+    "recommendation": "Use parameterized queries with placeholders (%s, ?) and pass parameters separately",
+    "languages": ["python"]
+  },
+  {
+    "id": "sql-injection/percent-format-python",
+    "message": "SQL injection: % formatting in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(execute|executemany)\\s*\\(\\s*['\"].*%s.*['\"]\\s*%\\s*",
+    "recommendation": "Use parameterized queries - pass parameters as second argument to execute()",
+    "languages": ["python"]
+  },
+  {
+    "id": "sql-injection/javascript-concat",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(query|execute|queryAsync)\\s*\\(\\s*['\"`](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP|ALTER)[^'\"`]*['\"`]\\s*\\+\\s*",
+    "recommendation": "Use parameterized queries or prepared statements with ? placeholders",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "sql-injection/javascript-template",
+    "message": "SQL injection: template literal in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(query|execute|queryAsync)\\s*\\(\\s*`[^`]*\\$\\{[^}]+\\}[^`]*`",
+    "recommendation": "Use parameterized queries with ? placeholders instead of template literals",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "sql-injection/java-concat",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(Statement|createStatement)\\.(execute|executeQuery|executeUpdate)\\s*\\(\\s*['\"](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP)[^'\"]*['\"]\\s*\\+\\s*",
+    "recommendation": "Use PreparedStatement with parameter placeholders (?)",
+    "languages": ["java"]
+  },
+  {
+    "id": "sql-injection/java-prepared-statement-missing",
+    "message": "SQL injection: dynamic SQL without parameters",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "PreparedStatement\\s+\\w+\\s*=\\s*connection\\.prepareStatement\\s*\\(\\s*['\"](SELECT|INSERT|UPDATE|DELETE)[^'\"]*['\"]\\s*\\+\\s*",
+    "recommendation": "Use ? placeholders in PreparedStatement and set parameters with setString/setInt methods",
+    "languages": ["java"]
+  },
+  {
+    "id": "sql-injection/php-concat",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(mysql_query|mysqli_query|PDO::query|pg_query)\\s*\\(\\s*['\"](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP)[^'\"]*['\"]\\s*\\.\\s*\\$",
+    "recommendation": "Use prepared statements with PDO or mysqli::prepare() with ? placeholders",
+    "languages": ["php"]
+  },
+  {
+    "id": "sql-injection/php-double-quote",
+    "message": "SQL injection: variable interpolation in double quotes",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(mysql_query|mysqli_query|PDO::query|pg_query)\\s*\\(\\s*['\"](SELECT|INSERT|UPDATE|DELETE)[^'\"]*\\$[a-zA-Z_][a-zA-Z0-9_]*[^'\"]*['\"]",
+    "recommendation": "Use prepared statements instead of embedding variables in SQL strings",
+    "languages": ["php"]
+  },
+  {
+    "id": "sql-injection/go-concat",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(db\\.Query|db\\.Exec|db\\.QueryRow|db\\.Prepare)\\s*\\(\\s*['\"`](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP)[^'\"`]*['\"`]\\s*\\+\\s*",
+    "recommendation": "Use parameterized queries with ? placeholders",
+    "languages": ["go"]
+  },
+  {
+    "id": "sql-injection/go-sprintf",
+    "message": "SQL injection: fmt.Sprintf in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(db\\.Query|db\\.Exec|db\\.QueryRow|db\\.Prepare)\\s*\\(\\s*fmt\\.Sprintf\\(",
+    "recommendation": "Use parameterized queries with ? placeholders instead of fmt.Sprintf",
+    "languages": ["go"]
+  },
+  {
+    "id": "sql-injection/ruby-concat",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(execute|query|exec_query)\\s*\\(\\s*['\"](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP)[^'\"]*['\"]\\s*\\+\\s*",
+    "recommendation": "Use parameterized queries with ? placeholders or ActiveRecord query methods",
+    "languages": ["ruby"]
+  },
+  {
+    "id": "sql-injection/ruby-interpolation",
+    "message": "SQL injection: string interpolation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(execute|query|exec_query)\\s*\\(\\s*['\"][^'\"]*\\#\\{[^}]+\\}[^'\"]*['\"]",
+    "recommendation": "Use parameterized queries with ? placeholders or ActiveRecord query methods",
+    "languages": ["ruby"]
+  },
+  {
+    "id": "sql-injection/csharp-concat",
+    "message": "SQL injection: string concatenation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(SqlCommand|SqlConnection).*CommandText\\s*=\\s*['\"](SELECT|INSERT|UPDATE|DELETE|CREATE|DROP)[^'\"]*['\"]\\s*\\+\\s*",
+    "recommendation": "Use SqlParameter with parameterized queries",
+    "languages": ["csharp"]
+  },
+  {
+    "id": "sql-injection/csharp-interpolation",
+    "message": "SQL injection: string interpolation in SQL query",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(SqlCommand|SqlConnection).*CommandText\\s*=\\s*\\$['\"][^'\"]*\\{[^}]+\\}[^'\"]*['\"]",
+    "recommendation": "Use SqlParameter with parameterized queries",
+    "languages": ["csharp"]
+  },
+  {
+    "id": "sql-injection/orm-raw-query",
+    "message": "SQL injection: raw query with string concatenation in ORM",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(raw|execute|query|fromSQL|sql)\\s*\\(\\s*['\"`](SELECT|INSERT|UPDATE|DELETE)[^'\"`]*['\"`]\\s*\\+\\s*",
+    "recommendation": "Use ORM query builder methods or parameterized raw queries",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby"]
+  },
+  {
+    "id": "sql-injection/orm-where-concat",
+    "message": "SQL injection: string concatenation in ORM where clause",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "where\\(\\s*['\"`][^'\"`]*['\"`]\\s*\\+\\s*",
+    "recommendation": "Use parameterized where clauses or query builder methods",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby"]
+  },
+  {
+    "id": "sql-injection/order-by",
+    "message": "Potential SQL injection in ORDER BY clause",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "ORDER BY\\s+['\"`]?\\s*\\+\\s*|ORDER BY\\s+.*\\$\\{",
+    "recommendation": "Validate ORDER BY column names against whitelist; use parameterized queries with allowlist",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  },
+  {
+    "id": "sql-injection/limit-offset",
+    "message": "Potential SQL injection in LIMIT/OFFSET clause",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(LIMIT|OFFSET)\\s+['\"`]?\\s*\\+\\s*|(LIMIT|OFFSET)\\s+.*\\$\\{",
+    "recommendation": "Cast LIMIT/OFFSET values to integers; use parameterized queries",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  },
+  {
+    "id": "sql-injection/second-order",
+    "message": "Potential second-order SQL injection - stored data used in query",
+    "severity": "high",
+    "type": "semantic",
+    "pattern": "",
+    "recommendation": "Always use parameterized queries even for data from database; assume stored data may be malicious",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  },
+  {
+    "id": "sql-injection/mysql-real-escape-string",
+    "message": "mysql_real_escape_string usage - insufficient protection",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "mysql_real_escape_string\\s*\\(",
+    "recommendation": "Use prepared statements instead of manual escaping; escaping can be bypassed",
+    "languages": ["php"]
+  },
+  {
+    "id": "sql-injection/addslashes",
+    "message": "addslashes usage for SQL escaping - insufficient protection",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "addslashes\\s*\\(\\s*\\$",
+    "recommendation": "Use prepared statements; addslashes does not protect against all SQL injection vectors",
+    "languages": ["php"]
+  },
+  {
+    "id": "sql-injection/query-with-user-input",
+    "message": "SQL query constructed with user input",
+    "severity": "critical",
+    "type": "semantic",
+    "pattern": "",
+    "recommendation": "Always use parameterized queries; never concatenate user input into SQL strings",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  },
+  {
+    "id": "sql-injection/raw-connection",
+    "message": "Raw database connection with dynamic SQL",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(createConnection|getConnection|mysql\\.createConnection|pg\\.connect)\\s*\\([^)]*\\)[\\s\\S]*?(query|execute)\\s*\\(\\s*['\"`](SELECT|INSERT|UPDATE|DELETE)[^'\"`]*\\+",
+    "recommendation": "Use parameterized queries with prepared statements",
+    "languages": ["javascript", "typescript", "python", "java"]
+  },
+  {
+    "id": "sql-injection/table-name-dynamic",
+    "message": "Dynamic table name in SQL query",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(FROM|INTO|JOIN)\\s+['\"`]?\\s*\\+\\s*|(FROM|INTO|JOIN)\\s+.*\\$\\{",
+    "recommendation": "Validate table names against whitelist; table names cannot be parameterized",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  },
+  {
+    "id": "sql-injection/column-name-dynamic",
+    "message": "Dynamic column name in SQL query",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(SELECT|WHERE|ORDER BY|GROUP BY)\\s+['\"`]?\\s*\\+\\s*|(SELECT|WHERE|ORDER BY|GROUP BY)\\s+.*\\$\\{",
+    "recommendation": "Validate column names against whitelist; column names cannot be parameterized",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  },
+  {
+    "id": "sql-injection/like-clause",
+    "message": "Potential SQL injection in LIKE clause",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "LIKE\\s+['\"`]%?\\s*\\+\\s*|LIKE\\s+.*\\$\\{",
+    "recommendation": "Escape wildcards (%) and underscore (_); use parameterized queries",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
+  }
+]
+}

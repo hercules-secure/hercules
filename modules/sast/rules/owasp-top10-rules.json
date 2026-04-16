@@ -1,0 +1,253 @@
+
+
+{
+  "name": "SAST Rules",
+  "version": "1.0.0",
+  "description": "OWASP TOP 10",
+  "rules": 
+[
+  {
+    "id": "java/access-control/missing-authorization",
+    "message": "Missing authorization check",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "@(GetMapping|PostMapping|PutMapping|DeleteMapping|RequestMapping)[\\s\\S]*?public\\s+\\w+\\s+\\w+\\([^)]*\\)\\s*\\{[^{]*(?!(authorize|@PreAuthorize|@Secured|checkPermission|hasRole))",
+    "recommendation": "Add @PreAuthorize annotation or explicit authorization check",
+    "languages": ["java"]
+  },
+  {
+    "id": "javascript/idor-vulnerability",
+    "message": "Potential IDOR vulnerability - direct object reference without ownership check",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(req\\.params\\.id|req\\.query\\.id|req\\.body\\.id|request\\.GET\\.get\\(['\"]id['\"]\\))[\\s\\S]*?(?!(ownerId|user_id|currentUser|checkOwnership|req\\.user\\.id))",
+    "recommendation": "Verify that the current user owns the resource before accessing it",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "python/sql-injection",
+    "message": "SQL injection vulnerability detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "execute\\(['\"](SELECT|INSERT|UPDATE|DELETE).*\\+.*\\)",
+    "recommendation": "Use parameterized queries or ORM instead of string concatenation",
+    "languages": ["python"]
+  },
+  {
+    "id": "javascript/sql-injection",
+    "message": "SQL injection vulnerability detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(`SELECT.*\\$\\{|'SELECT.*'\\s*\\+\\s*|`SELECT.*\\?\\s*\\+\\s*)",
+    "recommendation": "Use parameterized queries or prepared statements",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "java/sql-injection",
+    "message": "SQL injection vulnerability detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "Statement\\.execute(Query|Update)?\\(.*\\+.*\\)",
+    "recommendation": "Use PreparedStatement with parameter binding",
+    "languages": ["java"]
+  },
+  {
+    "id": "command-injection",
+    "message": "Command injection vulnerability detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(exec|system|popen|Runtime\\.exec|child_process\\.exec|spawn)\\s*\\([^,)]*\\+",
+    "recommendation": "Avoid executing system commands with user input; use safe APIs and validate input",
+    "languages": ["python", "javascript", "typescript", "java", "php"]
+  },
+  {
+    "id": "javascript/xss-vulnerability",
+    "message": "DOM-based XSS vulnerability detected",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(innerHTML|outerHTML|document\\.write|insertAdjacentHTML)\\s*=\\s*[^=]*(req\\.|request\\.|params|query|body)",
+    "recommendation": "Use textContent or innerText instead of innerHTML, or sanitize user input with DOMPurify",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "javascript/eval-usage",
+    "message": "eval() usage detected - potential injection risk",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "eval\\s*\\([^)]*req|[^)]*params|[^)]*query|[^)]*body",
+    "recommendation": "Avoid using eval() with user input; use safe alternatives",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "hardcoded-credentials",
+    "message": "Hardcoded credentials detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(user|username|login|pass|password|pwd|secret|api_key|apikey|token)\\s*[=:]\\s*['\"]?[a-zA-Z0-9_-]{6,}['\"]?",
+    "recommendation": "Use environment variables, secret manager, or vault for credentials",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go"]
+  },
+  {
+    "id": "python/debug-mode",
+    "message": "Debug mode enabled in production",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "DEBUG\\s*=\\s*True",
+    "recommendation": "Set DEBUG=False in production environment",
+    "languages": ["python"]
+  },
+  {
+    "id": "javascript/debug-mode",
+    "message": "Debug mode enabled",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "process\\.env\\.NODE_ENV\\s*!==\\s*['\"]production['\"]",
+    "recommendation": "Set NODE_ENV=production in production environment",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "cors-misconfiguration",
+    "message": "CORS misconfiguration - wildcard origin allowed",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "(Access-Control-Allow-Origin:\\s*\\*|origin:\\s*['\"]\\*['\"]|cors\\(\\{\\s*origin:\\s*\\*\\s*\\}\\))",
+    "recommendation": "Restrict CORS to specific trusted origins",
+    "languages": ["javascript", "typescript", "java", "python", "php"]
+  },
+  {
+    "id": "nosql-injection",
+    "message": "Potential NoSQL injection vulnerability",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(find\\(|findOne\\(|update\\(|aggregate\\()[^)]*req\\.|request\\.|params|query|body",
+    "recommendation": "Validate and sanitize user input; use parameterized queries",
+    "languages": ["javascript", "typescript", "python", "java"]
+  },
+  {
+    "id": "weak-password-policy",
+    "message": "Weak password policy detected",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "minlength\\s*[<]\\s*8",
+    "recommendation": "Enforce minimum password length of 8 characters and complexity requirements",
+    "languages": ["javascript", "typescript", "html", "python", "java"]
+  },
+  {
+    "id": "insecure-deserialization",
+    "message": "Insecure deserialization detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(pickle\\.loads|ObjectInputStream\\.readObject|yaml\\.load\\(|unserialize\\()",
+    "recommendation": "Avoid deserializing untrusted data; use safe serialization formats like JSON",
+    "languages": ["python", "java", "php", "ruby"]
+  },
+  {
+    "id": "ssrf-vulnerability",
+    "message": "Potential SSRF vulnerability detected",
+    "severity": "critical",
+    "type": "regex",
+    "pattern": "(fetch|axios\\.get|http\\.get|requests\\.get|curl)\\s*\\([^)]*(req\\.|request\\.|params|query|body)",
+    "recommendation": "Validate and whitelist URLs; restrict access to internal IPs",
+    "languages": ["javascript", "typescript", "python", "java", "php"]
+  },
+  {
+    "id": "open-redirect",
+    "message": "Open redirect vulnerability detected",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "(redirect|res\\.redirect|redirect_to)\\s*\\([^)]*(req\\.|request\\.|params|query)",
+    "recommendation": "Validate redirect URLs against a whitelist of allowed domains",
+    "languages": ["javascript", "typescript", "python", "java", "ruby", "php"]
+  },
+  {
+    "id": "csrf-missing-token",
+    "message": "Missing CSRF protection",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "(@app\\.route\\([^)]*POST|app\\.post\\(|router\\.post\\([^{]*\\{[^}]*(?!(csrf|_token|X-CSRF-TOKEN)))",
+    "recommendation": "Implement CSRF tokens for state-changing operations",
+    "languages": ["python", "javascript", "typescript", "java", "php"]
+  },
+  {
+    "id": "path-traversal",
+    "message": "Path traversal vulnerability detected",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(fs\\.readFile|fs\\.writeFile|readFileSync|writeFileSync|open)\\s*\\([^)]*(req\\.|request\\.|params|query|body)[^)]*\\.\\./",
+    "recommendation": "Validate file paths; restrict access to a specific directory; use path.resolve() and check against root path",
+    "languages": ["javascript", "typescript", "python", "java", "php"]
+  },
+  {
+    "id": "log-sensitive-data",
+    "message": "Logging sensitive data detected",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(log\\(.*(password|pass|token|secret|credit|card)|logger\\.(info|debug|error)\\(.*(password|pass|token|secret))",
+    "recommendation": "Avoid logging sensitive information like passwords, tokens, and credit card numbers",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go"]
+  },
+  {
+    "id": "weak-encryption",
+    "message": "Weak encryption algorithm detected",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(MD5|SHA1|DES|RC4|AES/ECB)",
+    "recommendation": "Use strong encryption algorithms: AES-256-GCM, ChaCha20-Poly1305, bcrypt, argon2",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "ruby"]
+  },
+  {
+    "id": "rate-limiting-missing",
+    "message": "Missing rate limiting on sensitive endpoint",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "(@app\\.route\\([^)]*(login|auth|register|reset-password)|app\\.(post|put|delete)\\(['\"][^'\"]*(login|auth|register|reset))[\\s\\S]*?(?!(rate_limit|throttle|limiter))",
+    "recommendation": "Implement rate limiting to prevent brute force attacks",
+    "languages": ["python", "javascript", "typescript", "java", "php"]
+  },
+  {
+    "id": "unsafe-file-upload",
+    "message": "Unsafe file upload detected",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(multer|upload|file).*(originalname|filename)[^}]*(?!(validate|check|allowed|extension|mime))",
+    "recommendation": "Validate file type, size, and rename files; scan for malware",
+    "languages": ["javascript", "typescript", "python", "java", "php"]
+  },
+  {
+    "id": "insecure-cookie-config",
+    "message": "Insecure cookie configuration",
+    "severity": "medium",
+    "type": "regex",
+    "pattern": "cookie\\s*\\([^)]*(?!(Secure|HttpOnly|SameSite))",
+    "recommendation": "Set Secure, HttpOnly, and SameSite=Strict flags for cookies",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go"]
+  },
+  {
+    "id": "outdated-dependency",
+    "message": "Potentially outdated dependency with known vulnerabilities",
+    "severity": "high",
+    "type": "sca",
+    "pattern": "",
+    "recommendation": "Update dependencies to latest secure versions; run npm audit or dependency-check",
+    "languages": ["javascript", "typescript", "python", "java", "go", "ruby", "php"]
+  },
+  {
+    "id": "mass-assignment",
+    "message": "Mass assignment vulnerability detected",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(Model\\.create\\(req\\.body|Model\\.update\\(req\\.body|fill\\(request\\.all\\(\\)|setAttributes\\(params)",
+    "recommendation": "Use allowlists for permitted fields; avoid directly assigning all request parameters",
+    "languages": ["javascript", "typescript", "python", "ruby", "php"]
+  },
+  {
+    "id": "graphql-injection",
+    "message": "Potential GraphQL injection vulnerability",
+    "severity": "high",
+    "type": "regex",
+    "pattern": "(graphql\\.execute|apollo-server).*variables.*\\$",
+    "recommendation": "Validate GraphQL queries; implement depth limiting and complexity analysis",
+    "languages": ["javascript", "typescript", "python", "java", "go"]
+  }
+]
+}

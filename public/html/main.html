@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Геркулес | Платформа для анализа защищенности приложений</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="description" content="Платформа Геркулес для анализа и оценки защищенности приложений. SCA, SAST, DAST, FUZZ, визуальное моделирование и развитие навыков">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="/rocket.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/basic.css">
+    <link rel="stylesheet" href="/css/main-add.css">
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav" aria-label="Главная навигация">
+            <a href="/" class="logo" aria-label="Геркулес - Скоро все начнется">
+                <div style="display: flex;flex-direction: column;">
+                    <span style="color:black">Геркулес</span>
+                    <span style="font-size: 11px;">Скоро все начнется</span>
+                </div>
+            </a>
+             <div class="nav-links">
+                <a href="/sca" class="nav-link">Платформа</a>
+                <a href="#features" class="nav-link">Возможности</a>
+                <a href="#extensions" class="nav-link">Расширения</a>
+            </div>
+        </nav>
+    </header>
+
+    <section class="carousel-section" aria-labelledby="carousel-title">
+        <div class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide">
+                    <div class="slide-icon"><i class="fas fa-sitemap"></i></div>
+                    <h3 class="slide-title">Композиционный анализ</h3>
+                    <p class="slide-desc">Формирование SBOM и обнаружение уязвимостей в компонентах и зависимостях</p>
+                    <a href="/sca"><div class="slide-badge">SBOM · CVE · License Compliance</div></a>
+                </div>
+                <div class="carousel-slide">
+                    <div class="slide-icon"><i class="fas fa-code"></i></div>
+                    <h3 class="slide-title">Анализ исходного кода</h3>
+                    <p class="slide-desc">Поиск уязвимостей и слабостей в коде на ранних этапах разработки без запуска приложения</p>
+                    <a href="/sast"><div class="slide-badge">JS · GO · Python · Java</div></a>
+                </div>
+                <div class="carousel-slide">
+                    <div class="slide-icon"><i class="fa-solid fa-bug"></i></div>
+                    <h3 class="slide-title">Динамический анализ</h3>
+                    <p class="slide-desc">Реалистичное тестирование запущенного приложения</p>
+                    <a href="/dast"><div class="slide-badge">OWASP Top 10 · CWE Top 25</div></a>
+                </div>
+                <div class="carousel-slide">
+                    <div class="slide-icon">
+                        <i class="fa-solid fa-bullseye"></i>
+                    </div>
+                    <h3 class="slide-title">Анализ API</h3>
+                    <p class="slide-desc">Интеллектуальный фаззинг и поиск слабостей</p>
+                     <a href="/fuzz"><div class="slide-badge">REST · GraphQL · gRPC · jRPC</div></a>
+                </div>
+                <div class="carousel-slide">
+                    <div class="slide-icon">
+                        <i class="fas fa-project-diagram"></i>
+                    </div>
+                    <h3 class="slide-title">Визуальное моделирование</h3>
+                    <p class="slide-desc">Моделируйте угрозы и сценарии атак в удобном no‑code редакторе</p>
+                     <a href="/designer"><div class="slide-badge">Threat Modeling · Attack Trees</div></a>
+                </div>
+                <div class="carousel-slide">
+                    <div class="slide-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="slide-title">Оценка зрелости РБПО</h3>
+                    <p class="slide-desc">Интерактивная анкета для построения дорожной карты улучшения РБПО</p>
+                    <a href="/samm"><div class="slide-badge">Gap‑анализ · Рекомендации</div></a>
+                </div>
+                <div class="carousel-slide">
+                  <div class="slide-icon"><i class="fas fa-plug"></i></div>
+                  <h3 class="slide-title">Интеграции для улучшения РБПО</h3>
+                  <p class="slide-desc">REST API для автоматизации и интеграции</p>
+                  <a href="/api"><div class="slide-badge">REST API · Webhooks</div></a>
+                </div>
+            </div>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </section>
+
+    <section id="features" class="features" aria-labelledby="features-title">
+        <div class="section-header">
+            <span class="section-tag">Возможности</span>
+            <h2 id="features-title" class="section-title">Всё необходимое для анализа защищенности приложений</h2>
+            <p class="section-subtitle">Инструменты для эффективной работы вашей команды</p>
+        </div>
+
+        <div class="features-grid">
+            <a href="/sca" class="feature-card" aria-label="Композиционный анализ">
+                <h3 class="feature-title">Композиционный анализ</h3>
+                <p class="feature-desc">Формирование SBOM и анализ проблем в зависямостях</p>
+            </a>
+            <a href="/samm" class="feature-card" aria-label=">Оценка зрелости РБПО">
+                <h3 class="feature-title">Оценка зрелости РБПО</h3>
+                <p class="feature-desc">Интерактивная анкета оценки зрелости процессов безопасности разработки</p>
+            </a>        
+            <a href="/learn" class="feature-card" aria-label="Развитие навыков">
+                <h3 class="feature-title">Развитие навыков</h3>
+                <p class="feature-desc">Тренажеры для развития навыков по кибербезопасности</p>
+            </a>
+            <a href="/sast" class="feature-card" aria-label="Анализ исходного кода">
+                <h3 class="feature-title">Анализ исходного кода</h3>
+                <p class="feature-desc">Находите слабости и уязвимости в исходном коде на раннем этапе</p>
+            </a>
+            
+            <a href="/dast" class="feature-card" aria-label="OWASP TOP-10 / CWE TOP-25">
+                <h3 class="feature-title">Комплексная оценка безопасности</h3>
+                <p class="feature-desc">Проводите анализ безопасности приложений в реальном времени</p>
+            </a>
+            
+            <a href="/fuzz" class="feature-card" aria-label="Анализ API">
+                <h3 class="feature-title">Анализ API</h3>
+                <p class="feature-desc">Исследуйте проблемы и находите слабости в API</p>
+            </a>
+            
+            <a href="/designer" class="feature-card" aria-label="Визуальное моделирование">
+                <h3 class="feature-title">Визуальное моделирование</h3>
+                <p class="feature-desc">Моделируйте атаки, сценарии противодействия, процессы SSDLC</p>
+            </a>
+            <a href="/labirinto" class="feature-card" aria-label="Интерактивные игры">
+                <h3 class="feature-title">Арена</h3>
+                <p class="feature-desc">Игры для развития командных практических навыков по защите и нападению</p>
+            </a>
+            <a href="/puzzle" class="feature-card" aria-label="Головоломки">
+                <h3 class="feature-title">Пазлы</h3>
+                <p class="feature-desc">Головоломки для развития не стандартного образа мышления</p>
+            </a>
+        </div>
+    </section>
+
+    <section id="extensions" class="extensions-section" aria-label="Расширения для инструментов безопасности">
+        <div class="section-header-center">
+            <span class="section-tag-ext">
+                <i class="fas fa-puzzle-piece" style="margin-right: 6px;"></i>
+                Расширения для IDE
+            </span>
+            <h2 class="section-title" style="margin-bottom: 0.75rem; font-size: 2.2rem;">Работай там, где удобно</h2>
+            <p class="section-subtitle" style="font-size: 1.1rem;color:white">Расширения для VS Code — анализируйте безопасность прямо в рабочем потоке</p>
+        </div>
+        <div class="extensions-grid">
+            <a href="https://marketplace.visualstudio.com/items?itemName=hercules-security.hercules-cli" class="extension-card" target="_blank" rel="noopener noreferrer" aria-label="Скачать расширение для VS Code">
+                <div class="extension-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="extension-name">VS Code Extension</div>
+                <div class="extension-desc">SAST / SCA подсказки и анализ кода на лету прямо в редакторе</div>
+                <span class="extension-badge">
+                    <i class="fas fa-download" style="margin-right: 6px;"></i>
+                    Установить
+                </span>
+            </a>
+            <a href="https://chromewebstore.google.com/detail/%D0%B3%D0%B5%D1%80%D0%BA%D1%83%D0%BB%D0%B5%D1%81-dast/bkgcjeijoeaoookbmaafiljegacggogn" class="extension-card" target="_blank" rel="noopener noreferrer" aria-label="Добавить расширение для Chrome">
+                <div class="extension-icon">
+                    <i class="fab fa-chrome"></i>
+                </div>
+                <div class="extension-name">Chrome Extension</div>
+                <div class="extension-desc">DAST-сканирование, проверка OWASP Top 10 и анализ запросов</div>
+                <span class="extension-badge">
+                    <i class="fas fa-plus-circle" style="margin-right: 6px;"></i>
+                    Добавить в Chrome
+                </span>
+            </a>
+            <a href="https://addons.mozilla.org/en-US/firefox/addon/hercules-dast/" class="extension-card" target="_blank" rel="noopener noreferrer" aria-label="Установить расширение для Firefox">
+                <div class="extension-icon">
+                    <i class="fab fa-firefox-browser"></i>
+                </div>
+                <div class="extension-name">Firefox Add-on</div>
+                <div class="extension-desc">Анализ API, Fuzz-тесты, мониторинг трафика и уязвимостей</div>
+                <span class="extension-badge">
+                    <i class="fas fa-download" style="margin-right: 6px;"></i>
+                    Добавить в Firefox
+                </span>
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer" role="contentinfo">
+        <div class="footer-content">
+            <div>
+                <h3 class="footer-title">Упражнения</h3>
+                <ul class="footer-links">
+                    <li><a href="/learn">Лампочка</a></li>
+                    <li><a href="/puzzle">Пазлы</a></li>
+                    <li><a href="/labirinto">Лабиринт</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h3 class="footer-title">Ресурсы</h3>
+                <ul class="footer-links">
+                    <li><a href="#extensions">Расширения</a></li>
+                    <li><a href="/samm">Оценка зрелости РБПО</a></li>
+                    <li><a href="/api">API</a></li>
+                    <li><a href="/designer">Дизайнер</a></li>
+                </ul>
+            </div>
+            
+            <div>
+                <h3 class="footer-title">Инструменты</h3>
+                <ul class="footer-links">
+                    <li><a href="/sca">Композиционный анализ (SCA)</a></li>
+                    <li><a href="/sast">Анализ исходного кода (SAST)</a></li>
+                    <li><a href="/dast">Динамический анализ (DAST)</a></li>
+                    <li><a href="/fuzz">Анализ API (FUZZ)</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>Скоро все начнется</p>
+        </div>
+    </footer>
+
+    <script>
+    (function() {
+        const track = document.getElementById('carouselTrack');
+        const slides = document.querySelectorAll('.carousel-slide');
+        //const prevBtn = document.getElementById('prevBtn');
+        //const nextBtn = document.getElementById('nextBtn');
+        const dotsContainer = document.getElementById('carouselDots');
+        
+        if (!track || !slides.length) return;
+
+        // Функция для получения общей ширины слайда с margin
+        function getSlideWidth(slide) {
+            const style = window.getComputedStyle(slide);
+            const marginRight = parseFloat(style.marginRight) || 0;
+            return slide.offsetWidth + marginRight;
+        }
+
+        let slideWidth = getSlideWidth(slides[0]);
+        let slidesPerView = 1;
+        
+        // Клонируем слайды
+        const firstSlide = slides[0].cloneNode(true);
+        const lastSlide = slides[slides.length - 1].cloneNode(true);
+        
+        track.appendChild(firstSlide);
+        track.insertBefore(lastSlide, slides[0]);
+        
+        const allSlides = document.querySelectorAll('.carousel-slide');
+        const totalSlides = allSlides.length;
+        const realSlidesCount = slides.length;
+        
+        let currentIndex = 1;
+        let autoInterval;
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isTransitioning = false;
+
+        // Функция обновления позиции
+        function updateTransform() {
+            const offset = -currentIndex * slideWidth;
+            track.style.transform = `translateX(${offset}px)`;
+        }
+
+        // Обновляем ширину при ресайзе
+        function updateSlideWidth() {
+            slideWidth = getSlideWidth(document.querySelector('.carousel-slide'));
+            updateTransform();
+        }
+
+        window.addEventListener('resize', updateSlideWidth);
+        
+        // Начальная позиция
+        updateTransform();
+        
+        function createDots() {
+            if (!dotsContainer) return;
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < realSlidesCount; i++) {
+                const dot = document.createElement('button');
+                dot.classList.add('dot');
+                if (i === currentIndex - 1) dot.classList.add('active');
+                dot.setAttribute('data-index', i);
+                dot.addEventListener('click', () => goToSlide(i + 1));
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateDots() {
+            const dots = document.querySelectorAll('.dot');
+            const realIndex = getRealIndex(currentIndex);
+            dots.forEach((dot, idx) => {
+                if (idx === realIndex) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+        
+        function getRealIndex(index) {
+            if (index === 0) return realSlidesCount - 1;
+            if (index === totalSlides - 1) return 0;
+            return index - 1;
+        }
+        
+        function handleTransitionEnd() {
+            if (!isTransitioning) return;
+            isTransitioning = false;
+            
+            if (currentIndex === 0) {
+                track.style.transition = 'none';
+                currentIndex = realSlidesCount;
+                updateTransform();
+                void track.offsetHeight;
+                track.style.transition = 'transform 0.5s ease-in-out';
+            } else if (currentIndex === totalSlides - 1) {
+                track.style.transition = 'none';
+                currentIndex = 1;
+                updateTransform();
+                void track.offsetHeight;
+                track.style.transition = 'transform 0.5s ease-in-out';
+            }
+            updateDots();
+        }
+
+        function goToSlide(index) {
+            if (isTransitioning) return;
+            isTransitioning = true;
+            currentIndex = index;
+            updateTransform();
+            updateDots();
+            resetAutoPlay();
+        }
+
+        function nextSlide() {
+            if (isTransitioning) return;
+            let newIndex = currentIndex + 1;
+            if (newIndex >= totalSlides) {
+                newIndex = 0;
+            }
+            goToSlide(newIndex);
+        }
+
+        function prevSlide() {
+            if (isTransitioning) return;
+            let newIndex = currentIndex - 1;
+            if (newIndex < 0) {
+                newIndex = totalSlides - 1;
+            }
+            goToSlide(newIndex);
+        }
+
+        function startAutoPlay() {
+            if (autoInterval) clearInterval(autoInterval);
+            autoInterval = setInterval(() => {
+                nextSlide();
+            }, 3000);
+        }
+
+        function resetAutoPlay() {
+            if (autoInterval) clearInterval(autoInterval);
+            startAutoPlay();
+        }
+
+        function stopAutoPlay() {
+            if (autoInterval) clearInterval(autoInterval);
+        }
+
+        function handleTouchStart(e) {
+            if (isTransitioning) return;
+            touchStartX = e.touches[0].clientX;
+        }
+
+        function handleTouchEnd(e) {
+            if (isTransitioning) return;
+            touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    nextSlide();
+                } else {
+                    prevSlide();
+                }
+            }
+        }
+
+        //if (prevBtn) prevBtn.addEventListener('click', prevSlide);
+        //if (nextBtn) nextBtn.addEventListener('click', nextSlide);
+        
+        track.addEventListener('transitionend', handleTransitionEnd);
+        
+        const container = document.querySelector('.carousel-container');
+        if (container) {
+            container.addEventListener('touchstart', handleTouchStart, { passive: true });
+            container.addEventListener('touchend', handleTouchEnd);
+            container.addEventListener('mouseenter', stopAutoPlay);
+            container.addEventListener('mouseleave', startAutoPlay);
+        }
+
+        createDots();
+        startAutoPlay();
+        track.style.transition = 'transform 0.5s ease-in-out';
+        
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                stopAutoPlay();
+            } else {
+                startAutoPlay();
+            }
+        });
+    })();
+</script>
+</body>
+</html>
