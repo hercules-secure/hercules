@@ -29,3 +29,43 @@
 {"level":"info","message":"SIGINT получен: завершаем работу сервера","timestamp":"2026-04-16 18:45:39"}
 {"level":"info","message":"HTTP сервер закрыт","timestamp":"2026-04-16 18:45:39"}
 {"level":"info","message":"GitHub Downloader завершил работу","timestamp":"2026-04-16 18:45:39"}
+{"level":"info","message":"✅ Директории созданы","timestamp":"2026-04-16 18:47:48"}
+{"level":"info","message":"GitHub Downloader инициализирован (использует git clone)","timestamp":"2026-04-16 18:47:48"}
+{"level":"info","message":"SBOM генерация включена","timestamp":"2026-04-16 18:47:48"}
+{"level":"info","message":"✅ Модули инициализированы","timestamp":"2026-04-16 18:47:48"}
+{"level":"info","message":"🚀 Сервер запущен на порту 6565","timestamp":"2026-04-16 18:47:48"}
+{"level":"info","message":"SIGINT получен: завершаем работу сервера","timestamp":"2026-04-16 18:48:37"}
+{"level":"info","message":"HTTP сервер закрыт","timestamp":"2026-04-16 18:48:37"}
+{"level":"info","message":"GitHub Downloader завершил работу","timestamp":"2026-04-16 18:48:37"}
+{"level":"info","message":"✅ Директории созданы","timestamp":"2026-04-16 18:49:59"}
+{"level":"info","message":"GitHub Downloader инициализирован (использует git clone)","timestamp":"2026-04-16 18:49:59"}
+{"level":"info","message":"SBOM генерация включена","timestamp":"2026-04-16 18:49:59"}
+{"level":"info","message":"✅ Модули инициализированы","timestamp":"2026-04-16 18:49:59"}
+{"level":"info","message":"🚀 Сервер запущен на порту 6565","timestamp":"2026-04-16 18:49:59"}
+{"level":"info","message":"SIGINT получен: завершаем работу сервера","timestamp":"2026-04-16 18:50:35"}
+{"level":"info","message":"HTTP сервер закрыт","timestamp":"2026-04-16 18:50:35"}
+{"level":"info","message":"SIGINT получен: завершаем работу сервера","timestamp":"2026-04-16 18:50:35"}
+{"level":"info","message":"HTTP сервер закрыт","timestamp":"2026-04-16 18:50:35"}
+{"level":"info","message":"GitHub Downloader завершил работу","timestamp":"2026-04-16 18:50:35"}
+{"level":"info","message":"✅ Директории созданы","timestamp":"2026-04-16 18:51:47"}
+{"level":"info","message":"GitHub Downloader инициализирован (использует git clone)","timestamp":"2026-04-16 18:51:47"}
+{"level":"info","message":"SBOM генерация включена","timestamp":"2026-04-16 18:51:47"}
+{"level":"info","message":"✅ Модули инициализированы","timestamp":"2026-04-16 18:51:47"}
+{"level":"info","message":"🚀 Сервер запущен на порту 6565","timestamp":"2026-04-16 18:51:47"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /sca HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /css/main.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /css/sca.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /css/main/sidebar.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /js/sca.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /js/main/sidebar.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /js/main/uploader.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:52 +0000] \"GET /rocket.ico HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:52"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:54 +0000] \"GET /sast HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:54"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:54 +0000] \"GET /css/main.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:54"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:54 +0000] \"GET /css/main/sidebar.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:54"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:54 +0000] \"GET /css/sast.css HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:54"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:54 +0000] \"GET /js/main/sidebar.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:54"}
+{"level":"info","message":"127.0.0.1 - - [16/Apr/2026:15:51:54 +0000] \"GET /js/sast.js HTTP/1.1\" 304 - \"-\" \"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.0.0 Safari/537.36\"","timestamp":"2026-04-16 18:51:54"}
+{"level":"info","message":"SIGTERM получен: завершаем работу сервера","timestamp":"2026-04-16 18:52:56"}
+{"level":"info","message":"HTTP сервер закрыт","timestamp":"2026-04-16 18:52:56"}
+{"level":"info","message":"GitHub Downloader завершил работу","timestamp":"2026-04-16 18:52:56"}
