@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Геркулес | API</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+    <script type="text/javascript" src="/js/auth.js"></script>
+    <link rel="stylesheet" href="/css/api.css">    
+</head>
+<body>
+    <div class="container">
+        <div class="api-header">
+            <h1>Геркулес | API</h1>
+            <div class="subtitle">
+                <span>SCA/OSA, SAST, FUZZ</span>
+                <span class="api-version">v1.0.0</span>
+            </div>
+        </div>
+        
+        <!-- Token Panel -->
+        <div class="token-panel">
+            <div class="token-status">
+                <span class="token-label">Токен авторизации:</span>
+                <span id="auth-token-display" class="token-value">Не получен</span>
+                <span id="token-status-badge" class="token-status-badge token-status-invalid">Не авторизован</span>
+            </div>
+            <button id="get-token-btn" class="get-token-btn">
+                <i class="fas fa-key"></i> Получить токен
+            </button>
+        </div>
+        
+        <div class="api-grid">
+            <!-- Sidebar navigation -->
+            <div class="api-sidebar">
+                <div class="sidebar-section">
+                    <div class="sidebar-title">SCA/OSA</div>
+                    <ul class="endpoint-list">
+                        <li class="endpoint-item">
+                            <a href="#sca-sbom-vuln" class="endpoint-link" onclick="scrollToSection('sca-sbom-vuln')">
+                                <span class="endpoint-method method-post">POST</span>
+                                <span class="endpoint-path-short">/sca</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">SAST</div>
+                    <ul class="endpoint-list">
+                        <li class="endpoint-item">
+                            <a href="#sast-analyze" class="endpoint-link" onclick="scrollToSection('sast-analyze')">
+                                <span class="endpoint-method method-post">POST</span>
+                                <span class="endpoint-path-short">/sast</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="sidebar-section">
+                    <div class="sidebar-title">FUZZ</div>
+                    <ul class="endpoint-list">
+                        <li class="endpoint-item">
+                            <a href="#fuzz-api" class="endpoint-link" onclick="scrollToSection('fuzz-api')">
+                                <span class="endpoint-method method-post">POST</span>
+                                <span class="endpoint-path-short">/fuzz</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Main content -->
+            <div class="api-content">
+                <section id="intro" class="endpoint-section">
+                    <h2>Введение</h2>
+                    <p class="endpoint-description">
+                        Все запросы требуют авторизации через Bearer токен. Нажмите кнопку "Получить токен" для авторизации.
+                    </p>
+
+                    <div class="code-block" style="font: normal 13px 'Ubuntu';">
+                        Базовый URL: https://hercules-web.ru/api/{endpoint}
+                    </div>
+                    <div class="code-block" style="font: normal 13px 'Ubuntu';margin-top: 25px;">
+                        Базовый URL (для локального сервера): https://hercules-cli-you-domen-name:you-port/api/{endpoint}
+                    </div>
+                </section>
+                
+                <section id="sca-sbom-vuln" class="endpoint-section">
+                    <div class="endpoint-header">
+                        <span class="endpoint-badge badge-post">POST</span>
+                        <span class="endpoint-path">/api/sca</span>
+                    </div>
+                    <p class="endpoint-description">Сформировать SBOM и проверить на наличие уязвимостей</p>
+                    
+                    <div class="try-it-out">
+                        <h4>Заголовки</h4>
+                        <div class="param-group">
+                            <label class="param-label">Authorization</label>
+                            <input type="text" id="sca-auth-header" class="param-input" value="" readonly style="background: #0a0a0f; font-family: monospace;">
+                        </div>
+                        
+                        <h4>Тело запроса</h4>
+                        <div class="param-group">
+                            <textarea id="sca-components" class="param-input param-textarea">{
+  "url": "https://github.com/webpwnized/mutillidae",
+  "name": "mutillidae"
+}</textarea>
+                        </div>
+                        <button class="request-btn" onclick="testSCA()">
+                            <i class="fas fa-rocket"></i> Отправить
+                        </button>
+                        <div id="sca-response" class="response-area" style="display: none;">
+                            <div class="response-header">
+                                <div class="response-status">
+                                    <span id="sca-status" class="status-badge"></span>
+                                    <span id="sca-time"></span>
+                                </div>
+                                <button class="copy-btn" onclick="copyResponse('sca-response-body')">
+                                    <i class="far fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <div class="response-body">
+                                <pre id="sca-response-body"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="sast-analyze" class="endpoint-section">
+                    <div class="endpoint-header">
+                        <span class="endpoint-badge badge-post">POST</span>
+                        <span class="endpoint-path">/api/sast</span>
+                    </div>
+                    <p class="endpoint-description">Статический анализ исходного кода на уязвимости</p>
+                    
+                    <div class="try-it-out">
+                        <h4>Заголовки</h4>
+                        <div class="param-group">
+                            <label class="param-label">Authorization</label>
+                            <input type="text" id="sast-auth-header" class="param-input" value="" readonly style="background: #0a0a0f; font-family: monospace;">
+                        </div>
+                        
+                        <h4>Тело запроса</h4>
+                        <div class="param-group">
+                            <textarea id="sast-data" class="param-input param-textarea">{
+  "url": "https://github.com/anchore/grype.git"
+}</textarea>
+                        </div>
+                        <button class="request-btn" onclick="testSAST()">
+                            <i class="fas fa-rocket"></i> Отправить
+                        </button>
+                        <div id="sast-response" class="response-area" style="display: none;">
+                            <div class="response-header">
+                                <div class="response-status">
+                                    <span id="sast-status" class="status-badge"></span>
+                                    <span id="sast-time"></span>
+                                </div>
+                                <button class="copy-btn" onclick="copyResponse('sast-response-body')">
+                                    <i class="far fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <div class="response-body">
+                                <pre id="sast-response-body"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section id="fuzz-api" class="endpoint-section">
+                    <div class="endpoint-header">
+                        <span class="endpoint-badge badge-post">POST</span>
+                        <span class="endpoint-path">/api/fuzz</span>
+                    </div>
+                    <p class="endpoint-description">Fuzzing API эндпоинтов для поиска уязвимостей</p>
+                    
+                    <div class="try-it-out">
+                        <h4>Заголовки</h4>
+                        <div class="param-group">
+                            <label class="param-label">Authorization</label>
+                            <input type="text" id="fuzz-auth-header" class="param-input" value="" readonly style="background: #0a0a0f; font-family: monospace;">
+                        </div>
+                        
+                        <h4>Тело запроса</h4>
+                        <div class="param-group">
+                            <label class="param-label">URL API</label>
+                            <input type="text" id="fuzz-url" class="param-input" value="https://api.example.com/v1/users">
+                        </div>
+                        <div class="param-row">
+                            <div class="param-group">
+                                <label class="param-label">Метод</label>
+                                <select id="fuzz-method" class="param-input">
+                                    <option value="GET">GET</option>
+                                    <option value="POST">POST</option>
+                                    <option value="PUT">PUT</option>
+                                    <option value="DELETE">DELETE</option>
+                                </select>
+                            </div>
+                            <div class="param-group">
+                                <label class="param-label">Количество тестов</label>
+                                <input type="number" id="fuzz-tests" class="param-input" value="100">
+                            </div>
+                        </div>
+                        <button class="request-btn" onclick="testFUZZ()">
+                            <i class="fas fa-rocket"></i> Отправить
+                        </button>
+                        <div id="fuzz-response" class="response-area" style="display: none;">
+                            <div class="response-header">
+                                <div class="response-status">
+                                    <span id="fuzz-status" class="status-badge"></span>
+                                    <span id="fuzz-time"></span>
+                                </div>
+                                <button class="copy-btn" onclick="copyResponse('fuzz-response-body')">
+                                    <i class="far fa-copy"></i> Копировать
+                                </button>
+                            </div>
+                            <div class="response-body">
+                                <pre id="fuzz-response-body"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentToken = null;
+        
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            document.querySelectorAll('.endpoint-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`[href="#${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+        }
+        
+        async function copyResponse(elementId) {
+            const responseText = document.getElementById(elementId).innerText;
+            try {
+                await navigator.clipboard.writeText(responseText);
+                const btn = event.currentTarget;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Скопировано';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            } catch (err) {
+                alert('Не удалось скопировать');
+            }
+        }
+        
+        function formatResponseTime(startTime) {
+            const endTime = performance.now();
+            const timeMs = (endTime - startTime).toFixed(0);
+            return `${timeMs} ms`;
+        }
+        
+        function showResponse(prefix, status, data, startTime) {
+            const responseDiv = document.getElementById(`${prefix}-response`);
+            const statusBadge = document.getElementById(`${prefix}-status`);
+            const timeSpan = document.getElementById(`${prefix}-time`);
+            const responseBody = document.getElementById(`${prefix}-response-body`);
+            
+            responseDiv.style.display = 'block';
+            
+            if (status >= 200 && status < 300) {
+                statusBadge.className = 'status-badge status-success';
+                statusBadge.innerHTML = `<i class="fas fa-check-circle"></i> ${status} Success`;
+            } else {
+                statusBadge.className = 'status-badge status-error';
+                statusBadge.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${status} Error`;
+            }
+            
+            timeSpan.textContent = formatResponseTime(startTime);
+            responseBody.textContent = JSON.stringify(data, null, 2);
+        }
+        
+        function updateAuthHeaders() {
+            const authHeaderValue = currentToken ? `Bearer ${currentToken}` : 'Не авторизован';
+            const scaAuthHeader = document.getElementById('sca-auth-header');
+            const sastAuthHeader = document.getElementById('sast-auth-header');
+            const fuzzAuthHeader = document.getElementById('fuzz-auth-header');
+            const tokenDisplay = document.getElementById('auth-token-display');
+            const tokenStatusBadge = document.getElementById('token-status-badge');
+            
+            if (scaAuthHeader) scaAuthHeader.value = authHeaderValue;
+            if (sastAuthHeader) sastAuthHeader.value = authHeaderValue;
+            if (fuzzAuthHeader) fuzzAuthHeader.value = authHeaderValue;
+            
+            if (currentToken) {
+                tokenDisplay.textContent = `${currentToken.substring(0, 20)}...`;
+                tokenStatusBadge.textContent = 'Авторизован';
+                tokenStatusBadge.className = 'token-status-badge token-status-valid';
+            } else {
+                tokenDisplay.textContent = 'Не получен';
+                tokenStatusBadge.textContent = 'Не авторизован';
+                tokenStatusBadge.className = 'token-status-badge token-status-invalid';
+            }
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification-toast';
+            notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+            notification.style.background = type === 'success' ? '#10b981' : '#ef4444';
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateX(100px)';
+                notification.style.transition = 'all 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        // Auth Modal
+        function showAuthModal() {
+            const overlay = document.createElement('div');
+            overlay.className = 'auth-modal-overlay';
+            
+            overlay.innerHTML = `
+                <div class="auth-modal">
+                    <div class="auth-header">
+                        <h2>Геркулес</h2>
+                        <p>Войдите с помощью</p>
+                    </div>
+                    <div class="auth-body">
+                        <div class="providers">
+                <!-- Google -->
+                <button class="provider-btn google" onclick="handleProviderLogin('google')" id="google-btn">
+                    <svg viewBox="0 0 24 24">
+    <path fill="white" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+    <path fill="white" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+    <path fill="white" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+    <path fill="white" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+</svg>
+                    <span>Google</span>
+                </button>
+
+                <!-- Яндекс -->
+                <button class="provider-btn yandex" onclick="handleProviderLogin('yandex')" id="yandex-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="24" viewBox="0 0 12 24">
+                    <path fill="currentColor" d="M7.083 14.8L2.985 24H-.001l4.5-9.834C2.385 13.092.974 11.148.974 7.552.969 2.518 4.159.001 7.953.001h3.858v24H9.229v-9.2H7.083zM9.23 2.18H7.852c-2.08 0-4.097 1.378-4.097 5.372c0 3.858 1.847 5.1 4.097 5.1H9.23z"/>
+                    </svg>
+                    <span>Яндекс</span>
+                </button>
+                <button class="provider-btn mailru" onclick="handleProviderLogin('mailru')" id="mailru-btn">
+                    <svg viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15 0C6.716 0 0 6.716 0 15c0 8.284 6.716 15 15 15 3.03 0 5.946-0.902 8.44-2.609l-2.021-2.349C19.5 26.268 17.276 26.922 15 26.922c-6.576 0-11.922-5.346-11.922-11.922 0-6.576 5.346-11.922 11.922-11.922 6.576 0 11.922 5.346 11.922 11.922 0 0.852-0.094 1.714-0.28 2.562-0.377 1.546-1.463 2.02-2.277 1.958-0.819-0.067-1.777-0.65-1.783-2.077V15c0-4.18-3.403-7.583-7.583-7.583S7.417 10.82 7.417 15s3.403 7.583 7.583 7.583c2.032 0 3.937-0.795 5.374-2.239 0.835 1.3 2.198 2.115 3.748 2.239 0.133 0.011 0.269 0.017 0.404 0.017 1.091 0 2.173-0.365 3.045-1.028 0.9-0.682 1.571-1.67 1.942-2.856C29.866 17.118 30 16.169 30 15 30 6.716 23.284 0 15 0z" fill="currentColor"/>
+                    </svg>
+                    <span>Mail.ru</span>
+                </button>
+            </div>
+                        <div class="back-link" style="text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid #2a2a3a;">
+                            <a onclick="closeAuthModal()" style="color: #9ca3af; text-decoration: none; font-size: 13px; cursor: pointer;">
+                                <i class="fas fa-arrow-left"></i> Вернуться к API
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(overlay);
+            
+            // Закрытие по Escape
+            const escHandler = (e) => {
+                if (e.key === 'Escape') {
+                    closeAuthModal();
+                    document.removeEventListener('keydown', escHandler);
+                }
+            };
+            document.addEventListener('keydown', escHandler);
+            
+            // Закрытие по клику на фон
+            overlay.addEventListener('click', (e) => {
+                if (e.target === overlay) {
+                    closeAuthModal();
+                }
+            });
+        }
+        
+        function closeAuthModal() {
+            const overlay = document.querySelector('.auth-modal-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+        /*
+        // Обработка входа через провайдера
+        window.handleProviderLogin = function(provider) {
+            const button = document.querySelector(`.provider-btn.${provider}`);
+            if (button) {
+                const originalText = button.querySelector('span').textContent;
+                button.querySelector('span').innerHTML = '<span class="loading-spinner"></span> Загрузка...';
+                button.disabled = true;
+            }
+            
+            // Имитация получения токена
+            setTimeout(() => {
+                const mockToken = 'test-token-' + Math.random().toString(36).substring(2, 15);
+                currentToken = mockToken;
+                updateAuthHeaders();
+                closeAuthModal();
+                showNotification('Токен успешно получен!', 'success');
+            }, 1500);
+        };
+        */
+        async function testSCA() {
+            if (!currentToken) {
+                showNotification('Сначала получите токен!', 'error');
+                return;
+            }
+            
+            const componentsText = document.getElementById('sca-components').value;
+            const startTime = performance.now();
+            
+            document.getElementById('sca-response').style.display = 'block';
+            document.getElementById('sca-status').className = 'status-badge status-loading';
+            document.getElementById('sca-status').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Сканирование...';
+            
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            try {
+                const components = JSON.parse(componentsText);
+                const mockResponse = {
+                    sbom: {
+                        bomFormat: "CycloneDX",
+                        specVersion: "1.6",
+                        components: components,
+                        vulnerabilities: [{ id: "CVE-2024-1234", severity: "HIGH" }]
+                    },
+                    summary: { total_components: 1, vulnerable_components: 1, total_vulnerabilities: 1 }
+                };
+                showResponse('sca', 200, mockResponse, startTime);
+            } catch (error) {
+                showResponse('sca', 400, { error: "Invalid JSON", message: error.message }, startTime);
+            }
+        }
+        
+        async function testSAST() {
+            if (!currentToken) {
+                showNotification('Сначала получите токен!', 'error');
+                return;
+            }
+            
+            const startTime = performance.now();
+            document.getElementById('sast-response').style.display = 'block';
+            document.getElementById('sast-status').className = 'status-badge status-loading';
+            document.getElementById('sast-status').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Анализ...';
+            
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            const mockResponse = {
+                findings: [
+                    { rule: "sql-injection", severity: "HIGH", file: "handlers/user.go", line: 42 }
+                ],
+                summary: { total: 1, critical: 0, high: 1, medium: 0, low: 0 }
+            };
+            showResponse('sast', 200, mockResponse, startTime);
+        }
+        
+        async function testFUZZ() {
+            if (!currentToken) {
+                showNotification('Сначала получите токен!', 'error');
+                return;
+            }
+            
+            const startTime = performance.now();
+            document.getElementById('fuzz-response').style.display = 'block';
+            document.getElementById('fuzz-status').className = 'status-badge status-loading';
+            document.getElementById('fuzz-status').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Fuzzing...';
+            
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            
+            const mockResponse = {
+                target: document.getElementById('fuzz-url').value,
+                tests_executed: 100,
+                findings: [{ test_case: "SQL injection", status: "vulnerable" }]
+            };
+            showResponse('fuzz', 200, mockResponse, startTime);
+        }
+        
+        document.getElementById('get-token-btn').addEventListener('click', showAuthModal);
+        updateAuthHeaders();
+    </script>
+</body>
+</html>

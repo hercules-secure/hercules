@@ -1,0 +1,273 @@
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        span {
+            font-family: 'Ubuntu';
+        }
+        .container {
+            max-width: 400px;
+            width: 100%;
+
+        }
+
+        .card {
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            padding: 40px 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo {
+            width: 56px;
+            height: 56px;
+            background: #000000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 500;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            color: #000000;
+            margin-bottom: 8px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            color: #666666;
+            font-size: 12px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+        .providers {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 24px 0;
+        }
+
+        .provider-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            padding: 14px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #000000;
+            transition: background-color 0.1s ease;
+            border-radius: 5px;
+            font-family: 'Ubuntu';
+        }
+
+        .provider-btn:hover {
+            background: #f5f5f5;
+        }
+
+        .provider-btn:active {
+            background: #e5e5e5;
+        }
+
+        .provider-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .provider-btn.google svg path:first-child { fill: #4285f4; }
+        .provider-btn.google svg path:nth-child(2) { fill: #34a853; }
+        .provider-btn.google svg path:nth-child(3) { fill: #fbbc05; }
+        .provider-btn.google svg path:nth-child(4) { fill: #ea4335; }
+
+        .provider-btn.github svg { fill: #000000; }
+        .provider-btn.gitlab svg { fill: #fc6d26; }
+        .provider-btn.yandex svg { fill: #ff0000; }
+
+        .provider-btn.github:hover svg { fill: #000000; }
+        .provider-btn.gitlab:hover svg { fill: #fc6d26; }
+        .provider-btn.yandex:hover svg { fill: #ff0000; }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin: 24px 0;
+            padding: 16px 0;
+            border-top: 1px solid #e5e5e5;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+            display: block;
+            color: #000000;
+        }
+
+        .feature-text {
+            font-size: 12px;
+            color: #666666;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .footer {
+            text-align: center;
+        }
+
+        .terms {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 12px;
+        }
+
+        .terms a {
+            color: #666666;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        .terms a:hover {
+            color: #000000;
+            text-decoration: underline;
+        }
+
+        .help-text {
+            color: #999999;
+            font-size: 12px;
+        }
+
+        .help-text a {
+            color: #000000;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .help-text a:hover {
+            text-decoration: underline;
+        }
+
+        /* Loading state */
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #cccccc;
+            border-radius: 50%;
+            border-top-color: #000000;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 14px 20px;
+            background: #ffffff;
+            border: 1px solid #e5e5e5;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+            max-width: 320px;
+        }
+
+        .notification.success {
+            border-left: 3px solid #000000;
+        }
+
+        .notification.error {
+            border-left: 3px solid #ff0000;
+        }
+
+        .notification.info {
+            border-left: 3px solid #666666;
+        }
+
+        .notification-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            color: #000000;
+        }
+
+        .notification-message {
+            color: #333333;
+            font-size: 13px;
+            line-height: 1.4;
+            flex-grow: 1;
+        }
+
+        .notification-close {
+            cursor: pointer;
+            color: #999999;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .notification-close:hover {
+            color: #000000;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 32px 24px;
+            }
+
+            .features {
+                gap: 24px;
+            }
+
+            .notification {
+                left: 20px;
+                right: 20px;
+                max-width: none;
+            }
+        }
+.provider-btn.mailru:hover:not(:disabled) {
+    background: #f5f5f5;
+}
+.provider-btn.mailru svg {
+    width: 20px;
+    height: 20px;
+}    

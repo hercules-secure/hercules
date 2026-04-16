@@ -1,0 +1,842 @@
+/* Стили для страницы фаззинга */
+.upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    background: var(--bg-secondary);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 10px;
+}
+
+.upload-area:hover {
+    border-color: var(--accent-color);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.upload-area.dragover {
+    border-color: var(--accent-color);
+    background: rgba(99, 102, 241, 0.1);
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 48px;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.upload-text {
+    color: var(--text-primary);
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.upload-hint {
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+.file-info {
+    display: none;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    border: 1px solid var(--border-color);
+}
+
+.file-info.active {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+.file-details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.file-name {
+    font-weight: 500;
+    color: var(--text-primary);
+    flex: 1;
+    word-break: break-word;
+}
+
+.file-size {
+    color: var(--text-secondary);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.remove-file {
+    color: #ef4444;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.remove-file:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.supported-formats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    justify-content: center;
+}
+
+.format-badge {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Ubuntu', sans-serif;
+    transition: all 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.input-group button {
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.input-group button:hover {
+    background: var(--border-color);
+}
+
+/* Специально для поля specUrl */
+#specUrl {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.toggle-mode {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 4px;
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    border-radius: 6px;
+    color: var(--text-secondary);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Ubuntu';
+}
+
+.mode-btn.active {
+    background: white;
+    color: var(--accent-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mode-btn i {
+    font-size: 16px;
+}
+
+.base-url-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Ubuntu', sans-serif;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+.base-url-input:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+.spec-preview {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 20px;
+    display: none;
+    border: 1px solid var(--border-color);
+}
+
+.spec-preview.active {
+    display: block;
+    animation: slideIn 0.3s ease;
+}
+
+.spec-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.spec-info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.spec-info-item i {
+    color: var(--accent-color);
+}
+
+.spec-endpoints {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.endpoint-item {
+    padding: 8px;
+    border-bottom: 1px solid var(--border-color);
+    font-family: monospace;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.method-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    color: white;
+    min-width: 50px;
+    text-align: center;
+}
+
+.method-GET { background: #10b981; }
+.method-POST { background: #3b82f6; }
+.method-PUT { background: #f59e0b; }
+.method-DELETE { background: #ef4444; }
+.method-PATCH { background: #8b5cf6; }
+
+.url-validation {
+    font-size: 12px;
+    margin: 10px 0;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+.url-validation.valid {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.url-validation.invalid {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Медиа-запрос для мобильных устройств */
+@media (max-width: 768px) {
+    .input-group {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .input-group input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .input-group button {
+        width: 100%;
+    }
+    
+    .toggle-mode {
+        flex-direction: column;
+    }
+    
+    .spec-info {
+        gap: 12px;
+    }
+    
+    .file-details {
+        flex-wrap: wrap;
+    }
+    
+    .file-size {
+        white-space: normal;
+    }
+    
+    /* Дополнительно для specUrl */
+    #specUrl {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Для url-mode контейнера */
+    #url-mode {
+        width: 100%;
+    }
+}
+
+/* Для очень маленьких экранов */
+@media (max-width: 480px) {
+    .input-group input {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+    
+    .mode-btn {
+        padding: 8px;
+        font-size: 13px;
+    }
+    
+    .spec-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+}
+
+/* Стили для модального окна (как в SCA/SAST) */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.modal-container {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 1000px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header {
+    padding: 20px 24px;
+    background: black;
+    color: white;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+}
+
+.modal-close {
+    cursor: pointer;
+    font-size: 24px;
+    color: #6c757d;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.modal-close:hover {
+    color: #dc3545;
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+    background: #f8f9fa;
+}
+
+.modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: white;
+}
+
+/* Стили для статистики в модалке */
+.fuzz-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.fuzz-stat-card {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    text-align: center;
+    border: 1px solid #e9ecef;
+}
+
+.fuzz-stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.fuzz-stat-number.critical { color: #dc3545; }
+.fuzz-stat-number.success { color: #28a745; }
+.fuzz-stat-number.warning { color: #fd7e14; }
+.fuzz-stat-number.info { color: #4a6fa5; }
+
+.fuzz-stat-label {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+/* Стили для уязвимостей */
+.vulnerability-item {
+    background: white;
+    padding: 16px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+}
+
+.vulnerability-header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.vulnerability-method {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    margin-right: 8px;
+}
+
+.vulnerability-method.GET { background: #28a745; }
+.vulnerability-method.POST { background: #17a2b8; }
+.vulnerability-method.PUT { background: #fd7e14; }
+.vulnerability-method.DELETE { background: #dc3545; }
+.vulnerability-method.PATCH { background: #8b5cf6; }
+
+.vulnerability-path {
+    font-family: monospace;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.vulnerability-status {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+.vulnerability-details {
+    font-size: 13px;
+    color: #6c757d;
+    margin-bottom: 8px;
+}
+
+.vulnerability-payload {
+    margin-top: 8px;
+}
+
+.vulnerability-payload summary {
+    cursor: pointer;
+    color: #4a6fa5;
+    font-size: 12px;
+}
+
+.vulnerability-payload pre {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 11px;
+    margin-top: 8px;
+    font-family: monospace;
+}
+
+.no-vulnerabilities {
+    background: rgba(40, 167, 69, 0.1);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.no-vulnerabilities i {
+    font-size: 48px;
+    color: #28a745;
+}
+
+.no-vulnerabilities h4 {
+    margin-top: 12px;
+    margin-bottom: 8px;
+    color: #212529;
+}
+
+.btn-export-pdf {
+    background: #dc2626;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-export-pdf:hover:not(:disabled) {
+    background: #b91c1c;
+    transform: translateY(-1px);
+}
+
+.btn-export-pdf:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.start-button {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.start-button:hover:not(:disabled) {
+    background: black;
+    transform: translateY(-1px);
+}
+
+.start-button:disabled {
+    background: #adb5bd;
+    cursor: not-allowed;
+}
+.close-button {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    margin-bottom: 10px;
+    font-family: 'Ubuntu';
+}
+/* Табличный дизайн */
+/* Стили для таблицы с раскрывающимися строками */
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    font-family: 'Ubuntu';
+}
+
+.results-table thead th {
+    text-align: left;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.results-table tbody td {
+    padding: 12px 16px 20px 30px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.failed-test-row {
+    border-left: 3px solid #ef4444;
+}
+
+.details-row {
+    background: var(--bg-secondary);
+}
+
+.details-row td {
+    padding: 0 !important;
+    border-bottom: 1px solid var(--border);
+}
+
+.details-container {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+}
+
+.detail-section {
+    background: var(--bg-primary);
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid var(--border);
+    width: 50%;
+}
+
+.detail-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-size: 13px;
+}
+
+.detail-pre {
+    margin: 0;
+    padding: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    font-size: 12px;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-family: monospace;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.details-btn {
+    padding: 4px 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s;
+}
+
+.details-btn:hover {
+    background: var(--bg-hover);
+    transform: translateY(-1px);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-badge.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.status-badge.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.severity-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.severity-critical { background: rgba(127, 29, 29, 0.2); color: #7f1d1d; }
+.severity-high { background: rgba(220, 38, 38, 0.2); color: #dc2626; }
+.severity-medium { background: rgba(245, 158, 11, 0.2); color: #d97706; }
+.severity-low { background: rgba(234, 179, 8, 0.2); color: #ca8a04; }
+
+.method-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.method-GET { background: #10b981; color: white; }
+.method-POST { background: #f59e0b; color: white; }
+.method-PUT { background: #3b82f6; color: white; }
+.method-DELETE { background: #ef4444; color: white; }
+.method-PATCH { background: #8b5cf6; color: white; }
+
+.endpoint-group {
+    margin-bottom: 20px;
+    border-bottom: 1px solid lightgray;
+    overflow: hidden;
+    background: var(--bg-primary);
+}
+
+.endpoint-header {
+    padding: 16px 20px;
+    background: var(--bg-secondary);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.endpoint-header:hover {
+    background: var(--bg-hover);
+}
+
+.endpoint-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.endpoint-stats {
+    display: flex;
+    gap: 12px;
+}
+
+.endpoint-stat {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.endpoint-stat.failed {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.endpoint-stat.vuln {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.endpoint-content {
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.endpoint-content.open {
+    max-height: 5000px;
+    transition: max-height 0.5s ease-in;
+}
+
+.toggle-icon {
+    transition: transform 0.2s;
+    font-size: 18px;
+}
+
+.toggle-icon.open {
+    transform: rotate(180deg);
+}
+
+.no-vulnerabilities {
+    text-align: center;
+    padding: 48px;
+}
+
+.no-vulnerabilities i {
+    font-size: 48px;
+    color: #10b981;
+    margin-bottom: 16px;
+}
+.token-input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-family: monospace; }
+.btn-link { background: none; border: none; color: var(--primary); cursor: pointer; text-decoration: underline; }
+.status-badge.warning { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.auth-required { border-left: 3px solid #f59e0b !important; }
+.copy-success { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; z-index: 10000; animation: slideIn 0.3s ease-out, fadeOut 2s ease-out 1.7s forwards; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
