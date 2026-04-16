@@ -7,7 +7,6 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
-# Функция для преобразования в верхний регистр
 to_upper() {
     echo "$1" | tr '[:lower:]' '[:upper:]'
 }
@@ -17,7 +16,6 @@ log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 log_warning() { echo -e "${YELLOW}[WARNING]${NC} $1"; }
 
-# Конфигурация
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VERSION="$1"
 MODE="$2"
@@ -29,8 +27,8 @@ fi
 
 if [ -z "$MODE" ]; then
     echo -e "${YELLOW}Выберите режим сборки (local/global):${NC}"
-    echo "  1) local - исключаем main.html и указанные файлы"
-    echo "  2) global - полная сборка (все файлы)"
+    echo "  1) local - исключаем main.html"
+    echo "  2) global - полная сборка"
     read -r MODE_CHOICE
     case $MODE_CHOICE in
         1) MODE="local" ;;
@@ -43,7 +41,7 @@ RELEASE_BRANCH="release/${VERSION}"
 MODE_UPPER=$(to_upper "$MODE")
 
 # ============================================
-# 1. КОММИТИМ ВСЕ ТЕКУЩИЕ ИЗМЕНЕНИЯ
+# 1. КОММИТИМ ТЕКУЩИЕ ИЗМЕНЕНИЯ
 # ============================================
 log_info "Сохранение текущих изменений..."
 git add .
@@ -75,18 +73,24 @@ log_info "Текущая ветка: ${CURRENT_BRANCH}"
 if git show-ref --verify --quiet "refs/heads/${RELEASE_BRANCH}"; then
     log_info "Переключение на существующую ветку ${RELEASE_BRANCH}"
     git checkout "${RELEASE_BRANCH}"
+    
+    # Подтягиваем изменения из remote
+    log_info "Подтягиваем изменения из remote..."
+    git pull origin "${RELEASE_BRANCH}" --no-rebase 2>/dev/null || log_warning "Не удалось подтянуть изменения"
 else
     log_info "Создание новой ветки ${RELEASE_BRANCH}"
     git checkout -b "${RELEASE_BRANCH}"
 fi
 
 # ============================================
-# 5. КОПИРУЕМ ПАПКУ BUILD (БЕЗ УДАЛЕНИЯ)
+# 5. КОПИРУЕМ ПАПКУ BUILD
 # ============================================
 log_info "Копирование папки build..."
 
-# Копируем файлы из build (поверх существующих)
 if [ -d "${SCRIPT_DIR}/build" ]; then
+    # Удаляем старые файлы, но оставляем .git
+    find . -maxdepth 1 -not -name ".git" -not -name "." -not -name ".." -exec rm -rf {} \; 2>/dev/null
+    
     cp -r "${SCRIPT_DIR}/build/"* . 2>/dev/null
     cp -r "${SCRIPT_DIR}/build/".[!.]* . 2>/dev/null
     log_success "Папка build скопирована"
@@ -95,7 +99,7 @@ else
 fi
 
 # ============================================
-# 6. СОЗДАЕМ ФАЙЛ С ИНФОРМАЦИЕЙ О РЕЛИЗЕ
+# 6. СОЗДАЕМ ФАЙЛ С ИНФОРМАЦИЕЙ
 # ============================================
 cat > "RELEASE_${VERSION}.md" << EOF
 # Релиз ${VERSION} (${MODE})
@@ -107,35 +111,40 @@ $(date '+%Y-%m-%d %H:%M:%S')
 ${MODE_UPPER}
 
 ## Описание
-$([ "$MODE" = "local" ] && echo "LOCAL режим: сборка без main.html и исключенных файлов" || echo "GLOBAL режим: полная сборка со всеми файлами")
+$([ "$MODE" = "local" ] && echo "LOCAL режим: сборка без main.html" || echo "GLOBAL режим: полная сборка")
 EOF
 
 # ============================================
-# 7. КОММИТИМ В РЕЛИЗНУЮ ВЕТКУ
+# 7. КОММИТИМ
 # ============================================
 log_info "Коммит в релизную ветку..."
 git add .
-git commit -m "Release ${VERSION} (${MODE})
-
-Режим: ${MODE}
-Версия: ${VERSION}
-Дата: $(date '+%Y-%m-%d %H:%M:%S')"
+git commit -m "Release ${VERSION} (${MODE})"
 
 # ============================================
-# 8. ОТПРАВЛЯЕМ В REMOTE
+# 8. ОТПРАВЛЯЕМ В REMOTE (С FORCE ЕСЛИ НУЖНО)
 # ============================================
 log_info "Отправка в remote..."
-git push origin "${RELEASE_BRANCH}"
 
-if [ $? -eq 0 ]; then
-    log_success "Релиз успешно отправлен в ветку ${RELEASE_BRANCH}"
+# Пробуем обычный push
+if git push origin "${RELEASE_BRANCH}" 2>/dev/null; then
+    log_success "Релиз успешно отправлен"
 else
-    log_error "Ошибка отправки в remote"
-    exit 1
+    log_warning "Обычный push не удался, пробуем force push..."
+    echo -e "${YELLOW}Внимание! Force push перезапишет удаленную ветку. Продолжить? (y/n)${NC}"
+    read -r FORCE_CONFIRM
+    
+    if [ "$FORCE_CONFIRM" = "y" ]; then
+        git push origin "${RELEASE_BRANCH}" --force
+        log_success "Релиз отправлен с force push"
+    else
+        log_error "Отправка отменена"
+        exit 1
+    fi
 fi
 
 # ============================================
-# 9. ВОЗВРАЩАЕМСЯ В ИСХОДНУЮ ВЕТКУ
+# 9. ВОЗВРАЩАЕМСЯ
 # ============================================
 git checkout "${CURRENT_BRANCH}"
 log_success "Возврат в ветку ${CURRENT_BRANCH}"
@@ -150,7 +159,4 @@ echo "========================================="
 echo -e "${BLUE}Ветка:${NC} ${RELEASE_BRANCH}"
 echo -e "${BLUE}Режим:${NC} ${MODE_UPPER}"
 echo -e "${BLUE}Версия:${NC} ${VERSION}"
-if [ -d "${SCRIPT_DIR}/build" ]; then
-    echo -e "${BLUE}Размер сборки:${NC} $(du -sh "${SCRIPT_DIR}/build" 2>/dev/null | cut -f1)"
-fi
 echo "========================================="
