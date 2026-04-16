@@ -1,23 +1,6 @@
-# hercules-cli
-## Structure
-```
-hercules/
-├── modules/
-│   ├── sca/
-│   ├── sast/
-│   ├── fuzz/
-│   └── auth/                    # auth
-│       ├── models/
-│       │   ├── user.js          #user
-│       │   |──requestHistory.js # history
-│       ├── middleware/
-│       │   └── auth.middleware.js
-│       └── routes/
-│           └── auth.routes.js
-├── public/
-├── server.js
-└── package.json
-```
+# hercules
+
+## Установка
 ```
 # Первая установка
 make install
@@ -42,8 +25,9 @@ make clean
 ```
 ## SCA
 ### Анализатор поддерживает:
-Поддерживаемые менеджеры пакетов
-Экосистема	Менеджеры	Файлы
+
+| Экосистема | Менеджеры | Файлы |
+|------------|-----------|-------|
 JavaScript/TypeScript	npm, yarn, pnpm	package.json, yarn.lock, pnpm-lock.yaml
 Python	pip, poetry	requirements.txt, Pipfile, pyproject.toml
 Go	go modules	go.mod
