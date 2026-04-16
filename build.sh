@@ -19,6 +19,7 @@ EXCLUDE_FILES=(
     "config.local.js"
     "release.sh"
     "build.sh"
+    ".gitignore"
 )
 
 # Папки для исключения
