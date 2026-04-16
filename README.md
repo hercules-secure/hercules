@@ -2,6 +2,8 @@
 
 # Установка и запуск
 ```
+git clone https://github.com/hercules-secure/hercules-release.git hercules
+cd hercules
 make install && make run ( or make run-background)
 ```
 ## Дополнительные команды
