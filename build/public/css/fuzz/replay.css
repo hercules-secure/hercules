@@ -1,0 +1,37 @@
+        .replay-modal { max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; background: var(--bg-primary); border-radius: 12px;}
+        .replay-section { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+        .replay-section-header { padding: 10px 16px; background: var(--bg-secondary); font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .replay-section-header:hover { background: var(--bg-hover); }
+        .replay-section-content { padding: 16px; max-height: 300px; overflow: auto; display: block; }
+        .modal-replay {overflow: hidden; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;  z-index: 10000; justify-content: center; align-items: center;}
+        .modal-header-replay {padding: 20px 24px;background: black;color: white;border-bottom: 1px solid #e9ecef;display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0;  z-index: 1;}
+        .modal-body-replay {padding: 24px;overflow: hidden;flex: 1;background: #f8f9fa;}
+        .toggle-icon { transition: transform 0.2s; }
+        .toggle-icon.open { transform: rotate(180deg); }
+        .http-line { font-family: 'Ubuntu'; font-size: 14px; padding: 8px; background: var(--bg-primary); border-radius: 4px; }
+        .http-version { color: var(--text-secondary); margin-left: 8px; }
+        .headers-table { width: 100%; border-collapse: collapse; font-family: 'Ubuntu'; font-size: 13px; }
+        .headers-table td { padding: 4px 8px; vertical-align: top; }
+        .header-key { font-weight: 600; color: var(--primary); width: 200px; }
+        .header-value { color: var(--text-primary); word-break: break-all; }
+        .json-viewer { margin: 0; padding: 12px; background: var(--bg-primary); border-radius: 6px; font-family: 'Ubuntu'; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
+        .payload-viewer { background: rgba(245, 158, 11, 0.05); border-left: 3px solid #f59e0b; }
+        .json-key { color: #f59e0b; }
+        .json-string { color: #10b981; }
+        .json-number { color: #3b82f6; }
+        .json-boolean { color: #ef4444; }
+        .json-null { color: #6b7280; }
+        .content-type { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+        .info-row { padding: 4px 0; font-size: 13px; }
+        .empty-message { color: var(--text-secondary); font-style: italic; text-align: center; padding: 20px; }
+        .replay-toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+        .replay-toolbar .btn { padding: 6px 12px; font-size: 12px; font-family: 'Ubuntu';}
+        .test-type-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .test-type-normal { background: #10b981; color: white; }
+        .test-type-injection { background: #ef4444; color: white; }
+        .test-type-large { background: #f59e0b; color: white; }
+        .test-type-mutation { background: #8b5cf6; color: white; }
+        .test-type-header_fuzzing { background: #3b82f6; color: white; }
+        .copy-success { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; z-index: 10001; animation: slideIn 0.3s ease-out, fadeOut 2s ease-out 1.7s forwards; }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }

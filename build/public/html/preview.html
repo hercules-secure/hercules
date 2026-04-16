@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <title>Геркулес | Скоро все начнется</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            font-size: 16px;
+        }
+        
+        /* Адаптация базового размера для очень маленьких экранов */
+        @media (max-width: 380px) {
+            :root {
+                font-size: 12px;
+            }
+        }
+        
+        /* Для больших экранов можно немного увеличить базовый размер */
+        @media (min-width: 1200px) {
+            :root {
+                font-size: 18px;
+            }
+        }
+
+        body {
+            font-family: 'Ubuntu';
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: black;
+            padding: 1.15rem; /* 20px -> 1.25rem */
+            line-height: 1.5;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 50rem; /* 800px -> 50rem */
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 1.25rem; /* 20px -> 1.25rem */
+            padding: 3.125rem 1.875rem; /* 50px 30px -> 3.125rem 1.875rem */
+            box-shadow: 0 1.5625rem 3.125rem rgba(0, 0, 0, 0.3); /* 25px 50px -> 1.5625rem 3.125rem */
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: fadeIn 1.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(1.875rem); } /* 30px -> 1.875rem */
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.5625rem; 
+            margin-bottom: 1.25rem; /* 20px -> 1.25rem */
+            font-weight: 700;
+            letter-spacing: 0.0625rem; /* 1px -> 0.0625rem */
+        }
+        
+        h2 {
+            font-size: 0.8125rem; /* 13px -> 0.8125rem */
+        }
+
+        p {
+            font-size: 0.6875rem; /* 11px -> 0.6875rem */
+            margin-bottom: 2.5rem; /* 40px -> 2.5rem */
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        /* Стили счетчика - используем проценты и rem */
+        .countdown-container {
+            background: white;
+            border-radius: 3.75rem; /* 60px -> 3.75rem */
+            padding: 2.5rem 1.25rem; /* 40px 20px -> 2.5rem 1.25rem */
+            margin: 1.875rem 0; /* 30px -> 1.875rem */
+        }
+
+        .timer {
+            display: flex;
+            justify-content: center;
+            gap: 1.875rem; /* 30px -> 1.875rem */
+            flex-wrap: wrap;
+        }
+
+        .timer-item {
+            flex: 1;
+            min-width: 7.5rem; /* 120px -> 7.5rem */
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 0.9375rem; /* 15px -> 0.9375rem */
+            padding: 1.25rem 0.625rem; /* 20px 10px -> 1.25rem 0.625rem */
+            box-shadow: 0 0.625rem 1.25rem rgba(0, 0, 0, 0.2); /* 10px 20px -> 0.625rem 1.25rem */
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .timer-item:hover {
+            transform: translateY(-0.3125rem); /* 5px -> -0.3125rem */
+            box-shadow: 0 0.9375rem 1.875rem rgba(0, 0, 0, 0.3); /* 15px 30px -> 0.9375rem 1.875rem */
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .timer-number {
+            font-size: 2rem; /* 48px -> 3rem (относительно корня) */
+            font-weight: 800;
+            line-height: 1;
+            background: black;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3125rem; /* 5px -> 0.3125rem */
+        }
+        
+        /* Дополнительная адаптация цифр на маленьких экранах */
+        @media (max-width: 480px) {
+            .timer-number {
+                font-size: 2.5rem; /* 40px */
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .timer-number {
+                font-size: 2rem; /* 32px */
+            }
+        }
+
+        .timer-label {
+            font-size: 0.5625rem; /* 9px -> 0.5625rem */
+            text-transform: uppercase;
+            letter-spacing: 0.125rem; /* 2px -> 0.125rem */
+            font-weight: 500;
+            color: black;
+        }
+        
+        @media (min-width: 768px) {
+            .timer-label {
+                font-size: 0.65rem; /* Немного больше на планшетах */
+            }
+        }
+        
+        @media (min-width: 1200px) {
+            .timer-label {
+                font-size: 0.75rem; /* 12px на больших экранах */
+            }
+        }
+
+        /* Прогресс-бар */
+        .progress-container {
+            margin: 2.5rem 0 1.25rem; /* 40px 0 20px -> 2.5rem 0 1.25rem */
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.75rem; /* 12px -> 0.75rem */
+            background: black;
+            border-radius: 0.375rem; /* 6px -> 0.375rem */
+            overflow: hidden;
+            margin-bottom: 0.625rem; /* 10px -> 0.625rem */
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: white;
+            border-radius: 0.375rem; /* 6px -> 0.375rem */
+            transition: width 1s ease;
+            box-shadow: 0 0 0.9375rem #af4261; /* 15px -> 0.9375rem */
+        }
+
+        .progress-text {
+            font-size: 0.95rem; /* ~15px */
+            color: black;
+            letter-spacing: 0.0625rem; /* 1px -> 0.0625rem */
+        }
+
+        /* Форма подписки */
+        .subscribe-form {
+            display: flex;
+            justify-content: center;
+            gap: 0.625rem; /* 10px -> 0.625rem */
+            margin: 2.5rem 0 1.25rem; /* 40px 0 20px -> 2.5rem 0 1.25rem */
+            flex-wrap: wrap;
+        }
+
+        .subscribe-form input {
+            flex: 1;
+            min-width: 15.625rem; /* 250px -> 15.625rem */
+            padding: 0.9375rem 1.5625rem; /* 15px 25px -> 0.9375rem 1.5625rem */
+            border: none;
+            border-radius: 3.125rem; /* 50px -> 3.125rem */
+            background: rgba(255, 255, 255, 0.15);
+            color: black;
+            font-size: 1rem;
+            outline: none;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .subscribe-form input::placeholder {
+            color: rgba(0, 0, 0, 0.5);
+        }
+
+        .subscribe-form input:focus {
+            border-color: #af4261;
+            background: rgba(255, 255, 255, 0.25);
+        }
+
+        .subscribe-form button {
+            padding: 0.9375rem 2.1875rem; /* 15px 35px -> 0.9375rem 2.1875rem */
+            border: none;
+            border-radius: 3.125rem; /* 50px -> 3.125rem */
+            background: linear-gradient(45deg, #f3ec78, #af4261);
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.0625rem; /* 1px -> 0.0625rem */
+            box-shadow: 0 0.3125rem 0.9375rem rgba(0, 0, 0, 0.3); /* 5px 15px -> 0.3125rem 0.9375rem */
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .subscribe-form button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0.625rem 1.5625rem rgba(0, 0, 0, 0.4); /* 10px 25px -> 0.625rem 1.5625rem */
+            background: linear-gradient(45deg, #f3ec78, #b34e6b);
+        }
+
+        .subscribe-form button:active {
+            transform: scale(0.95);
+        }
+
+        /* Социальные иконки (используем шрифтовые иконки) */
+        .social-links {
+            margin-top: 2.5rem; /* 40px -> 2.5rem */
+            display: flex;
+            justify-content: center;
+            gap: 1.5625rem; /* 25px -> 1.5625rem */
+        }
+
+        .social-icon {
+            color: black;
+            font-size: 1.8rem; /* ~29px */
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            text-decoration: none;
+        }
+
+        .social-icon:hover {
+            opacity: 1;
+            transform: translateY(-0.3125rem); /* 5px -> -0.3125rem */
+        }
+
+        .footer-note {
+            margin-top: 2.5rem; /* 40px -> 2.5rem */
+            font-size: 0.9rem;
+            opacity: 0.6;
+            border-top: 1px solid rgba(0, 0, 0, 0.2);
+            padding-top: 1.5625rem; /* 25px -> 1.5625rem */
+        }
+
+        /* Анимация пульсации */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        .timer-item:first-child .timer-number {
+            animation: pulse 2s infinite ease-in-out;
+        }
+
+        /* Контейнер для иконок инструментов */
+        .tools-row {
+            font-size: 0.6875rem; /* 11px */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+            gap: 10%;
+            margin-top: 1.25rem;
+            flex-wrap: wrap;
+        }
+        
+        .tool-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 4rem;
+        }
+
+        .tool-icon {
+            width: 2rem; /* 32px -> 2rem */
+            height: 2rem; /* 32px -> 2rem */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            margin-bottom: 0.3125rem;
+        }
+        
+        .tool-icon i {
+            font-size: 1.8rem; /* Адаптивный размер иконки */
+        }
+
+        .tool-name {
+            margin-left: 0;
+            font-weight: 400;
+            font-size: 0.6875rem; /* 11px */
+            white-space: nowrap;
+        }
+        
+        .black-icon {
+            color: black;
+        }
+
+        /* Медиа-запросы для улучшения адаптации */
+        @media (max-width: 600px) {
+            .tools-row {
+                gap: 5%;
+            }
+        }
+        
+        @media (max-width: 450px) {
+            .tools-row {
+                gap: 2%;
+            }
+            
+            .tool-item {
+                min-width: 3.5rem;
+            }
+            
+            .tool-icon i {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div style="margin-bottom: 1.25rem;">
+            <i class="fas fa-rocket" style="font-size: 4rem; color: black;"></i>
+        </div>
+        
+        <h1>Геркулес</h1>
+        <h2>Скоро все начнется</h2>
+        <!--span style="font-size: 11px;">но не на этой странице</span-->
+        <div class="countdown-container">
+            <h3>Сервис будет доступен через:</h3>
+            <br>
+            <div class="timer" id="timer">
+                <div class="timer-item">
+                    <div class="timer-number" id="days"></div>
+                    <div class="timer-label">Дней</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-number" id="hours">00</div>
+                    <div class="timer-label">Часов</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-number" id="minutes">00</div>
+                    <div class="timer-label">Минут</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-number" id="seconds">00</div>
+                    <div class="timer-label">Секунд</div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="tools-row">
+            <a href="/sca" style="text-decoration: none;color: black;">
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <i class="fas fa-sitemap black-icon"></i>
+                </div>
+                <span class="tool-name">SCA</span>
+            </div>
+            </a>
+            <a href="/sast" style="text-decoration: none;color: black;">
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <i class="fas fa-code black-icon"></i>
+                </div>
+                <span class="tool-name">SAST</span>
+            </div>
+            </a>
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <i class="fa-solid fa-bug black-icon"></i>
+                </div>
+                <span class="tool-name">DAST</span>
+            </div>
+            <a href="/sast" style="text-decoration: none;color: black;">
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <i class="fa-solid fa-bullseye black-icon"></i>
+                </div>
+                <span class="tool-name">FUZZ</span>
+            </div>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Устанавливаем дату запуска: текущая дата + 90 дней
+        function getLaunchDate() {
+            const now = new Date('2026-07-29T00:00:00');
+            const launchDate = new Date(now);
+            launchDate.setDate(now.getDate() + 90);
+            return launchDate;
+        }
+
+        function updateCountdown() {
+            const launchDate = getLaunchDate();
+            const now = new Date().getTime();
+            const distance = launchDate - now;
+
+            // Расчет времени
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            // Обновление DOM
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+
+            // Если таймер истек
+            if (distance < 0) {
+                clearInterval(timerInterval);
+                document.getElementById('days').textContent = '00';
+                document.getElementById('hours').textContent = '00';
+                document.getElementById('minutes').textContent = '00';
+                document.getElementById('seconds').textContent = '00';
+            }
+        }
+
+        // Запускаем таймер
+        const timerInterval = setInterval(updateCountdown, 1000);
+        
+        // Запускаем немедленно, чтобы не ждать 1 секунду
+        updateCountdown();
+
+        // Эффекты при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Анимация появления элементов
+            const items = document.querySelectorAll('.timer-item');
+            items.forEach((item, index) => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(1.25rem)';
+                setTimeout(() => {
+                    item.style.transition = 'all 0.5s ease';
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }, 100 * index);
+            });
+        });
+    </script>
+</body>
+</html>

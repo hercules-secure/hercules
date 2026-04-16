@@ -1,0 +1,205 @@
+{
+  "name": "SAST Rules",
+  "version": "1.0.0",
+  "description": "Security rules for Python",
+  "rules": [
+    {
+      "id": "python/no-print",
+      "message": "Print statement should not be used in production",
+      "severity": "low",
+      "type": "pattern",
+      "pattern": "print(",
+      "recommendation": "Use logging module instead",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/no-eval",
+      "message": "Avoid using eval() due to security risks",
+      "severity": "critical",
+      "type": "pattern",
+      "pattern": "eval(",
+      "recommendation": "Use ast.literal_eval for safe evaluation",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/no-exec",
+      "message": "Avoid using exec() due to security risks",
+      "severity": "critical",
+      "type": "pattern",
+      "pattern": "exec(",
+      "recommendation": "Avoid dynamic code execution",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/no-subprocess-shell",
+      "message": "Using shell=True in subprocess is dangerous",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "shell=True",
+      "recommendation": "Use shell=False and pass arguments as list",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/os-system",
+      "message": "Using os.system is dangerous",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "os.system(",
+      "recommendation": "Use subprocess.run with shell=False",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/sql-injection",
+      "message": "Possible SQL injection - use parameterized queries",
+      "severity": "critical",
+      "type": "pattern",
+      "pattern": "execute(",
+      "recommendation": "Use parameterized queries with ? placeholders",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/hardcoded-secrets",
+      "message": "Hardcoded secret detected",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(password|secret|token|key|api_key|apikey)\\s*[=:]\\s*['\"][^'\"]+['\"]",
+      "recommendation": "Use environment variables or secrets manager",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/request-without-timeout",
+      "message": "HTTP request without timeout",
+      "severity": "medium",
+      "type": "pattern",
+      "pattern": "requests.get(",
+      "recommendation": "Add timeout parameter: timeout=30",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/request-verify-false",
+      "message": "SSL verification disabled",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "verify=False",
+      "recommendation": "Enable SSL verification or use verify='/path/to/certs'",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/pdb-set-trace",
+      "message": "pdb.set_trace() found in code",
+      "severity": "low",
+      "type": "pattern",
+      "pattern": "pdb.set_trace",
+      "recommendation": "Remove debugging code before production",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/flask-debug",
+      "message": "Flask debug mode enabled",
+      "severity": "medium",
+      "type": "pattern",
+      "pattern": "debug=True",
+      "recommendation": "Disable debug mode in production",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/pickle-loads",
+      "message": "Insecure deserialization with pickle",
+      "severity": "critical",
+      "type": "pattern",
+      "pattern": "pickle.load",
+      "recommendation": "Avoid pickle with untrusted data, use safer alternatives",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/yaml-load",
+      "message": "Insecure YAML deserialization",
+      "severity": "critical",
+      "type": "pattern",
+      "pattern": "yaml.load(",
+      "recommendation": "Use yaml.safe_load() instead",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/md5-hash",
+      "message": "MD5 is a weak hash function",
+      "severity": "medium",
+      "type": "pattern",
+      "pattern": "hashlib.md5",
+      "recommendation": "Use SHA-256 or stronger hashing",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/sha1-hash",
+      "message": "SHA1 is a weak hash function",
+      "severity": "medium",
+      "type": "pattern",
+      "pattern": "hashlib.sha1",
+      "recommendation": "Use SHA-256 or stronger hashing",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/weak-cipher-des",
+      "message": "DES cipher is weak",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "DES.new",
+      "recommendation": "Use AES with GCM mode",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/ecb-mode",
+      "message": "ECB mode is insecure",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "MODE_ECB",
+      "recommendation": "Use GCM or CBC mode with random IV",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/weak-rsa-key",
+      "message": "RSA key size is too small",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "RSA.generate(512)",
+      "recommendation": "Use at least 2048-bit RSA keys",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/ssti",
+      "message": "Possible Server-Side Template Injection",
+      "severity": "critical",
+      "type": "pattern",
+      "pattern": "render_template_string(",
+      "recommendation": "Use render_template with separate template files",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/open-redirect",
+      "message": "Open redirect vulnerability",
+      "severity": "medium",
+      "type": "pattern",
+      "pattern": "redirect(",
+      "recommendation": "Validate and whitelist redirect URLs",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/path-traversal",
+      "message": "Possible path traversal",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "open(",
+      "recommendation": "Validate and sanitize file paths",
+      "languages": ["python"]
+    },
+    {
+      "id": "python/todo-comment",
+      "message": "TODO comment found",
+      "severity": "info",
+      "type": "regex",
+      "pattern": "#\\s*TODO|#\\s*FIXME",
+      "recommendation": "Address before production deployment",
+      "languages": ["python"]
+    }
+  ]
+}
