@@ -28,17 +28,17 @@ make clean
 
 | Экосистема | Менеджеры | Файлы |
 |------------|-----------|-------|
-JavaScript/TypeScript	npm, yarn, pnpm	package.json, yarn.lock, pnpm-lock.yaml
-Python	pip, poetry	requirements.txt, Pipfile, pyproject.toml
-Go	go modules	go.mod
-Java	Maven, Gradle	pom.xml, build.gradle
-PHP	Composer	composer.json
-Ruby	Bundler	Gemfile
-Rust	Cargo	Cargo.toml
-🚀 Источники для анализа
-✅ GitHub репозитории
+| JavaScript/TypeScript | npm, yarn, pnpm	| package.json, yarn.lock, pnpm-lock.yaml |
+| Python	| pip, poetry	| requirements.txt, Pipfile, pyproject.toml |
+| Go	| go modules| go.mod |
+| Java	| Maven, Gradle	| pom.xml, build.gradle |
+| PHP	| Composer	| composer.json |
+| Ruby	| Bundler	| Gemfile |
+| Rust	| Cargo	| Cargo.toml |
 
-✅ GitLab репозитории
+### Источники для анализа
+GitHub репозитории
+GitLab репозитории
 
 ✅ Локальные папки (распакованные архивы)
 
@@ -196,22 +196,3 @@ Prototype Pollution
 
 Авто-обнаружение методов через энумерацию популярных имен
 ```
-## SAMM
-## Learn
-## API
-### Auth
-1. Пользователь → Frontend: клик "Войти через Google"
-2. Frontend → Auth Service: GET /auth/google
-3. Auth Service → Google: redirect на страницу входа
-4. Пользователь → Google: вводит учетные данные
-5. Google → Auth Service: callback с кодом
-6. Auth Service → Google: обмен кода на токены
-7. Auth Service: создает пользователя в MongoDB
-8. Auth Service: генерирует JWT (24h)
-9. Auth Service: сохраняет JWT в Redis
-10. Auth Service → Frontend: redirect с токеном
-11. Frontend: сохраняет токен в localStorage/HttpOnly cookie
-12. Frontend → API Service: запросы с Bearer токеном
-13. API Service: проверяет токен в Redis
-14. API Service: логирует запрос в MongoDB
-15. API Service → Frontend: ответ с данными
