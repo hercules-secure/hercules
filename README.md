@@ -23,14 +23,15 @@ make clean
 ```
 ## SCA
 ### Анализатор поддерживает:
-| Экосистема	Менеджеры	Файлы
-JavaScript/TypeScript	npm, yarn, pnpm	package.json, yarn.lock, pnpm-lock.yaml
-Python	pip, poetry	requirements.txt, Pipfile, pyproject.toml
-Go	go modules	go.mod
-Java	Maven, Gradle	pom.xml, build.gradle
-PHP	Composer	composer.json
-Ruby	Bundler	Gemfile
-Rust	Cargo	Cargo.toml
+| Экосистема | Менеджеры | Файлы |
+|------------|-----------|-------|
+| JavaScript/TypeScript | npm, yarn, pnpm | package.json, yarn.lock, pnpm-lock.yaml |
+| Python | pip, poetry | requirements.txt, Pipfile, pyproject.toml |
+| Go | go modules | go.mod |
+| Java | Maven, Gradle | pom.xml, build.gradle |
+| PHP | Composer | composer.json |
+| Ruby | Bundler | Gemfile |
+| Rust | Cargo | Cargo.toml |
 
 ### Источники для анализа
 1. GitHub репозитории
