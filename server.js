@@ -152,9 +152,6 @@ const upload = multer({
 // ======================
 const PORT = process.env.PORT || 6565;
 const HOST = process.env.HOST || 'localhost';
-const UPLOAD_DIR = process.env.UPLOAD_DIR || './uploads';
-const DOWNLOAD_DIR = process.env.DOWNLOAD_DIR || './downloads';
-const CACHE_DIR = process.env.CACHE_DIR || './cache';
 const LOG_DIR = process.env.LOG_DIR || './logs';
 const STORAGE_DIR = path.join(__dirname, 'storage');
 const EXTRACTED_DIR = path.join(__dirname, 'extracted');
@@ -223,7 +220,7 @@ app.use('/api/', limiter);
 
 // Статические файлы
 app.use(express.static(join(__dirname, '/public')));
-app.use('/downloads', express.static(DOWNLOAD_DIR));
+//app.use('/downloads', express.static(DOWNLOAD_DIR));
 
 // ======================
 // Вспомогательные функции
@@ -266,8 +263,8 @@ async function downloadSpecFromUrl(url) {
 // Инициализация модулей
 // ======================
 const githubDownloader = new GitHubDownloader({
-  cacheDir: CACHE_DIR,
-  downloadDir: DOWNLOAD_DIR,
+  //cacheDir: CACHE_DIR,
+  //downloadDir: DOWNLOAD_DIR,
   logger: logger,
 });
 
@@ -281,12 +278,9 @@ const dependencyAnalyzer = new DependencyAnalyzer({
 
 // pages
 app.get('/', (req, res) => { res.sendFile(join(__dirname, 'public', '/html/main.html'));})
-   //.get('/auth', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/auth.html'));})
    .get('/sca', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/sca.html'));})
    .get('/sast', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/sast.html'));})
    .get('/fuzz', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/fuzz.html'));})
-   .get('/learn', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/learn.html'));})
-   .get('/samm', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/samm.html'));});
 
 app.post('/api/sca', async (req, res) => {
   try {
@@ -343,7 +337,7 @@ app.post('/api/sca/upload', uploadSCA.single('archive'), async (req, res) => {
         res.json(bom);
         
     } catch (error) {
-        console.error('❌ Ошибка:', error);
+        console.error('Ошибка:', error);
         
         if (req.file?.path) {
             await fs.unlink(req.file.path).catch(() => {});
@@ -462,7 +456,7 @@ app.post('/api/archive/upload', uploadArchive.single('archive'), async (req, res
     }
 
     try {
-        await ensureDir(STORAGE_DIR);
+        //await ensureDir(STORAGE_DIR);
         
         const result = await receiver.getFromFile(req.file.path, req.file.originalname);
         
@@ -480,7 +474,7 @@ app.post('/api/archive/upload', uploadArchive.single('archive'), async (req, res
         });
 
     } catch (error) {
-        console.error('❌ [upload] Ошибка:', error.message);
+        console.error('[upload] Ошибка:', error.message);
         
         if (req.file?.path) {
             await fs.unlink(req.file.path).catch(() => {});
@@ -544,13 +538,13 @@ app.post('/api/sast/analyze/:archiveId', async (req, res) => {
         
         if (extractPath) {
             cleanupPromises.push(fs.rm(extractPath, { recursive: true, force: true }).catch(err => 
-                console.error('   ⚠️ Ошибка при удалении распакованных файлов:', err.message)
+                console.error('Ошибка при удалении распакованных файлов:', err.message)
             ));
         }
         
         if (archivePath) {
             cleanupPromises.push(fs.unlink(archivePath).catch(err => 
-                console.error('   ⚠️ Ошибка при удалении архива:', err.message)
+                console.error('Ошибка при удалении архива:', err.message)
             ));
         }
         
@@ -660,9 +654,9 @@ app.use((err, req, res, next) => {
 // ======================
 async function initialize() {
   try {
-    await ensureDir(UPLOAD_DIR);
-    await ensureDir(DOWNLOAD_DIR);
-    await ensureDir(CACHE_DIR);
+    //await ensureDir(UPLOAD_DIR);
+    //await ensureDir(DOWNLOAD_DIR);
+    //await ensureDir(CACHE_DIR);
     await ensureDir(LOG_DIR);
     await ensureDir(STORAGE_DIR);
     await ensureDir(EXTRACTED_DIR);
@@ -671,15 +665,15 @@ async function initialize() {
     await ensureDir(path.join(__dirname, 'temp', 'sca'));
     await ensureDir(join(__dirname, 'public'));
     
-    logger.info('✅ Директории созданы');
+    logger.info('Директории созданы');
     
     await githubDownloader.initialize();
     
-    logger.info('✅ Модули инициализированы');
+    logger.info('Модули инициализированы');
     
     return true;
   } catch (error) {
-    logger.error('❌ Ошибка инициализации:', error);
+    logger.error('Ошибка инициализации:', error);
     throw error;
   }
 }
@@ -690,7 +684,7 @@ async function startServer() {
     await initialize();
     
     const server = app.listen(PORT, HOST, () => {
-      logger.info(`🚀 Сервер запущен на порту ${PORT}`);
+      logger.info(`Сервер запущен на порту ${PORT}`);
     });
     
     const shutdown = async (signal) => {

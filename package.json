@@ -60,5 +60,6 @@
     "analyzer"
   ],
   "author": "Hercules Team",
-  "license": "MIT"
+  "license": "MIT",
+  "private": false 
 }
