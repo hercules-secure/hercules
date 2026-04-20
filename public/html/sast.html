@@ -60,7 +60,7 @@
                         </div>
                         <div class="tool-info">
                             <span class="tool-name">DAST</span>
-                            <span class="tool-desc">Комплексная оценка безопасности</span>
+                            <span class="tool-desc">Оценка безопасности</span>
                         </div>
                     </div>
                     </a> 
@@ -108,19 +108,26 @@
         <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА - РАБОЧАЯ ОБЛАСТЬ -->
         <div id="center">
             <h2 class="section-title">Выберите источник</h2>
-            
-            <!-- Переключатель режимов -->
-            <div class="toggle-mode">
-                <button class="mode-btn active" id="mode-upload" onclick="switchMode('upload')">
-                    <i class="fas fa-upload"></i>
-                    Загрузить архив
-                </button>
-                <button class="mode-btn" id="mode-url" onclick="switchMode('url')">
-                    <i class="fas fa-link"></i>
-                    Ссылка на репозиторий
-                </button>
-            </div>
 
+            <div id="url-mode">
+                <div class="input-group">
+                    <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий" aria-label="Ссылка на репозиторий">
+                    <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
+                </div>
+            <div class="tech-stack">
+                <div class="platforms-row">
+                    <span class="format-badge" style="border: none;">
+                        <i class="fab fa-github fa-1x" style="color: #181717;"></i>
+                        <span>GitHub</span>
+                    </span>
+                    <span class="format-badge" style="border: none;">
+                        <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
+                        <span>GitLab</span>
+                    </span>
+                </div>
+                <!--div class="url-validation" id="url-validation"></div-->
+            </div>
+            </div> 
             <!-- Режим загрузки архива -->
             <div id="upload-mode">
                 <div class="upload-area" id="uploadArea">
@@ -166,27 +173,9 @@
                 </div>
             </div>
 
-            <!-- Режим ссылки на репозиторий -->
-            <div id="url-mode" style="display: none;">
-                <div class="input-group">
-                    <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий" aria-label="Ссылка на репозиторий">
-                    <button class="start-button" id="fetch-repo-btn" type="button">Скачать архив</button>
-                </div>
-                <div class="url-validation" id="url-validation"></div>
-                <div class="platforms-row">
-                    <span class="format-badge" style="border: none;">
-                        <i class="fab fa-github fa-1x" style="color: #181717;"></i>
-                        <span>GitHub</span>
-                    </span>
-                    <span class="format-badge" style="border: none;">
-                        <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
-                        <span>GitLab</span>
-                    </span>
-                </div>
-            </div>
 
             <!-- Кнопка начала анализа -->
-            <button class="start-button" id="start-btn" type="button" style="width: 100%; margin-top: 20px;" disabled>Начать анализ</button>
+
             
             <div class="card-table">
                 <div class="card-section">

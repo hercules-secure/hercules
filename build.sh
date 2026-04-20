@@ -20,6 +20,11 @@ EXCLUDE_FILES=(
     "release.sh"
     "build.sh"
     ".gitignore"
+    "api.html"
+    "auth.html"
+    "samm.html"
+    "learn.html"
+    "designer.html"
 )
 
 # Папки для исключения

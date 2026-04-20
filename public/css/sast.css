@@ -95,7 +95,7 @@
             border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 4px 12px;
-            font-size: 12px;
+            font-size: 14px;
             color: var(--text-secondary);
         }
 
@@ -122,14 +122,17 @@
 
         .input-group button {
             padding: 12px 24px;
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
+            font: 14px 'Ubuntu';
             font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: #e2e8f0;
+            color: #94a3b8;
+            border: none;
+            border-radius: 8px;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
             white-space: nowrap;
+            user-select: none;
+            margin-top: 2vh;;
         }
 
         .input-group button:hover {
@@ -194,3 +197,18 @@
                 flex-direction: column;
             }
         }
+
+            .platforms-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+        .tech-stack {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        align-items: flex-start;
+    }
