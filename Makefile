@@ -1,4 +1,4 @@
-# Makefile для Hercules Personal Platform
+# Makefile для Hercules Community
 # Команды: make install, make run, make run-background, make stop, make restart, make logs, make clean, make help
 
 # Переменные
@@ -23,7 +23,7 @@ NC := \033[0m # No Color
 .PHONY: help install check-env setup-env run run-background run-daemon stop restart logs logs-follow status-server clean audit-fix
 
 help:
-	@echo "$(BLUE)Hercules Personal Platform - Makefile$(NC)"
+	@echo "$(BLUE)Hercules Personal Community - Makefile$(NC)"
 	@echo ""
 	@echo "$(GREEN)Доступные команды:$(NC)"
 	@echo "  $(YELLOW)make install$(NC)         - Установка зависимостей, настройка окружения и аудит"
@@ -82,7 +82,7 @@ setup-env:
 			echo "$(GREEN)Создан $(ENV_FILE) из шаблона$(NC)"; \
 		else \
 			echo "$(YELLOW)Шаблон .env.example не найден, создаю базовый .env$(NC)"; \
-			echo "# Hercules Personal Platform" > $(ENV_FILE); \
+			echo "# Hercules Personal Community" > $(ENV_FILE); \
 			echo "PORT=$(PORT)" >> $(ENV_FILE); \
 			echo "HOST=$(HOST)" >> $(ENV_FILE); \
 			echo "NODE_ENV=production" >> $(ENV_FILE); \
@@ -267,7 +267,7 @@ status:
 
 create-env-example:
 	@echo "$(BLUE)Создание .env.example...$(NC)"
-	@echo "# Hercules Personal Platform" > $(ENV_EXAMPLE)
+	@echo "# Hercules Personal Community" > $(ENV_EXAMPLE)
 	@echo "# ============================================" >> $(ENV_EXAMPLE)
 	@echo "# Настройки сервера" >> $(ENV_EXAMPLE)
 	@echo "PORT=6565" >> $(ENV_EXAMPLE)
