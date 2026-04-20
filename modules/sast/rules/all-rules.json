@@ -172,16 +172,16 @@
       "recommendation": "Используйте надежные алгоритмы: AES-256-GCM, bcrypt, argon2, SHA-256",
       "languages": ["javascript", "typescript", "python", "java", "php", "go", "ruby", "csharp"]
     },
-    {
-      "id": "http-instead-https",
-      "message": "Использование HTTP вместо HTTPS. Данные передаются в открытом виде (A02:2021 - Cryptographic Failures)",
-      "severity": "high",
-      "type": "regex",
-      "pattern": "http:\\/\\/(?!localhost|127\\.0\\.0\\.1)",
-      "flags": "gi",
-      "recommendation": "Всегда используйте HTTPS. Настройте HSTS",
-      "languages": ["html", "javascript", "typescript", "python", "go", "java"]
-    },
+      {
+        "id": "http-instead-https",
+        "message": "Использование HTTP вместо HTTPS. Данные передаются в открытом виде (A02:2021)",
+        "severity": "high",
+        "type": "regex",
+        "pattern": "(?:(?:fetch|axios|http\\.get|https\\.get|request|\\$http|XMLHttpRequest)\\([^)]*\\bhttp:\\/\\/|(?:src|href)\\s*=\\s*[\"']http:\\/\\/)(?!(?:.*localhost|.*127\\.0\\.0\\.1|.*example\\.com|.*test\\.com))",
+        "flags": "gi",
+        "recommendation": "Всегда используйте HTTPS. Настройте HSTS",
+        "languages": ["javascript", "typescript", "python", "go", "java", "html"]
+      },
     {
       "id": "cors-wildcard",
       "message": "CORS заголовок Access-Control-Allow-Origin: * (A04:2021 - Insecure Design)",

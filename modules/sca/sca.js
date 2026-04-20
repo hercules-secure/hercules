@@ -3,9 +3,7 @@ import http from 'http';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-//import { createHash } from 'crypto';
 import dotenv from 'dotenv';
-import { Logger } from 'winston';
 
 // Загружаем переменные окружения из .env файла
 dotenv.config({ quiet: true });
@@ -24,6 +22,7 @@ class BaseSBOMAnalyzer {
         this.componentMap = new Map();
         this.vulnerabilities = [];
         this.dependencyGraph = new Map();
+        this.tempDir = null; // Добавляем свойство для временной директории
         
         // Оптимизации для больших репозиториев
         this.maxDepth = options.maxDepth || 5;
@@ -111,6 +110,19 @@ class BaseSBOMAnalyzer {
         const contents = await this.getRepositoryContents(path);
         this.cache.set(cacheKey, contents);
         return contents;
+    }
+
+    // НОВЫЙ МЕТОД: очистка временной директории
+    async cleanupTempDir() {
+        if (this.tempDir) {
+            try {
+                await fs.rm(this.tempDir, { recursive: true, force: true });
+
+                this.tempDir = null;
+            } catch (error) {
+                console.warn(`⚠️ Не удалось удалить временную директорию ${this.tempDir}:`, error.message);
+            }
+        }
     }
 
     async getAllFilesRecursive(dirPath = '', depth = 0, collected = null) {
@@ -219,146 +231,96 @@ class BaseSBOMAnalyzer {
         return Array.from(packageManagers);
     }
 
-_checkFileForManager(item, packageManagers) {
-    if (!item || !item.name) return;
-    
-    const name = item.name.toLowerCase();
-    
-    if (name === 'package.json') packageManagers.add('npm');
-    else if (name === 'yarn.lock') packageManagers.add('yarn');
-    else if (name === 'pnpm-lock.yaml') packageManagers.add('pnpm');
-    else if (name === 'go.mod') packageManagers.add('go');
-    else if (name === 'pom.xml') packageManagers.add('maven');
-    else if (name === 'requirements.txt' || 
-             name === 'requirements-dev.txt' || 
-             name === 'requirements-test.txt' ||
-             name === 'requirements-dev-minimal.txt' ||
-             name === 'dev-requirements.txt') packageManagers.add('pip');
-    else if (name === 'cargo.toml') packageManagers.add('cargo');
-    else if (name === 'gemfile') packageManagers.add('gem');
-    else if (name === 'composer.json') packageManagers.add('composer');
-    else if (name === 'build.gradle' || name === 'build.gradle.kts') packageManagers.add('gradle');
-    else if (name === 'pyproject.toml' || name === 'poetry.lock' || name === 'pipfile') packageManagers.add('pip');
-}
-    // ==================== АНАЛИЗ YARN ====================
-
-async analyzeYarn() {
-    try {
-        // Ищем yarn.lock файлы
-        const yarnLockFiles = await this.findFiles('yarn.lock', '', 3);
+    _checkFileForManager(item, packageManagers) {
+        if (!item || !item.name) return;
         
-        if (yarnLockFiles.length === 0) {
-            return [];
-        }
+        const name = item.name.toLowerCase();
+        
+        if (name === 'package.json') packageManagers.add('npm');
+        else if (name === 'yarn.lock') packageManagers.add('yarn');
+        else if (name === 'pnpm-lock.yaml') packageManagers.add('pnpm');
+        else if (name === 'go.mod') packageManagers.add('go');
+        else if (name === 'pom.xml') packageManagers.add('maven');
+        else if (name === 'requirements.txt' || 
+                 name === 'requirements-dev.txt' || 
+                 name === 'requirements-test.txt' ||
+                 name === 'requirements-dev-minimal.txt' ||
+                 name === 'dev-requirements.txt') packageManagers.add('pip');
+        else if (name === 'cargo.toml') packageManagers.add('cargo');
+        else if (name === 'gemfile') packageManagers.add('gem');
+        else if (name === 'composer.json') packageManagers.add('composer');
+        else if (name === 'build.gradle' || name === 'build.gradle.kts') packageManagers.add('gradle');
+        else if (name === 'pyproject.toml' || name === 'poetry.lock' || name === 'pipfile') packageManagers.add('pip');
+    }
 
-        for (const yarnLockFile of yarnLockFiles) {
-            try {
-                const content = await this.getFileContent(yarnLockFile);
-                if (!content) continue;
-                
-                const packagePath = path.dirname(yarnLockFile.path);
-                const isRoot = packagePath === '.' || packagePath === '';
-                
-                const repoName = this.repoInfo && this.repoInfo.repo ? this.repoInfo.repo : 'unknown';
-                const componentName = isRoot ? repoName : `${repoName}:${packagePath}`;
-                
-                const rootComponent = {
-                    type: 'application',
-                    name: componentName,
-                    version: '1.0.0',
-                    purl: `pkg:npm/${componentName}@1.0.0`,
-                    properties: [
-                        { name: 'src:type', value: isRoot ? 'root' : 'package' },
-                        { name: 'src:manager', value: 'yarn' },
-                        { name: 'src:path', value: packagePath }
-                    ]
-                };
-                
-                const addedRoot = this.addComponent(rootComponent);
-                if (!addedRoot) continue;
-                
-                // Парсим yarn.lock (формат похож на package-lock.json)
-                const lines = content.split('\n');
-                let currentPackage = null;
-                
-                for (const line of lines) {
-                    const trimmed = line.trim();
-                    
-                    // Ищем название пакета: "package@version:"
-                    const pkgMatch = trimmed.match(/^"([^@"]+)@([^"]+)":$/);
-                    if (pkgMatch) {
-                        currentPackage = {
-                            name: pkgMatch[1],
-                            version: pkgMatch[2]
-                        };
-                        continue;
-                    }
-                    
-                    // Ищем version внутри блока
-                    if (currentPackage && trimmed.startsWith('version')) {
-                        const versionMatch = trimmed.match(/version\s+"([^"]+)"/);
-                        if (versionMatch) {
-                            currentPackage.version = versionMatch[1];
-                        }
-                    }
-                    
-                    // Ищем resolved (URL пакета)
-                    if (currentPackage && trimmed.startsWith('resolved')) {
-                        const resolvedMatch = trimmed.match(/resolved\s+"([^"]+)"/);
-                        if (resolvedMatch) {
-                            // Добавляем компонент
-                            const component = {
-                                type: 'library',
-                                name: currentPackage.name,
-                                version: currentPackage.version,
-                                purl: `pkg:npm/${currentPackage.name}@${currentPackage.version}`,
-                                properties: [
-                                    { name: 'src:manager', value: 'yarn' },
-                                    { name: 'src:path', value: packagePath },
-                                    { name: 'src:resolved', value: resolvedMatch[1] }
-                                ]
-                            };
-                            
-                            const added = this.addComponent(component);
-                            if (added && addedRoot && addedRoot["bom-ref"]) {
-                                this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
-                                
-                                if (this.scanMetadata.packagesByManager['yarn']) {
-                                    this.scanMetadata.packagesByManager['yarn'].count++;
-                                }
-                            }
-                            currentPackage = null;
-                        }
-                    }
-                }
-                
-                // Также проверяем package.json для yarn проектов
-                const packageJsonPath = path.join(packagePath, 'package.json');
+    async analyzeYarn() {
+        try {
+            const yarnLockFiles = await this.findFiles('yarn.lock', '', 3);
+            
+            if (yarnLockFiles.length === 0) {
+                return [];
+            }
+
+            for (const yarnLockFile of yarnLockFiles) {
                 try {
-                    const pkgContent = await this.getFileContent({ path: packageJsonPath, name: 'package.json' });
-                    if (pkgContent) {
-                        const packageJson = JSON.parse(pkgContent);
+                    const content = await this.getFileContent(yarnLockFile);
+                    if (!content) continue;
+                    
+                    const packagePath = path.dirname(yarnLockFile.path);
+                    const isRoot = packagePath === '.' || packagePath === '';
+                    
+                    const repoName = this.repoInfo && this.repoInfo.repo ? this.repoInfo.repo : 'unknown';
+                    const componentName = isRoot ? repoName : `${repoName}:${packagePath}`;
+                    
+                    const rootComponent = {
+                        type: 'application',
+                        name: componentName,
+                        version: '1.0.0',
+                        purl: `pkg:npm/${componentName}@1.0.0`,
+                        properties: [
+                            { name: 'src:type', value: isRoot ? 'root' : 'package' },
+                            { name: 'src:manager', value: 'yarn' },
+                            { name: 'src:path', value: packagePath }
+                        ]
+                    };
+                    
+                    const addedRoot = this.addComponent(rootComponent);
+                    if (!addedRoot) continue;
+                    
+                    const lines = content.split('\n');
+                    let currentPackage = null;
+                    
+                    for (const line of lines) {
+                        const trimmed = line.trim();
                         
-                        const processDeps = (deps, scope) => {
-                            if (!deps) return;
-                            
-                            for (const [name, version] of Object.entries(deps)) {
-                                if (!name) continue;
-                                
-                                let cleanVersion = 'latest';
-                                if (version) {
-                                    cleanVersion = String(version).replace(/^[\^~]/, '').split(' ')[0];
-                                }
-                                
+                        const pkgMatch = trimmed.match(/^"([^@"]+)@([^"]+)":$/);
+                        if (pkgMatch) {
+                            currentPackage = {
+                                name: pkgMatch[1],
+                                version: pkgMatch[2]
+                            };
+                            continue;
+                        }
+                        
+                        if (currentPackage && trimmed.startsWith('version')) {
+                            const versionMatch = trimmed.match(/version\s+"([^"]+)"/);
+                            if (versionMatch) {
+                                currentPackage.version = versionMatch[1];
+                            }
+                        }
+                        
+                        if (currentPackage && trimmed.startsWith('resolved')) {
+                            const resolvedMatch = trimmed.match(/resolved\s+"([^"]+)"/);
+                            if (resolvedMatch) {
                                 const component = {
                                     type: 'library',
-                                    name: String(name),
-                                    version: cleanVersion,
-                                    purl: `pkg:npm/${String(name)}@${cleanVersion}`,
+                                    name: currentPackage.name,
+                                    version: currentPackage.version,
+                                    purl: `pkg:npm/${currentPackage.name}@${currentPackage.version}`,
                                     properties: [
-                                        { name: 'src:scope', value: scope || 'runtime' },
                                         { name: 'src:manager', value: 'yarn' },
-                                        { name: 'src:path', value: packagePath }
+                                        { name: 'src:path', value: packagePath },
+                                        { name: 'src:resolved', value: resolvedMatch[1] }
                                     ]
                                 };
                                 
@@ -370,184 +332,216 @@ async analyzeYarn() {
                                         this.scanMetadata.packagesByManager['yarn'].count++;
                                     }
                                 }
-                            }
-                        };
-                        
-                        processDeps(packageJson.dependencies, 'runtime');
-                        processDeps(packageJson.devDependencies, 'development');
-                    }
-                } catch (err) {
-                    // Игнорируем ошибки
-                }
-                
-            } catch (err) {
-                // Игнорируем
-            }
-        }
-    } catch (error) {
-        // Игнорируем
-    }
-    
-    return [];
-}
-
-// ==================== АНАЛИЗ PNPM ====================
-
-async analyzePnpm() {
-    try {
-        // Ищем pnpm-lock.yaml файлы
-        const pnpmLockFiles = await this.findFiles('pnpm-lock.yaml', '', 3);
-        
-        if (pnpmLockFiles.length === 0) {
-            return [];
-        }
-
-        for (const pnpmLockFile of pnpmLockFiles) {
-            try {
-                const content = await this.getFileContent(pnpmLockFile);
-                if (!content) continue;
-                
-                const packagePath = path.dirname(pnpmLockFile.path);
-                const isRoot = packagePath === '.' || packagePath === '';
-                
-                const repoName = this.repoInfo && this.repoInfo.repo ? this.repoInfo.repo : 'unknown';
-                const componentName = isRoot ? repoName : `${repoName}:${packagePath}`;
-                
-                const rootComponent = {
-                    type: 'application',
-                    name: componentName,
-                    version: '1.0.0',
-                    purl: `pkg:npm/${componentName}@1.0.0`,
-                    properties: [
-                        { name: 'src:type', value: isRoot ? 'root' : 'package' },
-                        { name: 'src:manager', value: 'pnpm' },
-                        { name: 'src:path', value: packagePath }
-                    ]
-                };
-                
-                const addedRoot = this.addComponent(rootComponent);
-                if (!addedRoot) continue;
-                
-                // Парсим pnpm-lock.yaml
-                const lines = content.split('\n');
-                let currentPackage = null;
-                let inPackages = false;
-                
-                for (const line of lines) {
-                    const trimmed = line.trim();
-                    
-                    // Ищем секцию packages:
-                    if (trimmed === 'packages:') {
-                        inPackages = true;
-                        continue;
-                    }
-                    
-                    if (inPackages && trimmed.match(/^[a-f0-9]+:$/)) {
-                        // Новая секция пакета
-                        const versionMatch = trimmed.match(/^([a-f0-9]+):$/);
-                        if (versionMatch) {
-                            currentPackage = {};
-                        }
-                        continue;
-                    }
-                    
-                    if (currentPackage && trimmed.startsWith('name:')) {
-                        const nameMatch = trimmed.match(/name:\s+(.+)/);
-                        if (nameMatch) {
-                            currentPackage.name = nameMatch[1].replace(/['"]/g, '');
-                        }
-                    }
-                    
-                    if (currentPackage && trimmed.startsWith('version:')) {
-                        const versionMatch = trimmed.match(/version:\s+(.+)/);
-                        if (versionMatch) {
-                            currentPackage.version = versionMatch[1].replace(/['"]/g, '');
-                        }
-                    }
-                    
-                    // Конец блока пакета
-                    if (currentPackage && trimmed === '' && currentPackage.name && currentPackage.version) {
-                        const component = {
-                            type: 'library',
-                            name: currentPackage.name,
-                            version: currentPackage.version,
-                            purl: `pkg:npm/${currentPackage.name}@${currentPackage.version}`,
-                            properties: [
-                                { name: 'src:manager', value: 'pnpm' },
-                                { name: 'src:path', value: packagePath }
-                            ]
-                        };
-                        
-                        const added = this.addComponent(component);
-                        if (added && addedRoot && addedRoot["bom-ref"]) {
-                            this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
-                            
-                            if (this.scanMetadata.packagesByManager['pnpm']) {
-                                this.scanMetadata.packagesByManager['pnpm'].count++;
+                                currentPackage = null;
                             }
                         }
-                        currentPackage = null;
                     }
-                }
-                
-                // Также проверяем package.json для pnpm проектов
-                const packageJsonPath = path.join(packagePath, 'package.json');
-                try {
-                    const pkgContent = await this.getFileContent({ path: packageJsonPath, name: 'package.json' });
-                    if (pkgContent) {
-                        const packageJson = JSON.parse(pkgContent);
-                        
-                        const processDeps = (deps, scope) => {
-                            if (!deps) return;
+                    
+                    const packageJsonPath = path.join(packagePath, 'package.json');
+                    try {
+                        const pkgContent = await this.getFileContent({ path: packageJsonPath, name: 'package.json' });
+                        if (pkgContent) {
+                            const packageJson = JSON.parse(pkgContent);
                             
-                            for (const [name, version] of Object.entries(deps)) {
-                                if (!name) continue;
+                            const processDeps = (deps, scope) => {
+                                if (!deps) return;
                                 
-                                let cleanVersion = 'latest';
-                                if (version) {
-                                    cleanVersion = String(version).replace(/^[\^~]/, '').split(' ')[0];
-                                }
-                                
-                                const component = {
-                                    type: 'library',
-                                    name: String(name),
-                                    version: cleanVersion,
-                                    purl: `pkg:npm/${String(name)}@${cleanVersion}`,
-                                    properties: [
-                                        { name: 'src:scope', value: scope || 'runtime' },
-                                        { name: 'src:manager', value: 'pnpm' },
-                                        { name: 'src:path', value: packagePath }
-                                    ]
-                                };
-                                
-                                const added = this.addComponent(component);
-                                if (added && addedRoot && addedRoot["bom-ref"]) {
-                                    this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
+                                for (const [name, version] of Object.entries(deps)) {
+                                    if (!name) continue;
                                     
-                                    if (this.scanMetadata.packagesByManager['pnpm']) {
-                                        this.scanMetadata.packagesByManager['pnpm'].count++;
+                                    let cleanVersion = 'latest';
+                                    if (version) {
+                                        cleanVersion = String(version).replace(/^[\^~]/, '').split(' ')[0];
+                                    }
+                                    
+                                    const component = {
+                                        type: 'library',
+                                        name: String(name),
+                                        version: cleanVersion,
+                                        purl: `pkg:npm/${String(name)}@${cleanVersion}`,
+                                        properties: [
+                                            { name: 'src:scope', value: scope || 'runtime' },
+                                            { name: 'src:manager', value: 'yarn' },
+                                            { name: 'src:path', value: packagePath }
+                                        ]
+                                    };
+                                    
+                                    const added = this.addComponent(component);
+                                    if (added && addedRoot && addedRoot["bom-ref"]) {
+                                        this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
+                                        
+                                        if (this.scanMetadata.packagesByManager['yarn']) {
+                                            this.scanMetadata.packagesByManager['yarn'].count++;
+                                        }
                                     }
                                 }
-                            }
-                        };
-                        
-                        processDeps(packageJson.dependencies, 'runtime');
-                        processDeps(packageJson.devDependencies, 'development');
+                            };
+                            
+                            processDeps(packageJson.dependencies, 'runtime');
+                            processDeps(packageJson.devDependencies, 'development');
+                        }
+                    } catch (err) {
+                        // Игнорируем
                     }
+                    
                 } catch (err) {
                     // Игнорируем
                 }
-                
-            } catch (err) {
-                // Игнорируем
             }
+        } catch (error) {
+            // Игнорируем
         }
-    } catch (error) {
-        // Игнорируем
+        
+        return [];
     }
-    
-    return [];
-}
+
+    async analyzePnpm() {
+        try {
+            const pnpmLockFiles = await this.findFiles('pnpm-lock.yaml', '', 3);
+            
+            if (pnpmLockFiles.length === 0) {
+                return [];
+            }
+
+            for (const pnpmLockFile of pnpmLockFiles) {
+                try {
+                    const content = await this.getFileContent(pnpmLockFile);
+                    if (!content) continue;
+                    
+                    const packagePath = path.dirname(pnpmLockFile.path);
+                    const isRoot = packagePath === '.' || packagePath === '';
+                    
+                    const repoName = this.repoInfo && this.repoInfo.repo ? this.repoInfo.repo : 'unknown';
+                    const componentName = isRoot ? repoName : `${repoName}:${packagePath}`;
+                    
+                    const rootComponent = {
+                        type: 'application',
+                        name: componentName,
+                        version: '1.0.0',
+                        purl: `pkg:npm/${componentName}@1.0.0`,
+                        properties: [
+                            { name: 'src:type', value: isRoot ? 'root' : 'package' },
+                            { name: 'src:manager', value: 'pnpm' },
+                            { name: 'src:path', value: packagePath }
+                        ]
+                    };
+                    
+                    const addedRoot = this.addComponent(rootComponent);
+                    if (!addedRoot) continue;
+                    
+                    const lines = content.split('\n');
+                    let currentPackage = null;
+                    let inPackages = false;
+                    
+                    for (const line of lines) {
+                        const trimmed = line.trim();
+                        
+                        if (trimmed === 'packages:') {
+                            inPackages = true;
+                            continue;
+                        }
+                        
+                        if (inPackages && trimmed.match(/^[a-f0-9]+:$/)) {
+                            currentPackage = {};
+                            continue;
+                        }
+                        
+                        if (currentPackage && trimmed.startsWith('name:')) {
+                            const nameMatch = trimmed.match(/name:\s+(.+)/);
+                            if (nameMatch) {
+                                currentPackage.name = nameMatch[1].replace(/['"]/g, '');
+                            }
+                        }
+                        
+                        if (currentPackage && trimmed.startsWith('version:')) {
+                            const versionMatch = trimmed.match(/version:\s+(.+)/);
+                            if (versionMatch) {
+                                currentPackage.version = versionMatch[1].replace(/['"]/g, '');
+                            }
+                        }
+                        
+                        if (currentPackage && trimmed === '' && currentPackage.name && currentPackage.version) {
+                            const component = {
+                                type: 'library',
+                                name: currentPackage.name,
+                                version: currentPackage.version,
+                                purl: `pkg:npm/${currentPackage.name}@${currentPackage.version}`,
+                                properties: [
+                                    { name: 'src:manager', value: 'pnpm' },
+                                    { name: 'src:path', value: packagePath }
+                                ]
+                            };
+                            
+                            const added = this.addComponent(component);
+                            if (added && addedRoot && addedRoot["bom-ref"]) {
+                                this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
+                                
+                                if (this.scanMetadata.packagesByManager['pnpm']) {
+                                    this.scanMetadata.packagesByManager['pnpm'].count++;
+                                }
+                            }
+                            currentPackage = null;
+                        }
+                    }
+                    
+                    const packageJsonPath = path.join(packagePath, 'package.json');
+                    try {
+                        const pkgContent = await this.getFileContent({ path: packageJsonPath, name: 'package.json' });
+                        if (pkgContent) {
+                            const packageJson = JSON.parse(pkgContent);
+                            
+                            const processDeps = (deps, scope) => {
+                                if (!deps) return;
+                                
+                                for (const [name, version] of Object.entries(deps)) {
+                                    if (!name) continue;
+                                    
+                                    let cleanVersion = 'latest';
+                                    if (version) {
+                                        cleanVersion = String(version).replace(/^[\^~]/, '').split(' ')[0];
+                                    }
+                                    
+                                    const component = {
+                                        type: 'library',
+                                        name: String(name),
+                                        version: cleanVersion,
+                                        purl: `pkg:npm/${String(name)}@${cleanVersion}`,
+                                        properties: [
+                                            { name: 'src:scope', value: scope || 'runtime' },
+                                            { name: 'src:manager', value: 'pnpm' },
+                                            { name: 'src:path', value: packagePath }
+                                        ]
+                                    };
+                                    
+                                    const added = this.addComponent(component);
+                                    if (added && addedRoot && addedRoot["bom-ref"]) {
+                                        this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
+                                        
+                                        if (this.scanMetadata.packagesByManager['pnpm']) {
+                                            this.scanMetadata.packagesByManager['pnpm'].count++;
+                                        }
+                                    }
+                                }
+                            };
+                            
+                            processDeps(packageJson.dependencies, 'runtime');
+                            processDeps(packageJson.devDependencies, 'development');
+                        }
+                    } catch (err) {
+                        // Игнорируем
+                    }
+                    
+                } catch (err) {
+                    // Игнорируем
+                }
+            }
+        } catch (error) {
+            // Игнорируем
+        }
+        
+        return [];
+    }
+
     async analyzeNPM() {
         try {
             const packageJsonFiles = await this.findFiles('package.json', '', 4);
@@ -634,146 +628,131 @@ async analyzePnpm() {
         return [];
     }
 
-    // modules/sca/sca.js - обновите метод analyzePip
+    async analyzePip() {
+        try {
+            const requirementPatterns = [
+                'requirements.txt',
+                'requirements-dev.txt', 
+                'requirements-test.txt',
+                'requirements-docs.txt',
+                'requirements-prod.txt',
+                'dev-requirements.txt',
+                'test-requirements.txt',
+                'requirements-local.txt',
+                'requirements-dev-minimal.txt'
+            ];
+            
+            let allReqFiles = [];
+            
+            for (const pattern of requirementPatterns) {
+                const files = await this.findFiles(pattern, '', 3);
+                allReqFiles.push(...files);
+            }
+            
+            if (allReqFiles.length === 0) {
+                const pipfileFiles = await this.findFiles('Pipfile', '', 3);
+                const pyprojectFiles = await this.findFiles('pyproject.toml', '', 3);
+                allReqFiles.push(...pipfileFiles, ...pyprojectFiles);
+            }
+            
+            if (allReqFiles.length === 0) {
+                return [];
+            }
 
-async analyzePip() {
-    try {
-        // Ищем ВСЕ файлы с зависимостями
-        const requirementPatterns = [
-            'requirements.txt',
-            'requirements-dev.txt', 
-            'requirements-test.txt',
-            'requirements-docs.txt',
-            'requirements-prod.txt',
-            'dev-requirements.txt',
-            'test-requirements.txt',
-            'requirements-local.txt',
-            'requirements-dev-minimal.txt'
-        ];
-        
-        let allReqFiles = [];
-        
-        for (const pattern of requirementPatterns) {
-            const files = await this.findFiles(pattern, '', 3);
-            allReqFiles.push(...files);
-        }
-        
-        if (allReqFiles.length === 0) {
-            // Также ищем Pipfile и pyproject.toml
-            const pipfileFiles = await this.findFiles('Pipfile', '', 3);
-            const pyprojectFiles = await this.findFiles('pyproject.toml', '', 3);
-            allReqFiles.push(...pipfileFiles, ...pyprojectFiles);
-        }
-        
-        if (allReqFiles.length === 0) {
-            return [];
-        }
-
-        for (const file of allReqFiles) {
-            try {
-                const content = await this.getFileContent(file);
-                if (!content) continue;
-                
-                const packagePath = path.dirname(file.path);
-                const repoName = this.repoInfo && this.repoInfo.repo ? this.repoInfo.repo : 'unknown';
-                
-                // Определяем тип файла (dev, test, docs, prod)
-                let fileType = 'runtime';
-                const fileName = file.name.toLowerCase();
-                if (fileName.includes('dev') || fileName.includes('development')) {
-                    fileType = 'development';
-                } else if (fileName.includes('test')) {
-                    fileType = 'test';
-                } else if (fileName.includes('doc')) {
-                    fileType = 'documentation';
-                } else if (fileName.includes('prod')) {
-                    fileType = 'production';
-                }
-                
-                const rootComponent = {
-                    type: 'application',
-                    name: `${repoName}:${packagePath}`,
-                    version: '1.0.0',
-                    purl: `pkg:pypi/${repoName}`,
-                    properties: [
-                        { name: 'src:type', value: 'package' },
-                        { name: 'src:manager', value: 'pip' },
-                        { name: 'src:path', value: packagePath },
-                        { name: 'src:file', value: file.name },
-                        { name: 'src:fileType', value: fileType }
-                    ]
-                };
-                
-                const addedRoot = this.addComponent(rootComponent);
-                if (!addedRoot) continue;
-                
-                const lines = content.split('\n');
-                let depCount = 0;
-                
-                for (const line of lines) {
-                    const trimmed = line.trim();
-                    if (!trimmed || trimmed.startsWith('#')) continue;
+            for (const file of allReqFiles) {
+                try {
+                    const content = await this.getFileContent(file);
+                    if (!content) continue;
                     
-                    // Поддерживаем разные форматы:
-                    // package==1.0.0
-                    // package>=1.0.0
-                    // package<=1.0.0
-                    // package~=1.0.0
-                    // package
-                    const match = trimmed.match(/^([a-zA-Z0-9_\-\.]+)(?:[=<>!~]=|@|>|<|~=)\s*(.+)$/) ||
-                                trimmed.match(/^([a-zA-Z0-9_\-\.]+)==(.+)$/) ||
-                                trimmed.match(/^([a-zA-Z0-9_\-\.]+)$/);
+                    const packagePath = path.dirname(file.path);
+                    const repoName = this.repoInfo && this.repoInfo.repo ? this.repoInfo.repo : 'unknown';
                     
-                    if (match) {
-                        const name = match[1];
-                        let version = match[2] || 'latest';
+                    let fileType = 'runtime';
+                    const fileName = file.name.toLowerCase();
+                    if (fileName.includes('dev') || fileName.includes('development')) {
+                        fileType = 'development';
+                    } else if (fileName.includes('test')) {
+                        fileType = 'test';
+                    } else if (fileName.includes('doc')) {
+                        fileType = 'documentation';
+                    } else if (fileName.includes('prod')) {
+                        fileType = 'production';
+                    }
+                    
+                    const rootComponent = {
+                        type: 'application',
+                        name: `${repoName}:${packagePath}`,
+                        version: '1.0.0',
+                        purl: `pkg:pypi/${repoName}`,
+                        properties: [
+                            { name: 'src:type', value: 'package' },
+                            { name: 'src:manager', value: 'pip' },
+                            { name: 'src:path', value: packagePath },
+                            { name: 'src:file', value: file.name },
+                            { name: 'src:fileType', value: fileType }
+                        ]
+                    };
+                    
+                    const addedRoot = this.addComponent(rootComponent);
+                    if (!addedRoot) continue;
+                    
+                    const lines = content.split('\n');
+                    let depCount = 0;
+                    
+                    for (const line of lines) {
+                        const trimmed = line.trim();
+                        if (!trimmed || trimmed.startsWith('#')) continue;
                         
-                        // Очищаем версию от комментариев
-                        const commentIndex = version.indexOf('#');
-                        if (commentIndex !== -1) {
-                            version = version.substring(0, commentIndex).trim();
-                        }
+                        const match = trimmed.match(/^([a-zA-Z0-9_\-\.]+)(?:[=<>!~]=|@|>|<|~=)\s*(.+)$/) ||
+                                    trimmed.match(/^([a-zA-Z0-9_\-\.]+)==(.+)$/) ||
+                                    trimmed.match(/^([a-zA-Z0-9_\-\.]+)$/);
                         
-                        if (!name) continue;
-                        
-                        const component = {
-                            type: 'library',
-                            name: String(name),
-                            version: String(version).replace(/['"]/g, ''),
-                            purl: `pkg:pypi/${String(name).toLowerCase()}@${String(version).replace(/['"]/g, '')}`,
-                            properties: [
-                                { name: 'src:manager', value: 'pip' },
-                                { name: 'src:file', value: file.name },
-                                { name: 'src:fileType', value: fileType },
-                                { name: 'src:path', value: packagePath }
-                            ]
-                        };
+                        if (match) {
+                            const name = match[1];
+                            let version = match[2] || 'latest';
+                            
+                            const commentIndex = version.indexOf('#');
+                            if (commentIndex !== -1) {
+                                version = version.substring(0, commentIndex).trim();
+                            }
+                            
+                            if (!name) continue;
+                            
+                            const component = {
+                                type: 'library',
+                                name: String(name),
+                                version: String(version).replace(/['"]/g, ''),
+                                purl: `pkg:pypi/${String(name).toLowerCase()}@${String(version).replace(/['"]/g, '')}`,
+                                properties: [
+                                    { name: 'src:manager', value: 'pip' },
+                                    { name: 'src:file', value: file.name },
+                                    { name: 'src:fileType', value: fileType },
+                                    { name: 'src:path', value: packagePath }
+                                ]
+                            };
 
-                        const added = this.addComponent(component);
-                        if (added && addedRoot && addedRoot["bom-ref"]) {
-                            this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
-                            depCount++;
+                            const added = this.addComponent(component);
+                            if (added && addedRoot && addedRoot["bom-ref"]) {
+                                this.addDependency(addedRoot["bom-ref"], added["bom-ref"]);
+                                depCount++;
+                            }
                         }
                     }
+                    
+                    if (this.scanMetadata.packagesByManager['pip']) {
+                        this.scanMetadata.packagesByManager['pip'].count += depCount;
+                    }
+                    
+                } catch (err) {
+                    console.warn(`⚠️ Ошибка парсинга ${file.name}:`, err.message);
                 }
-                
-                if (this.scanMetadata.packagesByManager['pip']) {
-                    this.scanMetadata.packagesByManager['pip'].count += depCount;
-                }
-                
-                console.log(`📦 ${file.name}: найдено ${depCount} зависимостей (${fileType})`);
-                
-            } catch (err) {
-                // Игнорируем ошибки парсинга
-                console.warn(`⚠️ Ошибка парсинга ${file.name}:`, err.message);
             }
+        } catch (error) {
+            console.warn('Ошибка анализа pip:', error.message);
         }
-    } catch (error) {
-        console.warn('Ошибка анализа pip:', error.message);
+        
+        return [];
     }
-    
-    return [];
-}
 
     async analyzeGo() {
         try {
@@ -1346,7 +1325,7 @@ async analyzePip() {
         return vulnerabilities;
     }
 
-  async getDetails(vulnId) {
+    async getDetails(vulnId) {
 
         let vuln = await this.makeRequest('api.osv.dev', `/v1/vulns/${encodeURIComponent(vulnId)}`, 'GET')
         
@@ -1455,7 +1434,6 @@ async analyzePip() {
             const dependencies = this.buildDependencyGraph();
             const vulnerabilities = await this.checkVulnerabilitiesOSV();
             
-            // Статистика по уязвимостям
             const vulnerabilityStats = {
                 total: vulnerabilities.length,
                 critical: vulnerabilities.filter(v => v.vulnerability.severity === 'CRITICAL').length,
@@ -1465,7 +1443,6 @@ async analyzePip() {
                 unknown: vulnerabilities.filter(v => v.vulnerability.severity === 'UNKNOWN').length
             };
 
-            // Компоненты, сгруппированные по типу
             const rootComponents = allComponents.filter(c => 
                 c && c.properties?.some(p => p.name === 'src:type' && (p.value === 'root' || p.value === 'package'))
             );
@@ -1474,7 +1451,6 @@ async analyzePip() {
                 c && !c.properties?.some(p => p.name === 'src:type' && (p.value === 'root' || p.value === 'package'))
             );
 
-            // Формируем расширенный SBOM в формате CycloneDX 1.6
             const sbom = {
                 $schema: "http://cyclonedx.org/schema/bom-1.6.schema.json",
                 bomFormat: "CycloneDX",
@@ -1536,7 +1512,6 @@ async analyzePip() {
                 dependencies: dependencies || []
             };
 
-            // Формируем массив свойств метаданных
             const metadataProps = [
                 {
                     name: "scan:summary:totalComponents",
@@ -1580,7 +1555,6 @@ async analyzePip() {
                 }
             ];
 
-            // Добавляем информацию о менеджерах пакетов
             for (const [manager, data] of Object.entries(this.scanMetadata.packagesByManager)) {
                 metadataProps.push({
                     name: `scan:packages:${manager}`,
@@ -1588,7 +1562,6 @@ async analyzePip() {
                 });
             }
 
-            // Добавляем информацию о рисках
             const riskLevel = this.calculateRiskLevel(vulnerabilityStats);
             metadataProps.push({
                 name: "scan:risk:level",
@@ -1597,7 +1570,6 @@ async analyzePip() {
 
             sbom.metadata.properties = metadataProps;
 
-            // Добавляем информацию об уязвимостях в формате CycloneDX 1.6
             if (vulnerabilities && vulnerabilities.length > 0) {
                 sbom.vulnerabilities = vulnerabilities.map(v => ({
                     "bom-ref": v.bomRef,
@@ -1656,7 +1628,6 @@ async analyzePip() {
                 }));
             }
 
-            // Добавляем рекомендации
             const recommendations = this.generateCycloneDXRecommendations(vulnerabilityStats, vulnerabilities);
             if (recommendations && recommendations.length > 0) {
                 if (!sbom.annotations) {
@@ -1706,11 +1677,11 @@ class LocalSBOMAnalyzer extends BaseSBOMAnalyzer {
             repo: path.basename(cleanPath),
             baseUrl: 'file'
         };
-       // console.log(`📁 Локальный анализатор: ${this.localPath}`);
+        // Устанавливаем временную директорию
+        this.tempDir = cleanPath;
     }
 
     async makeRequest(hostname, path, method = 'GET', body = null, headers = {}) {
-        // Для локального анализатора используем fetch для OSV API
         const url = `https://${hostname}${path}`;
         
         try {
@@ -2245,9 +2216,8 @@ function createAnalyzer(repoUrl, options = {}) {
 
     const urlLower = repoUrl.toLowerCase();
     
-    // ДОБАВЛЯЕМ ОБРАБОТКУ ЛОКАЛЬНОГО ПУТИ
+    // Обработка локального пути
     if (repoUrl.startsWith('file://') || repoUrl.startsWith('/') || repoUrl.match(/^[A-Za-z]:\\/)) {
-        //console.log(`📁 Обнаружен локальный путь: ${repoUrl}`);
         return new LocalSBOMAnalyzer(repoUrl, options);
     }
     
@@ -2276,12 +2246,12 @@ function createAnalyzer(repoUrl, options = {}) {
 // ==================== ФУНКЦИИ ЗАПУСКА ====================
 
 export async function analyzeRepository(repoUrl, outputName = null, options = {}) {
-    console.log(`\nАнализ репозитория: ${repoUrl}`);
-    console.log('========================================\n');
+
+    
+    let analyzer = null;
     
     try {
-        const analyzer = createAnalyzer(repoUrl, options);
-        console.log(`Тип анализатора: ${analyzer.constructor.name}`);
+        analyzer = createAnalyzer(repoUrl, options);
         
         const sbom = await analyzer.generateSBOM();
         
@@ -2290,6 +2260,10 @@ export async function analyzeRepository(repoUrl, outputName = null, options = {}
     } catch (error) {
         console.error('\nОшибка анализа:', error.message);
         throw error;
+    } finally {
+        if (analyzer && analyzer.cleanupTempDir) {
+            await analyzer.cleanupTempDir();
+        }
     }
 }
 

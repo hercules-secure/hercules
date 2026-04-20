@@ -39,14 +39,14 @@ const extractor = new ArchiveExtractor({
 });
 
 // ======================
-// ФУНКЦИИ ДЛЯ РАСПАКОВКИ АРХИВОВ
+// ФУНКЦИИ ДЛЯ РАСПАКОВКИ АРХИВОВ - временно тут
 // ======================
 
 async function extractZip(zipPath, extractDir) {
     try {
         const zip = new AdmZip(zipPath);
         zip.extractAllTo(extractDir, true);
-        console.log(`✅ ZIP распакован в: ${extractDir}, файлов: ${zip.getEntries().length}`);
+
     } catch (error) {
         console.error('Ошибка распаковки ZIP:', error);
         throw new Error(`Не удалось распаковать ZIP: ${error.message}`);
@@ -54,11 +54,10 @@ async function extractZip(zipPath, extractDir) {
 }
 
 async function extractTar(tarPath, extractDir) {
-    console.log(`📦 Распаковка TAR: ${tarPath} -> ${extractDir}`);
-    await execAsync(`tar -xzf "${tarPath}" -C "${extractDir}"`);
-    console.log(`✅ TAR распакован`);
-}
 
+    await execAsync(`tar -xzf "${tarPath}" -C "${extractDir}"`);
+   
+}
 
 // server.js - исправленная функция extractArchive
 async function extractArchive(archivePath, originalName, extractDir) {
@@ -67,14 +66,9 @@ async function extractArchive(archivePath, originalName, extractDir) {
     // Проверяем по оригинальному имени файла
     const fileName = originalName.toLowerCase();
     
-    console.log(`📂 Анализ файла: ${fileName}`);
-    console.log(`📂 Путь к временному файлу: ${archivePath}`);
-    
     const isZip = fileName.endsWith('.zip');
     const isTarGz = fileName.endsWith('.tar.gz') || fileName.endsWith('.tgz');
     const isTar = fileName.endsWith('.tar');
-    
-    console.log(`   isZip: ${isZip}, isTarGz: ${isTarGz}, isTar: ${isTar}`);
     
     if (isZip) {
         await extractZip(archivePath, extractDir);
@@ -318,8 +312,6 @@ app.post('/api/sca/upload', uploadSCA.single('archive'), async (req, res) => {
                 message: 'Файл не загружен'
             });
         }
-
-        //console.log(`📦 Получен архив: ${req.file.originalname} (${(req.file.size / 1024 / 1024).toFixed(2)} MB)`);
         
         // Создаем директорию для распаковки
         const extractId = uuidv4();
