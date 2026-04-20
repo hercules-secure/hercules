@@ -1,7 +1,7 @@
 {
   "name": "Hercules Security Rules",
   "version": "2.0.0",
-  "description": "Унифицированные правила безопасности для всех продуктов Hercules",
+  "description": "Список публичных правил",
   "rules": [
     {
       "id": "hardcoded-credentials",

@@ -24,6 +24,9 @@ EXCLUDE_FILES=(
     "samm.html"
     "learn.html"
     "designer.html"
+    "burp.json"
+    "config-rules.json"
+    "go-rules.json"
 )
 
 # Папки для исключения
