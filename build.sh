@@ -49,6 +49,7 @@ EXCLUDE_DIRS=(
     "extracted"
     "storage"
     "uploads"
+    "logs"
 )
 
 # Версия и режим
