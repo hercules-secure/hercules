@@ -1,6 +1,10 @@
+// ========== МЕТОДЫ ДЛЯ ВЫЗОВА API ==========
 
+/**
+ * Загрузка архива по ссылке на репозиторий
+ */
 async function fetchArchiveFromUrl(url, branch = null) {
-  
+   
     const payload = { url };
     if (branch) payload.branch = branch;
 
@@ -21,9 +25,10 @@ async function fetchArchiveFromUrl(url, branch = null) {
     return data.archive;
 }
 
-
+/**
+ * Загрузка архива файлом
+ */
 async function uploadArchive(file) {
-    
     const formData = new FormData();
     formData.append('archive', file);
 
@@ -40,7 +45,7 @@ async function uploadArchive(file) {
     const data = await response.json();
     
     if (!data.archive || !data.archive.id) {
-        alert('Некорректный ответ сервера:', data);
+        console.error('Некорректный ответ сервера:', data);
         throw new Error('Сервер вернул некорректные данные');
     }
     
@@ -68,13 +73,6 @@ async function deleteArchive(archiveId) {
     }
 
     return await response.json();
-}
-
-function setActiveTool(element, toolName) {
-    document.querySelectorAll('.tool-item').forEach(item => {
-        item.classList.remove('active');
-    });
-    element.classList.add('active');
 }
 
 function showToolNotification(message) {
@@ -108,47 +106,27 @@ function showToolNotification(message) {
     }, 2000);
 }
 
-// Переключение между режимами
-window.switchMode = function(mode) {
-    const uploadMode = document.getElementById('upload-mode');
-    const urlMode = document.getElementById('url-mode');
-    const modeUploadBtn = document.getElementById('mode-upload');
-    const modeUrlBtn = document.getElementById('mode-url');
-    
-    if (mode === 'upload') {
-        uploadMode.style.display = 'block';
-        urlMode.style.display = 'none';
-        modeUploadBtn.classList.add('active');
-        modeUrlBtn.classList.remove('active');
-        window.herculesApp.currentMode = 'upload';
-    } else {
-        uploadMode.style.display = 'none';
-        urlMode.style.display = 'block';
-        modeUrlBtn.classList.add('active');
-        modeUploadBtn.classList.remove('active');
-        window.herculesApp.currentMode = 'url';
-    }
-    
-    // Сбрасываем кнопку анализа
-    window.herculesApp?.resetAnalysis();
-};
-
 // Удаление выбранного файла
 window.removeFile = function() {
     const fileInput = document.getElementById('fileInput');
     const fileInfo = document.getElementById('fileInfo');
     const startBtn = document.getElementById('start-btn');
     
-    fileInput.value = '';
-    fileInfo.classList.remove('active');
-    startBtn.disabled = true;
-    startBtn.classList.remove('active');
-    window.herculesApp.selectedFile = null;
+    if (fileInput) fileInput.value = '';
+    if (fileInfo) fileInfo.classList.remove('active');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.classList.remove('active');
+    }
+    if (window.herculesApp) {
+        window.herculesApp.selectedFile = null;
+    }
 };
 
 // Основная логика
 class HerculesMainApp {
     constructor() {
+        
         this.repoInput = document.getElementById('repo');
         this.startButton = document.getElementById('start-btn');
         this.urlValidation = document.getElementById('url-validation');
@@ -160,7 +138,8 @@ class HerculesMainApp {
         this.fetchRepoBtn = document.getElementById('fetch-repo-btn');
         
         this.selectedFile = null;
-        this.currentMode = 'upload';
+        this.currentMode = 'url'; // По умолчанию режим URL
+        this.isUrlLocked = false; // Флаг блокировки поля ввода
         
         this.init();
     }
@@ -171,20 +150,18 @@ class HerculesMainApp {
     }
 
     setupEventListeners() {
-        // Обработчики для загрузки файла
         if (this.uploadArea) {
-            this.uploadArea.addEventListener('click', () => this.fileInput.click());
+            this.uploadArea.addEventListener('click', () => this.fileInput?.click());
         }
 
         if (this.fileInput) {
             this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
         }
 
-        // Обработчики для URL режима
         if (this.repoInput) {
             this.repoInput.addEventListener('input', (e) => this.validateURL(e));
             this.repoInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter' && this.startButton.classList.contains('active')) {
+                if (e.key === 'Enter' && this.startButton?.classList.contains('active')) {
                     this.startAnalysis();
                 }
             });
@@ -200,6 +177,8 @@ class HerculesMainApp {
     }
 
     setupDragAndDrop() {
+        if (!this.uploadArea) return;
+        
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             this.uploadArea.addEventListener(eventName, (e) => {
                 e.preventDefault();
@@ -232,13 +211,12 @@ class HerculesMainApp {
     }
 
     handleFile(file) {
-        // Проверка размера (100 МБ)
+        
         if (file.size > 100 * 1024 * 1024) {
             showToolNotification('Файл слишком большой (макс. 100 МБ)');
             return;
         }
 
-        // Проверка расширения
         const validExtensions = ['.zip', '.tar', '.gz', '.tgz', '.7z'];
         const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
         
@@ -248,16 +226,17 @@ class HerculesMainApp {
         }
 
         this.selectedFile = file;
-        this.fileName.textContent = file.name;
-        this.fileSize.textContent = this.formatFileSize(file.size);
-        this.fileInfo.classList.add('active');
-        
-        // Активируем кнопку анализа
-        this.startButton.disabled = false;
-        this.startButton.classList.add('active');
-        
-        // Переключаемся в режим загрузки
         this.currentMode = 'upload';
+        
+        if (this.fileName) this.fileName.textContent = file.name;
+        if (this.fileSize) this.fileSize.textContent = this.formatFileSize(file.size);
+        if (this.fileInfo) this.fileInfo.classList.add('active');
+        
+        if (this.startButton) {
+            this.startButton.disabled = false;
+            this.startButton.classList.add('active');
+        }
+        
         showToolNotification(`Выбран файл: ${file.name}`);
     }
 
@@ -267,12 +246,9 @@ class HerculesMainApp {
         return (bytes / (1024 * 1024)).toFixed(1) + ' МБ';
     }
 
-    // Упрощенная проверка URL
     isValidRepositoryUrl(url) {
         if (!url) return false;
         
-        // Простая проверка: должен содержать http:// или https://
-        // и быть похожим на Git репозиторий
         const isValid = (
             (url.startsWith('http://') || url.startsWith('https://')) &&
             (url.includes('github.com') || url.includes('gitlab') || url.includes('.git'))
@@ -282,15 +258,17 @@ class HerculesMainApp {
     }
 
     async fetchRepoArchive() {
-        const url = this.repoInput.value.trim();
+        const url = this.repoInput?.value.trim();
         
-        if (!this.isValidRepositoryUrl(url)) {
+        if (!url || !this.isValidRepositoryUrl(url)) {
             this.showValidationMessage('Введите корректную ссылку на репозиторий', 'invalid');
             return;
         }
 
-        this.fetchRepoBtn.disabled = true;
-        this.fetchRepoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+        if (this.fetchRepoBtn) {
+            this.fetchRepoBtn.disabled = true;
+            this.fetchRepoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+        }
 
         try {
             const response = await fetch('/api/sast/url', {
@@ -308,21 +286,38 @@ class HerculesMainApp {
 
             const data = await response.json();
             
-            // Показываем информацию о загруженном архиве
-            this.fileName.textContent = data.archive.filename;
-            this.fileSize.textContent = this.formatFileSize(data.archive.size);
-            this.fileInfo.classList.add('active');
+            // Блокируем поле ввода
+            this.isUrlLocked = true;
+            if (this.repoInput) {
+                this.repoInput.disabled = true;
+                this.repoInput.style.backgroundColor = '#f3f4f6';
+                this.repoInput.style.opacity = '0.7';
+            }
+            if (this.fetchRepoBtn) {
+                this.fetchRepoBtn.disabled = true;
+                this.fetchRepoBtn.style.opacity = '0.5';
+            }
             
-            this.startButton.disabled = false;
-            this.startButton.classList.add('active');
+            if (this.fileName) this.fileName.textContent = data.archive.filename;
+            if (this.fileSize) this.fileSize.textContent = this.formatFileSize(data.archive.size);
+            if (this.fileInfo) this.fileInfo.classList.add('active');
+            
+            if (this.startButton) {
+                this.startButton.disabled = false;
+                this.startButton.classList.add('active');
+            }
+            
+            // Сохраняем ID архива для анализа
+            this.currentArchiveId = data.archive.id;
             
             showToolNotification('Архив успешно загружен');
         } catch (error) {
-            // Показываем специальное сообщение о недоступности репозитория
             this.showRepositoryUnavailableMessage(url);
         } finally {
-            this.fetchRepoBtn.disabled = false;
-            this.fetchRepoBtn.innerHTML = 'Скачать архив';
+            if (this.fetchRepoBtn) {
+                this.fetchRepoBtn.disabled = false;
+                this.fetchRepoBtn.innerHTML = 'Скачать архив';
+            }
         }
     }
 
@@ -400,23 +395,6 @@ class HerculesMainApp {
                 </div>
                 
                 <div style="display: flex; gap: clamp(8px, 2vw, 12px); justify-content: center; flex-wrap: wrap;">
-                    <button id="switch-to-upload-btn" style="
-                        background: #10b981;
-                        color: white;
-                        border: none;
-                        padding: clamp(10px, 2.5vw, 14px) clamp(16px, 4vw, 24px);
-                        border-radius: 8px;
-                        font-family: 'Ubuntu', sans-serif;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        font-size: clamp(12px, 3vw, 14px);
-                        flex: 1;
-                        min-width: 140px;
-                    ">
-                        <i class="fas fa-upload" style="margin-right: 8px;"></i>
-                        Загрузить архив
-                    </button>
                     <button id="close-unavailable-btn" style="
                         background: #6b7280;
                         color: white;
@@ -438,18 +416,6 @@ class HerculesMainApp {
 
         document.body.appendChild(overlay);
 
-        // Обработчик для переключения на режим загрузки
-        const switchBtn = overlay.querySelector('#switch-to-upload-btn');
-        if (switchBtn) {
-            switchBtn.addEventListener('click', () => {
-                overlay.remove();
-                // Переключаем на режим загрузки файла
-                window.switchMode('upload');
-                showToolNotification('Выберите архив для загрузки');
-            });
-        }
-
-        // Обработчик закрытия
         const closeBtn = overlay.querySelector('#close-unavailable-btn');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
@@ -458,7 +424,6 @@ class HerculesMainApp {
             });
         }
 
-        // Закрытие по клику на оверлей
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) {
                 overlay.style.opacity = '0';
@@ -467,9 +432,11 @@ class HerculesMainApp {
         });
     }
 
-    // Упрощенная валидация URL
     validateURL(e) {
-        const url = this.repoInput.value.trim();
+        // Если поле заблокировано, не проверяем
+        if (this.isUrlLocked) return;
+        
+        const url = this.repoInput?.value.trim();
         
         if (!url) {
             this.setButtonState(false);
@@ -477,10 +444,7 @@ class HerculesMainApp {
             return;
         }
 
-        const isValid = (
-            (url.startsWith('http://') || url.startsWith('https://')) &&
-            (url.includes('github.com') || url.includes('gitlab') || url.includes('.git'))
-        );
+        const isValid = this.isValidRepositoryUrl(url);
         
         if (!isValid) {
             this.setButtonState(false);
@@ -492,6 +456,8 @@ class HerculesMainApp {
     }
 
     setButtonState(enabled) {
+        if (!this.startButton) return;
+        
         if (enabled) {
             this.startButton.disabled = false;
             this.startButton.classList.add('active');
@@ -512,63 +478,78 @@ class HerculesMainApp {
         }
     }
 
- async startAnalysis() {
-    if (!this.startButton.classList.contains('active')) {
-        return;
-    }
+    async startAnalysis() {
+        
+        if (!this.startButton?.classList.contains('active')) {
+            return;
+        }
 
-    const originalText = this.startButton.textContent;
-    
-    this.startButton.textContent = 'Анализ запущен...';
-    this.startButton.disabled = true;
+        const originalText = this.startButton.textContent;
+        
+        this.startButton.textContent = 'Анализ запущен...';
+        this.startButton.disabled = true;
 
-    try {
-        // Задача 1.1 - Получение архива
-        this.updateTaskStatus('1.1', 'in-progress');
-        this.animateProgress('1.1', 100, 3000, async () => {
+        try {
+            this.updateTaskStatus('1.1', 'in-progress');
             
-            let archiveData = null;
+            let archiveId = null;
             
             try {
-                // Загрузка архива в зависимости от режима
-                if (this.currentMode === 'url') {
-                    const url = this.repoInput.value.trim();
-                    if (!url) throw new Error('Введите ссылку на репозиторий');
-                    archiveData = await fetchArchiveFromUrl(url);
-                } else {
-                    if (!this.selectedFile) throw new Error('Выберите файл для загрузки');
-                    archiveData = await uploadArchive(this.selectedFile);
+                // Если есть загруженный через URL архив
+                if (this.currentArchiveId) {
+
+                    archiveId = this.currentArchiveId;
+                } 
+                // Если выбран файл
+                else if (this.selectedFile) {
+
+                    const archiveData = await uploadArchive(this.selectedFile);
+                    archiveId = archiveData.id;
+                } 
+                // Если введена ссылка
+                else {
+                    const url = this.repoInput?.value.trim();
+                    if (!url) throw new Error('Введите ссылку на репозиторий или выберите файл');
+                    const archiveData = await fetchArchiveFromUrl(url);
+                    archiveId = archiveData.id;
+                    
+                    // Блокируем поле ввода после успешной загрузки
+                    this.isUrlLocked = true;
+                    if (this.repoInput) {
+                        this.repoInput.disabled = true;
+                        this.repoInput.style.backgroundColor = '#f3f4f6';
+                        this.repoInput.style.opacity = '0.7';
+                    }
+                    if (this.fetchRepoBtn) {
+                        this.fetchRepoBtn.disabled = true;
+                        this.fetchRepoBtn.style.opacity = '0.5';
+                    }
+                    
+                    if (this.fileName) this.fileName.textContent = archiveData.filename;
+                    if (this.fileSize) this.fileSize.textContent = this.formatFileSize(archiveData.size);
+                    if (this.fileInfo) this.fileInfo.classList.add('active');
                 }
 
-                // ВАЖНО: Проверяем, что архив загружен и имеет ID
-                if (!archiveData) {
-                    throw new Error('Не удалось загрузить архив');
+                if (!archiveId) {
+                    throw new Error('Не удалось получить ID архива');
                 }
-                
-                if (!archiveData.id) {
-                    throw new Error('Архив загружен, но ID не получен');
-                }
-                
-                // Завершаем задачу 1.1
+
                 this.updateTaskStatus('1.1', 'completed');
 
-                // Задача 2.1 и 2.2 - Распаковка и анализ
                 this.updateTaskStatus('2.1', 'in-progress');
                 this.updateTaskStatus('2.2', 'in-progress');
                 
-                // Запускаем SAST анализ с полученным ID
-                const sastResults = await this.runSASTAnalysis(archiveData.id);
+                const sastResults = await this.runSASTAnalysis(archiveId);
                 
                 this.updateTaskStatus('2.1', 'completed');
                 this.updateTaskStatus('2.2', 'completed');
                 this.startButton.textContent = 'Анализ завершен';
                 
-                // Показываем результаты в POPUP окне
                 this.showSASTResultsPopup(sastResults);
                 showToolNotification('Анализ успешно завершен');
 
             } catch (error) {
-                alert('Произошла ошибка:');
+                console.error('❌ Ошибка:', error);
                 this.updateTaskStatus('1.1', 'pending');
                 this.updateTaskStatus('2.1', 'pending');
                 this.updateTaskStatus('2.2', 'pending');
@@ -576,58 +557,176 @@ class HerculesMainApp {
                 showToolNotification(error.message || 'Ошибка при анализе');
                 this.resetButton(originalText);
             }
-        });
 
-    } catch (error) {
-        showToolNotification('Ошибка при анализе');
-        this.resetButton(originalText);
+        } catch (error) {
+            console.error('❌ Ошибка в startAnalysis:', error);
+            showToolNotification('Ошибка при анализе');
+            this.resetButton(originalText);
+        }
     }
-}
 
-async runSASTAnalysis(archiveId) {
-
-    if (!archiveId || archiveId === 'undefined' || archiveId === 'null') {
-        throw new Error(`Неверный ID архива: ${archiveId}`);
-    }
-    
-    this.animateProgress('2.1', 50, 1000, () => {});
-    this.animateProgress('2.2', 30, 1000, () => {});
-
-    try {
-        const response = await fetch(`/api/sast/analyze/${archiveId}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                rulesPath: null
-            })
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('❌ Детали ошибки:', errorData);
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    async runSASTAnalysis(archiveId) {
+        if (!archiveId || archiveId === 'undefined' || archiveId === 'null') {
+            throw new Error(`Неверный ID архива: ${archiveId}`);
         }
 
-        const data = await response.json();
+        try {
+            const response = await fetch(`/api/sast/analyze/${archiveId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    rulesPath: null
+                })
+            });
 
-        this.animateProgress('2.1', 100, 500, () => {});
-        this.animateProgress('2.2', 100, 500, () => {});
-        
-        return data.results;
-        
-    } catch (error) {
-        console.error('❌ Ошибка в runSASTAnalysis:', error);
-        throw error;
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.error('❌ Детали ошибки:', errorData);
+                throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            return data.results;
+            
+        } catch (error) {
+            console.error('❌ Ошибка в runSASTAnalysis:', error);
+            throw error;
+        }
     }
-}
+
+    updateTaskStatus(taskId, status) {
+        const statusMap = {
+            'pending': 'В ожидании',
+            'in-progress': 'В работе',
+            'completed': 'Завершено'
+        };
+        
+        const taskElement = this.findTaskElement(taskId);
+        if (taskElement) {
+            const statusElement = taskElement.querySelector('.task-status');
+            if (statusElement) {
+                statusElement.textContent = statusMap[status] || status;
+                statusElement.className = `task-status ${status}`;
+            }
+            const progressElement = taskElement.querySelector('.progress');
+            if (progressElement) {
+                if (status === 'completed') {
+                    progressElement.style.width = '100%';
+                } else if (status === 'in-progress') {
+                    progressElement.style.width = '50%';
+                } else if (status === 'pending') {
+                    progressElement.style.width = '0%';
+                }
+            }
+        } else {
+            console.warn(`⚠️ Элемент задачи ${taskId} не найден`);
+        }
+    }
+
+    findTaskElement(taskId) {
+        const parts = taskId.split('.');
+        const sectionIndex = parseInt(parts[0]) - 1;
+        const taskIndex = parseInt(parts[1]) - 1;
+        
+        const sections = document.querySelectorAll('.card-section');
+        if (sectionIndex >= sections.length) return null;
+        
+        const cards = sections[sectionIndex].querySelectorAll('.card');
+        if (taskIndex >= cards.length) return null;
+        
+        return cards[taskIndex];
+    }
+
+    resetButton(originalText) {
+        if (!this.startButton) return;
+        this.startButton.textContent = originalText;
+        this.startButton.disabled = false;
+        this.startButton.classList.add('active');
+    }
+
+    resetAnalysis() {
+        this.selectedFile = null;
+        this.currentArchiveId = null;
+        
+        if (this.fileInfo) {
+            this.fileInfo.classList.remove('active');
+        }
+        if (this.fileInput) {
+            this.fileInput.value = '';
+        }
+        if (this.repoInput && !this.isUrlLocked) {
+            this.repoInput.value = '';
+            this.showValidationMessage('', '');
+        }
+        
+        if (this.startButton) {
+            this.startButton.disabled = true;
+            this.startButton.classList.remove('active');
+        }
+        
+        ['1.1', '2.1', '2.2'].forEach(taskId => {
+            this.updateTaskStatus(taskId, 'pending');
+            const taskElement = this.findTaskElement(taskId);
+            if (taskElement) {
+                const progressElement = taskElement.querySelector('.progress');
+                if (progressElement) {
+                    progressElement.style.width = '0%';
+                }
+            }
+        });
+    }
+
+    fullReset() {
+        this.selectedFile = null;
+        this.currentArchiveId = null;
+        this.isUrlLocked = false;
+        
+        // Разблокируем поле ввода
+        if (this.repoInput) {
+            this.repoInput.disabled = false;
+            this.repoInput.style.backgroundColor = '';
+            this.repoInput.style.opacity = '';
+            this.repoInput.value = '';
+        }
+        if (this.fetchRepoBtn) {
+            this.fetchRepoBtn.disabled = false;
+            this.fetchRepoBtn.style.opacity = '';
+        }
+        
+        this.updateTaskStatus('1.1', 'pending');
+        this.updateTaskStatus('2.1', 'pending');
+        this.updateTaskStatus('2.2', 'pending');
+        
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            const progressEl = card.querySelector('.progress');
+            if (progressEl) {
+                progressEl.style.width = '0%';
+            }
+        });
+        
+        if (this.startButton) {
+            this.startButton.textContent = 'Начать анализ';
+            this.startButton.disabled = true;
+            this.startButton.classList.remove('active');
+        }
+        
+        if (this.fileInfo) {
+            this.fileInfo.classList.remove('active');
+        }
+        if (this.fileInput) {
+            this.fileInput.value = '';
+        }
+        
+        this.showValidationMessage('', '');
+    }
 
     loadResultsFromStorage() {
         const saved = localStorage.getItem('sast-results');
-        if (!saved) {
-            return null;
-        }
+        if (!saved) return null;
         
         try {
             return JSON.parse(saved);
@@ -640,11 +739,11 @@ async runSASTAnalysis(archiveId) {
     saveResultsToStorage(results) {
         try {
             localStorage.setItem('sast-results', JSON.stringify(results));
-            
         } catch (error) {
             console.error('Ошибка сохранения результатов:', error);
         }
     }
+
     clearResults() {
         if (confirm('Очистить сохраненные результаты?')) {
             localStorage.removeItem('sast-results');
@@ -652,75 +751,24 @@ async runSASTAnalysis(archiveId) {
         }
     }
 
-
     getShortPath(fullPath) {
         if (!fullPath) return 'unknown';
         
         const path = fullPath.replace(/\\/g, '/');
         const parts = path.split('/');
         
-        if (parts.length <= 3) {
-            return path;
-        }
+        if (parts.length <= 3) return path;
     
-        const shortPath = parts.slice(-3).join('/');
-        return '.../' + shortPath;
-    }
-
-
-    fullReset() {
-        
-        // Сброс выбранного файла
-        this.selectedFile = null;
-        
-        // Сброс статусов задач
-        this.updateTaskStatus('1.1', 'pending');
-        this.updateTaskStatus('2.1', 'pending');
-        this.updateTaskStatus('2.2', 'pending');
-        
-        // Сброс прогресс-баров
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            const progressEl = card.querySelector('.progress');
-            if (progressEl) {
-                progressEl.style.width = '0%';
-            }
-        });
-        
-        // Сброс кнопки старта
-        if (this.startButton) {
-            this.startButton.textContent = 'Начать анализ';
-            this.startButton.disabled = true;
-            this.startButton.classList.remove('active');
-        }
-        
-        // Очистка информации о файле
-        if (this.fileInfo) {
-            this.fileInfo.classList.remove('active');
-        }
-        if (this.fileInput) {
-            this.fileInput.value = '';
-        }
-        
-        // Очистка URL репозитория
-        if (this.repoInput) {
-            this.repoInput.value = '';
-            this.showValidationMessage('', '');
-        }
-        
-        
+        return '.../' + parts.slice(-3).join('/');
     }
 
     showSASTResultsPopup(results) {
-        // Сохраняем результаты в localStorage
         this.saveResultsToStorage(results);
         
-        // Разделяем результаты по критичности
         const criticalHigh = results.results.filter(r => 
             r.severity === 'critical' || r.severity === 'high'
         );
         
-        // Создаем оверлей
         const overlay = document.createElement('div');
         overlay.className = 'modal-overlay';
         overlay.style.cssText = `
@@ -730,7 +778,7 @@ async runSASTAnalysis(archiveId) {
             right: 0;
             bottom: 0;
             background: rgba(0, 0, 0, 0.7);
-            display: none;
+            display: flex;
             justify-content: center;
             align-items: center;
             z-index: 10000;
@@ -753,7 +801,6 @@ async runSASTAnalysis(archiveId) {
             info: 'Информационный'
         };
 
-        // Формируем HTML для CRITICAL и HIGH
         const criticalHighHtml = criticalHigh.length > 0 ? criticalHigh.map((item) => {
             const shortPath = this.getShortPath(item.file);
             
@@ -835,7 +882,6 @@ async runSASTAnalysis(archiveId) {
                 </div>
                 
                 <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1; background: #f8f9fa;">
-                    <!-- Статистика -->
                     <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 24px;">
                         <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
                             <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #dc3545;">${results.summary.bySeverity.critical}</div>
@@ -891,623 +937,25 @@ async runSASTAnalysis(archiveId) {
 
         document.body.appendChild(overlay);
         
-        // Сохраняем ссылку на this
         const self = this;
-        
-        // Анимация появления
-        setTimeout(() => {
-            overlay.style.display = 'flex';
-        }, 10);
 
-        // Функция закрытия с полным сбросом
         const closePopup = () => {
             overlay.style.opacity = '0';
             overlay.style.transition = 'opacity 0.2s';
             setTimeout(() => {
                 overlay.remove();
-                // Полный сброс после закрытия модалки
                 self.fullReset();
             }, 200);
         };
 
         const closeBtn = overlay.querySelector('.modal-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', closePopup);
-        }
+        if (closeBtn) closeBtn.addEventListener('click', closePopup);
 
         const closeFooterBtn = overlay.querySelector('.btn-close');
-        if (closeFooterBtn) {
-            closeFooterBtn.addEventListener('click', closePopup);
-        }
+        if (closeFooterBtn) closeFooterBtn.addEventListener('click', closePopup);
 
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) closePopup();
-        });
-    }
-
-    generatePDF(fullResults, criticalHigh) {
-        // Показываем индикатор загрузки
-        const loadingIndicator = document.createElement('div');
-        loadingIndicator.style.cssText = `
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.9);
-            color: white;
-            padding: 25px 50px;
-            border-radius: 12px;
-            z-index: 10001;
-            font-size: 18px;
-            font-weight: 500;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            min-width: 300px;
-            text-align: center;
-        `;
-        loadingIndicator.innerHTML = `
-            <div style="font-size: 32px; margin-bottom: 10px;">📄</div>
-            <div>Генерация PDF...</div>
-            <div style="font-size: 14px; opacity: 0.8;">Пожалуйста, подождите</div>
-            <div style="width: 100%; height: 4px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-top: 10px;">
-                <div style="width: 60%; height: 100%; background: #10b981; border-radius: 2px; animation: loading 1.5s infinite;"></div>
-            </div>
-            <style>
-                @keyframes loading {
-                    0% { width: 0%; }
-                    50% { width: 100%; }
-                    100% { width: 0%; }
-                }
-            </style>
-        `;
-        document.body.appendChild(loadingIndicator);
-
-        setTimeout(() => {
-            try {
-                const pdfContainer = document.createElement('div');
-                pdfContainer.id = 'pdf-container';
-                pdfContainer.style.cssText = `
-                    position: fixed;
-                    left: 0;
-                    top: 0;
-                    width: 800px;
-                    background: white;
-                    padding: 40px;
-                    font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    z-index: -9999;
-                    opacity: 0;
-                    pointer-events: none;
-                `;
-
-                const severityColors = {
-                    critical: '#dc2626',
-                    high: '#f97316',
-                    medium: '#fbbf24',
-                    low: '#10b981',
-                    info: '#6b7280'
-                };
-
-                const severityNames = {
-                    critical: 'Критический',
-                    high: 'Высокий',
-                    medium: 'Средний',
-                    low: 'Низкий',
-                    info: 'Информационный'
-                };
-
-                pdfContainer.innerHTML = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="UTF-8">
-                        <style>
-                            body {
-                                font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                                margin: 0;
-                                padding: 0;
-                                background: white;
-                                color: #1f2937;
-                            }
-                            .report {
-                                max-width: 720px;
-                                margin: 0 auto;
-                            }
-                            h1 {
-                                color: #111827;
-                                font-size: 32px;
-                                margin: 0 0 10px 0;
-                                font-weight: 700;
-                            }
-                            h2 {
-                                color: #4b5563;
-                                font-size: 18px;
-                                font-weight: 400;
-                                margin: 0 0 30px 0;
-                            }
-                            h3 {
-                                color: #374151;
-                                font-size: 18px;
-                                font-weight: 600;
-                                margin: 0 0 15px 0;
-                            }
-                            .header {
-                                text-align: center;
-                                border-bottom: 3px solid #111827;
-                                padding-bottom: 20px;
-                                margin-bottom: 30px;
-                            }
-                            .info-block {
-                                background: #f9fafb;
-                                padding: 20px;
-                                border-radius: 12px;
-                                margin-bottom: 30px;
-                            }
-                            .info-table {
-                                width: 100%;
-                                border-collapse: collapse;
-                            }
-                            .info-table td {
-                                padding: 8px 0;
-                                border-bottom: 1px solid #e5e7eb;
-                            }
-                            .info-table td:first-child {
-                                font-weight: 600;
-                                width: 150px;
-                                color: #4b5563;
-                            }
-                            .stats-grid {
-                                display: grid;
-                                grid-template-columns: repeat(2, 1fr);
-                                gap: 20px;
-                                margin-bottom: 30px;
-                            }
-                            .stat-card {
-                                background: #f9fafb;
-                                border-radius: 12px;
-                                padding: 20px;
-                                text-align: center;
-                            }
-                            .stat-card.critical { border-top: 4px solid #dc2626; }
-                            .stat-card.high { border-top: 4px solid #f97316; }
-                            .stat-number {
-                                font-size: 48px;
-                                font-weight: 700;
-                                margin: 10px 0;
-                            }
-                            .stat-label {
-                                color: #6b7280;
-                                font-size: 14px;
-                            }
-                            .finding {
-                                background: #f9fafb;
-                                border-radius: 8px;
-                                padding: 20px;
-                                margin-bottom: 20px;
-                                page-break-inside: avoid;
-                            }
-                            .finding-header {
-                                display: flex;
-                                justify-content: space-between;
-                                align-items: center;
-                                margin-bottom: 15px;
-                                flex-wrap: wrap;
-                                gap: 10px;
-                            }
-                            .severity-badge {
-                                display: inline-block;
-                                padding: 4px 12px;
-                                border-radius: 16px;
-                                font-size: 12px;
-                                font-weight: 600;
-                                color: white;
-                                margin-right: 10px;
-                            }
-                            .file-info {
-                                color: #9ca3af;
-                                font-size: 12px;
-                                font-family: monospace;
-                            }
-                            .rule-id {
-                                font-family: monospace;
-                                font-size: 12px;
-                                color: #6b7280;
-                                background: #f3f4f6;
-                                padding: 2px 8px;
-                                border-radius: 4px;
-                                margin-left: 10px;
-                            }
-                            .message {
-                                color: #1f2937;
-                                font-weight: 500;
-                                margin: 0 0 15px 0;
-                            }
-                            .code {
-                                background: #1f2937;
-                                color: #e5e7eb;
-                                padding: 15px;
-                                border-radius: 6px;
-                                font-family: monospace;
-                                font-size: 13px;
-                                overflow-x: auto;
-                                margin: 0 0 15px 0;
-                                white-space: pre-wrap;
-                                word-wrap: break-word;
-                            }
-                            .recommendation {
-                                background: #ecfdf5;
-                                color: #059669;
-                                padding: 12px;
-                                border-radius: 6px;
-                                font-size: 13px;
-                            }
-                            .footer {
-                                margin-top: 40px;
-                                padding-top: 20px;
-                                border-top: 1px solid #e5e7eb;
-                                text-align: center;
-                                font-size: 12px;
-                                color: #9ca3af;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="report">
-                            <div class="header">
-                                <h1>Hercules SAST</h1>
-                                <h2>Отчет о критических и высоких уязвимостях</h2>
-                            </div>
-
-                            <div class="info-block">
-                                <h3 style="margin-top: 0;">📋 Информация об анализе</h3>
-                                <table class="info-table">
-                                      <tr><td>Дата:</td><td>${new Date().toLocaleString('ru-RU')}</td></tr>
-                                     <tr><td>Цель:</td><td>${fullResults.metadata?.target || 'Не указано'}</td></tr>
-                                     <tr><td>Всего правил:</td><td>${fullResults.metadata?.codeRulesCount || 0}</td></tr>
-                                 </table>
-                            </div>
-
-                            <div class="stats-grid">
-                                <div class="stat-card critical">
-                                    <div class="stat-number" style="color: #dc2626;">${fullResults.summary.bySeverity.critical}</div>
-                                    <div class="stat-label">Критических уязвимостей</div>
-                                </div>
-                                <div class="stat-card high">
-                                    <div class="stat-number" style="color: #f97316;">${fullResults.summary.bySeverity.high}</div>
-                                    <div class="stat-label">Высоких уязвимостей</div>
-                                </div>
-                            </div>
-
-                            <h3 style="margin-bottom: 20px;">Детальные результаты</h3>
-                            
-                            ${criticalHigh.length > 0 ? criticalHigh.map(item => {
-                                const shortPath = this.getShortPath(item.file);
-                                return `
-                                <div class="finding">
-                                    <div class="finding-header">
-                                        <div>
-                                            <span class="severity-badge" style="background: ${severityColors[item.severity]}">
-                                                ${severityNames[item.severity]}
-                                            </span>
-                                            <span class="file-info"> ${shortPath}:${item.line || '?'}</span>
-                                            <span class="rule-id">${item.ruleId || 'unknown'}</span>
-                                        </div>
-                                    </div>
-                                    <div class="message">${item.message}</div>
-                                    <pre class="code">${item.code ? item.code.replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''}</pre>
-                                    <div class="recommendation"> ${item.recommendation || 'Рекомендация не указана'}</div>
-                                </div>
-                            `}).join('') : `
-                                <div style="text-align: center; padding: 60px; background: #f9fafb; border-radius: 8px;">
-                                    <div style="font-size: 48px; margin-bottom: 20px;">🎉</div>
-                                    <div style="font-size: 18px; color: #10b981; font-weight: 500;">Критических и высоких уязвимостей не найдено</div>
-                                </div>
-                            `}
-
-                            <div class="footer">
-                                <p>Сгенерировано с помощью Hercules SAST</p>
-                                <p>© ${new Date().getFullYear()} Hercules. Все права защищены.</p>
-                            </div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-
-                document.body.appendChild(pdfContainer);
-
-                const opt = {
-                    margin: [0.5, 0.5, 0.5, 0.5],
-                    filename: `sast-report-${new Date().toISOString().split('T')[0]}.pdf`,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { 
-                        scale: 2, 
-                        letterRendering: true,
-                        useCORS: true,
-                        allowTaint: false,
-                        logging: false,
-                        windowWidth: 800
-                    },
-                    jsPDF: { 
-                        unit: 'in', 
-                        format: 'a4', 
-                        orientation: 'portrait'
-                    },
-                    pagebreak: { mode: ['css', 'legacy'] }
-                };
-
-                html2pdf().from(pdfContainer).set(opt).save()
-                    .then(() => {
-                        document.body.removeChild(loadingIndicator);
-                        document.body.removeChild(pdfContainer);
-                    })
-                    .catch(error => {
-                        document.body.removeChild(loadingIndicator);
-                        document.body.removeChild(pdfContainer);
-                        alert('Ошибка при генерации PDF. Пожалуйста, проверьте консоль браузера (F12) для деталей.');
-                    });
-
-            } catch (error) {
-                document.body.removeChild(loadingIndicator);
-                alert('Ошибка при генерации PDF: ' + error.message);
-            }
-        }, 100);
-    }
-
-    showSASTResults(results) {
-        
-        const event = new CustomEvent('showSASTResults', { detail: results });
-        document.dispatchEvent(event);
-        
-        showToolNotification(`Найдено проблем: ${results.summary.total}`);
-    }
-
-    showAnalysisResults(archiveData) {
-        const modal = document.createElement('div');
-        modal.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-            animation: fadeIn 0.3s ease;
-            padding: 16px;
-        `;
-
-        const sizeMB = (archiveData.size / 1024 / 1024).toFixed(2);
-        
-        modal.innerHTML = `
-            <div style="
-                background: white;
-                border-radius: 16px;
-                padding: clamp(24px, 6vw, 40px);
-                max-width: 500px;
-                width: 90%;
-                max-height: 90vh;
-                overflow-y: auto;
-                box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-                animation: slideUp 0.4s ease;
-            ">
-                <div style="display: flex; align-items: center; gap: clamp(12px, 3vw, 16px); margin-bottom: clamp(20px, 5vw, 24px); flex-wrap: wrap;">
-                    <div style="
-                        width: clamp(50px, 12vw, 60px);
-                        height: clamp(50px, 12vw, 60px);
-                        background: #10b981;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        font-size: clamp(24px, 6vw, 30px);
-                        color: white;
-                        flex-shrink: 0;
-                    ">✅</div>
-                    <div>
-                        <h2 style="margin: 0 0 5px 0; color: #1a1f36; font-size: clamp(18px, 4.5vw, 20px);">Анализ завершен</h2>
-                        <p style="margin: 0; color: #6b7280; font-size: clamp(12px, 3vw, 14px);">Архив успешно обработан</p>
-                    </div>
-                </div>
-                
-                <div style="background: #f9fafb; border-radius: 12px; padding: clamp(16px, 4vw, 20px); margin-bottom: clamp(20px, 5vw, 24px);">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                        <span style="color: #6b7280; font-size: clamp(12px, 3vw, 14px);">ID архива:</span>
-                        <span style="font-family: monospace; font-weight: 600; font-size: clamp(11px, 2.8vw, 13px); word-break: break-all;">${archiveData.id}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                        <span style="color: #6b7280; font-size: clamp(12px, 3vw, 14px);">Источник:</span>
-                        <span style="font-weight: 600; font-size: clamp(12px, 3vw, 14px);">${archiveData.source === 'upload' ? '📁 Локальный файл' : '🌐 ' + archiveData.source}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                        <span style="color: #6b7280; font-size: clamp(12px, 3vw, 14px);">Имя файла:</span>
-                        <span style="font-family: monospace; font-size: clamp(11px, 2.8vw, 13px); word-break: break-all;">${archiveData.filename}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
-                        <span style="color: #6b7280; font-size: clamp(12px, 3vw, 14px);">Размер:</span>
-                        <span style="font-weight: 600; font-size: clamp(12px, 3vw, 14px);">${sizeMB} МБ</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-                        <span style="color: #6b7280; font-size: clamp(12px, 3vw, 14px);">Время:</span>
-                        <span style="font-size: clamp(11px, 2.8vw, 13px);">${new Date(archiveData.createdAt).toLocaleString()}</span>
-                    </div>
-                </div>
-
-                <div style="display: flex; gap: clamp(8px, 2vw, 12px); flex-wrap: wrap;">
-                    <button id="view-results-btn" style="
-                        flex: 2;
-                        background: #10b981;
-                        color: white;
-                        border: none;
-                        padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 24px);
-                        border-radius: 8px;
-                        font-family: 'Ubuntu', sans-serif;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        font-size: clamp(12px, 3vw, 14px);
-                        min-width: 140px;
-                    ">Посмотреть результаты</button>
-                    <button id="close-modal-btn" style="
-                        flex: 1;
-                        background: #64748b;
-                        color: white;
-                        border: none;
-                        padding: clamp(12px, 3vw, 14px) clamp(16px, 4vw, 24px);
-                        border-radius: 8px;
-                        font-family: 'Ubuntu', sans-serif;
-                        font-weight: 500;
-                        cursor: pointer;
-                        transition: all 0.3s ease;
-                        font-size: clamp(12px, 3vw, 14px);
-                        min-width: 100px;
-                    ">Закрыть</button>
-                </div>
-            </div>
-        `;
-
-        document.body.appendChild(modal);
-
-        modal.querySelector('#view-results-btn').addEventListener('click', () => {
-            modal.remove();
-            const results = this.loadResultsFromStorage();
-            if (results) {
-                this.showSASTResultsPopup(results);
-            }
-        });
-
-        const closeModal = () => {
-            modal.style.opacity = '0';
-            setTimeout(() => {
-                modal.remove();
-                this.resetButton('Начать анализ');
-                this.resetAnalysis();
-            }, 300);
-        };
-
-        modal.querySelector('#close-modal-btn').addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-    }
-
-    showSASTResultsFromStorage() {
-        const results = this.loadResultsFromStorage();
-        if (!results) return;
-        
-        this.showSASTResultsPopup(results);
-    }
-
-    showSASTResults(archiveId) {
-        showToolNotification('Получение результатов анализа...');
-        
-        setTimeout(() => {
-            showToolNotification('Результаты получены');
-        }, 1500);
-    }
-
-    updateTaskStatus(taskId, status) {
-        const statusMap = {
-            'pending': 'В ожидании',
-            'in-progress': 'В работе',
-            'completed': 'Завершено'
-        };
-        
-        const taskElement = this.findTaskElement(taskId);
-        if (taskElement) {
-            const statusElement = taskElement.querySelector('.task-status');
-            if (statusElement) {
-                statusElement.textContent = statusMap[status] || status;
-                statusElement.className = `task-status ${status}`;
-            }
-        }
-    }
-
-    animateProgress(taskId, targetPercent, duration, callback) {
-        const taskElement = this.findTaskElement(taskId);
-        if (!taskElement) {
-            callback?.();
-            return;
-        }
-
-        const progressElement = taskElement.querySelector('.progress');
-        if (!progressElement) {
-            callback?.();
-            return;
-        }
-
-        const startTime = Date.now();
-        const initialWidth = parseFloat(progressElement.style.width) || 0;
-
-        const animate = () => {
-            const elapsed = Date.now() - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            
-            const easedProgress = 1 - Math.pow(1 - progress, 3);
-            const currentWidth = initialWidth + (targetPercent - initialWidth) * easedProgress;
-            
-            progressElement.style.width = `${currentWidth}%`;
-
-            if (progress < 1) {
-                requestAnimationFrame(animate);
-            } else {
-                progressElement.style.width = `${targetPercent}%`;
-                callback?.();
-            }
-        };
-
-        animate();
-    }
-
-    findTaskElement(taskId) {
-        const parts = taskId.split('.');
-        const sectionIndex = parseInt(parts[0]) - 1;
-        const taskIndex = parseInt(parts[1]) - 1;
-        
-        const sections = document.querySelectorAll('.card-section');
-        if (sectionIndex >= sections.length) return null;
-        
-        const cards = sections[sectionIndex].querySelectorAll('.card');
-        if (taskIndex >= cards.length) return null;
-        
-        return cards[taskIndex];
-    }
-
-    resetButton(originalText) {
-        this.startButton.textContent = originalText;
-        this.startButton.disabled = false;
-        this.startButton.classList.add('active');
-    }
-
-    resetAnalysis() {
-        this.selectedFile = null;
-        if (this.fileInfo) {
-            this.fileInfo.classList.remove('active');
-        }
-        if (this.fileInput) {
-            this.fileInput.value = '';
-        }
-        if (this.repoInput) {
-            this.repoInput.value = '';
-            this.showValidationMessage('', '');
-        }
-        
-        this.startButton.disabled = true;
-        this.startButton.classList.remove('active');
-        
-        ['1.1', '2.1', '2.2'].forEach(taskId => {
-            this.updateTaskStatus(taskId, 'pending');
-            const taskElement = this.findTaskElement(taskId);
-            if (taskElement) {
-                const progressElement = taskElement.querySelector('.progress');
-                if (progressElement) {
-                    progressElement.style.width = '0%';
-                }
-            }
         });
     }
 }
