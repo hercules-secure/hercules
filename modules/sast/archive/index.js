@@ -20,7 +20,7 @@ export class ArchiveReceiver {
      * Получение архива по ссылке на репозиторий
      */
     async getFromUrl(repoUrl, options = {}) {
-        console.info(`\nПолучение архива из репозитория: ${repoUrl}`);
+        console.info(`Получение архива из репозитория: ${repoUrl}`);
         
         // Определяем платформу
         const platform = this.detectPlatform(repoUrl);
@@ -97,10 +97,7 @@ export class ArchiveReceiver {
         console.info(`Архив ${archiveId} удален`);
     }
 
-    /**
-     * Очистка старых архивов (можно вызвать по расписанию)
-     */
-    async cleanup(maxAge = 24 * 60 * 60 * 1000) { // 24 часа по умолчанию
+    async cleanup(maxAge = 24 * 60 * 60 * 1000) { 
         const files = await fs.readdir(this.storageDir);
         const now = Date.now();
         let deleted = 0;
