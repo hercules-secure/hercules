@@ -11,6 +11,10 @@ import { createWriteStream } from 'fs';
 import https from 'https';
 import http from 'http';
 import yaml from 'js-yaml';
+import dotenv from 'dotenv';
+
+
+dotenv.config({ quiet: true });
 
 const execAsync = promisify(exec);
 const traverse = _traverse.default || _traverse;
@@ -103,7 +107,7 @@ class GitRepositoryHandler {
                 }
             }
         } catch (error) {
-            alert(`Не удалось получить информацию о ветке: ${error.message}`);
+            console.log(`Не удалось получить информацию о ветке: ${error.message}`);
         }
         return type === 'github' ? 'master' : 'main';
     }
@@ -318,11 +322,11 @@ const gitHandler = new GitRepositoryHandler();
 
 class AnalysisEngine {
   constructor(options = {}) {
-    this.rules = []; // Все правила загружаются из JSON
+    this.rules = [];
     this.results = [];
     this.cache = new Map();
-    this.verbose = options.verbose || false;
-    this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024; // 10MB
+    this.verbose = process.env.VERBOSE || false;
+    this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024;
   }
 
   async loadRulesFromFile(configFile) {
@@ -355,7 +359,6 @@ class AnalysisEngine {
 
     // Применяем все правила из rules.json
     for (const rule of this.rules) {
-      // Пропускаем правила, которые не подходят для этого типа файла
       if (rule.languages && rule.languages.length > 0) {
         const isApplicable = this.isInfraRuleApplicable(rule, originalFileName, fileName);
         if (!isApplicable) continue;
@@ -365,9 +368,8 @@ class AnalysisEngine {
         if (rule.type === 'regex') {
           const regex = new RegExp(rule.pattern, rule.flags || 'g');
           
-          // Для специальных правил, требующих контекстного анализа
+          // Специальные правила с контекстным анализом
           if (rule.id === 'docker-root-user') {
-            // Специальная обработка для проверки USER в Dockerfile
             if (originalFileName.toLowerCase() === 'dockerfile' || originalFileName.toLowerCase().startsWith('dockerfile.')) {
               let hasUser = false;
               let isRootUser = true;
@@ -385,63 +387,36 @@ class AnalysisEngine {
               }
             }
           }
-          else if (rule.id === 'docker-healthcheck') {
-            // Специальная обработка для проверки HEALTHCHECK
-            if (originalFileName.toLowerCase() === 'dockerfile' || originalFileName.toLowerCase().startsWith('dockerfile.')) {
-              let hasHealthcheck = false;
-              lines.forEach((line, i) => {
-                const lowerL = line.trim().toLowerCase();
-                if (lowerL.startsWith('healthcheck')) {
-                  hasHealthcheck = true;
-                }
-              });
-              if (!hasHealthcheck) {
-                this.pushInfraIssue(rule.id, rule.severity, filePath, 'No HEALTHCHECK defined', 0, rule.message);
-              }
-            }
+          else if (rule.id === 'iac-k8s-privileged-container' || rule.id === 'privileged-container') {
+            await this.analyzeK8sSecurityContext(filePath, content, rule);
           }
-          else if (rule.id === 'docker-multi-stage') {
-            // Специальная обработка для проверки многослойной сборки
-            if (originalFileName.toLowerCase() === 'dockerfile' || originalFileName.toLowerCase().startsWith('dockerfile.')) {
-              const fromLines = lines.filter(l => l.trim().toLowerCase().startsWith('from '));
-              if (fromLines.length === 1) {
-                this.pushInfraIssue(rule.id, rule.severity, filePath, 'Single stage build, consider multi-stage', 0, rule.message);
-              }
-            }
+          else if (rule.id === 'iac-tf-admin-permissions' || rule.id === 'iac-tf-iam-wildcard-action') {
+            await this.analyzeTerraformIAM(filePath, content, rule);
+          }
+          else if (rule.id === 'iac-tf-open-security-group') {
+            await this.analyzeTerraformSecurityGroup(filePath, content, rule);
           }
           else {
-            // Обычная проверка по строкам
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i];
-              const lowerLine = line.toLowerCase();
-              
-              // Проверяем, подходит ли правило для этой строки
               let matchFound = false;
-              let match;
               
               if (rule.id === 'docker-latest-tag') {
-                // Специальная проверка для :latest тегов
-                if (lowerLine.startsWith('from ') && lowerLine.includes(':latest')) {
+                if (line.trim().toLowerCase().startsWith('from ') && line.includes(':latest')) {
                   matchFound = true;
                 }
               }
-              else if (rule.id === 'docker-secrets') {
-                // Специальная проверка для секретов в Dockerfile
-                if (lowerLine.startsWith('env ') && 
-                    (lowerLine.includes('password') || lowerLine.includes('secret') || 
-                     lowerLine.includes('token') || lowerLine.includes('key'))) {
-                  if (!line.includes('changeme') && !line.includes('example') && !line.includes('test')) {
-                    matchFound = true;
-                  }
+              else if (rule.id === 'iac-tf-plaintext-secrets') {
+                if ((line.includes('password') || line.includes('secret') || line.includes('api_key')) && 
+                    (line.includes('=') || line.includes(':')) && 
+                    !line.includes('var.') && !line.includes('data.aws_secretsmanager')) {
+                  matchFound = true;
                 }
               }
               else {
-                // Общая проверка по regex
                 regex.lastIndex = 0;
-                match = regex.exec(line);
-                if (match) {
-                  matchFound = true;
-                }
+                const match = regex.exec(line);
+                if (match) matchFound = true;
               }
               
               if (matchFound) {
@@ -451,7 +426,6 @@ class AnalysisEngine {
           }
         }
         else if (rule.type === 'pattern') {
-          // Простая проверка по паттерну
           for (let i = 0; i < lines.length; i++) {
             const line = lines[i];
             if (line.includes(rule.pattern)) {
@@ -466,46 +440,258 @@ class AnalysisEngine {
     
     // Специальная обработка для YAML файлов (Kubernetes)
     if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
-      try {
-        const docs = yaml.loadAll(content);
-        for (const doc of docs) {
-          if (!doc || typeof doc !== 'object') continue;
-          
-          const kind = doc.kind;
-          const spec = doc.spec || {};
-          const containers = spec?.template?.spec?.containers || spec?.containers || [];
-          
-          containers.forEach((c, idx) => {
-            // Проверка на привилегированные контейнеры
-            if (c.securityContext?.privileged === true) {
-              this.pushInfraIssue('privileged-container', 'critical', filePath, 'privileged container', 0, 'Контейнер запущен с privileged: true');
-            }
-            // Проверка на root пользователя
-            if (c.securityContext?.runAsUser === 0) {
-              this.pushInfraIssue('container-root-user', 'high', filePath, 'runs as root', 0, 'Контейнер запускается с root пользователем');
-            }
-            // Проверка на отсутствие ресурсов
-            if (!c.resources) {
-              this.pushInfraIssue('missing-resources', 'medium', filePath, 'no resources limits', 0, 'Отсутствуют ограничения ресурсов');
-            }
-          });
-          
-          // Проверка на публичные сервисы
-          if (kind === 'Service' && spec.type === 'LoadBalancer') {
-            this.pushInfraIssue('public-service', 'high', filePath, 'public LoadBalancer', 0, 'Сервис доступен публично');
+      await this.analyzeK8sYamlFull(filePath, content);
+    }
+    
+    // Специальная обработка для Terraform файлов
+    if (fileName.endsWith('.tf') || fileName.endsWith('.tfvars')) {
+      await this.analyzeTerraformFull(filePath, content);
+    }
+  }
+
+  async analyzeK8sSecurityContext(filePath, content, rule) {
+    try {
+      const docs = yaml.loadAll(content);
+      for (const doc of docs) {
+        if (!doc || typeof doc !== 'object') continue;
+        
+        const containers = this.getContainersFromDoc(doc);
+        for (const container of containers) {
+          if (container.securityContext?.privileged === true) {
+            this.pushInfraIssue(rule.id, rule.severity, filePath, 
+              'securityContext.privileged: true', 0, rule.message);
           }
         }
-      } catch (e) {
-        if (this.verbose) console.log('YAML parse error:', e.message);
+      }
+    } catch (e) {
+      if (this.verbose) console.log('K8s security context parse error:', e.message);
+    }
+  }
+
+  async analyzeTerraformIAM(filePath, content, rule) {
+    const lines = content.split('\n');
+    let inPolicy = false;
+    let policyContent = '';
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      if (line.includes('policy') || line.includes('aws_iam_policy') || line.includes('aws_iam_role')) {
+        inPolicy = true;
+      }
+      
+      if (inPolicy) {
+        policyContent += line + '\n';
+        if (line.includes('}') && policyContent.split('{').length === policyContent.split('}').length) {
+          if ((rule.id === 'iac-tf-admin-permissions' && 
+               (policyContent.includes('"Action": "*"') || policyContent.includes('AdministratorAccess'))) ||
+              (rule.id === 'iac-tf-iam-wildcard-action' && 
+               (policyContent.includes('"Action": "*"') || policyContent.includes('"Action": ["*"]')))) {
+            this.pushInfraIssue(rule.id, rule.severity, filePath, 
+              policyContent.substring(0, 200), i, rule.message);
+          }
+          inPolicy = false;
+          policyContent = '';
+        }
       }
     }
   }
+
+  async analyzeTerraformSecurityGroup(filePath, content, rule) {
+    const lines = content.split('\n');
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if ((line.includes('cidr_blocks') || line.includes('cidr_block')) && 
+          (line.includes('0.0.0.0/0') || line.includes('"0.0.0.0/0"'))) {
+        this.pushInfraIssue(rule.id, rule.severity, filePath, line, i + 1, rule.message);
+      }
+    }
+  }
+
+  async analyzeK8sYamlFull(filePath, content) {
+    try {
+      const docs = yaml.loadAll(content);
+      
+      for (const doc of docs) {
+        if (!doc || typeof doc !== 'object') continue;
+        
+        const kind = doc.kind;
+        const spec = doc.spec || {};
+        const podSpec = spec?.template?.spec || spec;
+        
+        if (!podSpec) continue;
+        
+        const containers = podSpec.containers || [];
+        
+        for (let i = 0; i < containers.length; i++) {
+          const container = containers[i];
+          
+          // Проверка на привилегированные контейнеры
+          if (container.securityContext?.privileged === true) {
+            const rule = this.rules.find(r => r.id === 'iac-k8s-privileged-container');
+            if (rule) {
+              this.pushInfraIssue(rule.id, rule.severity, filePath, 
+                `containers[${i}].securityContext.privileged: true`, 0, rule.message);
+            }
+          }
+          
+          // Проверка на отсутствие ресурсов
+          if (!container.resources || (!container.resources.limits && !container.resources.requests)) {
+            const rule = this.rules.find(r => r.id === 'missing-resources');
+            if (rule) {
+              this.pushInfraIssue(rule.id, rule.severity, filePath,
+                `containers[${i}].resources: not set`, 0, rule.message);
+            }
+          }
+          
+          // Проверка на readOnlyRootFilesystem
+          if (container.securityContext?.readOnlyRootFilesystem === false) {
+            const rule = this.rules.find(r => r.id === 'iac-k8s-readonly-rootfs');
+            if (rule) {
+              this.pushInfraIssue(rule.id, rule.severity, filePath,
+                `securityContext.readOnlyRootFilesystem: false`, 0, rule.message);
+            }
+          }
+          
+          // Проверка на allowPrivilegeEscalation
+          if (container.securityContext?.allowPrivilegeEscalation === true) {
+            const rule = this.rules.find(r => r.id === 'iac-k8s-allow-privilege-escalation');
+            if (rule) {
+              this.pushInfraIssue(rule.id, rule.severity, filePath,
+                `securityContext.allowPrivilegeEscalation: true`, 0, rule.message);
+            }
+          }
+        }
+        
+        // Проверка на hostNetwork
+        if (podSpec.hostNetwork === true) {
+          const rule = this.rules.find(r => r.id === 'iac-k8s-host-network');
+          if (rule) {
+            this.pushInfraIssue(rule.id, rule.severity, filePath,
+              'hostNetwork: true', 0, rule.message);
+          }
+        }
+        
+        // Проверка на hostPID
+        if (podSpec.hostPID === true) {
+          const rule = this.rules.find(r => r.id === 'iac-k8s-host-pid-ipc');
+          if (rule) {
+            this.pushInfraIssue(rule.id, rule.severity, filePath,
+              'hostPID: true', 0, rule.message);
+          }
+        }
+        
+        // Проверка на hostIPC
+        if (podSpec.hostIPC === true) {
+          const rule = this.rules.find(r => r.id === 'iac-k8s-host-pid-ipc');
+          if (rule) {
+            this.pushInfraIssue(rule.id, rule.severity, filePath,
+              'hostIPC: true', 0, rule.message);
+          }
+        }
+        
+        // Проверка на runAsNonRoot
+        if (podSpec.securityContext?.runAsNonRoot === false || podSpec.securityContext?.runAsUser === 0) {
+          const rule = this.rules.find(r => r.id === 'iac-k8s-run-as-root');
+          if (rule) {
+            this.pushInfraIssue(rule.id, rule.severity, filePath,
+              'securityContext.runAsNonRoot: false or runAsUser: 0', 0, rule.message);
+          }
+        }
+        
+        // Проверка на hostPath volumes
+        const volumes = podSpec.volumes || [];
+        for (let i = 0; i < volumes.length; i++) {
+          if (volumes[i].hostPath) {
+            const rule = this.rules.find(r => r.id === 'iac-k8s-host-path-volume');
+            if (rule) {
+              this.pushInfraIssue(rule.id, rule.severity, filePath,
+                `volumes[${i}].hostPath: ${volumes[i].hostPath.path}`, 0, rule.message);
+            }
+          }
+        }
+        
+        // Проверка на default service account
+        if (podSpec.serviceAccountName === 'default' || !podSpec.serviceAccountName) {
+          const rule = this.rules.find(r => r.id === 'iac-k8s-default-service-account');
+          if (rule) {
+            this.pushInfraIssue(rule.id, 'medium', filePath,
+              'serviceAccountName: default or not set', 0, rule.message);
+          }
+        }
+        
+        // Проверка на публичные сервисы
+        if (kind === 'Service' && (spec.type === 'LoadBalancer' || spec.type === 'NodePort')) {
+          const rule = this.rules.find(r => r.id === 'public-service');
+          if (rule) {
+            this.pushInfraIssue(rule.id, 'high', filePath,
+              `spec.type: ${spec.type}`, 0, rule.message);
+          }
+        }
+      }
+    } catch (e) {
+      if (this.verbose) console.log('YAML parse error:', e.message);
+    }
+  }
+
+  async analyzeTerraformFull(filePath, content) {
+    const lines = content.split('\n');
+    
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Проверка на публичный S3 бакет
+      if (line.includes('acl') && (line.includes('public-read') || line.includes('public-read-write'))) {
+        const rule = this.rules.find(r => r.id === 'public-s3-bucket' || r.id === 'iac-tf-public-s3-bucket');
+        if (rule) {
+          this.pushInfraIssue(rule.id, rule.severity, filePath, line, i + 1, rule.message);
+        }
+      }
+      
+      // Проверка на незашифрованный RDS
+      if (line.includes('storage_encrypted') && line.includes('false')) {
+        const rule = this.rules.find(r => r.id === 'iac-tf-unencrypted-rds');
+        if (rule) {
+          this.pushInfraIssue(rule.id, rule.severity, filePath, line, i + 1, rule.message);
+        }
+      }
+      
+      // Проверка на публичную БД
+      if (line.includes('publicly_accessible') && line.includes('true')) {
+        const rule = this.rules.find(r => r.id === 'iac-tf-public-db-sg');
+        if (rule) {
+          this.pushInfraIssue(rule.id, rule.severity, filePath, line, i + 1, rule.message);
+        }
+      }
+      
+      // Проверка на секреты в plaintext
+      if ((line.includes('password') || line.includes('secret') || line.includes('api_key')) && 
+          line.includes('=') && !line.includes('var.') && !line.includes('data.')) {
+        const rule = this.rules.find(r => r.id === 'iac-tf-plaintext-secrets');
+        if (rule) {
+          this.pushInfraIssue(rule.id, rule.severity, filePath, line, i + 1, rule.message);
+        }
+      }
+    }
+  }
+
+  getContainersFromDoc(doc) {
+    let containers = [];
+    
+    if (doc.spec?.template?.spec?.containers) {
+      containers = doc.spec.template.spec.containers;
+    } else if (doc.spec?.containers) {
+      containers = doc.spec.containers;
+    } else if (doc.containers) {
+      containers = doc.containers;
+    }
+    
+    return containers;
+  }
   
   isInfraRuleApplicable(rule, originalFileName, fileName) {
-    // Проверка по языкам
     if (!rule.languages || rule.languages.length === 0) return true;
     
-    // Для Dockerfile
     if (rule.languages.includes('dockerfile')) {
       if (originalFileName.toLowerCase() === 'dockerfile' || 
           originalFileName.toLowerCase().startsWith('dockerfile.') ||
@@ -514,21 +700,18 @@ class AnalysisEngine {
       }
     }
     
-    // Для Terraform
     if (rule.languages.includes('terraform') || rule.languages.includes('hcl')) {
       if (fileName.endsWith('.tf') || fileName.endsWith('.tfvars') || fileName.endsWith('.hcl')) {
         return true;
       }
     }
     
-    // Для YAML/Kubernetes
     if (rule.languages.includes('yaml')) {
       if (fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
         return true;
       }
     }
     
-    // Для всех языков
     if (rule.languages.includes('all')) {
       return true;
     }
@@ -588,8 +771,7 @@ class AnalysisEngine {
     }
   }
 
-pushInfraIssue(ruleId, severity, filePath, code, line, message) {
-    // Ищем правило по ID, чтобы получить recommendation
+  pushInfraIssue(ruleId, severity, filePath, code, line, message) {
     const rule = this.rules.find(r => r.id === ruleId);
     const recommendation = rule ? rule.recommendation : '';
     
@@ -602,60 +784,53 @@ pushInfraIssue(ruleId, severity, filePath, code, line, message) {
       line,
       column: 0,
       code: String(code).trim(),
-      recommendation: recommendation  // Теперь берем из правила
+      recommendation: recommendation
     });
-}
+  }
 
   async walkDirectory(dir, files) {
-    const entries = await fs.readdir(dir, { withFileTypes: true });
-    
-    for (const entry of entries) {
-      const fullPath = path.join(dir, entry.name);
+    try {
+      const entries = await fs.readdir(dir, { withFileTypes: true });
       
-      if (entry.isDirectory()) {
-        if (entry.name === 'node_modules' || entry.name === '.git' || entry.name === 'target' || 
-            entry.name === 'build' || entry.name === 'dist' || entry.name === '.idea' || 
-            entry.name === '.vscode' || entry.name === '__pycache__' || entry.name === 'venv' || 
-            entry.name === 'vendor'  || entry.name === 'test' ||           // ← добавляем
-            entry.name === 'tests' ||           // ← добавляем
-            entry.name === 'testdata' ||        // ← добавляем
-            entry.name.includes('test')) {      // ← любые папки с test в имени) {
-          continue;
-        }
-        await this.walkDirectory(fullPath, files);
-      } 
-      else if (entry.isFile()) {
-
-            if (fullPath.includes('/test/') || 
-                fullPath.includes('/tests/') || 
-                fullPath.includes('/testdata/') ||
-                fullPath.includes('\\test\\') ||    // для Windows
-                fullPath.includes('\\tests\\') ||
-                fullPath.includes('\\testdata\\') || 
-                entry.name.includes('.test.') || 
-                entry.name.includes('.spec.') || 
-                entry.name.includes('_test.') ||
-                entry.name.startsWith('test_')) {
-                continue;
-            }
-
-        const ext = path.extname(entry.name).toLowerCase();
-        const fileName = entry.name.toLowerCase();
-        const originalFileName = entry.name;
+      for (const entry of entries) {
+        const fullPath = path.join(dir, entry.name);
         
-        // Добавляем файлы для анализа
-        if (['.java', '.xml', '.properties', '.gradle', '.conf', '.config', '.js', '.jsx', '.ts', '.tsx', '.py', '.go', '.tf', '.tfvars', '.hcl', '.yaml', '.yml'].includes(ext) ||
-            fileName === 'pom.xml' || fileName === 'build.gradle' || fileName === 'settings.gradle' ||
-            fileName === 'gradle.properties' || fileName === 'application.properties' || fileName === 'application.yml' ||
-            fileName === '.env' || originalFileName === 'Dockerfile' || fileName === 'dockerfile' ||
-            fileName.startsWith('dockerfile.') || originalFileName.startsWith('Dockerfile.') ||
-            fileName === 'containerfile' || originalFileName === 'Containerfile' ||
-            fileName === 'docker-compose.yml' || fileName === 'docker-compose.yaml' ||
-            fileName === 'azure-pipelines.yml' || fileName === 'azure-pipelines.yaml' ||
-            fileName === 'values.yaml' || fileName === 'chart.yaml') {
-          files.push(fullPath);
+        if (entry.isDirectory()) {
+          const skipDirs = ['node_modules', '.git', 'target', 'build', 'dist', '.idea', '.vscode', '__pycache__', 'venv', 'vendor'];
+          
+          if (skipDirs.includes(entry.name)) {
+            continue;
+          }
+          
+          await this.walkDirectory(fullPath, files);
+        } 
+        else if (entry.isFile()) {
+          const ext = path.extname(entry.name).toLowerCase();
+          const fileName = entry.name.toLowerCase();
+          const originalFileName = entry.name;
+          
+          // Расширенный список файлов для анализа
+          const extensionsToAnalyze = ['.java', '.xml', '.properties', '.gradle', '.conf', '.config', 
+            '.js', '.jsx', '.ts', '.tsx', '.py', '.go', '.tf', '.tfvars', '.hcl', '.yaml', '.yml', 
+            '.json', '.env', '.md'];
+          
+          const specialFiles = ['pom.xml', 'build.gradle', 'settings.gradle', 'gradle.properties', 
+            'application.properties', 'application.yml', '.env', 'dockerfile', 'containerfile', 
+            'docker-compose.yml', 'docker-compose.yaml', 'azure-pipelines.yml', 'azure-pipelines.yaml', 
+            'values.yaml', 'chart.yaml', 'terraform.tfvars'];
+          
+          const isExtensionMatch = extensionsToAnalyze.includes(ext);
+          const isSpecialFile = specialFiles.includes(fileName) || specialFiles.includes(originalFileName) || 
+            fileName.startsWith('dockerfile.') || originalFileName.startsWith('Dockerfile.') || 
+            fileName === 'Dockerfile';
+          
+          if (isExtensionMatch || isSpecialFile) {
+            files.push(fullPath);
+          }
         }
       }
+    } catch (error) {
+      console.error(`Error walking directory ${dir}:`, error.message);
     }
   }
 
@@ -666,40 +841,49 @@ pushInfraIssue(ruleId, severity, filePath, code, line, message) {
       const content = await fs.readFile(filePath, 'utf-8');
       
       if (content.length > this.maxFileSize) {
-        if (this.verbose) //console.log(`Skipping large file: ${fileName}`);
+        if (this.verbose) console.log(`Skipping large file: ${fileName}`);
         return;
       }
       
-      if (this.verbose) //console.log(`\nAnalyzing: ${fileName}`);
+
       
-      // Инфраструктурные файлы
+      
+      // Инфраструктурные файлы (IaC)
       if (fileName === 'Dockerfile' || fileName.toLowerCase() === 'dockerfile' || 
           fileName.toLowerCase().startsWith('dockerfile.') || fileName.startsWith('Dockerfile.') ||
           fileName.toLowerCase() === 'containerfile' || fileName === 'Containerfile' ||
           fileName.includes('docker-compose') || ext === '.tf' || ext === '.tfvars' || 
-          ext === '.yaml' || ext === '.yml' || fileName.includes('azure-pipelines') ||
+          ext === '.hcl' || fileName.includes('azure-pipelines') ||
           fileName === 'values.yaml' || fileName === 'chart.yaml') {
         await this.analyzeInfraFile(filePath, content);
       }
-      // Java файлы
-      else if (ext === '.java') {
-        await this.analyzeJavaFile(filePath, content);
-      }
-      // Python файлы
-      else if (ext === '.py') {
-        await this.analyzePythonFile(filePath, content);
-      }
-      // JS/TS файлы
-      else if (['.js', '.jsx', '.ts', '.tsx'].includes(ext)) {
-        await this.analyzeJSFile(filePath, content);
+      // YAML файлы
+      else if (ext === '.yaml' || ext === '.yml') {
+        await this.analyzeInfraFile(filePath, content);
       }
       // Go файлы
       else if (ext === '.go') {
         await this.analyzeGoFile(filePath, content);
       }
+      // Python файлы
+      else if (ext === '.py') {
+        await this.analyzePythonFile(filePath, content);
+      }
+      // Java файлы
+      else if (ext === '.java') {
+        await this.analyzeJavaFile(filePath, content);
+      }
+      // JS/TS файлы
+      else if (['.js', '.jsx', '.ts', '.tsx'].includes(ext)) {
+        await this.analyzeJSFile(filePath, content);
+      }
       // Конфигурационные файлы
-      else {
+      else if (ext === '.json' || fileName === '.env' || ext === '.config' || ext === '.conf' || ext === '.xml' || ext === '.properties') {
         await this.analyzeConfigFile(filePath, content);
+      }
+      // Остальные файлы
+      else {
+        await this.analyzeGenericFile(filePath, content);
       }
       
     } catch (error) {
@@ -707,18 +891,94 @@ pushInfraIssue(ruleId, severity, filePath, code, line, message) {
     }
   }
 
-  async analyzeJavaFile(filePath, content) {
+  async analyzeGoFile(filePath, content) {
     const lines = content.split('\n');
+    
     for (const rule of this.rules) {
-      if (rule.languages && !rule.languages.includes('java')) continue;
+      if (rule.languages && !rule.languages.includes('go')) continue;
       await this.applyRuleToLines(rule, filePath, lines);
+    }
+    
+    // Специфичные проверки для Go
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Проверка на race condition (go func с общими переменными)
+      if (line.includes('go func()') && (line.includes('&') || line.includes('map['))) {
+        const rule = this.rules.find(r => r.id === 'go-race-condition');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на exec.Command с конкатенацией
+      if (line.includes('exec.Command') && (line.includes('+') || line.includes('fmt.Sprintf'))) {
+        const rule = this.rules.find(r => r.id === 'go-exec-command');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на template injection
+      if (line.includes('template.HTML(') || line.includes('template.JS(')) {
+        const rule = this.rules.find(r => r.id === 'go-template-injection');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
     }
   }
 
   async analyzePythonFile(filePath, content) {
     const lines = content.split('\n');
+    
     for (const rule of this.rules) {
       if (rule.languages && !rule.languages.includes('python')) continue;
+      await this.applyRuleToLines(rule, filePath, lines);
+    }
+    
+    // Специфичные проверки для Python
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Проверка на eval/exec
+      if ((line.includes('eval(') || line.includes('exec(')) && !line.includes('#')) {
+        const rule = this.rules.find(r => r.id === 'python-eval');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на pickle.loads
+      if (line.includes('pickle.loads(') || line.includes('pickle.load(')) {
+        const rule = this.rules.find(r => r.id === 'python-pickle');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на subprocess с shell=True
+      if (line.includes('subprocess.') && line.includes('shell=True')) {
+        const rule = this.rules.find(r => r.id === 'python-subprocess-shell');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на yaml.load без SafeLoader
+      if (line.includes('yaml.load(') && !line.includes('SafeLoader')) {
+        const rule = this.rules.find(r => r.id === 'python-yaml-load');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+    }
+  }
+
+  async analyzeJavaFile(filePath, content) {
+    const lines = content.split('\n');
+    for (const rule of this.rules) {
+      if (rule.languages && !rule.languages.includes('java')) continue;
       await this.applyRuleToLines(rule, filePath, lines);
     }
   }
@@ -731,19 +991,142 @@ pushInfraIssue(ruleId, severity, filePath, code, line, message) {
     }
   }
 
-  async analyzeGoFile(filePath, content) {
+  async analyzeConfigFile(filePath, content) {
     const lines = content.split('\n');
+    const fileName = path.basename(filePath).toLowerCase();
+    
     for (const rule of this.rules) {
-      if (rule.languages && !rule.languages.includes('go')) continue;
+      if (rule.languages && !rule.languages.includes('config') && !rule.languages.includes('env') && 
+          !rule.languages.includes('json') && !rule.languages.includes('xml') && !rule.languages.includes('yaml')) {
+        continue;
+      }
       await this.applyRuleToLines(rule, filePath, lines);
+    }
+    
+    // Специфичные проверки для .env файлов
+    if (fileName === '.env') {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line && !line.startsWith('#') && (line.includes('PASSWORD') || line.includes('SECRET') || 
+            line.includes('TOKEN') || line.includes('KEY'))) {
+          const rule = this.rules.find(r => r.id === 'config-env-exposure');
+          if (rule) {
+            this.addResult(rule, filePath, i + 1, 0, line.trim());
+          }
+        }
+      }
+    }
+    
+    // Проверка на XML внешние сущности (XXE)
+    if (fileName.endsWith('.xml')) {
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (line.includes('<!ENTITY') && (line.includes('SYSTEM') || line.includes('PUBLIC'))) {
+          const rule = this.rules.find(r => r.id === 'config-xml-external-entity');
+          if (rule) {
+            this.addResult(rule, filePath, i + 1, 0, line.trim());
+          }
+        }
+      }
     }
   }
 
-  async analyzeConfigFile(filePath, content) {
+  async analyzeGenericFile(filePath, content) {
     const lines = content.split('\n');
     for (const rule of this.rules) {
-      if (rule.languages && !rule.languages.includes('config') && !rule.languages.includes('env') && !rule.languages.includes('yaml')) continue;
-      await this.applyRuleToLines(rule, filePath, lines);
+      if (rule.languages && rule.languages.includes('all')) {
+        await this.applyRuleToLines(rule, filePath, lines);
+      }
+    }
+    
+    // OWASP и Burp проверки
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      
+      // Проверка на open redirect
+      if (line.includes('redirect') && (line.includes('req.') || line.includes('request.') || line.includes('params'))) {
+        const rule = this.rules.find(r => r.id === 'open-redirect' || r.id === 'owasp-broken-access-control');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на SSRF
+      if ((line.includes('fetch(') || line.includes('http.get(') || line.includes('axios.')) && 
+          (line.includes('req.') || line.includes('request.') || line.includes('params'))) {
+        const rule = this.rules.find(r => r.id === 'ssrf-vulnerability' || r.id === 'owasp-ssrf');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на XSS
+      if ((line.includes('innerHTML') || line.includes('document.write')) && 
+          (line.includes('req.') || line.includes('request.') || line.includes('params'))) {
+        const rule = this.rules.find(r => r.id === 'xss-vulnerability' || r.id === 'owasp-xss');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на SQL инъекцию
+      if ((line.includes('execute(') || line.includes('query(')) && 
+          (line.includes('+') || line.includes('concat'))) {
+        const rule = this.rules.find(r => r.id === 'sql-injection' || r.id === 'owasp-injection');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на Command injection
+      if ((line.includes('exec(') || line.includes('system(')) && 
+          (line.includes('req.') || line.includes('request.') || line.includes('params'))) {
+        const rule = this.rules.find(r => r.id === 'command-injection' || r.id === 'owasp-injection');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на insecure deserialization
+      if (line.includes('pickle.load') || line.includes('unserialize') || line.includes('ObjectInputStream')) {
+        const rule = this.rules.find(r => r.id === 'insecure-deserialization' || r.id === 'owasp-insecure-deserialization');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на debug mode
+      if (line.includes('debug = true') || line.includes('DEBUG = True') || line.includes('NODE_ENV = "development"')) {
+        const rule = this.rules.find(r => r.id === 'debug-mode-production' || r.id === 'owasp-security-misconfig');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на CORS wildcard
+      if (line.includes('Access-Control-Allow-Origin: *')) {
+        const rule = this.rules.find(r => r.id === 'cors-wildcard' || r.id === 'owasp-security-misconfig');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на HTTP instead HTTPS
+      if (line.includes('http://') && !line.includes('localhost') && !line.includes('127.0.0.1')) {
+        const rule = this.rules.find(r => r.id === 'http-instead-https' || r.id === 'owasp-crypto-failure');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
+      
+      // Проверка на hardcoded credentials
+      const credPattern = /(password|pass|secret|api_key|token)\s*[=:]\s*['"][^'"]{6,}['"]/i;
+      if (credPattern.test(line)) {
+        const rule = this.rules.find(r => r.id === 'hardcoded-credentials');
+        if (rule) {
+          this.addResult(rule, filePath, i + 1, 0, line.trim());
+        }
+      }
     }
   }
 

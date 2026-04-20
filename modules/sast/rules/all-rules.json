@@ -661,6 +661,24 @@
       "flags": "gi",
       "recommendation": "Выполните задачу перед развертыванием в production",
       "languages": ["all"]
+    },
+    {
+      "id": "missing-resources",
+      "message": "Отсутствуют ограничения ресурсов для контейнера",
+      "severity": "medium",
+      "type": "pattern",
+      "pattern": "",
+      "recommendation": "Установите requests и limits для CPU/Memory",
+      "languages": ["yaml"]
+    },
+    {
+      "id": "public-service",
+      "message": "Сервис доступен публично",
+      "severity": "high",
+      "type": "pattern",
+      "pattern": "",
+      "recommendation": "Используйте Ingress с ограничениями вместо LoadBalancer/NodePort",
+      "languages": ["yaml"]
     }
   ]
 }
