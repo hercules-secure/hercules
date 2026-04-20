@@ -27,6 +27,8 @@ EXCLUDE_FILES=(
     "burp.json"
     "config-rules.json"
     "go-rules.json"
+    "isql-rules.json"
+    "java-rules.json"
 )
 
 # Папки для исключения
