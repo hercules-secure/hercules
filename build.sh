@@ -8,9 +8,8 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BUILD_DIR="${SCRIPT_DIR}/build"
 
-# Файлы для исключения
+# Файлы для исключения из копирования
 EXCLUDE_FILES=(
     "main.html"
     "admin.html"
@@ -45,7 +44,6 @@ EXCLUDE_DIRS=(
     "extracted"
     "storage"
     "uploads"
-    "temp"
 )
 
 # Версия и режим
@@ -72,13 +70,10 @@ fi
 log_info() { echo -e "${BLUE}[INFO]${NC} $1"; }
 log_success() { echo -e "${GREEN}[SUCCESS]${NC} $1"; }
 
-# Очистка build
-rm -rf "${BUILD_DIR}"
-mkdir -p "${BUILD_DIR}"
-log_info "Создана папка build"
+# Копирование файлов (без удаления существующих)
+log_info "Копирование файлов для коммита..."
 
-# Копирование файлов
-log_info "Копирование файлов..."
+FILES_COPIED=()
 
 for item in "${SCRIPT_DIR}"/*; do
     name=$(basename "$item")
@@ -95,9 +90,15 @@ for item in "${SCRIPT_DIR}"/*; do
     [ $skip -eq 1 ] && continue
     
     if [ -d "$item" ]; then
-        cp -r "$item" "${BUILD_DIR}/"
+        # Для папок - копируем рекурсивно с заменой
+        cp -rf "$item" "${SCRIPT_DIR}/"
+        log_info "Обновлена папка: $name"
+        FILES_COPIED+=("$name/")
     else
-        cp "$item" "${BUILD_DIR}/"
+        # Для файлов - копируем с заменой
+        cp -f "$item" "${SCRIPT_DIR}/"
+        log_info "Обновлен файл: $name"
+        FILES_COPIED+=("$name")
     fi
 done
 
@@ -112,15 +113,61 @@ for item in "${SCRIPT_DIR}"/.[!.]*; do
     done
     
     [ $skip -eq 1 ] && continue
-    cp -r "$item" "${BUILD_DIR}/"
+    cp -rf "$item" "${SCRIPT_DIR}/"
+    log_info "Обновлен скрытый файл: $name"
+    FILES_COPIED+=("$name")
 done
 
-# Если режим LOCAL - удаляем main.html
+# Если режим LOCAL - удаляем main.html (если он есть)
 if [ "$MODE" = "local" ]; then
-    rm -f "${BUILD_DIR}/main.html"
-    rm -f "${BUILD_DIR}/public/html/main.html" 2>/dev/null
+    rm -f "${SCRIPT_DIR}/main.html"
+    rm -f "${SCRIPT_DIR}/public/html/main.html" 2>/dev/null
     log_info "Режим LOCAL: main.html удален"
 fi
 
-log_success "Сборка завершена! Файлы в папке build/"
-ls -la "${BUILD_DIR}" | head -10
+# Добавляем измененные файлы в git
+log_info "Добавление файлов в git..."
+
+# Добавляем все скопированные файлы
+for file in "${FILES_COPIED[@]}"; do
+    if [ -e "$file" ]; then
+        git add "$file" 2>/dev/null
+    fi
+done
+
+# Также добавляем все новые файлы (которые могли появиться)
+git add . 2>/dev/null
+
+# Показываем что будет закоммичено
+echo ""
+echo -e "${BLUE}Изменения для коммита:${NC}"
+git status --short
+
+# Создаем коммит
+COMMIT_MSG="Export v${VERSION} (${MODE} mode) - $(date +'%Y-%m-%d %H:%M:%S')"
+echo ""
+echo -e "${YELLOW}Создать коммит? (y/N):${NC}"
+read -r COMMIT_CHOICE
+
+if [[ "$COMMIT_CHOICE" =~ ^[Yy]$ ]]; then
+    git commit -m "$COMMIT_MSG"
+    
+    if [ $? -eq 0 ]; then
+        log_success "Коммит создан: ${COMMIT_MSG}"
+        
+        # Спрашиваем про пуш
+        echo -e "${YELLOW}Отправить изменения в remote? (y/N):${NC}"
+        read -r PUSH_CHOICE
+        if [[ "$PUSH_CHOICE" =~ ^[Yy]$ ]]; then
+            CURRENT_BRANCH=$(git branch --show-current)
+            git push origin "$CURRENT_BRANCH"
+            log_success "Изменения отправлены в remote"
+        fi
+    else
+        echo -e "${YELLOW}Нет изменений для коммита${NC}"
+    fi
+else
+    log_info "Коммит отменен"
+fi
+
+log_success "Готово!"
