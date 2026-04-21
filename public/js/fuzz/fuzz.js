@@ -8,11 +8,7 @@ let authToken = localStorage.getItem('apiAuthToken') || null;
 let showTokenModalCallback = null;
 let pendingFormData = null;
 
-
-
-
-
-// ==================== ОСТАЛЬНЫЕ ФУНКЦИИ (без изменений) ====================
+// ==================== ОСНОВНЫЕ ФУНКЦИИ ====================
 
 function openFuzzModal() {
     const modal = document.getElementById('fuzzModal');
@@ -43,9 +39,9 @@ function resetAllProgress() {
         if (progressEl) progressEl.style.width = '0%';
     });
     
-    const startBtn = document.getElementById('start-btn');
+    const startBtn = document.getElementById('start-url-btn');
     if (startBtn) {
-        startBtn.textContent = 'Начать фаззинг';
+        startBtn.textContent = 'Начать анализ';
         startBtn.disabled = true;
         startBtn.classList.remove('active');
     }
@@ -67,7 +63,7 @@ function resetAllProgress() {
     if (specUrlInput) specUrlInput.value = '';
     
     const baseUrlInput = document.getElementById('baseUrl');
-    if (baseUrlInput) baseUrlInput.value = 'Пример: https://api.example.com/v1/api';
+    if (baseUrlInput) baseUrlInput.value = '';
     
     const urlValidation = document.getElementById('url-validation');
     if (urlValidation) urlValidation.textContent = '';
@@ -123,48 +119,137 @@ function updateBaseUrlFromSpec(spec) {
     if (requiresAuth(spec)) {
         showValidationMessage('API требует авторизацию (Bearer token).', 'warning');
     }
+    // Активируем кнопку после загрузки спецификации
     validateStartButton();
 }
 
-function switchMode(mode) {
-    const uploadMode = document.getElementById('upload-mode');
-    const urlMode = document.getElementById('url-mode');
-    const uploadBtn = document.getElementById('mode-upload');
-    const urlBtn = document.getElementById('mode-url');
-    if (uploadMode) uploadMode.style.display = mode === 'upload' ? 'block' : 'none';
-    if (urlMode) urlMode.style.display = mode === 'url' ? 'block' : 'none';
-    if (uploadBtn) {
-        if (mode === 'upload') uploadBtn.classList.add('active');
-        else uploadBtn.classList.remove('active');
+// ==================== ЗАГРУЗКА СПЕЦИФИКАЦИИ ПО URL ====================
+
+async function loadSpecFromUrl(url) {
+    const startBtn = document.getElementById('start-url-btn');
+    startBtn.disabled = true;
+    startBtn.textContent = 'Загрузка...';
+    
+    try {
+        showValidationMessage('Загрузка спецификации...', 'valid');
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        
+        const content = await response.text();
+        let spec;
+        
+        // Определяем формат по расширению URL или по содержанию
+        if (url.toLowerCase().endsWith('.json')) {
+            spec = JSON.parse(content);
+        } else {
+            try {
+                spec = JSON.parse(content);
+            } catch {
+                spec = jsyaml.load(content);
+            }
+        }
+        
+        // Создаем виртуальный файл для единообразия
+        const fileName = url.split('/').pop() || 'spec.yaml';
+        const blob = new Blob([content], { type: 'application/octet-stream' });
+        const file = new File([blob], fileName, { type: 'application/octet-stream' });
+        
+        selectedFile = file;
+        currentSpec = spec;
+        
+        // Отображаем информацию о файле
+        const fileInfo = document.getElementById('fileInfo');
+        const fileNameSpan = document.getElementById('fileName');
+        const fileSizeSpan = document.getElementById('fileSize');
+        if (fileNameSpan) fileNameSpan.textContent = fileName;
+        if (fileSizeSpan) fileSizeSpan.textContent = (content.length / 1024).toFixed(2) + ' KB';
+        if (fileInfo) fileInfo.classList.add('active');
+        
+        // Отображаем информацию о спецификации
+        displaySpecInfo(spec);
+        
+        showValidationMessage('Спецификация успешно загружена', 'valid');
+        startBtn.textContent = 'Начать анализ';
+        startBtn.disabled = false;
+        validateStartButton();
+        
+    } catch (error) {
+        console.error('Load error:', error);
+        showValidationMessage('Ошибка загрузки: ' + error.message, 'invalid');
+        startBtn.textContent = 'Начать анализ';
+        startBtn.disabled = false;
+        throw error;
     }
-    if (urlBtn) {
-        if (mode === 'url') urlBtn.classList.add('active');
-        else urlBtn.classList.remove('active');
-    }
-    validateStartButton();
 }
+
+// ==================== ОТОБРАЖЕНИЕ ИНФОРМАЦИИ О СПЕЦИФИКАЦИИ ====================
+
+function displaySpecInfo(spec) {
+    let format = 'Unknown';
+    if (spec.swagger === '2.0') format = 'Swagger 2.0';
+    else if (spec.openapi === '3.0.0') format = 'OpenAPI 3.0.0';
+    else if (spec.openapi === '3.0.1') format = 'OpenAPI 3.0.1';
+    else if (spec.openapi === '3.0.2') format = 'OpenAPI 3.0.2';
+    else if (spec.openapi === '3.0.3') format = 'OpenAPI 3.0.3';
+    else if (spec.openapi === '3.1.0') format = 'OpenAPI 3.1.0';
+    
+    const specTitle = document.getElementById('specTitle');
+    const specVersion = document.getElementById('specVersion');
+    const specFormat = document.getElementById('specFormat');
+    if (specTitle) specTitle.textContent = spec.info?.title || 'Unknown';
+    if (specVersion) specVersion.textContent = spec.info?.version || '?';
+    if (specFormat) specFormat.textContent = format;
+    
+    const endpointsContainer = document.getElementById('specEndpoints');
+    if (endpointsContainer) {
+        endpointsContainer.innerHTML = '';
+        const paths = spec.paths || {};
+        let count = 0;
+        for (const [path, methods] of Object.entries(paths)) {
+            for (const [method, _] of Object.entries(methods)) {
+                if (['get', 'post', 'put', 'delete', 'patch', 'head', 'options'].includes(method)) {
+                    const div = document.createElement('div');
+                    div.className = 'endpoint-item';
+                    div.innerHTML = `<span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span><span style="color: var(--text-secondary);">${path}</span>`;
+                    endpointsContainer.appendChild(div);
+                    count++;
+                }
+            }
+        }
+        if (count === 0) endpointsContainer.innerHTML = '<div class="endpoint-item">Эндпоинты не найдены</div>';
+    }
+    
+    const specPreview = document.getElementById('specPreview');
+    if (specPreview) specPreview.classList.add('active');
+    updateBaseUrlFromSpec(spec);
+    
+    if (requiresAuth(spec)) {
+        const urlValidation = document.getElementById('url-validation');
+        if (urlValidation) {
+            urlValidation.innerHTML = `<div style="background: rgba(245, 158, 11, 0.1); padding: 12px; border-radius: 8px;"><i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i> <strong>API требует авторизацию.</strong> Для полноценного тестирования потребуется токен.</div>`;
+            urlValidation.className = 'url-validation warning';
+        }
+    }
+}
+
+// ==================== ОБРАБОТКА ФАЙЛОВ ====================
 
 document.addEventListener('DOMContentLoaded', function() {
     const uploadArea = document.getElementById('uploadArea');
     const fileInput = document.getElementById('fileInput');
-    const browseBtn = document.getElementById('browseBtn');
+    const specUrlInput = document.getElementById('specUrl');
+    const startBtn = document.getElementById('start-url-btn');
+    const baseUrlInput = document.getElementById('baseUrl');
     
-    if (!uploadArea) return;
-    if (!fileInput) return;
+    if (!uploadArea || !fileInput) return;
     
+    // Drag & Drop для файлов
     document.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); });
     document.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); });
 
-    function openFileDialog() { fileInput.click(); }
-    
-    uploadArea.addEventListener('click', function(e) {
-        if (e.target === browseBtn) e.stopPropagation();
-        openFileDialog();
+    uploadArea.addEventListener('click', function() {
+        fileInput.click();
     });
-    
-    if (browseBtn) {
-        browseBtn.addEventListener('click', function(e) { e.preventDefault(); e.stopPropagation(); openFileDialog(); });
-    }
 
     uploadArea.addEventListener('dragover', function(e) {
         e.preventDefault();
@@ -188,6 +273,8 @@ document.addEventListener('DOMContentLoaded', function() {
             const fileName = file.name.toLowerCase();
             if (fileName.endsWith('.json') || fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
                 handleFile(file);
+                // Очищаем поле URL при выборе файла
+                if (specUrlInput) specUrlInput.value = '';
             } else {
                 showValidationMessage('Поддерживаются только JSON, YAML, YML файлы', 'invalid');
             }
@@ -198,38 +285,37 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target.files && e.target.files.length > 0) {
             const file = e.target.files[0];
             handleFile(file);
+            // Очищаем поле URL при выборе файла
+            if (specUrlInput) specUrlInput.value = '';
         }
     });
     
-    const fetchSpecBtn = document.getElementById('fetch-spec-btn');
-    if (fetchSpecBtn) {
-        fetchSpecBtn.addEventListener('click', async () => {
-            const specUrlInput = document.getElementById('specUrl');
-            const url = specUrlInput ? specUrlInput.value.trim() : '';
-            if (!url) {
-                showValidationMessage('Введите URL спецификации', 'invalid');
+    // Кнопка "Начать анализ" - загружает спецификацию по URL если нет выбранного файла
+    if (startBtn) {
+        startBtn.addEventListener('click', async function() {
+            // Если есть выбранный файл - запускаем фаззинг
+            if (selectedFile) {
+                await startFuzzing();
                 return;
             }
-            try {
-                showValidationMessage('Загрузка...', 'valid');
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const content = await response.text();
-                const blob = new Blob([content], { type: 'application/json' });
-                const file = new File([blob], url.split('/').pop() || 'spec.yaml', { type: 'application/json' });
-                handleFile(file);
-                showValidationMessage('Спецификация загружена', 'valid');
-            } catch (error) {
-                showValidationMessage('Ошибка загрузки: ' + error.message, 'invalid');
+            
+            // Если нет файла, но есть URL - загружаем спецификацию
+            const url = specUrlInput ? specUrlInput.value.trim() : '';
+            if (url) {
+                await loadSpecFromUrl(url);
+                // После загрузки спецификации запускаем фаззинг
+                await startFuzzing();
+            } else {
+                showValidationMessage('Введите URL спецификации или выберите файл', 'invalid');
             }
         });
     }
     
-    const baseUrlInput = document.getElementById('baseUrl');
+    // Слушаем изменение базового URL (если пользователь ввел вручную)
     if (baseUrlInput) baseUrlInput.addEventListener('input', validateStartButton);
     
-    const startBtn = document.getElementById('start-btn');
-    if (startBtn) startBtn.addEventListener('click', startFuzzing);
+    // Слушаем изменение поля URL (чтобы активировать кнопку если есть URL)
+    if (specUrlInput) specUrlInput.addEventListener('input', validateStartButton);
     
     validateStartButton();
     
@@ -238,15 +324,12 @@ document.addEventListener('DOMContentLoaded', function() {
         if (modal && modal.classList.contains('active') && e.target === modal) closeFuzzModal();
         const tokenModal = document.getElementById('tokenModal');
         if (tokenModal && tokenModal.classList.contains('active') && e.target === tokenModal) closeTokenModal();
-        const replayModal = document.getElementById('replayModal');
-        if (replayModal && replayModal.classList.contains('active') && e.target === replayModal) closeReplayModal();
     });
 
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeFuzzModal();
             closeTokenModal();
-            closeReplayModal();
         }
     });
     
@@ -351,7 +434,6 @@ function createTokenModal() {
         </div>
     `;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
 }
 
 function handleFile(file) {
@@ -370,10 +452,12 @@ function removeFile() {
     const fileInfo = document.getElementById('fileInfo');
     const specPreview = document.getElementById('specPreview');
     const fileInput = document.getElementById('fileInput');
+    const specUrlInput = document.getElementById('specUrl');
     if (fileInfo) fileInfo.classList.remove('active');
     if (specPreview) specPreview.classList.remove('active');
     currentSpec = null;
     if (fileInput) fileInput.value = '';
+    if (specUrlInput) specUrlInput.value = '';
     validateStartButton();
 }
 
@@ -397,68 +481,34 @@ async function parseSpecification(file) {
             spec = jsyaml.load(text);
         }
         currentSpec = spec;
-        
-        let format = 'Unknown';
-        if (spec.swagger === '2.0') format = 'Swagger 2.0';
-        else if (spec.openapi === '3.0.0') format = 'OpenAPI 3.0.0';
-        else if (spec.openapi === '3.0.1') format = 'OpenAPI 3.0.1';
-        else if (spec.openapi === '3.0.2') format = 'OpenAPI 3.0.2';
-        else if (spec.openapi === '3.0.3') format = 'OpenAPI 3.0.3';
-        else if (spec.openapi === '3.1.0') format = 'OpenAPI 3.1.0';
-        
-        const specTitle = document.getElementById('specTitle');
-        const specVersion = document.getElementById('specVersion');
-        const specFormat = document.getElementById('specFormat');
-        if (specTitle) specTitle.textContent = spec.info?.title || 'Unknown';
-        if (specVersion) specVersion.textContent = spec.info?.version || '?';
-        if (specFormat) specFormat.textContent = format;
-        
-        const endpointsContainer = document.getElementById('specEndpoints');
-        if (endpointsContainer) {
-            endpointsContainer.innerHTML = '';
-            const paths = spec.paths || {};
-            let count = 0;
-            for (const [path, methods] of Object.entries(paths)) {
-                for (const [method, _] of Object.entries(methods)) {
-                    if (['get', 'post', 'put', 'delete', 'patch', 'head', 'options'].includes(method)) {
-                        const div = document.createElement('div');
-                        div.className = 'endpoint-item';
-                        div.innerHTML = `<span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span><span style="color: var(--text-secondary);">${path}</span>`;
-                        endpointsContainer.appendChild(div);
-                        count++;
-                    }
-                }
-            }
-            if (count === 0) endpointsContainer.innerHTML = '<div class="endpoint-item">Эндпоинты не найдены</div>';
-        }
-        
-        const specPreview = document.getElementById('specPreview');
-        if (specPreview) specPreview.classList.add('active');
-        updateBaseUrlFromSpec(spec);
-        
-        if (requiresAuth(spec)) {
-            const urlValidation = document.getElementById('url-validation');
-            if (urlValidation) {
-                urlValidation.innerHTML = `<div style="background: rgba(245, 158, 11, 0.1); padding: 12px; border-radius: 8px;"><i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i> <strong>API требует авторизацию.</strong> Для полноценного тестирования потребуется токен.</div>`;
-                urlValidation.className = 'url-validation warning';
-            }
-        }
+        displaySpecInfo(spec);
         validateStartButton();
     } catch (error) {
         showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
     }
 }
 
+// УПРОЩЕННАЯ ФУНКЦИЯ АКТИВАЦИИ КНОПКИ
 function validateStartButton() {
-    const startBtn = document.getElementById('start-btn');
-    const baseUrlInput = document.getElementById('baseUrl');
+    const startBtn = document.getElementById('start-url-btn');
     if (!startBtn) return;
-    const baseUrl = baseUrlInput ? baseUrlInput.value.trim() : '';
+    
+    // Кнопка активна если:
+    // 1. Спецификация загружена И базовый URL заполнен (из спецификации или вручную)
+    // 2. ИЛИ есть текст в поле URL (пользователь может загрузить по ссылке)
     const hasSpec = currentSpec !== null;
+    const baseUrl = document.getElementById('baseUrl')?.value.trim() || '';
     const hasBaseUrl = baseUrl.length > 0;
-    startBtn.disabled = !(hasSpec && hasBaseUrl);
-    if (hasSpec && hasBaseUrl) startBtn.classList.add('active');
-    else startBtn.classList.remove('active');
+    const hasUrl = document.getElementById('specUrl')?.value.trim().length > 0;
+    
+    const isReady = (hasSpec && hasBaseUrl) || hasUrl;
+    
+    startBtn.disabled = !isReady;
+    if (isReady) {
+        startBtn.classList.add('active');
+    } else {
+        startBtn.classList.remove('active');
+    }
 }
 
 function updateTaskStatus(taskId, status) {
@@ -509,11 +559,32 @@ function exportFailedTests(failedTests) {
 }
 
 async function startFuzzing() {
-    const startBtn = document.getElementById('start-btn');
+    const startBtn = document.getElementById('start-url-btn');
     const baseUrlInput = document.getElementById('baseUrl');
+    
     if (!startBtn || startBtn.disabled) return;
-    if (!baseUrlInput) return;
-    const baseUrl = baseUrlInput.value.trim();
+    
+    const baseUrl = baseUrlInput ? baseUrlInput.value.trim() : '';
+    
+    // Если нет спецификации, но есть URL - сначала загружаем
+    if (!currentSpec && !selectedFile) {
+        const specUrlInput = document.getElementById('specUrl');
+        const url = specUrlInput ? specUrlInput.value.trim() : '';
+        if (url) {
+            await loadSpecFromUrl(url);
+        } else {
+            showValidationMessage('Нет спецификации для анализа', 'invalid');
+            return;
+        }
+    }
+    
+    // Проверяем базовый URL
+    const finalBaseUrl = document.getElementById('baseUrl')?.value.trim();
+    if (!finalBaseUrl) {
+        showValidationMessage('Укажите базовый URL API', 'invalid');
+        return;
+    }
+    
     startBtn.disabled = true;
     startBtn.textContent = 'Фаззинг запущен...';
     
@@ -530,12 +601,15 @@ async function startFuzzing() {
                     updateTaskStatus('2.3', 'in-progress');
                     try {
                         const formData = new FormData();
-                        if (selectedFile) formData.append('spec', selectedFile);
-                        else {
+                        if (selectedFile) {
+                            formData.append('spec', selectedFile);
+                        } else {
                             const specUrlInput = document.getElementById('specUrl');
-                            if (specUrlInput) formData.append('specUrl', specUrlInput.value);
+                            if (specUrlInput && specUrlInput.value) {
+                                formData.append('specUrl', specUrlInput.value);
+                            }
                         }
-                        formData.append('baseUrl', baseUrl);
+                        formData.append('baseUrl', finalBaseUrl);
                         if (authToken) formData.append('authToken', authToken);
                         pendingFormData = formData;
                         
@@ -582,13 +656,13 @@ async function startFuzzing() {
         });
     } catch (error) {
         console.error('Start error:', error);
-        startBtn.textContent = 'Начать фаззинг';
+        startBtn.textContent = 'Начать анализ';
         startBtn.disabled = false;
     }
 }
 
 async function retryFuzzingWithToken(formData, token) {
-    const startBtn = document.getElementById('start-btn');
+    const startBtn = document.getElementById('start-url-btn');
     try {
         formData.set('authToken', token);
         const response = await fetch('/api/fuzz', { method: 'POST', body: formData });
@@ -607,6 +681,8 @@ async function retryFuzzingWithToken(formData, token) {
         alert(`Ошибка: ${error.message}`);
     }
 }
+
+// ==================== ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ====================
 
 function groupFailedTestsByEndpoint(failedTests) {
     const grouped = {};
@@ -633,10 +709,6 @@ function groupVulnerabilitiesByEndpoint(vulnerabilities) {
 function escapeHtml(str) {
     if (!str) return '';
     return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function generateUniqueId() {
-    return `${Date.now()}_${++globalRowCounter}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
 function showResults(report) {
@@ -706,13 +778,11 @@ function renderFailedTestsTable(tests) {
     if (!tests || tests.length === 0) return '';
     const has403 = tests.some(t => t.status === 403);
     
-    // Берем первый тест для отображения в строке
     const test = tests[0];
     const is403 = test.status === 403;
-    const testData = JSON.stringify(test).replace(/"/g, '&quot;');
     
     let html = `<div style="padding: 12px 20px; background: rgba(239, 68, 68, 0.05);"><strong style="color: #ef4444;">Проваленные тесты (${tests.length})</strong>${has403 ? `<div style="margin-top: 8px; font-size: 12px; color: #f59e0b;"><i class="fas fa-exclamation-triangle"></i> Некоторые тесты требуют авторизации. <button onclick="clearAuthToken(); showTokenModal('все эндпоинты', (token) => { if(token) location.reload(); })" class="btn-link">Добавить токен</button></div>` : ''}</div>
-    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Статус</th><th>Причина</th><th>Время</th><th>Действие</th></tr></thead><tbody>
+    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Статус</th><th>Причина</th><th>Время</th><th>Действие</th></table></thead><tbody>
     <tr class="${is403 ? 'failed-test-row auth-required' : 'failed-test-row'}">
         <td><span class="method-badge method-${test.method?.toUpperCase() || 'GET'}">${test.method?.toUpperCase() || 'GET'}</span></td>
         <td>${test.type || 'unknown'}</td>
@@ -722,7 +792,6 @@ function renderFailedTestsTable(tests) {
         <td><button class="details-btn" onclick='replayTest(${JSON.stringify(test).replace(/'/g, "\\'")})'><i class="far fa-play-circle"></i></button></td>
     </tr>`;
     
-    // Добавляем дополнительные строки для остальных тестов (если нужно показать все)
     if (tests.length > 1) {
         html += `<tr class="more-tests-row"><td colspan="6" style="background: var(--bg-secondary);">
             <details>
@@ -740,7 +809,7 @@ function renderFailedTestsTable(tests) {
                 <td style="padding: 8px;"><button class="details-btn" onclick='replayTest(${JSON.stringify(t).replace(/'/g, "\\'")})'><i class="far fa-play-circle"></i></button></td>
             </tr>`;
         }
-        html += `</table></details></td></tr>`;
+        html += `</table></details><\/td><\/tr>`;
     }
     
     html += `</tbody></table>`;
@@ -750,7 +819,6 @@ function renderFailedTestsTable(tests) {
 function renderVulnerabilitiesTable(vulnerabilities) {
     if (!vulnerabilities || vulnerabilities.length === 0) return '';
     
-    // Берем первую уязвимость для отображения в строке
     const vuln = vulnerabilities[0];
     const testData = JSON.stringify({
         method: vuln.method,
@@ -771,31 +839,18 @@ function renderVulnerabilitiesTable(vulnerabilities) {
      <button class="details-btn"  onclick="copyRawRequest()"><i class="fas fa-copy" title="Копировать Raw HTTP" style="font-size: 15px;color: gray;""></i></button>
      </div>          
     </div>
-    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Статус</th><th>Severity</th><th>Сниппет</th></tr></thead><tbody>
-      `;
+    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Статус</th><th>Severity</th><th>Сниппет</th></tr></thead><tbody>`;
     
-        
-        for (let i = 0; i < vulnerabilities.length; i++) {
-            const v = vulnerabilities[i];
-            const vTestData = JSON.stringify({
-                method: v.method,
-                url: v.endpoint,
-                path: v.endpoint,
-                type: v.type,
-                headers: { 'Content-Type': 'application/json' },
-                expectedStatus: [200]
-            }).replace(/'/g, "\\'");
-            
-            html += `<tr>
-                <td style="padding: 8px;"><span class="method-badge method-${v.method?.toUpperCase() || 'GET'}">${v.method?.toUpperCase() || 'GET'}</span></td>
-                <td style="padding: 8px;">${escapeHtml(v.type || 'Unknown')}</td>
-                <td style="padding: 8px;"><span class="status-badge warning">${v.response_status || 'N/A'}</span></td>
-                <td style="padding: 8px;"><span class="severity-badge severity-${v.severity || 'medium'}">${(v.severity || 'MEDIUM').toUpperCase()}</span></td>
-                <td style="padding: 8px;"></td>
-            </tr>`;
-        }
-        //html += `</table></details></td></tr>`;
-     //}
+    for (let i = 0; i < vulnerabilities.length; i++) {
+        const v = vulnerabilities[i];
+        html += `<tr>
+            <td style="padding: 8px;"><span class="method-badge method-${v.method?.toUpperCase() || 'GET'}">${v.method?.toUpperCase() || 'GET'}</span></td>
+            <td style="padding: 8px;">${escapeHtml(v.type || 'Unknown')}</td>
+            <td style="padding: 8px;"><span class="status-badge warning">${v.response_status || 'N/A'}</span></td>
+            <td style="padding: 8px;"><span class="severity-badge severity-${v.severity || 'medium'}">${(v.severity || 'MEDIUM').toUpperCase()}</span></td>
+            <td style="padding: 8px;">&nbsp;</td>
+        </tr>`;
+    }
     
     html += `</tbody></table>`;
     return html;
@@ -827,8 +882,8 @@ function downloadReport() {
     URL.revokeObjectURL(url);
 }
 
-// Глобальные функции
-window.switchMode = switchMode;
+// ==================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ====================
+
 window.removeFile = removeFile;
 window.closeFuzzModal = closeFuzzModal;
 window.downloadReport = downloadReport;

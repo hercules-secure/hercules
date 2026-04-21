@@ -125,17 +125,7 @@
     border-color: var(--accent-color);
 }
 
-.input-group button {
-    padding: 12px 24px;
-    background: var(--bg-secondary);
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    white-space: nowrap;
-}
+
 
 .input-group button:hover {
     background: var(--border-color);
@@ -584,27 +574,6 @@
 
 .btn-export-pdf:disabled {
     background: #9ca3af;
-    cursor: not-allowed;
-}
-
-.start-button {
-    background: black;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.2s;
-}
-
-.start-button:hover:not(:disabled) {
-    background: black;
-    transform: translateY(-1px);
-}
-
-.start-button:disabled {
-    background: #adb5bd;
     cursor: not-allowed;
 }
 .close-button {
