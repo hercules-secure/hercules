@@ -59,8 +59,11 @@ async function extractTar(tarPath, extractDir) {
    
 }
 
-// server.js - исправленная функция extractArchive
 async function extractArchive(archivePath, originalName, extractDir) {
+        const stats = await fs.stat(archivePath);
+    if (stats.size > 500 * 1024 * 1024) { // 500MB лимит
+        throw new Error('Архив слишком большой');
+    }
     await ensureDir(extractDir);
     
     // Проверяем по оригинальному имени файла
@@ -90,13 +93,16 @@ const uploadArchive = multer({
     dest: path.join(__dirname, 'temp'),
     limits: { fileSize: 100 * 1024 * 1024 },
     fileFilter: (req, file, cb) => {
-        const allowedExtensions = ['.zip', '.tar', '.gz', '.tgz', '.7z'];
+        const allowedExtensions = ['.zip', '.tar', '.gz', '.tgz'];
         const ext = path.extname(file.originalname).toLowerCase();
         
-        if (allowedExtensions.includes(ext) || file.originalname.endsWith('.tar.gz')) {
+        // Дополнительная проверка MIME типа
+        const allowedMimes = ['application/zip', 'application/x-tar', 'application/gzip'];
+        
+        if (allowedExtensions.includes(ext) && allowedMimes.includes(file.mimetype)) {
             cb(null, true);
         } else {
-            cb(new Error('Поддерживаются только ZIP, TAR, GZ, TGZ, 7Z архивы'));
+            cb(new Error('Неподдерживаемый формат файла'));
         }
     }
 });
@@ -210,11 +216,17 @@ const limiter = rateLimit({
   }
 });
 
+const sastLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20, // Меньше лимит для SAST
+  message: 'Слишком много запросов SAST анализа'
+});
+
 app.use('/api/', limiter);
 
 // Статические файлы
 app.use(express.static(join(__dirname, '/public')));
-//app.use('/downloads', express.static(DOWNLOAD_DIR));
+
 
 // ======================
 // Вспомогательные функции
@@ -239,6 +251,12 @@ function errorResponse(res, message = 'Internal Server Error', statusCode = 500,
 
 async function downloadSpecFromUrl(url) {
     try {
+
+            const parsedUrl = new URL(url);
+            const allowedDomains = ['raw.githubusercontent.com', 'api.github.com', 'gitlab.com'];
+            if (!allowedDomains.includes(parsedUrl.hostname)) {
+                throw new Error(`Домен ${parsedUrl.hostname} не разрешен`);
+            }
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -257,8 +275,6 @@ async function downloadSpecFromUrl(url) {
 // Инициализация модулей
 // ======================
 const githubDownloader = new GitHubDownloader({
-  //cacheDir: CACHE_DIR,
-  //downloadDir: DOWNLOAD_DIR,
   logger: logger,
 });
 
@@ -403,7 +419,7 @@ app.post('/api/fuzz', uploadSpec.single('spec'), async (req, res) => {
     }
 });
 
-app.post('/api/sast/url', async (req, res) => {
+app.post('/api/sast/url', sastLimiter, async (req, res) => {
     const { url, branch } = req.body;
     
     if (!url) {
@@ -481,6 +497,11 @@ app.post('/api/archive/upload', uploadArchive.single('archive'), async (req, res
 
 app.post('/api/sast/analyze/:archiveId', async (req, res) => {
     const { archiveId } = req.params;
+
+     if (!/^[a-f0-9-]{16}$/.test(archiveId)) {
+        return res.status(400).json({ error: 'Invalid archive ID format' });
+    }
+
     const rulesPath = req.body.rulesPath || './modules/sast/rules/all-rules.json';
     
     let archiveInfo = null;

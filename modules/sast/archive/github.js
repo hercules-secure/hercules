@@ -34,10 +34,11 @@ export class GitHubDownloader {
         const filename = `${owner}-${repo}-${targetBranch}-${archiveId}.zip`;
         const archivePath = path.join(this.storageDir, filename);
         const infoPath = path.join(this.storageDir, `${archiveId}.info.json`);
-
-        console.log(`   🔗 GitHub: ${owner}/${repo}`);
-        console.log(`   🌿 Ветка: ${targetBranch}`);
-        console.log(`   📥 Загрузка: ${archiveUrl}`);
+        
+        // убрать в лог
+        //console.log(`GitHub: ${owner}/${repo}`);
+        //console.log(`Ветка: ${targetBranch}`);
+        //console.log(`Загрузка: ${archiveUrl}`);
 
         // Скачиваем архив
         const stats = await this.downloadFile(archiveUrl, archivePath);
