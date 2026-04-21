@@ -1,6 +1,6 @@
 {
   "name": "Hercules Security Rules",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Список публичных правил",
   "rules": [
     {
@@ -135,9 +135,9 @@
     {
       "id": "open-redirect",
       "message": "Потенциальный открытый редирект (A01:2021)",
-      "severity": "medium",
+      "severity": "high",
       "type": "regex",
-      "pattern": "(?:redirect|res\\.redirect)\\s*\\([^)]*(?:req|request|params)",
+      "pattern": "(?:redirect|res\\.redirect)\\s*\\([^)]*(?:req|request|params|headers\\[['\"]host['\"]\\]|headers\\[['\"]x-forwarded-host['\"]\\])",
       "flags": "gi",
       "recommendation": "Валидируйте URL редиректа по белому списку",
       "languages": ["javascript", "typescript", "python", "java", "php", "go"]
@@ -470,6 +470,96 @@
       "pattern": "",
       "recommendation": "Установите requests и limits",
       "languages": ["yaml"]
+    },
+    {
+      "id": "cache-poisoning-x-forwarded-host",
+      "message": "Cache Poisoning: Использование X-Forwarded-Host без валидации",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "req\\.headers\\[['\"]x-forwarded-host['\"]\\]",
+      "flags": "gi",
+      "recommendation": "Валидируйте X-Forwarded-Host по белому списку доменов",
+      "languages": ["javascript", "typescript"]
+    },
+    {
+      "id": "cache-poisoning-html-injection",
+      "message": "Cache Poisoning: Инъекция хоста в HTML (link/script)",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(?:href|src)=[\"']//\\$\\{.*host.*\\}",
+      "flags": "gi",
+      "recommendation": "Используйте относительные пути или абсолютные URL без подстановки",
+      "languages": ["javascript", "typescript", "html"]
+    },
+    {
+      "id": "cache-poisoning-meta-tag",
+      "message": "Cache Poisoning: Open Graph мета-теги с подставленным хостом",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "<meta\\s+property=\"og:(?:image|url)\"\\s+content=\"http:\\/\\/\\$\\{.*host.*\\}",
+      "flags": "gi",
+      "recommendation": "Используйте абсолютные URL без подстановки заголовков",
+      "languages": ["javascript", "typescript", "html"]
+    },
+    {
+      "id": "cache-control-public-sensitive",
+      "message": "Cache Poisoning: Public cache для чувствительных данных",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "Cache-Control.*public.*max-age",
+      "flags": "gi",
+      "recommendation": "Для user-specific данных используйте 'private' вместо 'public'",
+      "languages": ["javascript", "typescript", "java", "python", "go"]
+    },
+    {
+      "id": "cache-poisoning-x-forwarded-for",
+      "message": "Cache Poisoning: X-Forwarded-For отражается в ответе",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "req\\.headers\\[['\"]x-forwarded-for['\"]\\]",
+      "flags": "gi",
+      "recommendation": "Не отражайте заголовки в ответе без валидации и экранирования",
+      "languages": ["javascript", "typescript"]
+    },
+    {
+      "id": "header-reflection-xss",
+      "message": "XSS через отражение заголовков в ответе",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "res\\.(?:send|json|end)\\s*\\([^)]*\\$\\{.*headers\\[.*\\].*\\}",
+      "flags": "gi",
+      "recommendation": "Экранируйте или валидируйте значения заголовков",
+      "languages": ["javascript", "typescript"]
+    },
+    {
+      "id": "unsafe-cache-control",
+      "message": "Небезопасный Cache-Control заголовок",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "Cache-Control.*(?:public|max-age=\\d+)(?!.*private)",
+      "flags": "gi",
+      "recommendation": "Для чувствительных данных используйте 'no-store' или 'private, no-cache'",
+      "languages": ["javascript", "typescript", "java", "python", "go"]
+    },
+    {
+      "id": "cache-poisoning-multiple-headers",
+      "message": "Cache Poisoning: Использование нескольких опасных заголовков",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(?:X-Forwarded-Host|X-Forwarded-Proto|X-Forwarded-Prefix|X-Original-URL)",
+      "flags": "gi",
+      "recommendation": "Валидируйте все forwarded заголовки перед использованием",
+      "languages": ["all"]
+    },
+    {
+      "id": "api-endpoint-discovery",
+      "message": "Обнаружен API эндпоинт (для фаззинга)",
+      "severity": "info",
+      "type": "regex",
+      "pattern": "(?:app\\.|router\\.)(?:get|post|put|delete|patch)\\s*\\(\\s*['\"`](/[^'\"`]+)['\"`]",
+      "flags": "gi",
+      "recommendation": "Передайте этот эндпоинт в фаззер для динамического тестирования",
+      "languages": ["javascript", "typescript"]
     }
   ]
 }
