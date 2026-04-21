@@ -821,14 +821,6 @@ class APIFuzzer {
         }
 
             testCases.push(...this.generateRateLimitTests(operation));
-           /*   testCases.push(...this.generateConcurrencyTests(operation));
-                testCases.push(...this.generateBoundaryTests(operation));
-                testCases.push(...this.generateProtocolViolationTests(operation));
-                testCases.push(...this.generateEncodingTests(operation));
-                testCases.push(...this.generateTimeoutTests(operation));
-                testCases.push(...this.generateResourceExhaustionTests(operation));
-                testCases.push(...this.generateCachePoisoningTests(operation));
-                testCases.push(...this.generateIdempotencyTests(operation));*/
       }
     }
 
