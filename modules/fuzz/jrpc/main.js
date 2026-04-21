@@ -1,5 +1,3 @@
-// jrpc-fuzzer.js
-// jrpc-fuzzer.js
 
 export class JRPCFuzzer {
     constructor(endpoint, options = {}) {

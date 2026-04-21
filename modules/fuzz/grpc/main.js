@@ -700,7 +700,7 @@ export async function main() {
     await writeFile('./grpc-fuzzer-report.json', fuzzer.exportResults('json'));
     await writeFile('./grpc-fuzzer-report.csv', fuzzer.exportResults('csv'));
     
-    console.log('\n💾 Отчеты сохранены:');
+    console.log('\nОтчеты сохранены:');
     console.log('   - grpc-fuzzer-report.json');
     console.log('   - grpc-fuzzer-report.csv');
 }

@@ -1,4 +1,4 @@
-// websocket-fuzzer.js
+
 
 export class WebSocketFuzzer {
     constructor(url, options = {}) {
