@@ -12,7 +12,7 @@ import fs from 'fs/promises';
 import pkg from 'winston';
 const { createLogger, format, transports } = pkg;
 import { GitHubDownloader } from './modules/downloader.js';
-import { DependencyAnalyzer } from './modules/sca/dependency-analyzer.js';
+//import { DependencyAnalyzer } from './modules/sca/dependency-analyzer.js';
 import { analyzeRepository } from './modules/sca/sca.js'
 import { ArchiveReceiver } from './modules/sast/archive/index.js';
 import { ArchiveExtractor } from './modules/sast/archive/extractor.js'; 
@@ -278,20 +278,25 @@ const githubDownloader = new GitHubDownloader({
   logger: logger,
 });
 
-const dependencyAnalyzer = new DependencyAnalyzer({
+/*const dependencyAnalyzer = new DependencyAnalyzer({
   logger: logger,
-});
+});*/
 
 // ======================
 // Маршруты API
 // ======================
 
 // pages
-app.get('/', (req, res) => { res.sendFile(join(__dirname, 'public', '/html/main.html'));})
+
+app.get('/', (req, res) => { res.sendFile(join(__dirname, 'public', '/html/sca.html'));})
    .get('/sca', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/sca.html'));})
    .get('/sast', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/sast.html'));})
    .get('/fuzz', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/fuzz.html'));})
 
+
+//app.get(['/', '/sca', '/sast', '/dast', '/fuzz'], (req, res) => {
+//    res.sendFile(join(__dirname, 'public', '/html/index.html'));
+//});
 app.post('/api/sca', async (req, res) => {
   try {
     const { url, name } = req.body;
@@ -732,7 +737,7 @@ async function startServer() {
 }
 
 // Экспортируем app для тестирования
-export { app, logger, githubDownloader, dependencyAnalyzer };
+export { app, logger, githubDownloader};
 
 // Запускаем сервер
 startServer();
