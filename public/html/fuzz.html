@@ -51,22 +51,22 @@
         }
         .start-button {
             padding: 12px 24px;
-            background: var(--accent-color);
-            color: white;
+            font: 14px 'Ubuntu';
+            font-weight: 500;
+            background: #e2e8f0;
+            color: #94a3b8;
             border: none;
             border-radius: 8px;
-            font-family: 'Ubuntu';
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s;
+            cursor: not-allowed;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            user-select: none;
+            margin-top: 2vh;
         }
         .start-button:disabled {
-            opacity: 0.5;
             cursor: not-allowed;
         }
-        .start-button.active {
-            background: var(--accent-color);
-        }
+
         .tech-stack {
             margin-bottom: 20px;
         }
@@ -327,9 +327,9 @@
                     Нажмите для выбора файла спецификации<br>
                     <span style="font-size: 9px">
                         <div class="icons-row">
-                            <span class="format-badge"><i class="fas fa-file-code"></i> JSON</span>
-                            <span class="format-badge"><i class="fas fa-file-alt"></i> YAML</span>
-                            <span class="format-badge"><i class="fas fa-file"></i> YML</span>
+                            <span class="format-badge"><i class="fas fa-file-code" style="color:orange; font-size:15px"></i> JSON</span>
+                            <span class="format-badge"><i class="fas fa-file-alt" style="color:rgb(47, 49, 47); font-size:15px"></i> YAML</span>
+                            <span class="format-badge"><i class="fas fa-file" style="color:rgb(12, 120, 102); font-size:15px"></i> YML</span>
                         </div>
                     </span>
                 </div>
@@ -464,81 +464,5 @@
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script type="text/javascript" src="/js/main/sidebar.js"></script>
     
-    <!--script>
-        // Функция для удаления файла
-        function removeFile() {
-            document.getElementById('fileInfo').style.display = 'none';
-            document.getElementById('fileInput').value = '';
-            document.getElementById('start-url-btn').disabled = true;
-        }
-        
-        // Инициализация загрузчика
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileSize = document.getElementById('fileSize');
-        const startBtn = document.getElementById('start-url-btn');
-        const specUrlInput = document.getElementById('specUrl');
-        
-        // Обработка выбора файла
-        uploadArea.addEventListener('click', () => fileInput.click());
-        
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                fileName.textContent = file.name;
-                fileSize.textContent = formatFileSize(file.size);
-                fileInfo.style.display = 'flex';
-                startBtn.disabled = false;
-                
-                // Очищаем поле URL
-                specUrlInput.value = '';
-            }
-        });
-        
-        // Валидация URL
-        specUrlInput.addEventListener('input', () => {
-            if (specUrlInput.value.trim()) {
-                startBtn.disabled = false;
-                fileInfo.style.display = 'none';
-                fileInput.value = '';
-            } else {
-                startBtn.disabled = true;
-            }
-        });
-        
-        function formatFileSize(bytes) {
-            if (bytes < 1024) return bytes + ' B';
-            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-        }
-        
-        // Функция для отображения уведомлений
-        function showNotification(message, type = 'success') {
-            const notification = document.createElement('div');
-            notification.innerHTML = message;
-            notification.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                z-index: 10001;
-                font-family: 'Ubuntu';
-                animation: fadeIn 0.3s ease;
-            `;
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
-        
-        window.showNotification = showNotification;
-        window.removeFile = removeFile;
-    </script-->
 </body>
 </html>
