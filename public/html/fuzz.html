@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html data-page="construction" data-version="1.27.0" lang="ru">
 <head>
-    <title>Геркулес | API FUZZ</title>
+    <title>Геркулес | FUZZ</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -18,7 +18,209 @@
     <script type="text/javascript" src="/js/fuzz/fuzz.js"></script>
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     
-    
+    <style>
+        /* Дополнительные стили для единообразия */
+
+                .icons-row {
+            display: flex;
+            gap: 2vw;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 3vh;
+            margin-bottom: 3vh;
+         }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Ubuntu';
+            font-size: 14px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+        .start-button {
+            padding: 12px 24px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Ubuntu';
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .start-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .start-button.active {
+            background: var(--accent-color);
+        }
+        .tech-stack {
+            margin-bottom: 20px;
+        }
+        .platforms-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        .upload-text {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .file-info {
+            display: none;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        .file-info.active {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .remove-file {
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .remove-file:hover {
+            color: #ef4444;
+        }
+        .supported-formats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .base-url-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Ubuntu';
+        }
+        .spec-preview {
+            margin-top: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            display: none;
+        }
+        .spec-preview.active {
+            display: block;
+        }
+        .spec-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .spec-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-container {
+            background: var(--bg-primary);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .modal-footer {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .modal-close {
+            cursor: pointer;
+            font-size: 24px;
+        }
+                .format-badge {
+            background: var(--bg-secondary);
+            border: none;
+            padding: 4px 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+    </style>
 </head>
 <body>
     <div id="box" class="fade-in">
@@ -59,16 +261,16 @@
                         </div>
                     </a>
                     <a href="/dast" style="text-decoration: none;">
-                    <div class="tool-item">
-                        <div class="tool-icon">
-                           <i class="fa-solid fa-bug black-icon"></i>
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fa-solid fa-bug black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">DAST</span>
+                                <span class="tool-desc">Оценка безопасности</span>
+                            </div>
                         </div>
-                        <div class="tool-info">
-                            <span class="tool-name">DAST</span>
-                            <span class="tool-desc">Комплексная оценка безопасности</span>
-                        </div>
-                    </div>
-                    </a> 
+                    </a>
                     <div class="tool-item active">
                         <div class="tool-icon">
                             <i class="fa-solid fa-bullseye black-icon"></i>
@@ -80,91 +282,72 @@
                     </div>
                     <div class="tool-divider"></div>
                     <a href="/api" style="text-decoration: none;" target="_blank">
-                    <div class="tool-item">
-                        <div class="tool-icon">
-                           <i class="fas fa-plug black-icon"></i>
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-plug black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">API</span>
+                                <span class="tool-desc">Интеграции в SSDLC</span>
+                            </div>
                         </div>
-                        <div class="tool-info">
-                            <span class="tool-name">API</span>
-                            <span class="tool-desc">Интеграции в SSDLC</span>
-                        </div>
-                    </div>
                     </a>
                     <div class="tool-divider"></div>
                     <a href="https://hercules-web.ru/#extensions" style="text-decoration: none;" target="_blank">
-                    <div class="tool-item">
-                        <div class="tool-icon">
-                        <i class="fas fa-terminal black-icon"></i> 
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-terminal black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Расширения</span>
+                                <span class="tool-desc">Работай там, где удобно</span>
+                            </div>
                         </div>
-                        <div class="tool-info">
-                            <span class="tool-name">Расширения</span>
-                            <span class="tool-desc">Работай там, где удобно</span>
-                        </div>
-                    </div>
                     </a>
                 </div>
             </div>
         </div>
-        
+
+        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА -->
         <div id="center">
-            <h2 class="section-title">Загрузите спецификацию</h2>
-            
-            <!-- Переключатель режимов -->
-            <div class="toggle-mode">
-                <button class="mode-btn active" id="mode-upload" onclick="switchMode('upload')">
-                    <i class="fas fa-upload"></i> Загрузить файл
-                </button>
-                <button class="mode-btn" id="mode-url" onclick="switchMode('url')">
-                    <i class="fas fa-link"></i> Ссылка на спецификацию
-                </button>
+            <h2 class="section-title">Выберите источник</h2>
+
+            <!-- Поле для ввода ссылки -->
+            <div class="input-group">
+                <input type="text" id="specUrl" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)" aria-label="Ссылка на спецификацию">
+                <button class="start-button" id="start-url-btn" type="button" disabled>Начать анализ</button>
             </div>
 
-            <!-- Режим загрузки файла -->
-            <div id="upload-mode">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt black-icon"></i>
-                    </div>
-                    <div class="upload-text">
-                        Перетащите файл спецификации или нажмите, чтобы выбрать
-                    </div>
-                    <div class="upload-hint">
-                        Поддерживаются JSON, YAML, YML (Swagger 2.0, OpenAPI 3.*)
-                    </div>
-                    <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
+            <!-- Блок загрузки архива -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt black-icon"></i>
                 </div>
-
-                <div class="file-info" id="fileInfo">
-                    <div class="file-details">
-                        <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
-                        <span class="file-name" id="fileName"></span>
-                        <span class="file-size" id="fileSize"></span>
-                        <span class="remove-file" onclick="removeFile()">
-                            <i class="fas fa-times"></i>
-                        </span>
-                    </div>
+                <div class="upload-text">
+                    Нажмите для выбора файла спецификации<br>
+                    <span style="font-size: 9px">
+                        <div class="icons-row">
+                            <span class="format-badge"><i class="fas fa-file-code"></i> JSON</span>
+                            <span class="format-badge"><i class="fas fa-file-alt"></i> YAML</span>
+                            <span class="format-badge"><i class="fas fa-file"></i> YML</span>
+                        </div>
+                    </span>
                 </div>
-
-                <div class="supported-formats">
-                    <span class="format-badge">Swagger 2.0</span>
-                    <span class="format-badge">OpenAPI 3.0</span>
-                    <span class="format-badge">OpenAPI 3.1</span>
-                    <span class="format-badge">JSON</span>
-                    <span class="format-badge">YAML</span>
+                <div class="upload-hint">
+                    Поддерживаются Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
                 </div>
+                <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
             </div>
 
-            <!-- Режим ссылки на спецификацию -->
-            <div id="url-mode" style="display: none;">
-                <div class="input-group">
-                    <input type="text" id="specUrl" placeholder="https://raw.githubusercontent.com/user/repo/main/swagger.json">
-                    <button id="fetch-spec-btn" style="font-family: 'Ubuntu';">Загрузить</button>
-                </div>
-                <div class="url-validation" id="url-validation"></div>
-                <div class="supported-formats">
-                    <span class="format-badge">GitHub Raw</span>
-                    <span class="format-badge">GitLab</span>
-                    <span class="format-badge">Любой URL</span>
+            <!-- Информация о выбранном файле -->
+            <div class="file-info" id="fileInfo">
+                <div class="file-details">
+                    <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
+                    <span class="file-name" id="fileName"></span>
+                    <span class="file-size" id="fileSize"></span>
+                    <span class="remove-file" onclick="removeFile()">
+                        <i class="fas fa-times"></i>
+                    </span>
                 </div>
             </div>
 
@@ -176,9 +359,6 @@
                 <input type="text" id="baseUrl" class="base-url-input" placeholder="Пример: https://api.example.com/v1/api">
             </div>
 
-            <!-- Кнопка начала анализа -->
-            <button class="start-button" id="start-btn" type="button" style="width: 100%; margin-top: 20px;" disabled>Начать фаззинг</button>
-            
             <!-- Предпросмотр спецификации -->
             <div class="spec-preview" id="specPreview">
                 <div class="spec-info">
@@ -197,7 +377,8 @@
                 </div>
                 <div class="spec-endpoints" id="specEndpoints"></div>
             </div>
-            
+
+            <!-- Карточки прогресса -->
             <div class="card-table">
                 <div class="card-section">
                     <h2 class="section-title" style="margin-top: 2vh;">Фаззинг API</h2>
@@ -265,11 +446,10 @@
     <div id="fuzzModal" class="modal-overlay">
         <div class="modal-container">
             <div class="modal-header">
-                <h3> Результаты фаззинг тестирования</h3>
+                <h3>Результаты фаззинг тестирования</h3>
                 <span class="modal-close" onclick="closeFuzzModal()">&times;</span>
             </div>
-            <div class="modal-body" id="fuzzModalBody">
-            </div>
+            <div class="modal-body" id="fuzzModalBody"></div>
             <div class="modal-footer">
                 <button class="start-button" onclick="downloadReport()" style="background: #28a745;">
                     <i class="fas fa-download"></i> Скачать отчет
@@ -282,6 +462,83 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-      <script type="text/javascript" src="/js/main/sidebar.js"></script>    
+    <script type="text/javascript" src="/js/main/sidebar.js"></script>
+    
+    <!--script>
+        // Функция для удаления файла
+        function removeFile() {
+            document.getElementById('fileInfo').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('start-url-btn').disabled = true;
+        }
+        
+        // Инициализация загрузчика
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileSize = document.getElementById('fileSize');
+        const startBtn = document.getElementById('start-url-btn');
+        const specUrlInput = document.getElementById('specUrl');
+        
+        // Обработка выбора файла
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileInfo.style.display = 'flex';
+                startBtn.disabled = false;
+                
+                // Очищаем поле URL
+                specUrlInput.value = '';
+            }
+        });
+        
+        // Валидация URL
+        specUrlInput.addEventListener('input', () => {
+            if (specUrlInput.value.trim()) {
+                startBtn.disabled = false;
+                fileInfo.style.display = 'none';
+                fileInput.value = '';
+            } else {
+                startBtn.disabled = true;
+            }
+        });
+        
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+        
+        // Функция для отображения уведомлений
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.innerHTML = message;
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 10001;
+                font-family: 'Ubuntu';
+                animation: fadeIn 0.3s ease;
+            `;
+            document.body.appendChild(notification);
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+        
+        window.showNotification = showNotification;
+        window.removeFile = removeFile;
+    </script-->
 </body>
 </html>

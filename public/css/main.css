@@ -224,7 +224,7 @@
             align-items: flex-start;
         }
 
-        #repo {
+        #repo, #sast-repo, #specUrl {
             flex: 1;
             padding: 12px 16px;
             font: 14px 'Ubuntu';
