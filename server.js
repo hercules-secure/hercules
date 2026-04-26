@@ -91,18 +91,37 @@ async function extractArchive(archivePath, originalName, extractDir) {
 // Multer для загрузки архивов (SAST)
 const uploadArchive = multer({ 
     dest: path.join(__dirname, 'temp'),
-    limits: { fileSize: 100 * 1024 * 1024 },
+    limits: { fileSize: 100 * 1024 * 1024 }, // 100 MB
     fileFilter: (req, file, cb) => {
-        const allowedExtensions = ['.zip', '.tar', '.gz', '.tgz'];
+        const allowedExtensions = ['.zip', '.tar', '.gz', '.tgz', '.7z'];
         const ext = path.extname(file.originalname).toLowerCase();
         
-        // Дополнительная проверка MIME типа
-        const allowedMimes = ['application/zip', 'application/x-tar', 'application/gzip'];
+        // Расширенный список разрешенных MIME типов
+        const allowedMimes = [
+            'application/zip',
+            'application/x-zip-compressed',
+            'application/x-tar',
+            'application/gzip',
+            'application/x-gzip',
+            'application/octet-stream', // Добавляем application/octet-stream
+            'multipart/x-zip'
+        ];
         
-        if (allowedExtensions.includes(ext) && allowedMimes.includes(file.mimetype)) {
+        // Проверяем расширение
+        const isValidExt = allowedExtensions.includes(ext);
+        
+        // Проверяем MIME тип (если не прошел, но расширение правильное - пропускаем)
+        const isValidMime = allowedMimes.includes(file.mimetype);
+        
+        /*console.log(`📁 Загрузка файла: ${file.originalname}`);
+        console.log(`   Расширение: ${ext}, допустимо: ${isValidExt}`);
+        console.log(`   MIME тип: ${file.mimetype}, допустимо: ${isValidMime}`);
+        */
+        if (isValidExt) {
+            // Если расширение правильное - пропускаем (даже если MIME тип не в списке)
             cb(null, true);
         } else {
-            cb(new Error('Неподдерживаемый формат файла'));
+            cb(new Error('Неподдерживаемый формат файла. Разрешены: .zip, .tar, .gz, .tgz, .7z'));
         }
     }
 });
@@ -291,6 +310,7 @@ const githubDownloader = new GitHubDownloader({
 app.get('/', (req, res) => { res.sendFile(join(__dirname, 'public', '/html/sca.html'));})
    .get('/sca', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/sca.html'));})
    .get('/sast', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/sast.html'));})
+   .get('/dast', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/dast.html'));})
    .get('/fuzz', (req, res) => {res.sendFile(join(__dirname, 'public', '/html/fuzz.html'));})
 
 
@@ -459,7 +479,7 @@ app.post('/api/sast/url', sastLimiter, async (req, res) => {
     }
 });
 
-app.post('/api/archive/upload', uploadArchive.single('archive'), async (req, res) => {
+app.post('/api/sast/upload', uploadArchive.single('archive'), async (req, res) => {
     if (!req.file) {
         console.error('[upload] Файл не загружен');
         return res.status(400).json({ 
@@ -469,7 +489,6 @@ app.post('/api/archive/upload', uploadArchive.single('archive'), async (req, res
     }
 
     try {
-        //await ensureDir(STORAGE_DIR);
         
         const result = await receiver.getFromFile(req.file.path, req.file.originalname);
         

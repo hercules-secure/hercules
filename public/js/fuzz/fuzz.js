@@ -1,361 +1,253 @@
+// ==================== fuzz-client.js - ПОЛНЫЙ КЛИЕНТСКИЙ СКРИПТ ====================
+
+// ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
 let currentSpec = null;
 let currentReport = null;
 let selectedFile = null;
 let globalRowCounter = 0;
-
-// Глобальная переменная для хранения токена
 let authToken = localStorage.getItem('apiAuthToken') || null;
 let showTokenModalCallback = null;
 let pendingFormData = null;
+let currentReplayResponse = null;
 
-// ==================== ОСНОВНЫЕ ФУНКЦИИ ====================
+// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
 
-function openFuzzModal() {
-    const modal = document.getElementById('fuzzModal');
-    if (modal) {
-        modal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
+function showToolNotification(message, type = 'success', duration = 3000) {
+    const colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
+    
+    const notification = document.createElement('div');
+    notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
+    notification.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: ${colors[type] || colors.success};
+        color: white;
+        padding: 12px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10001;
+        animation: slideIn 0.3s ease;
+        font-family: 'Ubuntu';
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        notification.style.transform = 'translateY(20px)';
+        notification.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, duration);
 }
 
-function closeFuzzModal() {
-    const modal = document.getElementById('fuzzModal');
-    if (modal) {
-        modal.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-    resetAllProgress();
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
-function resetAllProgress() {
-    updateTaskStatus('1.1', 'pending');
-    updateTaskStatus('2.1', 'pending');
-    updateTaskStatus('2.2', 'pending');
-    updateTaskStatus('2.3', 'pending');
-    
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-        const progressEl = card.querySelector('.progress');
-        if (progressEl) progressEl.style.width = '0%';
-    });
-    
-    const startBtn = document.getElementById('start-url-btn');
-    if (startBtn) {
-        startBtn.textContent = 'Начать анализ';
-        startBtn.disabled = true;
-        startBtn.classList.remove('active');
-    }
-    
-    selectedFile = null;
-    currentSpec = null;
-    currentReport = null;
-    
-    const fileInfo = document.getElementById('fileInfo');
-    if (fileInfo) fileInfo.classList.remove('active');
-    
-    const specPreview = document.getElementById('specPreview');
-    if (specPreview) specPreview.classList.remove('active');
-    
-    const fileInput = document.getElementById('fileInput');
-    if (fileInput) fileInput.value = '';
-    
+function showValidationMessage(message, type) {
+    const el = document.getElementById('url-validation');
+    if (!el) return;
+    el.textContent = message;
+    el.className = 'url-validation ' + type;
+    setTimeout(() => {
+        if (el.textContent === message) el.textContent = '';
+    }, 5000);
+}
+
+// ==================== ЗАГРУЗКА СПЕЦИФИКАЦИИ ====================
+
+async function fetchSpecFromUrl() {
     const specUrlInput = document.getElementById('specUrl');
-    if (specUrlInput) specUrlInput.value = '';
+    const url = specUrlInput ? specUrlInput.value.trim() : '';
     
-    const baseUrlInput = document.getElementById('baseUrl');
-    if (baseUrlInput) baseUrlInput.value = '';
-    
-    const urlValidation = document.getElementById('url-validation');
-    if (urlValidation) urlValidation.textContent = '';
-    
-    const endpointsContainer = document.getElementById('specEndpoints');
-    if (endpointsContainer) endpointsContainer.innerHTML = '';
-    
-    const specTitle = document.getElementById('specTitle');
-    const specVersion = document.getElementById('specVersion');
-    const specFormat = document.getElementById('specFormat');
-    
-    if (specTitle) specTitle.textContent = 'Название';
-    if (specVersion) specVersion.textContent = 'Версия';
-    if (specFormat) specFormat.textContent = 'Формат';
-    
-    const uploadArea = document.getElementById('uploadArea');
-    if (uploadArea) uploadArea.classList.remove('dragover');
-}
-
-function requiresAuth(spec) {
-    if (spec.security && spec.security.length > 0) return true;
-    if (spec.components?.securitySchemes && Object.keys(spec.components.securitySchemes).length > 0) return true;
-    if (spec.securityDefinitions && Object.keys(spec.securityDefinitions).length > 0) return true;
-    return false;
-}
-
-function extractBaseUrlFromSpec(spec) {
-    let baseUrl = '';
-    if (spec.openapi && spec.servers && spec.servers.length > 0) {
-        baseUrl = spec.servers[0].url;
-    } else if (spec.swagger) {
-        if (spec.schemes && spec.host && spec.basePath) {
-            const scheme = spec.schemes[0] || 'https';
-            baseUrl = `${scheme}://${spec.host}${spec.basePath}`;
-        } else if (spec.host) {
-            baseUrl = `https://${spec.host}`;
-        }
+    if (!url) {
+        showValidationMessage('Введите URL спецификации', 'invalid');
+        return;
     }
-    if (baseUrl.endsWith('/')) baseUrl = baseUrl.slice(0, -1);
-    return baseUrl;
-}
-
-function updateBaseUrlFromSpec(spec) {
-    const baseUrlInput = document.getElementById('baseUrl');
-    if (!baseUrlInput) return;
-    const extractedUrl = extractBaseUrlFromSpec(spec);
-    if (extractedUrl) {
-        baseUrlInput.value = extractedUrl;
-        showValidationMessage(`Базовый URL установлен: ${extractedUrl}`, 'valid');
-    } else {
-        showValidationMessage('Не удалось извлечь базовый URL из спецификации, укажите вручную', 'warning');
+    
+    const fetchBtn = document.getElementById('fetch-spec-btn');
+    const originalText = fetchBtn?.textContent;
+    if (fetchBtn) {
+        fetchBtn.disabled = true;
+        fetchBtn.textContent = '⏳ Загрузка...';
     }
-    if (requiresAuth(spec)) {
-        showValidationMessage('API требует авторизацию (Bearer token).', 'warning');
-    }
-    // Активируем кнопку после загрузки спецификации
-    validateStartButton();
-}
-
-// ==================== ЗАГРУЗКА СПЕЦИФИКАЦИИ ПО URL ====================
-
-async function loadSpecFromUrl(url) {
-    const startBtn = document.getElementById('start-url-btn');
-    startBtn.disabled = true;
-    startBtn.textContent = 'Загрузка...';
     
     try {
         showValidationMessage('Загрузка спецификации...', 'valid');
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
         const content = await response.text();
+        
+        let fileName = url.split('/').pop() || 'spec.yaml';
+        let fileType = fileName.endsWith('.yaml') || fileName.endsWith('.yml') ? 'application/yaml' : 'application/json';
+        const blob = new Blob([content], { type: fileType });
+        const file = new File([blob], fileName, { type: fileType });
+        
+        await handleFile(file);
+        showValidationMessage('Спецификация успешно загружена', 'valid');
+        switchMode('upload');
+        
+    } catch (error) {
+        showValidationMessage(`Ошибка загрузки: ${error.message}`, 'invalid');
+    } finally {
+        if (fetchBtn) {
+            fetchBtn.disabled = false;
+            fetchBtn.textContent = originalText || 'Загрузить';
+        }
+    }
+}
+
+function switchMode(mode) {
+    const uploadMode = document.getElementById('upload-mode');
+    const urlMode = document.getElementById('url-mode');
+    const uploadBtn = document.getElementById('mode-upload');
+    const urlBtn = document.getElementById('mode-url');
+    
+    if (uploadMode) uploadMode.style.display = mode === 'upload' ? 'block' : 'none';
+    if (urlMode) urlMode.style.display = mode === 'url' ? 'block' : 'none';
+    if (uploadBtn) uploadBtn.classList.toggle('active', mode === 'upload');
+    if (urlBtn) urlBtn.classList.toggle('active', mode === 'url');
+    
+    validateStartButton();
+}
+
+async function handleFile(file) {
+    if (!file) return;
+    selectedFile = file;
+    
+    const fileInfo = document.getElementById('fileInfo');
+    const fileName = document.getElementById('fileName');
+    const fileSize = document.getElementById('fileSize');
+    
+    if (fileName) fileName.textContent = file.name;
+    if (fileSize) fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
+    if (fileInfo) fileInfo.classList.add('active');
+    
+    await parseSpecification(file);
+}
+
+async function parseSpecification(file) {
+    try {
+        const text = await file.text();
         let spec;
         
-        // Определяем формат по расширению URL или по содержанию
-        if (url.toLowerCase().endsWith('.json')) {
-            spec = JSON.parse(content);
+        if (file.name.endsWith('.json')) {
+            spec = JSON.parse(text);
         } else {
-            try {
-                spec = JSON.parse(content);
-            } catch {
-                spec = jsyaml.load(content);
-            }
+            spec = jsyaml.load(text);
         }
         
-        // Создаем виртуальный файл для единообразия
-        const fileName = url.split('/').pop() || 'spec.yaml';
-        const blob = new Blob([content], { type: 'application/octet-stream' });
-        const file = new File([blob], fileName, { type: 'application/octet-stream' });
-        
-        selectedFile = file;
         currentSpec = spec;
         
-        // Отображаем информацию о файле
-        const fileInfo = document.getElementById('fileInfo');
-        const fileNameSpan = document.getElementById('fileName');
-        const fileSizeSpan = document.getElementById('fileSize');
-        if (fileNameSpan) fileNameSpan.textContent = fileName;
-        if (fileSizeSpan) fileSizeSpan.textContent = (content.length / 1024).toFixed(2) + ' KB';
-        if (fileInfo) fileInfo.classList.add('active');
+        let format = 'Unknown';
+        if (spec.swagger === '2.0') format = 'Swagger 2.0';
+        else if (spec.openapi?.startsWith('3.')) format = 'OpenAPI 3.x';
         
-        // Отображаем информацию о спецификации
-        displaySpecInfo(spec);
+        const specTitle = document.getElementById('specTitle');
+        const specVersion = document.getElementById('specVersion');
+        const specFormat = document.getElementById('specFormat');
         
-        showValidationMessage('Спецификация успешно загружена', 'valid');
-        startBtn.textContent = 'Начать анализ';
-        startBtn.disabled = false;
+        if (specTitle) specTitle.textContent = spec.info?.title || 'Unknown';
+        if (specVersion) specVersion.textContent = spec.info?.version || '?';
+        if (specFormat) specFormat.textContent = format;
+        
+        const endpointsContainer = document.getElementById('specEndpoints');
+        if (endpointsContainer) {
+            endpointsContainer.innerHTML = '';
+            const paths = spec.paths || {};
+            let count = 0;
+            for (const [path, methods] of Object.entries(paths)) {
+                for (const [method] of Object.entries(methods)) {
+                    if (['get', 'post', 'put', 'delete', 'patch'].includes(method)) {
+                        const div = document.createElement('div');
+                        div.className = 'endpoint-item';
+                        div.innerHTML = `<span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span><span style="color: var(--text-secondary);">${escapeHtml(path)}</span>`;
+                        endpointsContainer.appendChild(div);
+                        count++;
+                    }
+                }
+            }
+            if (count === 0) endpointsContainer.innerHTML = '<div class="endpoint-item">Эндпоинты не найдены</div>';
+        }
+        
+        const specPreview = document.getElementById('specPreview');
+        if (specPreview) specPreview.classList.add('active');
+        
+        updateBaseUrlFromSpec(spec);
         validateStartButton();
         
     } catch (error) {
-        console.error('Load error:', error);
-        showValidationMessage('Ошибка загрузки: ' + error.message, 'invalid');
-        startBtn.textContent = 'Начать анализ';
-        startBtn.disabled = false;
-        throw error;
+        showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
+        currentSpec = null;
+        selectedFile = null;
     }
 }
 
-// ==================== ОТОБРАЖЕНИЕ ИНФОРМАЦИИ О СПЕЦИФИКАЦИИ ====================
-
-function displaySpecInfo(spec) {
-    let format = 'Unknown';
-    if (spec.swagger === '2.0') format = 'Swagger 2.0';
-    else if (spec.openapi === '3.0.0') format = 'OpenAPI 3.0.0';
-    else if (spec.openapi === '3.0.1') format = 'OpenAPI 3.0.1';
-    else if (spec.openapi === '3.0.2') format = 'OpenAPI 3.0.2';
-    else if (spec.openapi === '3.0.3') format = 'OpenAPI 3.0.3';
-    else if (spec.openapi === '3.1.0') format = 'OpenAPI 3.1.0';
-    
-    const specTitle = document.getElementById('specTitle');
-    const specVersion = document.getElementById('specVersion');
-    const specFormat = document.getElementById('specFormat');
-    if (specTitle) specTitle.textContent = spec.info?.title || 'Unknown';
-    if (specVersion) specVersion.textContent = spec.info?.version || '?';
-    if (specFormat) specFormat.textContent = format;
-    
-    const endpointsContainer = document.getElementById('specEndpoints');
-    if (endpointsContainer) {
-        endpointsContainer.innerHTML = '';
-        const paths = spec.paths || {};
-        let count = 0;
-        for (const [path, methods] of Object.entries(paths)) {
-            for (const [method, _] of Object.entries(methods)) {
-                if (['get', 'post', 'put', 'delete', 'patch', 'head', 'options'].includes(method)) {
-                    const div = document.createElement('div');
-                    div.className = 'endpoint-item';
-                    div.innerHTML = `<span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span><span style="color: var(--text-secondary);">${path}</span>`;
-                    endpointsContainer.appendChild(div);
-                    count++;
-                }
-            }
-        }
-        if (count === 0) endpointsContainer.innerHTML = '<div class="endpoint-item">Эндпоинты не найдены</div>';
-    }
-    
-    const specPreview = document.getElementById('specPreview');
-    if (specPreview) specPreview.classList.add('active');
-    updateBaseUrlFromSpec(spec);
-    
-    if (requiresAuth(spec)) {
-        const urlValidation = document.getElementById('url-validation');
-        if (urlValidation) {
-            urlValidation.innerHTML = `<div style="background: rgba(245, 158, 11, 0.1); padding: 12px; border-radius: 8px;"><i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i> <strong>API требует авторизацию.</strong> Для полноценного тестирования потребуется токен.</div>`;
-            urlValidation.className = 'url-validation warning';
-        }
-    }
-}
-
-// ==================== ОБРАБОТКА ФАЙЛОВ ====================
-
-document.addEventListener('DOMContentLoaded', function() {
-    const uploadArea = document.getElementById('uploadArea');
-    const fileInput = document.getElementById('fileInput');
-    const specUrlInput = document.getElementById('specUrl');
-    const startBtn = document.getElementById('start-url-btn');
+function updateBaseUrlFromSpec(spec) {
     const baseUrlInput = document.getElementById('baseUrl');
+    if (!baseUrlInput) return;
     
-    if (!uploadArea || !fileInput) return;
-    
-    // Drag & Drop для файлов
-    document.addEventListener('dragover', function(e) { e.preventDefault(); e.stopPropagation(); });
-    document.addEventListener('drop', function(e) { e.preventDefault(); e.stopPropagation(); });
-
-    uploadArea.addEventListener('click', function() {
-        fileInput.click();
-    });
-
-    uploadArea.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.classList.add('dragover');
-    });
-    
-    uploadArea.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.classList.remove('dragover');
-    });
-    
-    uploadArea.addEventListener('drop', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        uploadArea.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files && files.length > 0) {
-            const file = files[0];
-            const fileName = file.name.toLowerCase();
-            if (fileName.endsWith('.json') || fileName.endsWith('.yaml') || fileName.endsWith('.yml')) {
-                handleFile(file);
-                // Очищаем поле URL при выборе файла
-                if (specUrlInput) specUrlInput.value = '';
-            } else {
-                showValidationMessage('Поддерживаются только JSON, YAML, YML файлы', 'invalid');
-            }
-        }
-    });
-    
-    fileInput.addEventListener('change', function(e) {
-        if (e.target.files && e.target.files.length > 0) {
-            const file = e.target.files[0];
-            handleFile(file);
-            // Очищаем поле URL при выборе файла
-            if (specUrlInput) specUrlInput.value = '';
-        }
-    });
-    
-    // Кнопка "Начать анализ" - загружает спецификацию по URL если нет выбранного файла
-    if (startBtn) {
-        startBtn.addEventListener('click', async function() {
-            // Если есть выбранный файл - запускаем фаззинг
-            if (selectedFile) {
-                await startFuzzing();
-                return;
-            }
-            
-            // Если нет файла, но есть URL - загружаем спецификацию
-            const url = specUrlInput ? specUrlInput.value.trim() : '';
-            if (url) {
-                await loadSpecFromUrl(url);
-                // После загрузки спецификации запускаем фаззинг
-                await startFuzzing();
-            } else {
-                showValidationMessage('Введите URL спецификации или выберите файл', 'invalid');
-            }
-        });
+    let baseUrl = '';
+    if (spec.openapi && spec.servers?.length > 0) {
+        baseUrl = spec.servers[0].url;
+    } else if (spec.swagger && spec.host) {
+        const scheme = spec.schemes?.[0] || 'https';
+        baseUrl = `${scheme}://${spec.host}${spec.basePath || ''}`;
     }
     
-    // Слушаем изменение базового URL (если пользователь ввел вручную)
-    if (baseUrlInput) baseUrlInput.addEventListener('input', validateStartButton);
-    
-    // Слушаем изменение поля URL (чтобы активировать кнопку если есть URL)
-    if (specUrlInput) specUrlInput.addEventListener('input', validateStartButton);
+    if (baseUrl) {
+        baseUrlInput.value = baseUrl.replace(/\/$/, '');
+        showValidationMessage(`Базовый URL установлен: ${baseUrl}`, 'valid');
+    }
     
     validateStartButton();
-    
-    document.addEventListener('click', function(e) {
-        const modal = document.getElementById('fuzzModal');
-        if (modal && modal.classList.contains('active') && e.target === modal) closeFuzzModal();
-        const tokenModal = document.getElementById('tokenModal');
-        if (tokenModal && tokenModal.classList.contains('active') && e.target === tokenModal) closeTokenModal();
-    });
-
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeFuzzModal();
-            closeTokenModal();
-        }
-    });
-    
-    addTokenClearButton();
-});
-
-function addTokenClearButton() {
-    const container = document.querySelector('.fuzz-controls');
-    if (container && !document.getElementById('clearTokenBtn')) {
-        const clearBtn = document.createElement('button');
-        clearBtn.id = 'clearTokenBtn';
-        clearBtn.innerHTML = '<i class="fas fa-trash-alt"></i> Очистить токен';
-        clearBtn.className = 'btn btn-secondary';
-        clearBtn.style.marginLeft = '10px';
-        clearBtn.onclick = clearAuthToken;
-        container.appendChild(clearBtn);
-    }
 }
 
-function clearAuthToken() {
-    if (confirm('Очистить сохраненный токен авторизации?')) {
-        localStorage.removeItem('apiAuthToken');
-        authToken = null;
-        showValidationMessage('Токен удален', 'valid');
-    }
+function requiresAuth(spec) {
+    if (spec.security && spec.security.length > 0) return true;
+    if (spec.components?.securitySchemes && Object.keys(spec.components.securitySchemes).length > 0) return true;
+    return false;
 }
+
+function validateStartButton() {
+    const startBtn = document.getElementById('start-btn');
+    const baseUrlInput = document.getElementById('baseUrl');
+    if (!startBtn) return;
+    
+    const baseUrl = baseUrlInput?.value.trim() || '';
+    const hasSpec = currentSpec !== null;
+    const hasBaseUrl = baseUrl.length > 0;
+    
+    startBtn.disabled = !(hasSpec && hasBaseUrl);
+    startBtn.classList.toggle('active', hasSpec && hasBaseUrl);
+}
+
+function removeFile() {
+    selectedFile = null;
+    currentSpec = null;
+    const fileInfo = document.getElementById('fileInfo');
+    const specPreview = document.getElementById('specPreview');
+    const fileInput = document.getElementById('fileInput');
+    if (fileInfo) fileInfo.classList.remove('active');
+    if (specPreview) specPreview.classList.remove('active');
+    if (fileInput) fileInput.value = '';
+    validateStartButton();
+}
+
+// ==================== ТОКЕН АВТОРИЗАЦИИ ====================
 
 function showTokenModal(endpoint, callback) {
     let modal = document.getElementById('tokenModal');
@@ -366,17 +258,18 @@ function showTokenModal(endpoint, callback) {
     
     const endpointInfo = document.getElementById('tokenEndpointInfo');
     const tokenInput = document.getElementById('authTokenInput');
-    const saveTokenBtn = document.getElementById('saveTokenBtn');
-    const skipBtn = document.getElementById('skipTokenBtn');
     
     if (endpointInfo) endpointInfo.textContent = endpoint || 'Неизвестный эндпоинт';
     if (tokenInput) tokenInput.value = authToken || '';
     
     showTokenModalCallback = callback;
     
-    const newSaveBtn = saveTokenBtn.cloneNode(true);
+    const saveBtn = document.getElementById('saveTokenBtn');
+    const skipBtn = document.getElementById('skipTokenBtn');
+    
+    const newSaveBtn = saveBtn.cloneNode(true);
     const newSkipBtn = skipBtn.cloneNode(true);
-    saveTokenBtn.parentNode.replaceChild(newSaveBtn, saveTokenBtn);
+    saveBtn.parentNode.replaceChild(newSaveBtn, saveBtn);
     skipBtn.parentNode.replaceChild(newSkipBtn, skipBtn);
     
     newSaveBtn.addEventListener('click', () => {
@@ -436,80 +329,564 @@ function createTokenModal() {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 }
 
-function handleFile(file) {
-    selectedFile = file;
-    const fileInfo = document.getElementById('fileInfo');
-    const fileName = document.getElementById('fileName');
-    const fileSize = document.getElementById('fileSize');
-    if (fileName) fileName.textContent = file.name;
-    if (fileSize) fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
-    if (fileInfo) fileInfo.classList.add('active');
-    parseSpecification(file);
-}
-
-function removeFile() {
-    selectedFile = null;
-    const fileInfo = document.getElementById('fileInfo');
-    const specPreview = document.getElementById('specPreview');
-    const fileInput = document.getElementById('fileInput');
-    const specUrlInput = document.getElementById('specUrl');
-    if (fileInfo) fileInfo.classList.remove('active');
-    if (specPreview) specPreview.classList.remove('active');
-    currentSpec = null;
-    if (fileInput) fileInput.value = '';
-    if (specUrlInput) specUrlInput.value = '';
-    validateStartButton();
-}
-
-function showValidationMessage(message, type) {
-    const el = document.getElementById('url-validation');
-    if (!el) return;
-    el.textContent = message;
-    el.className = 'url-validation ' + type;
-    setTimeout(() => {
-        if (el.textContent === message) el.textContent = '';
-    }, 5000);
-}
-
-async function parseSpecification(file) {
-    try {
-        const text = await file.text();
-        let spec;
-        if (file.name.endsWith('.json')) {
-            spec = JSON.parse(text);
-        } else {
-            spec = jsyaml.load(text);
-        }
-        currentSpec = spec;
-        displaySpecInfo(spec);
-        validateStartButton();
-    } catch (error) {
-        showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
+function clearAuthToken() {
+    if (confirm('Очистить сохраненный токен авторизации?')) {
+        localStorage.removeItem('apiAuthToken');
+        authToken = null;
+        showValidationMessage('Токен удален', 'valid');
     }
 }
 
-// УПРОЩЕННАЯ ФУНКЦИЯ АКТИВАЦИИ КНОПКИ
-function validateStartButton() {
-    const startBtn = document.getElementById('start-url-btn');
-    if (!startBtn) return;
+// ==================== СБРОС ПРОГРЕССА ====================
+
+function resetAllProgress() {
+    updateTaskStatus('1.1', 'pending');
+    updateTaskStatus('2.1', 'pending');
+    updateTaskStatus('2.2', 'pending');
+    updateTaskStatus('2.3', 'pending');
     
-    // Кнопка активна если:
-    // 1. Спецификация загружена И базовый URL заполнен (из спецификации или вручную)
-    // 2. ИЛИ есть текст в поле URL (пользователь может загрузить по ссылке)
-    const hasSpec = currentSpec !== null;
-    const baseUrl = document.getElementById('baseUrl')?.value.trim() || '';
-    const hasBaseUrl = baseUrl.length > 0;
-    const hasUrl = document.getElementById('specUrl')?.value.trim().length > 0;
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        const progressEl = card.querySelector('.progress');
+        if (progressEl) progressEl.style.width = '0%';
+    });
     
-    const isReady = (hasSpec && hasBaseUrl) || hasUrl;
-    
-    startBtn.disabled = !isReady;
-    if (isReady) {
-        startBtn.classList.add('active');
-    } else {
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+        startBtn.textContent = 'Начать фаззинг';
+        startBtn.disabled = true;
         startBtn.classList.remove('active');
     }
 }
+
+// ==================== CREATE REPLAY MODAL ====================
+
+function createReplayModal() {
+    // Удаляем старую модалку если есть
+    const existingModal = document.getElementById('replayModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    const modalHTML = `
+        <div id="replayModal" class="modal" style="z-index: 10002; display: flex;">
+            <div class="modal-content" style="max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                <div class="modal-header">
+                    <h3><i class="fas fa-play-circle"></i> Replay запроса</h3>
+                    <button class="close-btn" id="closeReplayModalBtn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="replay-tabs">
+                        <button class="replay-tab active" data-tab="request">Запрос</button>
+                        <button class="replay-tab" data-tab="response">Ответ</button>
+                    </div>
+                    
+                    <div id="replayRequestTab" class="replay-tab-content active">
+                        <div class="replay-method-url">
+                            <select id="replayMethod" class="replay-method-select">
+                                <option value="GET">GET</option>
+                                <option value="POST">POST</option>
+                                <option value="PUT">PUT</option>
+                                <option value="DELETE">DELETE</option>
+                                <option value="PATCH">PATCH</option>
+                                <option value="HEAD">HEAD</option>
+                                <option value="OPTIONS">OPTIONS</option>
+                            </select>
+                            <input type="text" id="replayUrl" class="replay-url-input" placeholder="https://api.example.com/endpoint">
+                        </div>
+                        
+                        <div class="replay-section">
+                            <div class="replay-section-header" data-section="headers">
+                                <span>Заголовки</span>
+                                <span class="toggle-icon">▼</span>
+                            </div>
+                            <div id="replayHeadersSection" class="replay-section-content open">
+                                <textarea id="replayHeaders" class="replay-textarea" rows="5" placeholder='{\n  "Content-Type": "application/json"\n}'></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="replay-section">
+                            <div class="replay-section-header" data-section="body">
+                                <span>Тело запроса</span>
+                                <span class="toggle-icon">▼</span>
+                            </div>
+                            <div id="replayBodySection" class="replay-section-content open">
+                                <textarea id="replayBody" class="replay-textarea" rows="8" placeholder='{\n  "key": "value"\n}'></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="replay-actions">
+                            <button id="sendReplayBtn" class="start-button-replay">
+                                <i class="fas fa-paper-plane"></i> Отправить
+                            </button>
+                            <button id="copyCurlBtn" class="start-button-replay">
+                                <i class="fas fa-terminal"></i> cURL
+                            </button>
+                            <button id="copyFetchBtn" class="start-button-replay">
+                                <i class="fab fa-js"></i> Fetch
+                            </button>
+                            <button id="copyRawBtn" class="start-button-replay">
+                                <i class="fas fa-copy"></i> Raw HTTP
+                            </button>
+                            <button id="exportPostmanBtn" class="start-button-replay">
+                                <i class="fas fa-download"></i> Postman
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="replayResponseTab" class="replay-tab-content">
+                        <div id="replayResponseContent" class="replay-response">
+                            <div class="replay-response-placeholder">
+                                <i class="fas fa-play-circle"></i>
+                                <p>Нажмите "Отправить" для выполнения запроса</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Привязываем обработчики ПОСЛЕ создания DOM
+    attachReplayModalHandlers();
+}
+
+function attachReplayModalHandlers() {
+    // Кнопка закрытия
+    const closeBtn = document.getElementById('closeReplayModalBtn');
+    if (closeBtn) {
+        closeBtn.onclick = () => closeReplayModal();
+    }
+    
+    // Переключение табов
+    const tabs = document.querySelectorAll('#replayModal .replay-tab');
+    tabs.forEach(tab => {
+        tab.onclick = () => {
+            const tabName = tab.getAttribute('data-tab');
+            switchReplayTab(tabName);
+        };
+    });
+    
+    // Секции заголовков
+    const sectionHeaders = document.querySelectorAll('#replayModal .replay-section-header');
+    sectionHeaders.forEach(header => {
+        header.onclick = () => {
+            const section = header.getAttribute('data-section');
+            toggleReplaySection(section);
+        };
+    });
+    
+    // Кнопка отправки
+    const sendBtn = document.getElementById('sendReplayBtn');
+    if (sendBtn) {
+        sendBtn.onclick = () => sendReplayRequest();
+    }
+    
+    // Кнопка cURL
+    const curlBtn = document.getElementById('copyCurlBtn');
+    if (curlBtn) {
+        curlBtn.onclick = () => copyAsCurl();
+    }
+    
+    // Кнопка Fetch
+    const fetchBtn = document.getElementById('copyFetchBtn');
+    if (fetchBtn) {
+        fetchBtn.onclick = () => copyAsFetch();
+    }
+    
+    // Кнопка Raw
+    const rawBtn = document.getElementById('copyRawBtn');
+    if (rawBtn) {
+        rawBtn.onclick = () => copyRawRequest();
+    }
+    
+    // Кнопка Postman
+    const postmanBtn = document.getElementById('exportPostmanBtn');
+    if (postmanBtn) {
+        postmanBtn.onclick = () => exportToPostman();
+    }
+    
+    // Закрытие по клику на оверлей
+    const modal = document.getElementById('replayModal');
+    if (modal) {
+        modal.onclick = (e) => {
+            if (e.target === modal) closeReplayModal();
+        };
+    }
+}
+
+function closeReplayModal() {
+    const modal = document.getElementById('replayModal');
+    if (modal) {
+        modal.remove();
+    }
+    document.body.style.overflow = '';
+    currentReplayResponse = null;
+}
+
+function switchReplayTab(tabName) {
+    const requestTab = document.getElementById('replayRequestTab');
+    const responseTab = document.getElementById('replayResponseTab');
+    const tabs = document.querySelectorAll('#replayModal .replay-tab');
+    
+    if (tabName === 'request') {
+        if (requestTab) requestTab.classList.add('active');
+        if (responseTab) responseTab.classList.remove('active');
+        tabs.forEach(t => t.classList.remove('active'));
+        if (tabs[0]) tabs[0].classList.add('active');
+    } else if (tabName === 'response') {
+        if (requestTab) requestTab.classList.remove('active');
+        if (responseTab) responseTab.classList.add('active');
+        tabs.forEach(t => t.classList.remove('active'));
+        if (tabs[1]) tabs[1].classList.add('active');
+    }
+}
+
+function toggleReplaySection(sectionName) {
+    let contentId = '';
+    
+    if (sectionName === 'headers') {
+        contentId = 'replayHeadersSection';
+    } else if (sectionName === 'body') {
+        contentId = 'replayBodySection';
+    } else if (sectionName === 'response-headers') {
+        contentId = 'replayResponseHeadersSection';
+    } else if (sectionName === 'response-body') {
+        contentId = 'replayResponseBodySection';
+    }
+    
+    const content = document.getElementById(contentId);
+    if (content) {
+        content.classList.toggle('open');
+    }
+}
+
+// ==================== REPLAY TEST ====================
+
+async function replayTest(testData) {
+    console.log('🎮 replayTest вызван с данными:', testData);
+    
+    // Удаляем старую модалку если есть
+    const existingModal = document.getElementById('replayModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Создаем новую модалку
+    createReplayModal();
+    
+    // Небольшая задержка чтобы DOM успел создаться
+    await new Promise(resolve => setTimeout(resolve, 50));
+    
+    // ========== ФОРМИРУЕМ ПРАВИЛЬНЫЙ URL ==========
+    let fullUrl = '';
+    const baseUrlInput = document.getElementById('baseUrl');
+    let baseUrl = baseUrlInput ? baseUrlInput.value.trim() : '';
+    baseUrl = baseUrl.replace(/\/$/, '');
+    
+    if (testData.url) {
+        fullUrl = testData.url;
+    } else if (testData.endpoint) {
+        let endpoint = testData.endpoint.replace(/^\//, '');
+        fullUrl = `${baseUrl}/${endpoint}`;
+    }
+    
+    // ========== ОПРЕДЕЛЯЕМ HTTP МЕТОД ==========
+    let method = testData.method || 'GET';
+    method = method.toUpperCase();
+    
+    // ========== ФОРМИРУЕМ ЗАГОЛОВКИ ==========
+    let headers = { 'Content-Type': 'application/json' };
+    if (testData.headers) {
+        headers = { ...headers, ...testData.headers };
+    }
+    
+    if (authToken && !headers['Authorization'] && !headers['authorization']) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
+    // ========== ФОРМИРУЕМ ТЕЛО ЗАПРОСА ==========
+    let body = testData.body || testData.payload || null;
+    if (body && typeof body === 'object') {
+        body = JSON.stringify(body, null, 2);
+    }
+    
+    // ========== ЗАПОЛНЯЕМ ПОЛЯ В МОДАЛЬНОМ ОКНЕ ==========
+    const methodSelect = document.getElementById('replayMethod');
+    const urlInput = document.getElementById('replayUrl');
+    const headersTextarea = document.getElementById('replayHeaders');
+    const bodyTextarea = document.getElementById('replayBody');
+    
+    if (methodSelect) methodSelect.value = method;
+    if (urlInput) urlInput.value = fullUrl;
+    
+    if (headersTextarea && headers) {
+        try {
+            headersTextarea.value = JSON.stringify(headers, null, 2);
+        } catch (e) {
+            headersTextarea.value = JSON.stringify({ 'Content-Type': 'application/json' }, null, 2);
+        }
+    }
+    
+    if (bodyTextarea && body) {
+        bodyTextarea.value = body;
+    }
+    
+    // Показываем модальное окно
+    const modal = document.getElementById('replayModal');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // Переключаемся на вкладку запроса
+    switchReplayTab('request');
+}
+
+// ==================== SEND REPLAY REQUEST ====================
+
+async function sendReplayRequest() {
+    console.log('📤 sendReplayRequest вызван');
+    
+    const methodSelect = document.getElementById('replayMethod');
+    const urlInput = document.getElementById('replayUrl');
+    const headersTextarea = document.getElementById('replayHeaders');
+    const bodyTextarea = document.getElementById('replayBody');
+    
+    const method = methodSelect?.value || 'GET';
+    const url = urlInput?.value;
+    const headersText = headersTextarea?.value;
+    const bodyText = bodyTextarea?.value;
+    
+    console.log('📡 Запрос:', { method, url });
+    
+    if (!url) {
+        showToolNotification('Введите URL запроса', 'error');
+        return;
+    }
+    
+    let headers = {};
+    if (headersText && headersText.trim()) {
+        try {
+            headers = JSON.parse(headersText);
+        } catch (e) {
+            showToolNotification('Ошибка парсинга заголовков: ' + e.message, 'error');
+            return;
+        }
+    }
+    
+    if (bodyText && bodyText.trim() && !headers['Content-Type'] && !headers['content-type']) {
+        headers['Content-Type'] = 'application/json';
+    }
+    
+    if (authToken && !headers['Authorization'] && !headers['authorization']) {
+        headers['Authorization'] = `Bearer ${authToken}`;
+    }
+    
+    let body = null;
+    if (bodyText && bodyText.trim()) {
+        try {
+            body = JSON.parse(bodyText);
+        } catch (e) {
+            body = bodyText;
+        }
+    }
+    
+    const responseContent = document.getElementById('replayResponseContent');
+    if (responseContent) {
+        responseContent.innerHTML = `<div class="replay-loading"><i class="fas fa-spinner fa-spin"></i><p>Отправка запроса...</p></div>`;
+    }
+    
+    try {
+        const startTime = Date.now();
+        
+        const fetchOptions = { method, headers };
+        const methodsWithBody = ['POST', 'PUT', 'PATCH', 'DELETE'];
+        
+        if (body && methodsWithBody.includes(method)) {
+            fetchOptions.body = typeof body === 'object' ? JSON.stringify(body) : body;
+        }
+        
+        const response = await fetch(url, fetchOptions);
+        const duration = Date.now() - startTime;
+        const responseText = await response.text();
+        
+        let formattedResponse = responseText;
+        try {
+            const json = JSON.parse(responseText);
+            formattedResponse = JSON.stringify(json, null, 2);
+        } catch (e) {}
+        
+        currentReplayResponse = {
+            status: response.status,
+            statusText: response.statusText,
+            headers: Object.fromEntries(response.headers.entries()),
+            body: formattedResponse,
+            duration: duration
+        };
+        
+        displayReplayResponse(currentReplayResponse);
+        switchReplayTab('response');
+        
+        const statusColor = response.status >= 200 && response.status < 300 ? 'success' : 'error';
+        showToolNotification(`${method} ${response.status} ${response.statusText} (${duration}ms)`, statusColor);
+        
+    } catch (error) {
+        console.error('Fetch error:', error);
+        if (responseContent) {
+            responseContent.innerHTML = `
+                <div class="replay-error">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>Ошибка: ${error.message}</p>
+                </div>
+            `;
+        }
+        showToolNotification(`Ошибка: ${error.message}`, 'error');
+    }
+}
+
+function displayReplayResponse(response) {
+    const responseContent = document.getElementById('replayResponseContent');
+    if (!responseContent) return;
+    
+    const statusColor = response.status >= 200 && response.status < 300 ? '#10b981' : 
+                       (response.status >= 400 && response.status < 500 ? '#f59e0b' : '#ef4444');
+    
+    responseContent.innerHTML = `
+        <div class="replay-response-status" style="border-left-color: ${statusColor}">
+            <div class="replay-status-line">
+                <span class="replay-status-code" style="color: ${statusColor}">${response.status} ${response.statusText}</span>
+                <span class="replay-duration">⏱ ${response.duration}ms</span>
+            </div>
+        </div>
+        
+        <div class="replay-section">
+            <div class="replay-section-header" data-section="response-headers">
+                <span>Заголовки ответа</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div id="replayResponseHeadersSection" class="replay-section-content">
+                <pre class="replay-headers">${escapeHtml(JSON.stringify(response.headers, null, 2))}</pre>
+            </div>
+        </div>
+        
+        <div class="replay-section">
+            <div class="replay-section-header" data-section="response-body">
+                <span>Тело ответа</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div id="replayResponseBodySection" class="replay-section-content">
+                <pre class="replay-json">${escapeHtml(response.body)}</pre>
+            </div>
+        </div>
+    `;
+    
+    // Привязываем обработчики для секций ответа
+    const sectionHeaders = document.querySelectorAll('#replayResponseContent .replay-section-header');
+    sectionHeaders.forEach(header => {
+        header.onclick = () => {
+            const section = header.getAttribute('data-section');
+            toggleReplaySection(section);
+        };
+    });
+}
+
+// ==================== ЭКСПОРТ ЗАПРОСОВ ====================
+
+function getCurrentReplayData() {
+    const methodSelect = document.getElementById('replayMethod');
+    const urlInput = document.getElementById('replayUrl');
+    const headersTextarea = document.getElementById('replayHeaders');
+    const bodyTextarea = document.getElementById('replayBody');
+    
+    const method = methodSelect?.value || 'GET';
+    const url = urlInput?.value;
+    const headersText = headersTextarea?.value;
+    const bodyText = bodyTextarea?.value;
+    
+    let headers = {};
+    if (headersText) {
+        try { headers = JSON.parse(headersText); } catch(e) {}
+    }
+    
+    let body = null;
+    if (bodyText && bodyText.trim()) {
+        try { body = JSON.parse(bodyText); } catch(e) { body = bodyText; }
+    }
+    
+    return { method, url, headers, body };
+}
+
+function copyAsCurl() {
+    const { method, url, headers, body } = getCurrentReplayData();
+    if (!url) { showToolNotification('Нет URL', 'error'); return; }
+    
+    let curlCmd = `curl -X ${method} '${url}'`;
+    for (const [key, value] of Object.entries(headers)) {
+        curlCmd += ` \\\n  -H '${key}: ${value}'`;
+    }
+    if (body) {
+        const bodyStr = typeof body === 'object' ? JSON.stringify(body) : body;
+        curlCmd += ` \\\n  -d '${bodyStr.replace(/'/g, "\\'")}'`;
+    }
+    navigator.clipboard.writeText(curlCmd);
+    showToolNotification('cURL скопирован', 'success');
+}
+
+function copyAsFetch() {
+    const { method, url, headers, body } = getCurrentReplayData();
+    if (!url) { showToolNotification('Нет URL', 'error'); return; }
+    
+    let fetchCode = `fetch('${url}', {\n  method: '${method}',`;
+    if (Object.keys(headers).length > 0) {
+        fetchCode += `\n  headers: ${JSON.stringify(headers, null, 2)},`;
+    }
+    if (body) {
+        const bodyStr = typeof body === 'object' ? JSON.stringify(body, null, 2) : body;
+        fetchCode += `\n  body: ${JSON.stringify(bodyStr)},`;
+    }
+    fetchCode += `\n});`;
+    navigator.clipboard.writeText(fetchCode);
+    showToolNotification('Fetch API скопирован', 'success');
+}
+
+function exportToPostman() {
+    const { method, url, headers, body } = getCurrentReplayData();
+    if (!url) { showToolNotification('Нет URL', 'error'); return; }
+    
+    const postmanRequest = {
+        name: `Replay ${method} ${url}`,
+        request: {
+            method: method,
+            header: Object.entries(headers).map(([key, value]) => ({ key, value })),
+            url: { raw: url, href: url },
+            body: body ? { mode: 'raw', raw: typeof body === 'object' ? JSON.stringify(body, null, 2) : body } : undefined
+        }
+    };
+    navigator.clipboard.writeText(JSON.stringify(postmanRequest, null, 2));
+    showToolNotification('Postman скопирован', 'success');
+}
+
+function copyRawRequest() {
+    const { method, url, headers, body } = getCurrentReplayData();
+    if (!url) { showToolNotification('Нет URL', 'error'); return; }
+    
+    let rawRequest = `${method} ${url} HTTP/1.1\r\n`;
+    try { rawRequest += `Host: ${new URL(url).host}\r\n`; } catch(e) {}
+    for (const [key, value] of Object.entries(headers)) {
+        rawRequest += `${key}: ${value}\r\n`;
+    }
+    if (body) {
+        rawRequest += `\r\n`;
+        rawRequest += typeof body === 'object' ? JSON.stringify(body) : body;
+    }
+    navigator.clipboard.writeText(rawRequest);
+    showToolNotification('Raw HTTP скопирован', 'success');
+}
+
+// ==================== ОСТАЛЬНЫЕ ФУНКЦИИ ====================
 
 function updateTaskStatus(taskId, status) {
     const statusMap = { 'pending': 'В ожидании', 'in-progress': 'В работе', 'completed': 'Завершено', 'error': 'Ошибка' };
@@ -545,124 +922,193 @@ function animateProgress(taskId, targetPercent, duration, callback) {
     animate();
 }
 
-function exportFailedTests(failedTests) {
-    const dataStr = JSON.stringify({ timestamp: new Date().toISOString(), total_failed: failedTests.length, failed_tests: failedTests }, null, 2);
-    const blob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `failed-tests-${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+function showResults(report) {
+    const modalBody = document.getElementById('fuzzModalBody');
+    if (!modalBody) return;
+    
+    const stats = report.summary || {};
+    const vulnerabilities = report.vulnerabilities || [];
+    
+    modalBody.innerHTML = `
+        <div class="fuzz-stats-grid">
+            <div class="fuzz-stat-card"><div class="fuzz-stat-number info">${stats.total_tests || 0}</div><div class="fuzz-stat-label">Всего тестов</div></div>
+            <div class="fuzz-stat-card"><div class="fuzz-stat-number success">${stats.success || 0}</div><div class="fuzz-stat-label">Успешных</div></div>
+            <div class="fuzz-stat-card"><div class="fuzz-stat-number critical">${stats.failed || 0}</div><div class="fuzz-stat-label">Проваленных</div></div>
+            <div class="fuzz-stat-card"><div class="fuzz-stat-number warning">${vulnerabilities.length}</div><div class="fuzz-stat-label">Уязвимостей</div></div>
+        </div>
+        ${vulnerabilities.length > 0 ? renderVulnerabilitiesTable(vulnerabilities) : '<div class="no-vulnerabilities"><i class="fas fa-check-circle"></i><h4>Уязвимостей не найдено</h4></div>'}
+    `;
+    
+    openFuzzModal();
 }
 
-async function startFuzzing() {
-    const startBtn = document.getElementById('start-url-btn');
-    const baseUrlInput = document.getElementById('baseUrl');
+function renderVulnerabilitiesTable(vulnerabilities) {
+    if (!vulnerabilities || vulnerabilities.length === 0) return '';
     
-    if (!startBtn || startBtn.disabled) return;
+    let html = `<h4 style="margin: 24px 0 16px 0;">Найденные уязвимости</h4>
+    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Severity</th><th>Эндпоинт</th><th>Статус</th><th>Действие</th></tr></thead><tbody>`;
     
-    const baseUrl = baseUrlInput ? baseUrlInput.value.trim() : '';
-    
-    // Если нет спецификации, но есть URL - сначала загружаем
-    if (!currentSpec && !selectedFile) {
-        const specUrlInput = document.getElementById('specUrl');
-        const url = specUrlInput ? specUrlInput.value.trim() : '';
-        if (url) {
-            await loadSpecFromUrl(url);
-        } else {
-            showValidationMessage('Нет спецификации для анализа', 'invalid');
-            return;
-        }
+    for (const vuln of vulnerabilities) {
+        const replayData = {
+            method: vuln.method || 'GET',
+            endpoint: vuln.endpoint || '/',
+            headers: { 'Content-Type': 'application/json' },
+            body: vuln.payload || null,
+            type: vuln.type || 'Unknown',
+            severity: vuln.severity || 'medium'
+        };
+        
+        const replayDataStr = JSON.stringify(replayData).replace(/'/g, "\\'");
+        
+        html += `<tr>
+            <td><span class="method-badge method-${(vuln.method || 'GET').toUpperCase()}">${(vuln.method || 'GET').toUpperCase()}</span></td>
+            <td>${escapeHtml(vuln.type || 'Unknown')}</td>
+            <td><span class="severity-badge severity-${vuln.severity || 'medium'}">${(vuln.severity || 'MEDIUM').toUpperCase()}</span></td>
+            <td style="font-family: monospace; font-size: 12px;">${escapeHtml(vuln.endpoint || '/')}</td>
+            <td><span class="status-badge warning">${vuln.response_status || 'N/A'}</span></td>
+            <td style="text-align: center;"><button class="details-btn" onclick='window.replayTest(${replayDataStr})' title="Воспроизвести запрос" style="background: none; border: none; cursor: pointer; color: var(--primary);"><i class="fas fa-play-circle" style="font-size: 13px;"></i></button></td>
+        </tr>`;
     }
     
-    // Проверяем базовый URL
-    const finalBaseUrl = document.getElementById('baseUrl')?.value.trim();
-    if (!finalBaseUrl) {
-        showValidationMessage('Укажите базовый URL API', 'invalid');
+    html += `</tbody></table>`;
+    return html;
+}
+
+function openFuzzModal() {
+    const modal = document.getElementById('fuzzModal');
+    if (modal) {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function closeFuzzModal() {
+    const modal = document.getElementById('fuzzModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    resetAllProgress();
+}
+
+// ==================== START FUZZING ====================
+
+async function startFuzzing() {
+    const startBtn = document.getElementById('start-btn');
+    const baseUrlInput = document.getElementById('baseUrl');
+    const mode = document.querySelector('.mode-btn.active')?.id === 'mode-upload' ? 'upload' : 'url';
+    
+    if (!startBtn || startBtn.disabled) return;
+    if (!currentSpec) {
+        showValidationMessage('Сначала загрузите спецификацию', 'invalid');
+        return;
+    }
+    
+    const baseUrl = baseUrlInput?.value.trim();
+    if (!baseUrl) {
+        showValidationMessage('Укажите базовый URL', 'invalid');
         return;
     }
     
     startBtn.disabled = true;
     startBtn.textContent = 'Фаззинг запущен...';
     
-    try {
-        updateTaskStatus('1.1', 'in-progress');
-        animateProgress('1.1', 100, 800, () => {
-            updateTaskStatus('1.1', 'completed');
-            updateTaskStatus('2.1', 'in-progress');
-            animateProgress('2.1', 100, 1200, async () => {
-                updateTaskStatus('2.1', 'completed');
-                updateTaskStatus('2.2', 'in-progress');
-                animateProgress('2.2', 100, 2500, async () => {
-                    updateTaskStatus('2.2', 'completed');
-                    updateTaskStatus('2.3', 'in-progress');
-                    try {
-                        const formData = new FormData();
+    updateTaskStatus('1.1', 'in-progress');
+    animateProgress('1.1', 100, 800, () => {
+        updateTaskStatus('1.1', 'completed');
+        updateTaskStatus('2.1', 'in-progress');
+        animateProgress('2.1', 100, 1200, async () => {
+            updateTaskStatus('2.1', 'completed');
+            updateTaskStatus('2.2', 'in-progress');
+            animateProgress('2.2', 100, 2500, async () => {
+                updateTaskStatus('2.2', 'completed');
+                updateTaskStatus('2.3', 'in-progress');
+                
+                try {
+                    const formData = new FormData();
+                    
+                    if (mode === 'upload') {
                         if (selectedFile) {
                             formData.append('spec', selectedFile);
                         } else {
-                            const specUrlInput = document.getElementById('specUrl');
-                            if (specUrlInput && specUrlInput.value) {
-                                formData.append('specUrl', specUrlInput.value);
-                            }
+                            throw new Error('Файл спецификации не выбран');
                         }
-                        formData.append('baseUrl', finalBaseUrl);
-                        if (authToken) formData.append('authToken', authToken);
-                        pendingFormData = formData;
+                    } else if (mode === 'url') {
+                        const specUrlInput = document.getElementById('specUrl');
+                        const specUrl = specUrlInput ? specUrlInput.value.trim() : '';
                         
-                        const response = await fetch('/api/fuzz', { method: 'POST', body: formData });
-                        
-                        if (!response.ok) {
-                            const errorData = await response.json().catch(() => ({}));
-                            if (response.status === 403) {
-                                const failedEndpoints = errorData.failedEndpoints || [];
-                                const firstFailedEndpoint = failedEndpoints[0] || 'неизвестный эндпоинт';
-                                showTokenModal(firstFailedEndpoint, async (token) => {
-                                    if (token) await retryFuzzingWithToken(pendingFormData, token);
-                                    else {
-                                        showValidationMessage('Фаззинг продолжен без авторизации.', 'warning');
-                                        animateProgress('2.3', 100, 800, () => {
-                                            updateTaskStatus('2.3', 'completed');
-                                            startBtn.textContent = 'Фаззинг завершен с ошибками';
-                                            showResults(errorData);
-                                        });
-                                    }
-                                });
-                                return;
-                            }
-                            throw new Error(errorData.message || `HTTP ${response.status}`);
+                        if (specUrl) {
+                            formData.append('specUrl', specUrl);
+                        } else if (currentSpec) {
+                            const specJson = JSON.stringify(currentSpec);
+                            const blob = new Blob([specJson], { type: 'application/json' });
+                            const file = new File([blob], 'spec.json', { type: 'application/json' });
+                            formData.append('spec', file);
+                        } else {
+                            throw new Error('URL спецификации не указан и нет загруженной спецификации');
                         }
-                        
-                        const report = await response.json();
-                        currentReport = report;
-                        const has403Errors = report.failedTests?.some(test => test.status === 403);
-                        if (has403Errors) showValidationMessage('Некоторые эндпоинты требуют авторизации.', 'warning');
-                        
-                        animateProgress('2.3', 100, 800, () => {
-                            updateTaskStatus('2.3', 'completed');
-                            startBtn.textContent = 'Фаззинг завершен';
-                            showResults(report);
-                        });
-                    } catch (error) {
-                        updateTaskStatus('2.3', 'error');
-                        startBtn.textContent = 'Ошибка';
-                        alert(`Ошибка: ${error.message}`);
+                    } else {
+                        throw new Error('Не выбран режим загрузки спецификации');
                     }
-                });
+                    
+                    formData.append('baseUrl', baseUrl);
+                    if (authToken) formData.append('authToken', authToken);
+                    pendingFormData = formData;
+                    
+                    const response = await fetch('/api/fuzz', { method: 'POST', body: formData });
+                    
+                    if (response.status === 429) {
+                        const errorData = await response.json().catch(() => ({}));
+                        await fuzzErrorHandler.handleRateLimit(errorData, { button: startBtn });
+                        startBtn.disabled = false;
+                        startBtn.textContent = 'Начать фаззинг';
+                        updateTaskStatus('2.3', 'pending');
+                        return;
+                    }
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json().catch(() => ({}));
+                        if (response.status === 403) {
+                            const failedEndpoints = errorData.failedEndpoints || [];
+                            const firstFailedEndpoint = failedEndpoints[0] || 'неизвестный эндпоинт';
+                            showTokenModal(firstFailedEndpoint, async (token) => {
+                                if (token) await retryFuzzingWithToken(pendingFormData, token);
+                                else {
+                                    showValidationMessage('Фаззинг продолжен без авторизации.', 'warning');
+                                    animateProgress('2.3', 100, 800, () => {
+                                        updateTaskStatus('2.3', 'completed');
+                                        startBtn.textContent = 'Фаззинг завершен с ошибками';
+                                        showResults(errorData);
+                                    });
+                                }
+                            });
+                            return;
+                        }
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const report = await response.json();
+                    currentReport = report;
+                    
+                    animateProgress('2.3', 100, 800, () => {
+                        updateTaskStatus('2.3', 'completed');
+                        startBtn.textContent = 'Фаззинг завершен';
+                        showResults(report);
+                    });
+                    
+                } catch (error) {
+                    console.error('Fuzzing error:', error);
+                    updateTaskStatus('2.3', 'error');
+                    startBtn.textContent = 'Ошибка';
+                    showValidationMessage(`Ошибка: ${error.message}`, 'invalid');
+                }
             });
         });
-    } catch (error) {
-        console.error('Start error:', error);
-        startBtn.textContent = 'Начать анализ';
-        startBtn.disabled = false;
-    }
+    });
 }
 
 async function retryFuzzingWithToken(formData, token) {
-    const startBtn = document.getElementById('start-url-btn');
+    const startBtn = document.getElementById('start-btn');
     try {
         formData.set('authToken', token);
         const response = await fetch('/api/fuzz', { method: 'POST', body: formData });
@@ -682,194 +1128,21 @@ async function retryFuzzingWithToken(formData, token) {
     }
 }
 
-// ==================== ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ====================
-
-function groupFailedTestsByEndpoint(failedTests) {
-    const grouped = {};
-    for (const test of failedTests) {
-        const endpoint = test.endpoint || test.path || '/';
-        if (!grouped[endpoint]) grouped[endpoint] = { endpoint: endpoint, method: test.method, total: 0, tests: [] };
-        grouped[endpoint].total++;
-        grouped[endpoint].tests.push(test);
-    }
-    return Object.values(grouped);
-}
-
-function groupVulnerabilitiesByEndpoint(vulnerabilities) {
-    const grouped = {};
-    for (const vuln of vulnerabilities) {
-        const endpoint = vuln.endpoint || '/';
-        if (!grouped[endpoint]) grouped[endpoint] = { endpoint: endpoint, total: 0, vulnerabilities: [] };
-        grouped[endpoint].total++;
-        grouped[endpoint].vulnerabilities.push(vuln);
-    }
-    return Object.values(grouped);
-}
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-}
-
-function showResults(report) {
-    const modalBody = document.getElementById('fuzzModalBody');
-    if (!modalBody) return;
-    const stats = report.summary || {};
-    const vulnerabilities = report.vulnerabilities || [];
-    const failedTests = report.failedTests || [];
-    const groupedFailed = groupFailedTestsByEndpoint(failedTests);
-    const groupedVulns = groupVulnerabilitiesByEndpoint(vulnerabilities);
-    
-    modalBody.innerHTML = `
-        <div class="fuzz-stats-grid">
-            <div class="fuzz-stat-card"><div class="fuzz-stat-number info">${stats.total || 0}</div><div class="fuzz-stat-label">Всего тестов</div></div>
-            <div class="fuzz-stat-card"><div class="fuzz-stat-number success">${stats.success || 0}</div><div class="fuzz-stat-label">Успешных</div></div>
-            <div class="fuzz-stat-card"><div class="fuzz-stat-number critical">${stats.failed || 0}</div><div class="fuzz-stat-label">Проваленных</div></div>
-            <div class="fuzz-stat-card"><div class="fuzz-stat-number warning">${vulnerabilities.length}</div><div class="fuzz-stat-label">Уязвимостей</div></div>
-        </div>
-        <div class="fuzz-stats-grid">
-            <div class="fuzz-stat-card"><div class="fuzz-stat-number info">${stats.duration?.toFixed(2) || '0'}</div><div class="fuzz-stat-label">Время (сек)</div></div>
-            <div class="fuzz-stat-card"><div class="fuzz-stat-number info">${report.spec?.endpoints || 0}</div><div class="fuzz-stat-label">Эндпоинтов</div></div>
-        </div>
-        ${groupedFailed.length > 0 || groupedVulns.length > 0 ? `<h4 style="margin: 24px 0 16px 0;">Результаты по эндпоинтам</h4>${renderEndpointGroups(groupedFailed, groupedVulns)}` : `<div class="no-vulnerabilities"><i class="fas fa-check-circle"></i><h4>Все тесты пройдены успешно</h4><p>API успешно прошел фаззинг тестирование</p></div>`}
-    `;
-    
-    if (failedTests.length > 0) {
-        const exportBtn = document.createElement('button');
-        exportBtn.innerHTML = '<i class="fas fa-download"></i> Экспорт проваленных тестов (JSON)';
-        exportBtn.className = 'btn btn-secondary';
-        exportBtn.style.marginTop = '20px';
-        exportBtn.style.marginRight = '10px';
-        exportBtn.onclick = () => exportFailedTests(failedTests);
-        const statsGrid = modalBody.querySelector('.fuzz-stats-grid:last-child');
-        if (statsGrid) statsGrid.insertAdjacentElement('afterend', exportBtn);
-    }
-    openFuzzModal();
-}
-
-function renderEndpointGroups(groupedFailed, groupedVulns) {
-    const allEndpoints = new Set();
-    groupedFailed.forEach(g => allEndpoints.add(g.endpoint));
-    groupedVulns.forEach(g => allEndpoints.add(g.endpoint));
-    let html = '';
-    for (const endpoint of allEndpoints) {
-        const failedGroup = groupedFailed.find(g => g.endpoint === endpoint);
-        const vulnGroup = groupedVulns.find(g => g.endpoint === endpoint);
-        const failedCount = failedGroup?.total || 0;
-        const vulnCount = vulnGroup?.total || 0;
-        const endpointId = endpoint.replace(/[\/\?#]/g, '_');
-        html += `
-            <div class="endpoint-group">
-                <div class="endpoint-header" onclick="toggleEndpoint('${endpoint}')">
-                    <div class="endpoint-title"><strong style="font-family: monospace;">${escapeHtml(endpoint)}</strong><span class="endpoint-stats">${failedCount > 0 ? `<span class="endpoint-stat failed">❌ Провалено: ${failedCount}</span>` : ''}${vulnCount > 0 ? `<span class="endpoint-stat vuln">Уязвимостей: ${vulnCount}</span>` : ''}</span></div>
-                    <span class="toggle-icon" id="toggle-${endpointId}"><i class="fa-sharp fa-solid fa-chevron-down"></i></span>
-                </div>
-                <div class="endpoint-content" id="content-${endpointId}">
-                    ${failedGroup ? renderFailedTestsTable(failedGroup.tests) : ''}
-                    ${vulnGroup ? renderVulnerabilitiesTable(vulnGroup.vulnerabilities) : ''}
-                </div>
-            </div>
-        `;
-    }
-    return html;
-}
-
-function renderFailedTestsTable(tests) {
-    if (!tests || tests.length === 0) return '';
-    const has403 = tests.some(t => t.status === 403);
-    
-    const test = tests[0];
-    const is403 = test.status === 403;
-    
-    let html = `<div style="padding: 12px 20px; background: rgba(239, 68, 68, 0.05);"><strong style="color: #ef4444;">Проваленные тесты (${tests.length})</strong>${has403 ? `<div style="margin-top: 8px; font-size: 12px; color: #f59e0b;"><i class="fas fa-exclamation-triangle"></i> Некоторые тесты требуют авторизации. <button onclick="clearAuthToken(); showTokenModal('все эндпоинты', (token) => { if(token) location.reload(); })" class="btn-link">Добавить токен</button></div>` : ''}</div>
-    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Статус</th><th>Причина</th><th>Время</th><th>Действие</th></table></thead><tbody>
-    <tr class="${is403 ? 'failed-test-row auth-required' : 'failed-test-row'}">
-        <td><span class="method-badge method-${test.method?.toUpperCase() || 'GET'}">${test.method?.toUpperCase() || 'GET'}</span></td>
-        <td>${test.type || 'unknown'}</td>
-        <td><span class="status-badge ${is403 ? 'warning' : 'error'}">${test.status || 'ERROR'}${is403 ? ' 🔒' : ''}</span></td>
-        <td>${is403 ? 'Требуется авторизация' : escapeHtml(test.error || test.reason || 'Неизвестная ошибка')}</td>
-        <td>${test.duration || 'N/A'}ms</td>
-        <td><button class="details-btn" onclick='replayTest(${JSON.stringify(test).replace(/'/g, "\\'")})'><i class="far fa-play-circle"></i></button></td>
-    </tr>`;
-    
-    if (tests.length > 1) {
-        html += `<tr class="more-tests-row"><td colspan="6" style="background: var(--bg-secondary);">
-            <details>
-                <summary style="cursor: pointer; color: var(--text-secondary);">Показать еще ${tests.length - 1} тестов</summary>
-                <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">`;
-        
-        for (let i = 1; i < tests.length; i++) {
-            const t = tests[i];
-            html += `<tr style="border-bottom: 1px solid var(--border);">
-                <td style="padding: 8px;"><span class="method-badge method-${t.method?.toUpperCase() || 'GET'}">${t.method?.toUpperCase() || 'GET'}</span></td>
-                <td style="padding: 8px;">${t.type || 'unknown'}</td>
-                <td style="padding: 8px;"><span class="status-badge ${t.status === 403 ? 'warning' : 'error'}">${t.status || 'ERROR'}</span></td>
-                <td style="padding: 8px;">${escapeHtml(t.error || t.reason || 'Неизвестная ошибка')}</td>
-                <td style="padding: 8px;">${t.duration || 'N/A'}ms</td>
-                <td style="padding: 8px;"><button class="details-btn" onclick='replayTest(${JSON.stringify(t).replace(/'/g, "\\'")})'><i class="far fa-play-circle"></i></button></td>
-            </tr>`;
-        }
-        html += `</table></details><\/td><\/tr>`;
-    }
-    
-    html += `</tbody></table>`;
-    return html;
-}
-
-function renderVulnerabilitiesTable(vulnerabilities) {
-    if (!vulnerabilities || vulnerabilities.length === 0) return '';
-    
-    const vuln = vulnerabilities[0];
-    const testData = JSON.stringify({
-        method: vuln.method,
-        url: vuln.endpoint,
-        path: vuln.endpoint,
-        type: vuln.type,
-        headers: { 'Content-Type': 'application/json' },
-        expectedStatus: [200]
-    }).replace(/'/g, "\\'");
-    
-    let html = `<div style="display:flex; flex-direction: row; gap:50%;padding: 12px 20px; background: rgba(245, 158, 11, 0.05);">
-    <div><strong style="color: #684404;">Найденные уязвимости (${vulnerabilities.length})</strong></div>
-    <div>
-     <button class="details-btn"  onclick='replayTest(${testData})'><i class="far fa-play-circle fa-lg" title="Воспроизвести" style="font-size: 15px;color: red;"></i></button>
-     <button class="details-btn"  onclick="copyAsCurl()"><i class="fas fa-terminal" title="Копировать cURL" style="font-size: 15px; color: black;"></i></button>
-     <button class="details-btn"  onclick="copyAsFetch()"><i class="fab fa-js" title="Копировать Fetch API" style="font-size: 15px;color: #b8a40b;"></i></button>
-     <button class="details-btn"  onclick="exportToPostman()"><i class="fas fa-download" title="Копировать Postman" style="font-size: 15px;color: orange"></i></button>
-     <button class="details-btn"  onclick="copyRawRequest()"><i class="fas fa-copy" title="Копировать Raw HTTP" style="font-size: 15px;color: gray;""></i></button>
-     </div>          
-    </div>
-    <table class="results-table"><thead><tr><th>Метод</th><th>Тип</th><th>Статус</th><th>Severity</th><th>Сниппет</th></tr></thead><tbody>`;
-    
-    for (let i = 0; i < vulnerabilities.length; i++) {
-        const v = vulnerabilities[i];
-        html += `<tr>
-            <td style="padding: 8px;"><span class="method-badge method-${v.method?.toUpperCase() || 'GET'}">${v.method?.toUpperCase() || 'GET'}</span></td>
-            <td style="padding: 8px;">${escapeHtml(v.type || 'Unknown')}</td>
-            <td style="padding: 8px;"><span class="status-badge warning">${v.response_status || 'N/A'}</span></td>
-            <td style="padding: 8px;"><span class="severity-badge severity-${v.severity || 'medium'}">${(v.severity || 'MEDIUM').toUpperCase()}</span></td>
-            <td style="padding: 8px;">&nbsp;</td>
-        </tr>`;
-    }
-    
-    html += `</tbody></table>`;
-    return html;
-}
-
-function toggleEndpoint(endpointId) {
-    const contentId = `content-${endpointId.replace(/[\/\?#]/g, '_')}`;
-    const toggleId = `toggle-${endpointId.replace(/[\/\?#]/g, '_')}`;
-    const content = document.getElementById(contentId);
-    const toggle = document.getElementById(toggleId);
-    if (content) {
-        content.classList.toggle('open');
-        if (toggle) toggle.classList.toggle('open');
-    }
-}
-
 function downloadReport() {
-    if (!currentReport) return;
-    const enhancedReport = { ...currentReport, generated_at: new Date().toISOString(), failed_tests_summary: { count: currentReport.failedTests?.length || 0, details: currentReport.failedTests || [] } };
+    if (!currentReport) {
+        showToolNotification('Нет отчета для скачивания', 'error');
+        return;
+    }
+    
+    const enhancedReport = { 
+        ...currentReport, 
+        generated_at: new Date().toISOString(), 
+        failed_tests_summary: { 
+            count: currentReport.failedTests?.length || 0, 
+            details: currentReport.failedTests || [] 
+        } 
+    };
+    
     const dataStr = JSON.stringify(enhancedReport, null, 2);
     const blob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
@@ -880,20 +1153,111 @@ function downloadReport() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    
+    showToolNotification('Отчет скачан', 'success');
 }
 
-// ==================== ГЛОБАЛЬНЫЕ ФУНКЦИИ ====================
+// ==================== ИНИЦИАЛИЗАЦИЯ ====================
 
-window.removeFile = removeFile;
-window.closeFuzzModal = closeFuzzModal;
-window.downloadReport = downloadReport;
-window.toggleEndpoint = toggleEndpoint;
-window.closeTokenModal = closeTokenModal;
-window.clearAuthToken = clearAuthToken;
+document.addEventListener('DOMContentLoaded', function() {
+    // Файловый режим
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    
+    if (uploadArea) {
+        uploadArea.addEventListener('click', () => fileInput?.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            if (file && (file.name.endsWith('.json') || file.name.endsWith('.yaml') || file.name.endsWith('.yml'))) {
+                handleFile(file);
+            } else {
+                showValidationMessage('Поддерживаются только JSON/YAML файлы', 'invalid');
+            }
+        });
+    }
+    
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files?.[0]) handleFile(e.target.files[0]);
+        });
+    }
+    
+    // URL режим
+    const fetchSpecBtn = document.getElementById('fetch-spec-btn');
+    if (fetchSpecBtn) {
+        fetchSpecBtn.addEventListener('click', fetchSpecFromUrl);
+    }
+    
+    const specUrlInput = document.getElementById('specUrl');
+    if (specUrlInput) {
+        specUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') fetchSpecFromUrl();
+        });
+    }
+    
+    // Кнопки переключения режимов
+    const modeUpload = document.getElementById('mode-upload');
+    const modeUrl = document.getElementById('mode-url');
+    if (modeUpload) modeUpload.addEventListener('click', () => switchMode('upload'));
+    if (modeUrl) modeUrl.addEventListener('click', () => switchMode('url'));
+    
+    // Кнопка старта
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) startBtn.addEventListener('click', startFuzzing);
+    
+    // Кнопка удаления файла
+    const removeFileBtn = document.getElementById('remove-file-btn');
+    if (removeFileBtn) removeFileBtn.addEventListener('click', removeFile);
+    
+    // Закрытие модалок по клику вне
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+            closeFuzzModal();
+            closeTokenModal();
+            closeReplayModal();
+        }
+    });
+    
+    // ESC для закрытия
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeFuzzModal();
+            closeTokenModal();
+            closeReplayModal();
+        }
+    });
+    
+    validateStartButton();
+});
+
+// Регистрируем глобальные функции
 window.replayTest = replayTest;
 window.closeReplayModal = closeReplayModal;
+window.switchReplayTab = switchReplayTab;
+window.toggleReplaySection = toggleReplaySection;
+window.sendReplayRequest = sendReplayRequest;
 window.copyAsCurl = copyAsCurl;
 window.copyAsFetch = copyAsFetch;
-window.exportToPostman = exportToPostman;
 window.copyRawRequest = copyRawRequest;
-window.toggleReplaySection = toggleReplaySection;
+window.exportToPostman = exportToPostman;
+window.closeTokenModal = closeTokenModal;
+window.clearAuthToken = clearAuthToken;
+window.downloadReport = downloadReport;
+window.removeFile = removeFile;
+window.switchMode = switchMode;
+window.fetchSpecFromUrl = fetchSpecFromUrl;
+window.startFuzzing = startFuzzing;
+window.closeFuzzModal = closeFuzzModal;
+window.replayTest = replayTest;

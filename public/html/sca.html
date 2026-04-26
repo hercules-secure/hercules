@@ -15,56 +15,7 @@
     <link rel="stylesheet" href="/css/main/sidebar.css">   
     <script type="text/javascript" src="/js/sca.js"></script>
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
-    <style>
-        .upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            background: var(--bg-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 10px;
-        }
-
-        .upload-area:hover {
-            border-color: var(--accent-color);
-            background: rgba(99, 102, 241, 0.05);
-        }
-
-        .upload-area.dragover {
-            border-color: var(--accent-color);
-            background: rgba(99, 102, 241, 0.1);
-            transform: scale(1.02);
-        }
-
-        .upload-icon {
-            font-size: 48px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-
-        .upload-text {
-            color: var(--text-primary);
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-
-        .upload-hint {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-                .icons-row {
-            display: flex;
-            gap: 1vw;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin-top: 3vh;
-            margin-bottom: 3vh;
-         }
-
-    </style>
+    
 </head>
 <body>
     <div id="box" class="fade-in">
@@ -124,18 +75,6 @@
                     </div>
                     </a> 
                     <div class="tool-divider"></div>
-                    <a href="/api" style="text-decoration: none;" target="_blank">
-                    <div class="tool-item">
-                        <div class="tool-icon">
-                           <i class="fas fa-plug black-icon" title="Интеграции для улучшения РБПО"></i>
-                        </div>
-                        <div class="tool-info">
-                            <span class="tool-name">API</span>
-                            <span class="tool-desc">Интеграции в SSDLC</span>
-                        </div>
-                    </div>
-                    </a>
-                    <div class="tool-divider"></div>
                     <a href="https://hercules-web.ru/#extensions" style="text-decoration: none;" target="_blank">
                     <div class="tool-item">
                         <div class="tool-icon">
@@ -179,27 +118,24 @@
                     </div>
                     <div class="upload-text">
                         Нажмите для выбора архива или локального проекта<br>
-                        <span style="font-size: 9px">
-                            <div class="icons-row" style="gap:1px">
-                    <span class="format-badge"><i class="fas fa-file-archive" style="color: #FC6D26;"></i><span>Архив</span></span>/
-                    <span class="format-badge"><i class="fas fa-folder-open" style="color: #8e9016;"></i><span>Проект</span></span>
+                         <span style="font-size: 9px">
+                            <div class="icons-row">
+                    <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;" title="Загрузить архив"></i></span>
+                    <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;" title="Загрузить локальный проект"></i></span>
                             </div>
                         </span>
                     </div>
-                    <div class="upload-hint">
-                      Поддерживаются ZIP, TAR, GZ, 7Z (макс. 100 МБ)
-                    </div>
+<div class="supported-formats">
+                    <span class="supported-format-badge">ZIP</span>
+                    <span class="supported-format-badge">TAR</span>
+                    <span class="supported-format-badge">GZ</span>
+                    <span class="supported-format-badge">7Z</span>
+                </div>
                     <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
                 </div>
 
-            
-            <div class="upload-section">
-                
-                <div id="local-status" class="local-status" style="display: none;"></div>
-                
-                <input type="file" id="archive-input" accept=".zip,.tar,.gz,.tgz" style="display: none;">
-            </div>
-            <div class="card-table">
+
+            <div class="card-table" style="margin-top: 2vh;">
                 <div class="card-section">
                     <h2 class="section-title">Подготовка</h2>
                     
@@ -256,9 +192,7 @@
    <script>
     // Инициализация для SCA
     const scaUploader = initSCAUploader();
-    
-    // Или для SAST
-    // const sastUploader = initSASTUploader();
+
 </script>
 </body>
 </html>

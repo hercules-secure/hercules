@@ -196,7 +196,7 @@ class TokenModal {
                             Как получить токен:
                         </p>
                         <ol style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 13px;">
-                            <li>Перейдите в <strong>GitLab → Settings → Access Tokens</strong></li>
+                            <li>Перейдите в <strong>приватный репозиторий</strong></li>
                             <li>Создайте токен с правами <code>read_api</code> и <code>read_repository</code></li>
                             <li>Скопируйте полученный токен и вставьте ниже</li>
                         </ol>
@@ -563,7 +563,7 @@ class AccessChecker {
 
 class TokenStorage {
     constructor() {
-        this.storageKey = 'hercules_gitlab_tokens';
+        this.storageKey = 'hercules_repo_tokens';
         this.useChromeStorage = typeof chrome !== 'undefined' && chrome.storage && chrome.storage.local;
     }
 
@@ -1056,14 +1056,7 @@ class SCAPopupReporter {
                 transition: all 0.2s;
             }
             .sca-btn-primary {
-                background: #1a1a2a;
-                color: white;
-            }
-            .sca-btn-primary:hover {
-                background: #2a2a3a;
-            }
-            .sca-btn-secondary {
-                background: #6c757d;
+                background: black;
                 color: white;
             }
             .sca-stats-grid {
@@ -1153,7 +1146,7 @@ class SCAPopupReporter {
         popup.innerHTML = `
             <div class="sca-popup-header">
                     <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
-                     Результаты композиционного анализа
+                     Результаты анализа
                     </h3>
                 <button class="sca-popup-close" id="closePopup">&times;</button>
             </div>
@@ -1199,8 +1192,20 @@ class SCAPopupReporter {
                 </div>
             </div>
             <div class="sca-popup-footer">
-                <button class="sca-btn sca-btn-secondary" id="closePopupBtn">Закрыть</button>
-                <button class="sca-btn sca-btn-primary" id="downloadReport">Скачать SBOM</button>
+                <!--button class="sca-btn sca-btn-primary" >Скачать</button-->
+                <button id="downloadReport" style="
+                    background: #10b981;
+                    color: white;
+                    border: none;
+                    padding: 10px 24px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                    font-family: 'Ubuntu';
+                ">
+                    <i class="fas fa-download"></i> Скачать отчет
+                </button>
             </div>
         `;
         

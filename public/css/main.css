@@ -141,6 +141,7 @@
             font-weight: 500;
             font-size: 0.9rem;
             color: var(--text-primary);
+            border: none;
         }
 
         .tool-desc {

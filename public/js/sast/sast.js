@@ -1,10 +1,10 @@
+
 // ========== МЕТОДЫ ДЛЯ ВЫЗОВА API ==========
 
 /**
  * Загрузка архива по ссылке на репозиторий
  */
 async function fetchArchiveFromUrl(url, branch = null) {
-   
     const payload = { url };
     if (branch) payload.branch = branch;
 
@@ -26,30 +26,71 @@ async function fetchArchiveFromUrl(url, branch = null) {
 }
 
 /**
- * Загрузка архива файлом
+ * Загрузка архива файлом (универсальный метод для архивов и упакованных проектов)
+ */
+/**
+ * Загрузка архива файлом (универсальный метод для архивов и упакованных проектов)
  */
 async function uploadArchive(file) {
+    console.log('📤 uploadArchive вызван, файл:', file.name, 'размер:', file.size);
+    
     const formData = new FormData();
     formData.append('archive', file);
 
-    const response = await fetch('/api/archive/upload', {
+    const response = await fetch('/api/sast/upload', {
         method: 'POST',
         body: formData
     });
 
+    console.log('📡 Статус ответа:', response.status);
+
     if (!response.ok) {
-        const error = await response.json();
+        const errorText = await response.text();
+        console.error('❌ Ошибка сервера:', errorText);
+        let error;
+        try {
+            error = JSON.parse(errorText);
+        } catch {
+            error = { message: errorText };
+        }
         throw new Error(error.message || 'Ошибка загрузки файла');
     }
 
     const data = await response.json();
+    console.log('📦 Данные от сервера:', data);
     
-    if (!data.archive || !data.archive.id) {
-        console.error('Некорректный ответ сервера:', data);
+    // Проверяем структуру ответа
+    let archiveId = null;
+    let archiveData = null;
+    
+    if (data.archive && data.archive.id) {
+        // Формат: { archive: { id, filename, size } }
+        archiveId = data.archive.id;
+        archiveData = data.archive;
+    } else if (data.id) {
+        // Формат: { id, filename, size }
+        archiveId = data.id;
+        archiveData = data;
+    } else if (data.result && data.result.id) {
+        // Формат: { result: { id, filename, size } }
+        archiveId = data.result.id;
+        archiveData = data.result;
+    } else {
+        console.error('❌ Неизвестный формат ответа:', data);
         throw new Error('Сервер вернул некорректные данные');
     }
     
-    return data.archive;
+    if (!archiveId) {
+        throw new Error('Не удалось получить ID архива из ответа сервера');
+    }
+    
+    console.log('✅ ID архива получен:', archiveId);
+    
+    return {
+        id: archiveId,
+        filename: archiveData.filename || file.name,
+        size: archiveData.size || file.size
+    };
 }
 
 async function getArchiveInfo(archiveId) {
@@ -75,44 +116,51 @@ async function deleteArchive(archiveId) {
     return await response.json();
 }
 
-function showToolNotification(message) {
+function showToolNotification(message, type = 'success') {
+    const colors = {
+        success: '#10b981',
+        error: '#ef4444',
+        warning: '#f59e0b',
+        info: '#3b82f6'
+    };
+    
     const notification = document.createElement('div');
-    notification.textContent = message;
+    notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
     notification.style.cssText = `
         position: fixed;
         bottom: 20px;
         right: 20px;
-        background: #10b981;
+        background: ${colors[type] || colors.success};
         color: white;
-        padding: 12px 24px;
+        padding: 12px 20px;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1001;
+        z-index: 10001;
         animation: slideIn 0.3s ease;
         font-family: 'Ubuntu', sans-serif;
         font-size: 14px;
-        max-width: 90vw;
-        word-wrap: break-word;
+        display: flex;
+        align-items: center;
+        gap: 8px;
     `;
     document.body.appendChild(notification);
     setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transform = 'translateY(20px)';
+        notification.style.transition = 'all 0.3s ease';
         setTimeout(() => {
             if (notification.parentNode) {
                 notification.parentNode.removeChild(notification);
             }
         }, 300);
-    }, 2000);
+    }, 3000);
 }
 
 // Удаление выбранного файла
 window.removeFile = function() {
-    const fileInput = document.getElementById('fileInput');
     const fileInfo = document.getElementById('fileInfo');
     const startBtn = document.getElementById('start-btn');
     
-    if (fileInput) fileInput.value = '';
     if (fileInfo) fileInfo.classList.remove('active');
     if (startBtn) {
         startBtn.disabled = true;
@@ -120,17 +168,17 @@ window.removeFile = function() {
     }
     if (window.herculesApp) {
         window.herculesApp.selectedFile = null;
+        window.herculesApp.selectedProject = null;
+        window.herculesApp.currentArchiveId = null;
     }
 };
 
 // Основная логика
 class HerculesMainApp {
     constructor() {
-        
         this.repoInput = document.getElementById('repo');
         this.startButton = document.getElementById('start-btn');
         this.urlValidation = document.getElementById('url-validation');
-        this.fileInput = document.getElementById('fileInput');
         this.uploadArea = document.getElementById('uploadArea');
         this.fileInfo = document.getElementById('fileInfo');
         this.fileName = document.getElementById('fileName');
@@ -138,26 +186,19 @@ class HerculesMainApp {
         this.fetchRepoBtn = document.getElementById('fetch-repo-btn');
         
         this.selectedFile = null;
-        this.currentMode = 'url'; // По умолчанию режим URL
-        this.isUrlLocked = false; // Флаг блокировки поля ввода
+        this.currentArchiveId = null;
+        this.isUrlLocked = false;
         
         this.init();
     }
 
     init() {
         this.setupEventListeners();
-        this.setupDragAndDrop();
+        // Инициализируем uploader
+        initSASTUploader();
     }
 
     setupEventListeners() {
-        if (this.uploadArea) {
-            this.uploadArea.addEventListener('click', () => this.fileInput?.click());
-        }
-
-        if (this.fileInput) {
-            this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
-        }
-
         if (this.repoInput) {
             this.repoInput.addEventListener('input', (e) => this.validateURL(e));
             this.repoInput.addEventListener('keypress', (e) => {
@@ -174,70 +215,6 @@ class HerculesMainApp {
         if (this.startButton) {
             this.startButton.addEventListener('click', () => this.startAnalysis());
         }
-    }
-
-    setupDragAndDrop() {
-        if (!this.uploadArea) return;
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            this.uploadArea.addEventListener(eventName, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-            });
-        });
-
-        this.uploadArea.addEventListener('dragenter', () => {
-            this.uploadArea.classList.add('dragover');
-        });
-
-        this.uploadArea.addEventListener('dragleave', () => {
-            this.uploadArea.classList.remove('dragover');
-        });
-
-        this.uploadArea.addEventListener('drop', (e) => {
-            this.uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                this.handleFile(files[0]);
-            }
-        });
-    }
-
-    handleFileSelect(e) {
-        const file = e.target.files[0];
-        if (file) {
-            this.handleFile(file);
-        }
-    }
-
-    handleFile(file) {
-        
-        if (file.size > 100 * 1024 * 1024) {
-            showToolNotification('Файл слишком большой (макс. 100 МБ)');
-            return;
-        }
-
-        const validExtensions = ['.zip', '.tar', '.gz', '.tgz', '.7z'];
-        const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
-        
-        if (!validExtensions.includes(ext) && !file.name.endsWith('.tar.gz')) {
-            showToolNotification('Неподдерживаемый формат архива');
-            return;
-        }
-
-        this.selectedFile = file;
-        this.currentMode = 'upload';
-        
-        if (this.fileName) this.fileName.textContent = file.name;
-        if (this.fileSize) this.fileSize.textContent = this.formatFileSize(file.size);
-        if (this.fileInfo) this.fileInfo.classList.add('active');
-        
-        if (this.startButton) {
-            this.startButton.disabled = false;
-            this.startButton.classList.add('active');
-        }
-        
-        showToolNotification(`Выбран файл: ${file.name}`);
     }
 
     formatFileSize(bytes) {
@@ -271,22 +248,8 @@ class HerculesMainApp {
         }
 
         try {
-            const response = await fetch('/api/sast/url', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ url })
-            });
-
-            if (!response.ok) {
-                const error = await response.json().catch(() => ({ message: 'Ошибка загрузки' }));
-                throw new Error(error.message || 'Ошибка загрузки');
-            }
-
-            const data = await response.json();
+            const archiveData = await fetchArchiveFromUrl(url);
             
-            // Блокируем поле ввода
             this.isUrlLocked = true;
             if (this.repoInput) {
                 this.repoInput.disabled = true;
@@ -298,8 +261,8 @@ class HerculesMainApp {
                 this.fetchRepoBtn.style.opacity = '0.5';
             }
             
-            if (this.fileName) this.fileName.textContent = data.archive.filename;
-            if (this.fileSize) this.fileSize.textContent = this.formatFileSize(data.archive.size);
+            if (this.fileName) this.fileName.textContent = archiveData.filename;
+            if (this.fileSize) this.fileSize.textContent = this.formatFileSize(archiveData.size);
             if (this.fileInfo) this.fileInfo.classList.add('active');
             
             if (this.startButton) {
@@ -307,10 +270,10 @@ class HerculesMainApp {
                 this.startButton.classList.add('active');
             }
             
-            // Сохраняем ID архива для анализа
-            this.currentArchiveId = data.archive.id;
+            this.currentArchiveId = archiveData.id;
+            this.selectedFile = null;
             
-            showToolNotification('Архив успешно загружен');
+            showToolNotification('Архив успешно загружен', 'success');
         } catch (error) {
             this.showRepositoryUnavailableMessage(url);
         } finally {
@@ -433,7 +396,6 @@ class HerculesMainApp {
     }
 
     validateURL(e) {
-        // Если поле заблокировано, не проверяем
         if (this.isUrlLocked) return;
         
         const url = this.repoInput?.value.trim();
@@ -478,92 +440,134 @@ class HerculesMainApp {
         }
     }
 
-    async startAnalysis() {
-        
-        if (!this.startButton?.classList.contains('active')) {
+    // Метод анимации прогресса
+    animateProgress(taskId, targetPercent, duration, callback) {
+        const taskElement = this.findTaskElement(taskId);
+        if (!taskElement) {
+            if (callback) callback();
             return;
         }
-
-        const originalText = this.startButton.textContent;
         
-        this.startButton.textContent = 'Анализ запущен...';
-        this.startButton.disabled = true;
+        const progressElement = taskElement.querySelector('.progress');
+        if (!progressElement) {
+            if (callback) callback();
+            return;
+        }
+        
+        const startTime = Date.now();
+        const startWidth = parseFloat(progressElement.style.width) || 0;
+        
+        const animate = () => {
+            const elapsed = Date.now() - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const currentWidth = startWidth + (targetPercent - startWidth) * progress;
+            progressElement.style.width = `${currentWidth}%`;
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            } else {
+                if (callback) callback();
+            }
+        };
+        
+        animate();
+    }
 
+    async startAnalysis() {
+    console.log('🚀 startAnalysis вызван');
+    console.log('selectedFile:', this.selectedFile?.name);
+    console.log('currentArchiveId:', this.currentArchiveId);
+    console.log('repoInput:', this.repoInput?.value);
+    
+    if (!this.startButton?.classList.contains('active')) {
+        console.log('❌ Кнопка не активна');
+        return;
+    }
+
+    // Проверяем, есть ли выбранный файл или загруженный архив или ссылка
+    if (!this.selectedFile && !this.currentArchiveId && !this.repoInput?.value.trim()) {
+        showToolNotification('Выберите файл или укажите ссылку на репозиторий', 'error');
+        return;
+    }
+
+    const originalText = this.startButton.textContent;
+    this.startButton.textContent = 'Анализ запущен...';
+    this.startButton.disabled = true;
+
+    try {
+        this.updateTaskStatus('1.1', 'in-progress');
+        
+        let archiveId = null;
+        
         try {
-            this.updateTaskStatus('1.1', 'in-progress');
-            
-            let archiveId = null;
-            
-            try {
-                // Если есть загруженный через URL архив
-                if (this.currentArchiveId) {
-
-                    archiveId = this.currentArchiveId;
-                } 
-                // Если выбран файл
-                else if (this.selectedFile) {
-
-                    const archiveData = await uploadArchive(this.selectedFile);
-                    archiveId = archiveData.id;
-                } 
-                // Если введена ссылка
-                else {
-                    const url = this.repoInput?.value.trim();
-                    if (!url) throw new Error('Введите ссылку на репозиторий или выберите файл');
+            // Если есть выбранный файл (архив или упакованный проект)
+            if (this.selectedFile) {
+                console.log('📁 Загружаем выбранный файл:', this.selectedFile.name);
+                this.animateProgress('1.1', 50, 500, () => {});
+                const archiveData = await uploadArchive(this.selectedFile);
+                console.log('✅ Загружен архив:', archiveData);
+                archiveId = archiveData.id;
+                this.currentArchiveId = archiveId;
+                this.animateProgress('1.1', 100, 500, () => {});
+            } 
+            // Если есть загруженный через URL архив
+            else if (this.currentArchiveId) {
+                console.log('📦 Используем загруженный архив, ID:', this.currentArchiveId);
+                archiveId = this.currentArchiveId;
+            } 
+            else {
+                const url = this.repoInput?.value.trim();
+                if (url && this.isValidRepositoryUrl(url)) {
+                    console.log('🔗 Загружаем по URL:', url);
+                    this.animateProgress('1.1', 50, 500, () => {});
                     const archiveData = await fetchArchiveFromUrl(url);
+                    console.log('✅ Загружен архив по URL:', archiveData);
                     archiveId = archiveData.id;
-                    
-                    // Блокируем поле ввода после успешной загрузки
-                    this.isUrlLocked = true;
-                    if (this.repoInput) {
-                        this.repoInput.disabled = true;
-                        this.repoInput.style.backgroundColor = '#f3f4f6';
-                        this.repoInput.style.opacity = '0.7';
-                    }
-                    if (this.fetchRepoBtn) {
-                        this.fetchRepoBtn.disabled = true;
-                        this.fetchRepoBtn.style.opacity = '0.5';
-                    }
-                    
-                    if (this.fileName) this.fileName.textContent = archiveData.filename;
-                    if (this.fileSize) this.fileSize.textContent = this.formatFileSize(archiveData.size);
-                    if (this.fileInfo) this.fileInfo.classList.add('active');
+                    this.currentArchiveId = archiveId;
+                    this.animateProgress('1.1', 100, 500, () => {});
+                } else {
+                    throw new Error('Выберите архив или укажите ссылку на репозиторий');
                 }
-
-                if (!archiveId) {
-                    throw new Error('Не удалось получить ID архива');
-                }
-
-                this.updateTaskStatus('1.1', 'completed');
-
-                this.updateTaskStatus('2.1', 'in-progress');
-                this.updateTaskStatus('2.2', 'in-progress');
-                
-                const sastResults = await this.runSASTAnalysis(archiveId);
-                
-                this.updateTaskStatus('2.1', 'completed');
-                this.updateTaskStatus('2.2', 'completed');
-                this.startButton.textContent = 'Анализ завершен';
-                
-                this.showSASTResultsPopup(sastResults);
-                showToolNotification('Анализ успешно завершен');
-
-            } catch (error) {
-                console.error('❌ Ошибка:', error);
-                this.updateTaskStatus('1.1', 'pending');
-                this.updateTaskStatus('2.1', 'pending');
-                this.updateTaskStatus('2.2', 'pending');
-                
-                showToolNotification(error.message || 'Ошибка при анализе');
-                this.resetButton(originalText);
             }
 
+            if (!archiveId) {
+                throw new Error('Не удалось получить ID архива');
+            }
+
+            console.log('🎯 ID для анализа:', archiveId);
+            this.updateTaskStatus('1.1', 'completed');
+
+            this.updateTaskStatus('2.1', 'in-progress');
+            this.animateProgress('2.1', 50, 1000, () => {});
+            
+            const sastResults = await this.runSASTAnalysis(archiveId);
+            
+            console.log('📊 Результаты SAST:', sastResults);
+            
+            this.animateProgress('2.1', 100, 500, () => {});
+            this.updateTaskStatus('2.1', 'completed');
+            this.updateTaskStatus('2.2', 'completed');
+            this.startButton.textContent = 'Анализ завершен';
+            
+            this.showSASTResultsPopup(sastResults);
+            showToolNotification('Анализ успешно завершен', 'success');
+
         } catch (error) {
-            console.error('❌ Ошибка в startAnalysis:', error);
-            showToolNotification('Ошибка при анализе');
+            console.error('❌ Ошибка:', error);
+            this.updateTaskStatus('1.1', 'pending');
+            this.updateTaskStatus('2.1', 'pending');
+            this.updateTaskStatus('2.2', 'pending');
+            
+            showToolNotification(error.message || 'Ошибка при анализе', 'error');
             this.resetButton(originalText);
         }
+
+    } catch (error) {
+        console.error('❌ Ошибка в startAnalysis:', error);
+        showToolNotification('Ошибка при анализе', 'error');
+        this.resetButton(originalText);
     }
+}
 
     async runSASTAnalysis(archiveId) {
         if (!archiveId || archiveId === 'undefined' || archiveId === 'null') {
@@ -612,11 +616,9 @@ class HerculesMainApp {
                 statusElement.className = `task-status ${status}`;
             }
             const progressElement = taskElement.querySelector('.progress');
-            if (progressElement) {
+            if (progressElement && status !== 'in-progress') {
                 if (status === 'completed') {
                     progressElement.style.width = '100%';
-                } else if (status === 'in-progress') {
-                    progressElement.style.width = '50%';
                 } else if (status === 'pending') {
                     progressElement.style.width = '0%';
                 }
@@ -648,14 +650,8 @@ class HerculesMainApp {
     }
 
     resetAnalysis() {
-        this.selectedFile = null;
-        this.currentArchiveId = null;
-        
         if (this.fileInfo) {
             this.fileInfo.classList.remove('active');
-        }
-        if (this.fileInput) {
-            this.fileInput.value = '';
         }
         if (this.repoInput && !this.isUrlLocked) {
             this.repoInput.value = '';
@@ -684,7 +680,6 @@ class HerculesMainApp {
         this.currentArchiveId = null;
         this.isUrlLocked = false;
         
-        // Разблокируем поле ввода
         if (this.repoInput) {
             this.repoInput.disabled = false;
             this.repoInput.style.backgroundColor = '';
@@ -717,9 +712,6 @@ class HerculesMainApp {
         if (this.fileInfo) {
             this.fileInfo.classList.remove('active');
         }
-        if (this.fileInput) {
-            this.fileInput.value = '';
-        }
         
         this.showValidationMessage('', '');
     }
@@ -747,7 +739,7 @@ class HerculesMainApp {
     clearResults() {
         if (confirm('Очистить сохраненные результаты?')) {
             localStorage.removeItem('sast-results');
-            showToolNotification('Результаты очищены');
+            showToolNotification('Результаты очищены', 'success');
         }
     }
 
@@ -876,7 +868,7 @@ class HerculesMainApp {
                     color: white;
                 ">
                     <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
-                     Результаты анализа исходного кода
+                     Результаты анализа
                     </h3>
                     <span class="modal-close" style="cursor: pointer; font-size: 24px; color: white; line-height: 1;">&times;</span>
                 </div>
@@ -920,8 +912,8 @@ class HerculesMainApp {
                     gap: 12px;
                     background: white;
                 ">
-                    <button class="btn-close" style="
-                        background: #6c757d;
+                    <button id="downloadReportBtn" style="
+                        background: #10b981;
                         color: white;
                         border: none;
                         padding: 10px 24px;
@@ -930,7 +922,9 @@ class HerculesMainApp {
                         font-weight: 500;
                         transition: all 0.2s;
                         font-family: 'Ubuntu';
-                    ">Закрыть</button>
+                    ">
+                        <i class="fas fa-download"></i> Скачать отчет
+                    </button>
                 </div>
             </div>
         `;
@@ -948,11 +942,34 @@ class HerculesMainApp {
             }, 200);
         };
 
+        const downloadReport = () => {
+            try {
+                const reportData = JSON.stringify(results, null, 2);
+                const blob = new Blob([reportData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `sast-report-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                showToolNotification('Отчет успешно скачан', 'success');
+            } catch (error) {
+                console.error('Ошибка при скачивании отчета:', error);
+                showToolNotification('Ошибка при скачивании отчета', 'error');
+            }
+        };
+
         const closeBtn = overlay.querySelector('.modal-close');
         if (closeBtn) closeBtn.addEventListener('click', closePopup);
 
         const closeFooterBtn = overlay.querySelector('.btn-close');
         if (closeFooterBtn) closeFooterBtn.addEventListener('click', closePopup);
+        
+        const downloadBtn = overlay.querySelector('#downloadReportBtn');
+        if (downloadBtn) downloadBtn.addEventListener('click', downloadReport);
 
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) closePopup();
@@ -1006,6 +1023,22 @@ function initApp() {
         document.head.appendChild(style);
     }
 }
+
+// Глобальные функции
+window.removeFile = function() {
+    const fileInfo = document.getElementById('fileInfo');
+    const startBtn = document.getElementById('start-btn');
+    
+    if (fileInfo) fileInfo.classList.remove('active');
+    if (startBtn) {
+        startBtn.disabled = true;
+        startBtn.classList.remove('active');
+    }
+    if (window.herculesApp) {
+        window.herculesApp.selectedFile = null;
+        window.herculesApp.currentArchiveId = null;
+    }
+};
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
