@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Геркулес | Конструктор диаграмм</title>
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+    
+    <!-- Font Awesome 6 (бесплатные иконки) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ===== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ И СБРОС ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #93c5fd;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f172a;
+            --gray-800: #1e293b;
+            --gray-600: #475569;
+            --gray-400: #94a3b8;
+            --gray-200: #e2e8f0;
+            --gray-100: #f1f5f9;
+            --gray-50: #f8fafc;
+            --glass-bg: rgba(255, 255, 255, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.02);
+            --shadow-md: 0 8px 20px rgba(0,0,0,0.04);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.06);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        body {
+            font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%);
+            color: var(--dark);
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ===== ШАПКА ПРИЛОЖЕНИЯ ===== */
+        .app-header {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-sm);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            background: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            border: 1px solid black;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 20px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--dark), #0f172a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 10px 18px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: poUbuntu;
+            transition: all 0.2s ease;
+            background: white;
+            color: var(--gray-800);
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn:hover {
+            background: var(--gray-50);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--gray-400);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark), #1d4ed8);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+
+        /* ===== ОСНОВНОЙ КОНТЕЙНЕР ===== */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            padding: 20px;
+            gap: 20px;
+            min-height: 0;
+        }
+
+        /* ===== ЛЕВАЯ ПАНЕЛЬ ===== */
+        .shapes-panel {
+            width: 100px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .panel-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--gray-600);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.3px;
+            border-bottom: 1px solid var(--gray-200);
+            padding-bottom: 12px;
+        }
+
+        .panel-title i {
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .shapes-grid {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .shape-item {
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+       /* .shape-item:hover {
+            border-color: var(--primary);
+            background: var(--gray-50);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.12);
+        }*/
+
+        .shape-item:active {
+            cursor: grabbing;
+            transform: translateY(0);
+        }
+
+        .shape-icon {
+            font-size: 28px;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: var(--white-50);
+            cursor: grab;
+        }
+
+        .shape-icon i {
+            font-size: 26px;
+        }
+
+        .shape-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--gray-800);
+            text-align: center;
+            letter-spacing: -0.2px;
+        }
+
+        /* Черная иконка для особых случаев */
+        .black-icon {
+            color: #0f172a !important;
+            background: white;
+        }
+
+        /* ===== ЦЕНТРАЛЬНЫЙ ХОЛСТ ===== */
+        .canvas-container {
+            flex: 1;
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--glass-border);
+            position: relative;
+            overflow: hidden;
+            min-width: 0;
+        }
+
+        #diagramCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            background: 
+                radial-gradient(circle at 1px 1px, var(--gray-200) 1px, transparent 0);
+            background-size: 20px 20px;
+        }
+
+        /* ===== ПРАВАЯ ПАНЕЛЬ ===== */
+        .properties-panel {
+            width: 320px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow-md);
+            overflow-y: auto;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .properties-section {
+            background: white;
+            border-radius: var(--radius-md);
+            padding: 20px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+        }
+
+        .section-title {
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+            font-size: 16px;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .property-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--gray-200);
+        }
+
+        .property-row:last-child {
+            border-bottom: none;
+        }
+
+        .property-label {
+            font-size: 14px;
+            color: var(--gray-600);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .property-label i {
+            color: var(--gray-400);
+            width: 16px;
+        }
+
+        .property-value {
+            font-weight: 600;
+            color: var(--dark);
+            background: var(--gray-50);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .color-picker {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            border: 2px solid var(--gray-200);
+            cursor: poUbuntu;
+            padding: 0;
+            background: transparent;
+        }
+
+        .color-picker::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+
+        .color-picker::-webkit-color-swatch {
+            border: none;
+            border-radius: 10px;
+        }
+
+        .slider {
+            width: 100%;
+            margin: 12px 0;
+            accent-color: var(--primary);
+            height: 6px;
+            border-radius: 100px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            cursor: poUbuntu;
+            transition: all 0.2s;
+            background: white;
+            border: 1px solid var(--gray-200);
+            color: var(--gray-800);
+        }
+
+        .action-btn:hover {
+            background: var(--gray-50);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .action-btn.danger {
+            background: #fee2e2;
+            color: var(--danger);
+            border-color: #fecaca;
+        }
+
+        .action-btn.danger:hover {
+            background: #fecaca;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .stat-card {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-600);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--dark);
+            line-height: 1;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray-400);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ===== TOAST УВЕДОМЛЕНИЯ ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--dark);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 100px;
+            font-weight: 500;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            background: rgba(15, 23, 42, 0.95);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast i {
+            color: var(--success);
+            font-size: 16px;
+        }
+
+        /* ===== СКРОЛЛБАРЫ ===== */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--gray-400);
+            border-radius: 100px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--gray-600);
+        }
+
+        /* ===== УТИЛИТЫ ===== */
+        .hidden {
+            display: none !important;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        .w-100 {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- ШАПКА -->
+    <header class="app-header">
+        <div class="logo-area">
+            <!--div class="logo-icon">
+                <i class="fas fa-diagram-project" style="color: #0f172a;"></i>
+            </div-->
+            <span class="logo-text">Дизайнер</span>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-outline" onclick="showToast('Процесс запущен')">
+                <i class="fas fa-play"></i>
+                Старт
+            </button>
+            <button class="btn" onclick="exportJSON()">
+                <i class="fas fa-download"></i>
+                Экспорт
+            </button>
+            <button class="btn" onclick="importJSON()">
+                <i class="fas fa-upload"></i>
+                Импорт
+            </button>
+            <button class="btn" onclick="clearCanvas()">
+                <i class="fas fa-trash-can"></i>
+                Очистить
+            </button>
+            <button class="btn btn-primary" onclick="showToast('Диаграмма сохранена')">
+                <i class="fas fa-save"></i>
+                Сохранить
+            </button>
+        </div>
+    </header>
+    
+    <!-- ОСНОВНОЙ КОНТЕЙНЕР -->
+    <div class="main-container">
+        <!-- ЛЕВАЯ ПАНЕЛЬ - БИБЛИОТЕКА ФИГУР -->
+        <div class="shapes-panel">
+            <!-- Секция: Общее -->
+            <div class="panel-section">
+                <div class="shapes-grid">
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'circle')">
+                            <i class="fa-regular fa-circle"></i>
+                        </div>
+                        <span class="shape-label">Предусловие</span>
+                    </div>    
+                    <div class="shape-item">
+                        <div class="shape-icon"  draggable="true" ondragstart="dragShape(event, 'triangle')">
+                           <i class="fa fa-code-branch black-icon"></i>
+                        </div>
+                        <span class="shape-label">Разветвление</span>
+                    </div>
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'arrow')">
+                            <i class="fa-solid fa-arrow-right black-icon"></i>
+                        </div>
+                        <span class="shape-label">Направление</span>
+                    </div>    
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'arrow')">
+                            <i class="fas fa-link black-icon"></i>
+                        </div>
+                        <span class="shape-label">Соединение</span>
+                    </div>
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'flowchart')">
+                            <i class="fas fa-sitemap black-icon"></i>
+                        </div>
+                        <span class="shape-label">Структура</span>
+                    </div>
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'process')" >
+                            <i class="fas fa-gears black-icon"></i>
+                        </div>
+                        <span class="shape-label">Активность</span>
+                    </div>
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'decision')">
+                            <i class="fas fa-diagram-project black-icon"></i>
+                        </div>
+                        <span class="shape-label">Цепочка</span>
+                    </div>
+
+                 <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'file')" style="cursor: pointer">
+                            <i class="fas fa-file black-icon"></i>
+                        </div>
+                        <span class="shape-label">Файл</span>
+                    </div>
+                    <div class="shape-item">
+                        <div class="shape-icon" draggable="true" ondragstart="dragShape(event, 'cloud')" style="cursor: pointer">
+                            <i class="fas fa-code black-icon"></i>
+                        </div>
+                        <span class="shape-label">API</span>
+                    </div>
+            </div>
+                            </div>
+            <!-- Секция: Источники -->
+           
+        </div>
+        
+        <!-- ЦЕНТРАЛЬНЫЙ ХОЛСТ -->
+        <div class="canvas-container">
+            <canvas id="diagramCanvas"></canvas>
+        </div>
+        
+        <!-- ПРАВАЯ ПАНЕЛЬ - СВОЙСТВА -->
+        <div class="properties-panel">
+            <!-- Секция: Свойства фигуры -->
+            <div class="properties-section">
+                <div class="section-header">
+                    <div class="section-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <div>
+                        <h3 class="section-title">Свойства фигуры</h3>
+                        <p class="section-subtitle" id="selectedShapeName">Фигура не выбрана</p>
+                    </div>
+                </div>
+                
+                <!-- Блок свойств (отображается при выборе фигуры) -->
+                <div id="shapeProperties" class="hidden">
+                    <div class="property-row">
+                        <span class="property-label">
+                            <i class="fas fa-arrows-up-down-left-right"></i> Позиция
+                        </span>
+                        <span class="property-value" id="positionValue">X: 0, Y: 0</span>
+                    </div>
+                    
+                    <div class="property-row">
+                        <span class="property-label">
+                            <i class="fas fa-expand"></i> Размер
+                        </span>
+                        <span class="property-value" id="sizeValue">100×100</span>
+                    </div>
+                    
+                    <div style="margin-top: 16px;">
+                        <label class="property-label" style="margin-bottom: 10px; display: block;">
+                            <i class="fas fa-palette"></i> Цвет заливки
+                        </label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <input type="color" id="fillColor" class="color-picker" value="#3b82f6" onchange="updateSelectedShapeColor(this.value)">
+                            <span style="font-size: 14px; color: var(--gray-600);" id="colorValue">#3b82f6</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 20px;">
+                        <label class="property-label" style="margin-bottom: 10px; display: block;">
+                            <i class="fas fa-eyedropper"></i> Прозрачность
+                        </label>
+                        <input type="range" id="opacity" class="slider" min="0" max="1" step="0.1" value="1" onchange="updateSelectedShapeOpacity(this.value)">
+                        <div style="display: flex; justify-content: space-between; margin-top: 6px;">
+                            <span style="font-size: 12px; color: var(--gray-400);">0%</span>
+                            <span style="font-size: 12px; color: var(--gray-600);" id="opacityValue">100%</span>
+                            <span style="font-size: 12px; color: var(--gray-400);">100%</span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button class="action-btn" onclick="duplicateSelectedShape()">
+                            <i class="fas fa-copy"></i>
+                            Дубль
+                        </button>
+                        <button class="action-btn danger" onclick="deleteSelectedShape()">
+                            <i class="fas fa-trash"></i>
+                            Удалить
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Пустое состояние (нет выбранной фигуры) -->
+                <div id="noSelectionMessage" class="empty-state">
+                    <i class="fas fa-mouse-poUbuntu"></i>
+                    <p>Выберите фигуру на холсте</p>
+                    <p style="font-size: 12px; margin-top: 8px; color: var(--gray-500);">Кликните по фигуре для настройки</p>
+                </div>
+            </div>
+            
+            <!-- Секция: Статистика -->
+            <div class="properties-section">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                    <i class="fas fa-chart-line" style="color: var(--primary); font-size: 18px;"></i>
+                    <h4 style="font-weight: 700; color: var(--dark); font-size: 16px;">Статистика диаграммы</h4>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            <i class="fas fa-shapes"></i> Фигуры
+                        </div>
+                        <div class="stat-number" id="shapesCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">
+                            <i class="fas fa-link"></i> Связи
+                        </div>
+                        <div class="stat-number" id="connectionsCount">0</div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--gray-200);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: var(--gray-600);">Всего элементов</span>
+                        <span style="font-weight: 700; color: var(--dark);" id="totalElements">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Секция: Быстрые действия -->
+            <div class="properties-section">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+                    <i class="fas fa-bolt" style="color: var(--warning); font-size: 18px;"></i>
+                    <h4 style="font-weight: 700; color: var(--dark); font-size: 16px;">Быстрые действия</h4>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="action-btn" style="justify-content: flex-start;" onclick="addExampleShapes()">
+                        <i class="fas fa-plus-circle" style="color: var(--primary);"></i>
+                        Добавить пример
+                    </button>
+                    <button class="action-btn" style="justify-content: flex-start;" onclick="exportJSON()">
+                        <i class="fas fa-download" style="color: var(--success);"></i>
+                        Экспорт JSON
+                    </button>
+                    <button class="action-btn" style="justify-content: flex-start;" onclick="clearCanvas()">
+                        <i class="fas fa-trash-alt" style="color: var(--danger);"></i>
+                        Очистить всё
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- TOAST УВЕДОМЛЕНИЕ -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Диаграмма сохранена</span>
+    </div>
+
+    <script>
+        // ===== КЛАСС ДЛЯ УПРАВЛЕНИЯ ФИГУРАМИ =====
+        class Shape {
+            constructor(type, x, y, width = 100, height = 100) {
+                this.id = Date.now() + Math.random() * 1000;
+                this.type = type;
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.color = 'white';
+                this.opacity = 1;
+                this.rotation = 0;
+                this.text = '';
+                this.selected = false;
+            }
+            
+            draw(ctx) {
+                ctx.save();
+                ctx.translate(this.x + this.width / 2, this.y + this.height / 2);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                ctx.translate(-(this.x + this.width / 2), -(this.y + this.height / 2));
+                
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.08)';
+                ctx.shadowBlur = 8;
+                ctx.shadowOffsetY = 3;
+                
+                switch (this.type) {
+                    case 'rectangle':
+                    case 'flowchart':
+                    case 'process':
+                    case 'file':
+                    case 'plus':
+                        ctx.fillRect(this.x, this.y, this.width, this.height);
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.lineWidth = 1.5;
+                        ctx.strokeRect(this.x, this.y, this.width, this.height);
+                        break;
+                    case 'circle':
+                        ctx.beginPath();
+                        ctx.arc(this.x + this.width / 2, this.y + this.height / 2, this.width / 2, 0, 2 * Math.PI);
+                        ctx.fill();
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                        break;
+                    case 'triangle':
+                        ctx.beginPath();
+                        ctx.moveTo(this.x + this.width / 2, this.y);
+                        ctx.lineTo(this.x + this.width, this.y + this.height);
+                        ctx.lineTo(this.x, this.y + this.height);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        break;
+                    case 'decision':
+                        ctx.beginPath();
+                        ctx.moveTo(this.x + this.width / 2, this.y);
+                        ctx.lineTo(this.x + this.width, this.y + this.height / 2);
+                        ctx.lineTo(this.x + this.width / 2, this.y + this.height);
+                        ctx.lineTo(this.x, this.y + this.height / 2);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.stroke();
+                        break;
+                    case 'database':
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.moveTo(this.x + 15, this.y);
+                        ctx.quadraticCurveTo(this.x + this.width / 2, this.y + 15, this.x + this.width - 15, this.y);
+                        ctx.lineTo(this.x + this.width - 15, this.y + this.height - 15);
+                        ctx.quadraticCurveTo(this.x + this.width / 2, this.y + this.height, this.x + 15, this.y + this.height - 15);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.stroke();
+                        break;
+                    case 'arrow':
+                        ctx.beginPath();
+                        ctx.moveTo(this.x, this.y + this.height / 2);
+                        ctx.lineTo(this.x + this.width, this.y + this.height / 2);
+                        ctx.strokeStyle = 'black';
+                        ctx.lineWidth = 3;
+                        ctx.stroke();
+                        
+                        ctx.fillStyle = 'black';
+                        ctx.beginPath();
+                        ctx.moveTo(this.x + this.width, this.y + this.height / 2);
+                        ctx.lineTo(this.x + this.width - 15, this.y + this.height / 2 - 8);
+                        ctx.lineTo(this.x + this.width - 15, this.y + this.height / 2 + 8);
+                        ctx.closePath();
+                        ctx.fill();
+                        break;
+                    case 'cloud':
+                        ctx.fillStyle = this.color;
+                        ctx.beginPath();
+                        ctx.moveTo(this.x + 20, this.y + 30);
+                        ctx.bezierCurveTo(this.x + 10, this.y + 30, this.x, this.y + 40, this.x, this.y + 50);
+                        ctx.bezierCurveTo(this.x, this.y + 65, this.x + 15, this.y + 75, this.x + 30, this.y + 75);
+                        ctx.bezierCurveTo(this.x + 40, this.y + 85, this.x + 60, this.y + 85, this.x + 70, this.y + 75);
+                        ctx.bezierCurveTo(this.x + 90, this.y + 75, this.x + 100, this.y + 60, this.x + 90, this.y + 45);
+                        ctx.bezierCurveTo(this.x + 100, this.y + 30, this.x + 80, this.y + 20, this.x + 60, this.y + 25);
+                        ctx.bezierCurveTo(this.x + 50, this.y + 15, this.x + 30, this.y + 15, this.x + 20, this.y + 30);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.stroke();
+                        break;
+                }
+                
+                ctx.restore();
+                
+                if (this.selected) {
+                    this.drawSelectionIndicator(ctx);
+                }
+                
+                if (this.text) {
+                    ctx.font = '14px Ubuntu, sans-serif';
+                    ctx.fillStyle = '#ffffff';
+                    ctx.shadowColor = 'rgba(0,0,0,0.2)';
+                    ctx.shadowBlur = 4;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(this.text, this.x + this.width / 2, this.y + this.height / 2);
+                }
+            }
+            
+            drawSelectionIndicator(ctx) {
+                ctx.save();
+                ctx.strokeStyle = '#3b82f6';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.strokeRect(this.x - 5, this.y - 5, this.width + 10, this.height + 10);
+                
+                const handles = [
+                    [this.x - 5, this.y - 5],
+                    [this.x + this.width + 5, this.y - 5],
+                    [this.x - 5, this.y + this.height + 5],
+                    [this.x + this.width + 5, this.y + this.height + 5]
+                ];
+                
+                ctx.setLineDash([]);
+                handles.forEach(([hx, hy]) => {
+                    ctx.fillStyle = 'white';
+                    ctx.strokeStyle = '#3b82f6';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(hx, hy, 4, 0, 2 * Math.PI);
+                    ctx.fill();
+                    ctx.stroke();
+                });
+                
+                ctx.restore();
+            }
+            
+            containsPoint(px, py) {
+                return px >= this.x && px <= this.x + this.width &&
+                       py >= this.y && py <= this.y + this.height;
+            }
+        }
+        
+        // ===== КЛАСС ДЛЯ УПРАВЛЕНИЯ СОЕДИНЕНИЯМИ =====
+        class Connection {
+            constructor(fromShape, toShape) {
+                this.id = Date.now() + Math.random() * 1000;
+                this.fromShape = fromShape;
+                this.toShape = toShape;
+                this.color = '#64748b';
+                this.width = 2;
+            }
+            
+            draw(ctx) {
+                ctx.beginPath();
+                ctx.moveTo(
+                    this.fromShape.x + this.fromShape.width / 2,
+                    this.fromShape.y + this.fromShape.height / 2
+                );
+                
+                const midX = (this.fromShape.x + this.fromShape.width / 2 + this.toShape.x + this.toShape.width / 2) / 2;
+                const midY = (this.fromShape.y + this.fromShape.height / 2 + this.toShape.y + this.toShape.height / 2) / 2 - 20;
+                
+                ctx.quadraticCurveTo(midX, midY, this.toShape.x + this.toShape.width / 2, this.toShape.y + this.toShape.height / 2);
+                ctx.strokeStyle = this.color;
+                ctx.lineWidth = this.width;
+                ctx.stroke();
+            }
+        }
+        
+        // ===== ОСНОВНОЕ ПРИЛОЖЕНИЕ =====
+        class DiagramApp {
+            constructor() {
+                this.canvas = document.getElementById('diagramCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.shapes = [];
+                this.connections = [];
+                this.selectedShape = null;
+                this.isDragging = false;
+                this.dragOffsetX = 0;
+                this.dragOffsetY = 0;
+                
+                this.initCanvas();
+                this.addEventListeners();
+                this.animate();
+                
+                // Добавляем примеры фигур
+                //this.addExampleShapes();
+            }
+            
+            initCanvas() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                const container = this.canvas.parentElement;
+                this.canvas.width = container.clientWidth;
+                this.canvas.height = container.clientHeight;
+                this.draw();
+            }
+            
+            addEventListeners() {
+                this.canvas.addEventListener('mousedown', (e) => this.onMouseDown(e));
+                this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
+                this.canvas.addEventListener('mouseup', (e) => this.onMouseUp(e));
+                this.canvas.addEventListener('dblclick', (e) => this.onDoubleClick(e));
+                this.canvas.addEventListener('dragover', (e) => e.preventDefault());
+                this.canvas.addEventListener('drop', (e) => this.onDrop(e));
+            }
+            
+            addExampleShapes() {
+                this.shapes = [];
+                this.connections = [];
+                
+                const start = new Shape('circle', 100, 100, 80, 80);
+                start.text = 'Старт';
+                start.color = '#3b82f6';
+                
+                const process = new Shape('process', 100, 250, 100, 80);
+                process.text = 'Процесс';
+                process.color = '#10b981';
+                
+                const decision = new Shape('decision', 350, 200, 100, 100);
+                decision.text = 'Решение?';
+                decision.color = '#f59e0b';
+                
+                this.shapes.push(start, process, decision);
+                this.connections.push(new Connection(start, process));
+                this.connections.push(new Connection(process, decision));
+                
+                this.updateStats();
+                this.draw();
+            }
+            
+            onMouseDown(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const canvasX = (e.clientX - rect.left) * scaleX;
+                const canvasY = (e.clientY - rect.top) * scaleY;
+                
+                let clickedShape = null;
+                for (let i = this.shapes.length - 1; i >= 0; i--) {
+                    if (this.shapes[i].containsPoint(canvasX, canvasY)) {
+                        clickedShape = this.shapes[i];
+                        break;
+                    }
+                }
+                
+                if (clickedShape) {
+                    this.selectedShape = clickedShape;
+                    this.shapes.forEach(s => s.selected = false);
+                    clickedShape.selected = true;
+                    
+                    this.dragOffsetX = canvasX - clickedShape.x;
+                    this.dragOffsetY = canvasY - clickedShape.y;
+                    this.isDragging = true;
+                    
+                    this.updatePropertiesPanel();
+                } else {
+                    this.shapes.forEach(s => s.selected = false);
+                    this.selectedShape = null;
+                    this.updatePropertiesPanel();
+                }
+                
+                this.draw();
+            }
+            
+            onMouseMove(e) {
+                if (!this.isDragging || !this.selectedShape) return;
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const canvasX = (e.clientX - rect.left) * scaleX;
+                const canvasY = (e.clientY - rect.top) * scaleY;
+                
+                this.selectedShape.x = Math.max(0, Math.min(canvasX - this.dragOffsetX, this.canvas.width - this.selectedShape.width));
+                this.selectedShape.y = Math.max(0, Math.min(canvasY - this.dragOffsetY, this.canvas.height - this.selectedShape.height));
+                
+                this.draw();
+            }
+            
+            onMouseUp(e) {
+                this.isDragging = false;
+                this.updateStats();
+            }
+            
+            onDoubleClick(e) {
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const canvasX = (e.clientX - rect.left) * scaleX;
+                const canvasY = (e.clientY - rect.top) * scaleY;
+                
+                for (let shape of this.shapes) {
+                    if (shape.containsPoint(canvasX, canvasY)) {
+                        const text = prompt('Введите текст для фигуры:', shape.text || '');
+                        if (text !== null) {
+                            shape.text = text;
+                            this.draw();
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            onDrop(e) {
+                e.preventDefault();
+                
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                
+                const canvasX = (e.clientX - rect.left) * scaleX;
+                const canvasY = (e.clientY - rect.top) * scaleY;
+                
+                const shapeType = e.dataTransfer.getData('text/plain');
+                const newShape = new Shape(shapeType, canvasX - 50, canvasY - 50, 90, 90);
+                this.shapes.push(newShape);
+                
+                this.draw();
+                this.updateStats();
+                showToast(`${this.getShapeName(shapeType)} добавлена`);
+            }
+            
+            getShapeName(type) {
+                const names = {
+                    'circle': 'Круг',
+                    'triangle': 'Условие',
+                    'arrow': 'Направление',
+                    'rectangle': 'Прямоугольник',
+                    'flowchart': 'Блок-схема',
+                    'process': 'Процесс',
+                    'decision': 'Решение',
+                    'diamond': 'Ромб',
+                    'database': 'База данных',
+                    'plus': 'Добавить',
+                    'file': 'Файл',
+                    'cloud': 'Облако'
+                };
+                return names[type] || type;
+            }
+            
+            draw() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                this.drawGrid();
+                this.connections.forEach(conn => conn.draw(this.ctx));
+                this.shapes.forEach(shape => shape.draw(this.ctx));
+            }
+            
+            drawGrid() {
+                const step = 20;
+                this.ctx.beginPath();
+                this.ctx.strokeStyle = '#e2e8f0';
+                this.ctx.lineWidth = 0.5;
+                
+                for (let x = 0; x <= this.canvas.width; x += step) {
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x, this.canvas.height);
+                }
+                
+                for (let y = 0; y <= this.canvas.height; y += step) {
+                    this.ctx.moveTo(0, y);
+                    this.ctx.lineTo(this.canvas.width, y);
+                }
+                
+                this.ctx.stroke();
+            }
+            
+            animate() {
+                this.draw();
+                requestAnimationFrame(() => this.animate());
+            }
+            
+            updatePropertiesPanel() {
+                const propertiesDiv = document.getElementById('shapeProperties');
+                const noSelectionDiv = document.getElementById('noSelectionMessage');
+                const selectedShapeName = document.getElementById('selectedShapeName');
+                
+                if (this.selectedShape) {
+                    propertiesDiv.classList.remove('hidden');
+                    noSelectionDiv.classList.add('hidden');
+                    
+                    document.getElementById('positionValue').innerHTML = `X: ${Math.round(this.selectedShape.x)}, Y: ${Math.round(this.selectedShape.y)}`;
+                    document.getElementById('sizeValue').innerHTML = `${this.selectedShape.width}×${this.selectedShape.height}`;
+                    document.getElementById('fillColor').value = this.selectedShape.color;
+                    document.getElementById('colorValue').innerHTML = this.selectedShape.color;
+                    document.getElementById('opacity').value = this.selectedShape.opacity;
+                    document.getElementById('opacityValue').innerHTML = `${Math.round(this.selectedShape.opacity * 100)}%`;
+                    selectedShapeName.innerHTML = `${this.getShapeName(this.selectedShape.type)} • ID: ${this.selectedShape.id.toString().slice(-6)}`;
+                } else {
+                    propertiesDiv.classList.add('hidden');
+                    noSelectionDiv.classList.remove('hidden');
+                    selectedShapeName.innerHTML = 'Фигура не выбрана';
+                }
+            }
+            
+            updateStats() {
+                const shapesCount = this.shapes.length;
+                const connectionsCount = this.connections.length;
+                
+                document.getElementById('shapesCount').innerHTML = shapesCount;
+                document.getElementById('connectionsCount').innerHTML = connectionsCount;
+                document.getElementById('totalElements').innerHTML = shapesCount + connectionsCount;
+            }
+            
+            clearCanvas() {
+                if (confirm('Очистить холст? Все несохраненные изменения будут потеряны.')) {
+                    this.shapes = [];
+                    this.connections = [];
+                    this.selectedShape = null;
+                    this.draw();
+                    this.updateStats();
+                    this.updatePropertiesPanel();
+                    showToast('Холст очищен');
+                }
+            }
+            
+            exportDiagram() {
+                const diagramData = {
+                    shapes: this.shapes.map(shape => ({
+                        type: shape.type,
+                        x: shape.x,
+                        y: shape.y,
+                        width: shape.width,
+                        height: shape.height,
+                        color: shape.color,
+                        opacity: shape.opacity,
+                        text: shape.text
+                    })),
+                    connections: this.connections.map(conn => ({
+                        fromIndex: this.shapes.indexOf(conn.fromShape),
+                        toIndex: this.shapes.indexOf(conn.toShape)
+                    }))
+                };
+                
+                const dataStr = JSON.stringify(diagramData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `diagram-${new Date().toISOString().slice(0,10)}.json`;
+                a.click();
+                
+                URL.revokeObjectURL(url);
+                showToast('Диаграмма экспортирована');
+            }
+            
+            importDiagram(jsonData) {
+                try {
+                    const data = JSON.parse(jsonData);
+                    
+                    this.shapes = data.shapes.map(shapeData => {
+                        const shape = new Shape(
+                            shapeData.type,
+                            shapeData.x,
+                            shapeData.y,
+                            shapeData.width,
+                            shapeData.height
+                        );
+                        shape.color = shapeData.color;
+                        shape.opacity = shapeData.opacity;
+                        shape.text = shapeData.text;
+                        return shape;
+                    });
+                    
+                    this.connections = data.connections.map(connData => {
+                        return new Connection(
+                            this.shapes[connData.fromIndex],
+                            this.shapes[connData.toIndex]
+                        );
+                    });
+                    
+                    this.selectedShape = null;
+                    this.draw();
+                    this.updateStats();
+                    this.updatePropertiesPanel();
+                    showToast('Диаграмма загружена');
+                } catch (error) {
+                    showToast('Ошибка импорта файла');
+                }
+            }
+        }
+        
+        // ===== ГЛОБАЛЬНЫЕ ФУНКЦИИ =====
+        let app;
+        
+        window.onload = () => {
+            app = new DiagramApp();
+        };
+        
+        function dragShape(event, type) {
+            event.dataTransfer.setData('text/plain', type);
+            event.dataTransfer.effectAllowed = 'copy';
+        }
+        
+        function clearCanvas() {
+            if (app) app.clearCanvas();
+        }
+        
+        function exportJSON() {
+            if (app) app.exportDiagram();
+        }
+        
+        function importJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (app) app.importDiagram(e.target.result);
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+        
+        function updateSelectedShapeColor(color) {
+            if (app && app.selectedShape) {
+                app.selectedShape.color = color;
+                document.getElementById('colorValue').innerHTML = color;
+                app.draw();
+            }
+        }
+        
+        function updateSelectedShapeOpacity(opacity) {
+            if (app && app.selectedShape) {
+                app.selectedShape.opacity = parseFloat(opacity);
+                document.getElementById('opacityValue').innerHTML = `${Math.round(opacity * 100)}%`;
+                app.draw();
+            }
+        }
+        
+        function duplicateSelectedShape() {
+            if (app && app.selectedShape) {
+                const newShape = new Shape(
+                    app.selectedShape.type,
+                    app.selectedShape.x + 30,
+                    app.selectedShape.y + 30,
+                    app.selectedShape.width,
+                    app.selectedShape.height
+                );
+                newShape.color = app.selectedShape.color;
+                newShape.opacity = app.selectedShape.opacity;
+                newShape.text = app.selectedShape.text;
+                
+                app.shapes.push(newShape);
+                app.draw();
+                app.updateStats();
+                showToast('Фигура дублирована');
+            }
+        }
+        
+        function deleteSelectedShape() {
+            if (app && app.selectedShape) {
+                const index = app.shapes.indexOf(app.selectedShape);
+                if (index > -1) {
+                    app.connections = app.connections.filter(conn => 
+                        conn.fromShape !== app.selectedShape && 
+                        conn.toShape !== app.selectedShape
+                    );
+                    
+                    app.shapes.splice(index, 1);
+                    app.selectedShape = null;
+                    app.draw();
+                    app.updateStats();
+                    app.updatePropertiesPanel();
+                    showToast('Фигура удалена');
+                }
+            }
+        }
+        
+        function addExampleShapes() {
+            if (app) {
+                app.addExampleShapes();
+                showToast('Примеры добавлены');
+            }
+        }
+        
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

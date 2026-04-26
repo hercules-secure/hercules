@@ -43,7 +43,7 @@
     "simple-git": "^3.33.0",
     "tar": "^7.5.13",
     "unzipper": "^0.12.3",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.0",
     "winston": "^3.19.0",
     "xml2js": "^0.6.2"
   },
@@ -61,5 +61,5 @@
   ],
   "author": "Hercules Team",
   "license": "MIT",
-  "private": false 
+  "private": false
 }

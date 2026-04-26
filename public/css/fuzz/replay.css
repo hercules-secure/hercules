@@ -1,37 +1,115 @@
-        .replay-modal { max-width: 900px; width: 90%; max-height: 90vh; overflow-y: auto; background: var(--bg-primary); border-radius: 12px;}
-        .replay-section { margin-bottom: 16px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-        .replay-section-header { padding: 10px 16px; background: var(--bg-secondary); font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
-        .replay-section-header:hover { background: var(--bg-hover); }
-        .replay-section-content { padding: 16px; max-height: 300px; overflow: auto; display: block; }
-        .modal-replay {overflow: hidden; display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;  z-index: 10000; justify-content: center; align-items: center;}
-        .modal-header-replay {padding: 20px 24px;background: black;color: white;border-bottom: 1px solid #e9ecef;display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0;  z-index: 1;}
-        .modal-body-replay {padding: 24px;overflow: hidden;flex: 1;background: #f8f9fa;}
-        .toggle-icon { transition: transform 0.2s; }
-        .toggle-icon.open { transform: rotate(180deg); }
-        .http-line { font-family: 'Ubuntu'; font-size: 14px; padding: 8px; background: var(--bg-primary); border-radius: 4px; }
-        .http-version { color: var(--text-secondary); margin-left: 8px; }
-        .headers-table { width: 100%; border-collapse: collapse; font-family: 'Ubuntu'; font-size: 13px; }
-        .headers-table td { padding: 4px 8px; vertical-align: top; }
-        .header-key { font-weight: 600; color: var(--primary); width: 200px; }
-        .header-value { color: var(--text-primary); word-break: break-all; }
-        .json-viewer { margin: 0; padding: 12px; background: var(--bg-primary); border-radius: 6px; font-family: 'Ubuntu'; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-wrap: break-word; }
-        .payload-viewer { background: rgba(245, 158, 11, 0.05); border-left: 3px solid #f59e0b; }
-        .json-key { color: #f59e0b; }
-        .json-string { color: #10b981; }
-        .json-number { color: #3b82f6; }
-        .json-boolean { color: #ef4444; }
-        .json-null { color: #6b7280; }
-        .content-type { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
-        .info-row { padding: 4px 0; font-size: 13px; }
-        .empty-message { color: var(--text-secondary); font-style: italic; text-align: center; padding: 20px; }
-        .replay-toolbar { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-        .replay-toolbar .btn { padding: 6px 12px; font-size: 12px; font-family: 'Ubuntu';}
-        .test-type-badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
-        .test-type-normal { background: #10b981; color: white; }
-        .test-type-injection { background: #ef4444; color: white; }
-        .test-type-large { background: #f59e0b; color: white; }
-        .test-type-mutation { background: #8b5cf6; color: white; }
-        .test-type-header_fuzzing { background: #3b82f6; color: white; }
-        .copy-success { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; z-index: 10001; animation: slideIn 0.3s ease-out, fadeOut 2s ease-out 1.7s forwards; }
-        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+    #replayModal {
+        z-index: 10002 !important;
+        font-family: 'Ubuntu';
+    }
+    
+    #replayModal .modal-content {
+        z-index: 10003 !important;
+        position: relative;
+        background: white;
+        border-radius: 16px;
+        max-width: 900px;
+        width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        font-family: 'Ubuntu';
+    }
+    
+    /* Стили для остальных элементов */
+    .replay-tabs { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--border, #333); }
+    .replay-tab { padding: 10px 20px; background: none; border: none; cursor: pointer; color: black; font-family: 'Ubuntu'}
+    .replay-tab.active { color: var(--primary, #3b82f6); border-bottom: 2px solid var(--primary, #3b82f6); }
+    .replay-tab-content { display: none; }
+    .replay-tab-content.active { display: block; }
+    .replay-method-url { display: flex; gap: 10px; margin-bottom: 20px; }
+    .replay-method-select { padding: 10px; border: 1px solid var(--border, #333); border-radius: 8px; background: white; color: black; font-family: 'Ubuntu'}
+    .replay-url-input { flex: 1; padding: 10px; border: 1px solid var(--border, #333); border-radius: 8px; background: white; color: black; }
+    .replay-section { margin-bottom: 15px; border: 1px solid var(--border, #333); border-radius: 8px; overflow: hidden; }
+    .replay-section-header { padding: 12px 15px; background: white; cursor: pointer; display: flex; justify-content: space-between; }
+    .replay-section-content { display: none; padding: 15px; border-top: 1px solid var(--border, #333); }
+    .replay-section-content.open { display: block; }
+    .replay-textarea { width: 100%; padding: 10px; border: 1px solid var(--border, #333); border-radius: 8px; background: white; font-family: 'Ubuntu'; font-size: 12px; resize: vertical; color: black; }
+    .replay-actions { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+    .replay-response { min-height: 300px; }
+    .replay-response-placeholder { text-align: center; padding: 60px; color: var(--text-secondary, #888); }
+    .replay-response-placeholder i { font-size: 48px; margin-bottom: 15px; }
+    .replay-loading, .replay-error { text-align: center; padding: 60px; }
+    .replay-response-status { background: var(--bg-secondary, #2a2a3a); padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 4px solid; }
+    .replay-status-line { display: flex; justify-content: space-between; align-items: center; }
+    .replay-status-code { font-weight: bold; font-size: 16px; }
+    .replay-duration { color: white; font-size: 12px; }
+    .replay-headers, .replay-json { background: white; padding: 10px; border-radius: 8px; overflow-x: auto; font-size: 12px; margin: 0; color: black;}
+    .replay-json { color: #10b981; }
+    .toggle-icon { transition: transform 0.2s; }
+    .toggle-icon.open { transform: rotate(180deg); }
+    .details-btn { background: none; border: none; cursor: pointer; padding: 5px 8px; border-radius: 6px; color: var(--text-primary, #fff); }
+    .details-btn:hover { background: var(--bg-secondary, #2a2a3a); }
+    
+    /* Улучшенные стили для модальных окон */
+    .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+    }
+    
+    #fuzzModal {
+        z-index: 10000;
+    }
+    
+    #replayModal {
+        z-index: 10002 !important;
+    }
+    
+    .modal-content {
+        background: var(--bg-primary, #1e1e2e);
+        border-radius: 16px;
+        max-width: 90%;
+        max-height: 85vh;
+        overflow-y: auto;
+        position: relative;
+    }
+    
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--border, #333);
+    }
+    .start-button-replay{
+            padding: 12px 24px;
+            font: 14px 'Ubuntu';
+            font-weight: 500;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            user-select: none;
+            margin-top: 2vh;
+        }
+    .modal-body {
+        padding: 20px;
+    }
+    
+    .close-btn {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-secondary, #888);
+    }
+    
+    .close-btn:hover {
+        color: var(--text-primary, #fff);
+    }

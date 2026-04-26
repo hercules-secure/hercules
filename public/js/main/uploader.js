@@ -1,4 +1,6 @@
-// client/js/uploader.js
+
+
+
 
 class FileUploader {
     constructor(options = {}) {
@@ -11,6 +13,7 @@ class FileUploader {
             onFolderSelected: null,
             onProgress: null,
             onError: null,
+            errorHandler: null, // Добавляем обработчик ошибок
             ...options
         };
         
@@ -198,7 +201,6 @@ class FileUploader {
             return;
         }
         
-        // Запускаем прогресс при выборе файла
         if (this.options.onProgress) {
             this.options.onProgress('Загрузка архива...', 0);
         }
@@ -217,7 +219,6 @@ class FileUploader {
         };
         
         if (this.options.compressOnClient) {
-            // Запускаем прогресс архивации
             if (this.options.onProgress) {
                 this.options.onProgress('Подготовка файлов...', 0);
             }
@@ -259,7 +260,6 @@ class FileUploader {
         let processed = 0;
         const total = folderInfo.files.length;
         
-        // Первый этап: фильтрация и добавление файлов (50%)
         for (const file of folderInfo.files) {
             const pathParts = file.webkitRelativePath.split('/');
             let shouldSkip = false;
@@ -288,10 +288,7 @@ class FileUploader {
             }
         }
         
-        // Второй этап: генерация ZIP (от 50% до 100%)
-        if (onProgress) {
-            onProgress(50);
-        }
+        if (onProgress) onProgress(50);
         
         const zipBlob = await zip.generateAsync({ 
             type: 'blob',
@@ -305,9 +302,7 @@ class FileUploader {
             }
         });
         
-        if (onProgress) {
-            onProgress(100);
-        }
+        if (onProgress) onProgress(100);
         
         return zipBlob;
     }
@@ -324,6 +319,9 @@ class FileUploader {
     }
 
     async uploadToServer(url, formData, onProgress = null) {
+        const errorHandler = this.options.errorHandler;
+        const button = this.options.button;
+        
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
             
@@ -338,7 +336,15 @@ class FileUploader {
                 });
             }
             
-            xhr.onload = () => {
+            xhr.onload = async () => {
+                // Обработка ошибок через errorHandler
+                if (xhr.status === 429 && errorHandler) {
+                    const errorData = JSON.parse(xhr.responseText);
+                    await errorHandler.handleRateLimit(errorData, { button });
+                    reject(new Error('RATE_LIMIT_EXCEEDED'));
+                    return;
+                }
+                
                 if (xhr.status === 200) {
                     if (onProgress) onProgress(100);
                     try {
@@ -348,11 +354,22 @@ class FileUploader {
                         reject(new Error('Invalid JSON response'));
                     }
                 } else {
-                    reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                    let errorMsg = `HTTP ${xhr.status}: ${xhr.statusText}`;
+                    if (errorHandler) {
+                        errorHandler.showNotification(errorMsg, 'error');
+                    }
+                    reject(new Error(errorMsg));
                 }
             };
             
-            xhr.onerror = () => reject(new Error('Network error'));
+            xhr.onerror = () => {
+                const errorMsg = 'Network error';
+                if (errorHandler) {
+                    errorHandler.showNotification(errorMsg, 'error');
+                }
+                reject(new Error(errorMsg));
+            };
+            
             xhr.send(formData);
         });
     }
@@ -370,107 +387,20 @@ class FileUploader {
     }
 }
 
-// ========== ФУНКЦИИ ДЛЯ ОБНОВЛЕНИЯ ПРОГРЕССА НА UI ==========
 
-function updateSCAProgress(message, percent) {
-    // Обновляем прогресс-бары в UI
-    const progressBar1 = document.querySelector('#sca-progress-1');
-    const progressBar2 = document.querySelector('#sca-progress-2');
-    const status1 = document.querySelector('#sca-status-1');
-    const status2 = document.querySelector('#sca-status-2');
-    
-    if (percent < 30) {
-        if (progressBar1) progressBar1.style.width = `${percent * 3}%`;
-        if (status1) status1.textContent = message;
-    } else if (percent < 70) {
-        if (progressBar1) progressBar1.style.width = '100%';
-        if (status1) status1.textContent = 'Файлы подготовлены';
-        if (progressBar2) progressBar2.style.width = `${(percent - 30) * 2.5}%`;
-        if (status2) status2.textContent = message;
-    } else {
-        if (progressBar2) progressBar2.style.width = `${(percent - 30) * 2.5}%`;
-        if (status2) status2.textContent = message;
-    }
-    
-    if (percent === 100) {
-        if (status1) status1.textContent = 'Завершено';
-        if (status2) status2.textContent = 'Завершено';
-    }
-}
-
-function updateUploadProgress(percent) {
-    const uploadProgress = document.querySelector('#upload-progress');
-    if (uploadProgress) {
-        uploadProgress.style.width = `${percent}%`;
-    }
-}
-
-// ========== ИНИЦИАЛИЗАЦИЯ ДЛЯ SCA ==========
 
 function initSCAUploader() {
     const uploadArea = document.getElementById('uploadArea');
-    if (!uploadArea) return;
+    if (!uploadArea) return null;
     
     const uploader = new FileUploader({
         compressOnClient: true,
-        onProgress: (message, percent) => {
-            // Обновляем прогресс в UI
-            const progressFill = document.querySelector('.progress');
-            if (progressFill) {
-                progressFill.style.width = `${percent}%`;
-            }
-            
-            const statusElement = document.querySelector('.task-status.in-progress');
-            if (statusElement && percent < 100) {
-                statusElement.textContent = `${message} ${percent}%`;
-            }
-            
-            console.log(`📊 Прогресс: ${percent}% - ${message}`);
-        },
-        onFileSelected: (file) => {
-            showToolNotification(`Загрузка: ${file.name}`, 'info');
-            
-            const formData = uploader.getArchiveFormData(file, { type: 'sca' });
-            uploader.uploadToServer('/api/sca/upload', formData, (percent) => {
-                // Обновляем прогресс во время загрузки на сервер
-                const progressFill = document.querySelector('.progress');
-                if (progressFill) {
-                    progressFill.style.width = `${percent}%`;
-                }
-            }).then(result => {
-                showToolNotification('Анализ завершен!', 'success');
-                
-                if (typeof handleReportData === 'function') {
-                    handleReportData(result);
-                }
-            }).catch(error => {
-                console.error('Ошибка:', error);
-                showToolNotification('Ошибка: ' + error.message, 'error');
-            });
-        },
-        onError: (error) => {
-            showToolNotification(error, 'error');
-        }
-    });
-    
-    uploader.attachToElement(uploadArea, { menuPosition: 'bottom' });
-    
-    return uploader;
-}
+        button: document.getElementById('start-btn'),
+        onFileSelected: async (file) => {
 
-// ========== ИНИЦИАЛИЗАЦИЯ ДЛЯ SAST ==========
-// client/js/uploader.js
-
-function initSCAUploader() {
-    const uploadArea = document.getElementById('uploadArea');
-    if (!uploadArea) return;
-    
-    const uploader = new FileUploader({
-        compressOnClient: true,
-        onFileSelected: (file) => {
             showToolNotification(`Загрузка и анализ: ${file.name}...`);
             
-            // Шаг 1.1 - подготовка (заполняем сразу)
+            // Шаг 1.1 - подготовка
             if (window.herculesApp) {
                 window.herculesApp.updateTaskStatus('1.1', 'in-progress');
                 window.herculesApp.animateProgress('1.1', 100, 800, () => {
@@ -480,7 +410,7 @@ function initSCAUploader() {
             
             const formData = uploader.getArchiveFormData(file, { type: 'sca' });
             uploader.uploadToServer('/api/sca/upload', formData).then(result => {
-                // Шаг 2.1 - формирование списка зависимостей (после ответа сервера)
+                // Шаг 2.1 - формирование списка зависимостей
                 if (window.herculesApp) {
                     window.herculesApp.updateTaskStatus('2.1', 'in-progress');
                     window.herculesApp.animateProgress('2.1', 100, 1500, () => {
@@ -488,7 +418,6 @@ function initSCAUploader() {
                     });
                 }
                 
-                // Небольшая задержка перед 2.2
                 setTimeout(() => {
                     // Шаг 2.2 - анализ зависимостей
                     if (window.herculesApp) {
@@ -506,8 +435,9 @@ function initSCAUploader() {
                 }, 500);
                 
             }).catch(error => {
-                console.error('Ошибка:', error);
-                showToolNotification('Ошибка: ' + error.message, 'error');
+                if (error.message !== 'RATE_LIMIT_EXCEEDED') {
+                    showToolNotification('Ошибка: ' + error.message, 'error');
+                }
                 if (window.herculesApp) {
                     window.herculesApp.updateTaskStatus('2.2', 'error');
                     window.herculesApp.resetButton();
@@ -526,57 +456,64 @@ function initSCAUploader() {
 
 // ========== SAST UPLOADER ==========
 
+// ========== SAST UPLOADER ==========
+
 function initSASTUploader() {
     const uploadArea = document.getElementById('uploadArea');
-    if (!uploadArea) return;
+    if (!uploadArea) return null;
     
     const uploader = new FileUploader({
         acceptArchive: '.zip,.tar,.gz,.tgz,.7z',
         maxSize: 200 * 1024 * 1024,
+        compressOnClient: true,
         onFileSelected: (file) => {
-            showToolNotification(`SAST анализ: ${file.name}...`);
+            console.log('📁 SAST файл выбран:', file.name);
             
-            // Шаг 1.1 - подготовка
+            // ТОЛЬКО СОХРАНЯЕМ ФАЙЛ, НЕ ОТПРАВЛЯЕМ!
             if (window.herculesApp) {
-                window.herculesApp.updateTaskStatus('1.1', 'in-progress');
-                window.herculesApp.animateProgress('1.1', 100, 800, () => {
-                    window.herculesApp.updateTaskStatus('1.1', 'completed');
-                });
+                window.herculesApp.selectedFile = file;
+                window.herculesApp.selectedProject = null;
+                window.herculesApp.currentArchiveId = null;
+                
+                // Очищаем URL режим
+                if (window.herculesApp.repoInput) {
+                    window.herculesApp.repoInput.value = '';
+                    window.herculesApp.showValidationMessage('', '');
+                    window.herculesApp.isUrlLocked = false;
+                    window.herculesApp.repoInput.disabled = false;
+                    window.herculesApp.repoInput.style.backgroundColor = '';
+                    window.herculesApp.repoInput.style.opacity = '';
+                }
+                
+                // Обновляем UI
+                const fileName = document.getElementById('fileName');
+                const fileSize = document.getElementById('fileSize');
+                const fileInfo = document.getElementById('fileInfo');
+                
+                if (fileName) fileName.textContent = file.name;
+                if (fileSize) fileSize.textContent = window.herculesApp.formatFileSize(file.size);
+                if (fileInfo) fileInfo.classList.add('active');
+                
+                // Активируем кнопку анализа
+                if (window.herculesApp.startButton) {
+                    window.herculesApp.startButton.disabled = false;
+                    window.herculesApp.startButton.classList.add('active');
+                }
+                
+                console.log('✅ Файл сохранен, ready для анализа');
+                showToolNotification(`Файл выбран: ${file.name}`, 'success');
             }
-            
-            const formData = uploader.getArchiveFormData(file, { type: 'sast' });
-            uploader.uploadToServer('/api/sast/upload', formData).then(result => {
-                // Шаг 2.1 - анализ кода
-                if (window.herculesApp) {
-                    window.herculesApp.updateTaskStatus('2.1', 'in-progress');
-                    window.herculesApp.animateProgress('2.1', 100, 2000, () => {
-                        window.herculesApp.updateTaskStatus('2.1', 'completed');
-                    });
-                }
-                
-                setTimeout(() => {
-                    if (window.herculesApp) {
-                        window.herculesApp.updateTaskStatus('2.2', 'completed');
-                    }
-                    
-                    if (typeof displaySASTResults === 'function') {
-                        displaySASTResults(result);
-                    }
-                    showToolNotification('SAST анализ завершен', 'success');
-                }, 500);
-                
-            }).catch(error => {
-                console.error('SAST ошибка:', error);
-                showToolNotification('Ошибка: ' + error.message, 'error');
-                if (window.herculesApp) {
-                    window.herculesApp.updateTaskStatus('2.1', 'error');
-                }
-            });
+        },
+        onError: (error) => {
+            console.error('❌ Ошибка:', error);
+            showToolNotification(error, 'error');
         }
     });
     
-    uploader.attachToElement(uploadArea);
+    // Привязываем uploader к элементу
+    uploader.attachToElement(uploadArea, { menuPosition: 'bottom' });
     
+    console.log('✅ SAST Uploader инициализирован');
     return uploader;
 }
 
@@ -584,11 +521,15 @@ function initSASTUploader() {
 
 function initFUZZUploader() {
     const uploadArea = document.getElementById('uploadArea');
-    if (!uploadArea) return;
+    if (!uploadArea) return null;
+    
+    // Создаем обработчик ошибок для FUZZ
+    const errorHandler = new HerculesErrorHandler('fuzz');
     
     const uploader = new FileUploader({
         acceptArchive: '.json,.yaml,.yml',
         acceptFolder: false,
+        button: document.getElementById('start-url-btn'),
         onFileSelected: (file) => {
             showToolNotification(`Фаззинг тестирование: ${file.name}...`);
             
@@ -602,34 +543,39 @@ function initFUZZUploader() {
             
             const formData = new FormData();
             formData.append('spec', file);
-            formData.append('baseUrl', document.getElementById('apiUrl')?.value || '');
+            formData.append('baseUrl', document.getElementById('baseUrl')?.value || '');
             
-            fetch('/api/fuzz/analyze', {
+            fetch('/api/fuzz', {
                 method: 'POST',
                 body: formData
-            }).then(res => res.json()).then(result => {
+            }).then(async res => {
+                if (res.status === 429) {
+                    const data = await res.json();
+                    await errorHandler.handleRateLimit(data, { button: document.getElementById('start-url-btn') });
+                    throw new Error('RATE_LIMIT_EXCEEDED');
+                }
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                return res.json();
+            }).then(result => {
                 // Шаг 2.1 - фаззинг
                 if (window.herculesApp) {
                     window.herculesApp.updateTaskStatus('2.1', 'in-progress');
                     window.herculesApp.animateProgress('2.1', 100, 2000, () => {
                         window.herculesApp.updateTaskStatus('2.1', 'completed');
+                        window.herculesApp.updateTaskStatus('2.2', 'completed');
                     });
                 }
                 
-                setTimeout(() => {
-                    if (window.herculesApp) {
-                        window.herculesApp.updateTaskStatus('2.2', 'completed');
-                    }
-                    
-                    if (typeof displayFUZZResults === 'function') {
-                        displayFUZZResults(result);
-                    }
-                    showToolNotification('Фаззинг завершен', 'success');
-                }, 500);
+                if (typeof displayFUZZResults === 'function') {
+                    displayFUZZResults(result);
+                }
+                showToolNotification('Фаззинг завершен', 'success');
                 
             }).catch(error => {
-                console.error('FUZZ ошибка:', error);
-                showToolNotification('Ошибка: ' + error.message, 'error');
+
+                if (error.message !== 'RATE_LIMIT_EXCEEDED') {
+                    showToolNotification('Ошибка: ' + error.message, 'error');
+                }
                 if (window.herculesApp) {
                     window.herculesApp.updateTaskStatus('2.1', 'error');
                 }

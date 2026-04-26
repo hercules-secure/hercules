@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <link rel="stylesheet" href="/css/sast.css">
     <link rel="stylesheet" href="/css/main/sidebar.css">   
-    <script type="text/javascript" src="/js/sast.js"></script>
+    <script type="text/javascript" src="/js/sast/sast.js"></script>
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     
 </head>
@@ -76,19 +76,6 @@
                     </div>
                     </a> 
                     <div class="tool-divider"></div>
-                                        <a href="/api" style="text-decoration: none;" target="_blank">
-                    <div class="tool-item">
-                        <div class="tool-icon">
-                           <i class="fas fa-plug black-icon"></i>
-                        </div>
-                        <div class="tool-info">
-                            <span class="tool-name">API</span>
-                            <span class="tool-desc">Интеграции в SSDLC</span>
-                        </div>
-                    </div>
-                    </a>
-
-                    <div class="tool-divider"></div>
                     
                     <a href="https://hercules-web.ru/#extensions" style="text-decoration: none;" target="_blank">
                     <div class="tool-item">
@@ -125,7 +112,6 @@
                         <span>GitLab</span>
                     </span>
                 </div>
-                <!--div class="url-validation" id="url-validation"></div-->
             </div>
             </div> 
             <!-- Режим загрузки архива -->
@@ -135,7 +121,7 @@
                         <i class="fas fa-cloud-upload-alt black-icon"></i>
                     </div>
                     <div class="upload-text">
-                        Перетащите архив с исходным кодом или нажмите для выбора<br>
+                        Нажмите для выбора архива или локального проекта<br>
                         <span style="font-size: 9px">
                             <div class="icons-row">
                                 <i class="fab fa-golang fa-3x" style="color: #00ADD8;"></i>
@@ -147,9 +133,15 @@
                             </div>
                         </span>
                     </div>
-                    <div class="upload-hint">
+                    <!--div class="upload-hint">
                       Поддерживаются ZIP, TAR, GZ, 7Z (макс. 100 МБ)
-                    </div>
+                    </div-->
+                                    <div class="supported-formats">
+                    <span class="format-badge">ZIP</span>
+                    <span class="format-badge">TAR</span>
+                    <span class="format-badge">GZ</span>
+                    <span class="format-badge">7Z</span>
+                </div>
                     <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
                 </div>
 
@@ -164,13 +156,6 @@
                     </div>
                 </div>
 
-                <div class="supported-formats">
-                    <span class="format-badge">ZIP</span>
-                    <span class="format-badge">TAR</span>
-                    <span class="format-badge">GZ</span>
-                    <span class="format-badge">7Z</span>
-                    <span class="format-badge">до 100 МБ</span>
-                </div>
             </div>
 
 
@@ -227,7 +212,12 @@
             </div>
         </div>
     </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <script type="text/javascript" src="/js/main/sidebar.js"></script>     
+    <script type="text/javascript"src="/js/main/uploader.js"></script>
+     <script>
+
+const sastUploader = initSASTUploader();
+</script>
 </body>
 </html>

