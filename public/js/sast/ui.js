@@ -104,7 +104,7 @@ export function showResultsModal(results, onClose) {
                 <div id="vulnerabilities-list">${criticalHighHtml}</div>
             </div>
             <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 12px; background: white;">
-                <button id="downloadReportBtn" class="btn-download" style="background: #10b981; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500;">
+                <button id="downloadReportBtn" class="btn-download" style="background: #10b981; color: white; border: none; font-family: Ubuntu;padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500;">
                     <i class="fas fa-download"></i> Скачать отчет
                 </button>
             </div>
