@@ -1,0 +1,7 @@
+node_modules/
+logs/
+extracted/
+temp/
+storage/
+.DS_Store
+modules/dast/
