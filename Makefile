@@ -23,7 +23,7 @@ NC := \033[0m # No Color
 .PHONY: help install check-env setup-env run run-background run-daemon stop restart logs logs-follow status-server clean audit-fix
 
 help:
-	@echo "$(BLUE)Hercules Personal Community - Makefile$(NC)"
+	@echo "$(BLUE)Hercules Community - Makefile$(NC)"
 	@echo ""
 	@echo "$(GREEN)Доступные команды:$(NC)"
 	@echo "  $(YELLOW)make install$(NC)         - Установка зависимостей, настройка окружения и аудит"
@@ -39,7 +39,7 @@ help:
 	@echo "  $(YELLOW)make help$(NC)            - Показать эту справку"
 	@echo ""
 	@echo "$(GREEN)Примеры:$(NC)"
-	@echo "  PORT=3000 HOST=0.0.0.0 make run    - Запуск на порту 3000"
+	@echo "  PORT=6565 HOST=0.0.0.0 make run    - Запуск на порту 6565"
 	@echo "  make install                       - Первая установка проекта"
 	@echo "  make run-background                - Запуск в фоне"
 	@echo "  make stop                          - Остановить фоновый процесс"
