@@ -4,4 +4,3 @@ extracted/
 temp/
 storage/
 .DS_Store
-modules/dast/
