@@ -12,7 +12,6 @@ import fs from 'fs/promises';
 import pkg from 'winston';
 const { createLogger, format, transports } = pkg;
 import { GitHubDownloader } from './modules/downloader.js';
-//import { DependencyAnalyzer } from './modules/sca/dependency-analyzer.js';
 import { analyzeRepository } from './modules/sca/sca.js'
 import { ArchiveReceiver } from './modules/sast/archive/index.js';
 import { ArchiveExtractor } from './modules/sast/archive/extractor.js'; 
@@ -34,7 +33,7 @@ const receiver = new ArchiveReceiver({
 });
 
 const extractor = new ArchiveExtractor({
-    extractDir: path.join(__dirname, 'extracted'),
+    extractDir: path.join(__dirname, 'temp/sast/extracted'),
     deleteAfter: false
 });
 
@@ -173,7 +172,7 @@ const PORT = process.env.PORT || 6565;
 const HOST = process.env.HOST || 'localhost';
 const LOG_DIR = process.env.LOG_DIR || './logs';
 const STORAGE_DIR = path.join(__dirname, 'storage');
-const EXTRACTED_DIR = path.join(__dirname, 'extracted');
+const EXTRACTED_DIR = path.join(__dirname, 'temp/sast/extracted');
 const TEMP_DIR = path.join(__dirname, 'temp');
 const FUZZ_TEMP_DIR = path.join(__dirname, 'temp', 'fuzz');
 
@@ -356,7 +355,7 @@ app.post('/api/sca/upload', uploadSCA.single('archive'), async (req, res) => {
         
         // Создаем директорию для распаковки
         const extractId = uuidv4();
-        extractDir = path.join(__dirname, 'temp', 'extracted', extractId);
+        extractDir = path.join(__dirname, 'temp/sca', 'extracted', extractId);
         
         // Распаковываем архив (передаем originalname)
         await extractArchive(req.file.path, req.file.originalname, extractDir);

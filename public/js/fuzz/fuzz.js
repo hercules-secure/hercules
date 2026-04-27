@@ -416,9 +416,9 @@ function createReplayModal() {
                         </div>
                         
                         <div class="replay-actions">
-                            <button id="sendReplayBtn" class="start-button-replay">
+                            <!--button id="sendReplayBtn" class="start-button-replay">
                                 <i class="fas fa-paper-plane"></i> Отправить
-                            </button>
+                            </button-->
                             <button id="copyCurlBtn" class="start-button-replay">
                                 <i class="fas fa-terminal"></i> cURL
                             </button>

@@ -1,9 +1,30 @@
-// modules/archive-receiver/index.js
 import { GitHubDownloader } from './github.js';
 import { GitLabDownloader } from './gitlab.js';
 import { FileUploader } from './uploader.js';
 import path from 'path';
 import fs from 'fs/promises';
+
+const LOG_DIR = path.join(process.cwd(), 'logs', 'sast');
+const LOG_FILE = path.join(LOG_DIR, 'log.txt');
+
+async function ensureLogDir() {
+    try {
+        await fs.mkdir(LOG_DIR, { recursive: true });
+    } catch (error) {
+        // Игнорируем ошибку, если директория уже существует
+    }
+}
+
+async function writeLog(message, level = 'INFO') {
+    try {
+        await ensureLogDir();
+        const timestamp = new Date().toISOString();
+        const logEntry = `[${timestamp}] [${level}] ${message}\n`;
+        await fs.appendFile(LOG_FILE, logEntry);
+    } catch (error) {
+        // Не пишем в консоль, просто игнорируем ошибку логирования
+    }
+}
 
 export class ArchiveReceiver {
     constructor(options = {}) {
@@ -20,7 +41,7 @@ export class ArchiveReceiver {
      * Получение архива по ссылке на репозиторий
      */
     async getFromUrl(repoUrl, options = {}) {
-        console.info(`Получение архива из репозитория: ${repoUrl}`);
+        await writeLog(`Получение архива из репозитория: ${repoUrl}`);
         
         // Определяем платформу
         const platform = this.detectPlatform(repoUrl);
@@ -35,13 +56,15 @@ export class ArchiveReceiver {
                 downloader = this.gitlab;
                 break;
             default:
-                throw new Error(`Платформа ${platform} не поддерживается`);
+                const error = `Платформа ${platform} не поддерживается`;
+                await writeLog(error, 'ERROR');
+                throw new Error(error);
         }
 
         // Скачиваем архив
         const result = await downloader.download(repoUrl, options.branch);
         
-        console.info(`Архив получен: ${result.filename} (${(result.size / 1024 / 1024).toFixed(2)} МБ)`);
+        await writeLog(`Архив получен: ${result.filename} (${(result.size / 1024 / 1024).toFixed(2)} МБ)`);
         
         return result;
     }
@@ -50,11 +73,11 @@ export class ArchiveReceiver {
      * Получение архива через загрузку файла
      */
     async getFromFile(fileData, originalName) {
-        console.info(`\nПолучение архива через загрузку: ${originalName}`);
+        await writeLog(`Получение архива через загрузку: ${originalName}`);
         
         const result = await this.uploader.save(fileData, originalName);
         
-        console.info(`Файл сохранен: ${result.filename} (${(result.size / 1024 / 1024).toFixed(2)} МБ)`);
+        await writeLog(`Файл сохранен: ${result.filename} (${(result.size / 1024 / 1024).toFixed(2)} МБ)`);
         
         return result;
     }
@@ -94,7 +117,7 @@ export class ArchiveReceiver {
             fs.unlink(infoPath).catch(() => {})
         ]);
         
-        console.info(`Архив ${archiveId} удален`);
+        await writeLog(`Архив ${archiveId} удален`);
     }
 
     async cleanup(maxAge = 24 * 60 * 60 * 1000) { 
@@ -114,7 +137,9 @@ export class ArchiveReceiver {
             }
         }
 
-        console.info(`Очистка: удалено ${deleted} старых файлов`);
+        if (deleted > 0) {
+            await writeLog(`Очистка: удалено ${deleted} старых файлов`);
+        }
         return deleted;
     }
 }

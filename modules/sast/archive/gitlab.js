@@ -44,16 +44,16 @@ export class GitLabDownloader {
         const archivePath = path.join(this.storageDir, filename);
         const infoPath = path.join(this.storageDir, `${archiveId}.info.json`);
 
-        console.log(`   🔗 GitLab: ${projectPath}`);
-        console.log(`   🌿 Ветка: ${targetBranch}`);
-        console.log(`   📥 Попытка 1: ${archiveUrl}`);
+        console.log(`GitLab: ${projectPath}`);
+        console.log(`Ветка: ${targetBranch}`);
+        console.log(`Попытка 1: ${archiveUrl}`);
 
         // Скачиваем архив с первой попытки
         let stats;
         try {
             stats = await this.downloadFile(archiveUrl, archivePath);
         } catch (error) {
-            console.log(`   ⚠️ Не удалось скачать по первой ссылке, пробуем альтернативную: ${altArchiveUrl}`);
+            console.log(`Не удалось скачать по первой ссылке, пробуем альтернативную: ${altArchiveUrl}`);
             try {
                 stats = await this.downloadFile(altArchiveUrl, archivePath);
             } catch (secondError) {

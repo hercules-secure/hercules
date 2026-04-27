@@ -18,6 +18,29 @@ dotenv.config({ quiet: true });
 const execAsync = promisify(exec);
 const traverse = _traverse.default || _traverse;
 
+// ========== НАСТРОЙКА ЛОГГИРОВАНИЯ ==========
+const LOG_DIR = path.join(process.cwd(), 'logs', 'sast');
+const LOG_FILE = path.join(LOG_DIR, 'log.txt');
+
+async function ensureLogDir() {
+    try {
+        await fs.mkdir(LOG_DIR, { recursive: true });
+    } catch (error) {
+        // Игнорируем ошибку
+    }
+}
+
+async function writeLog(message, level = 'INFO') {
+    try {
+        await ensureLogDir();
+        const timestamp = new Date().toISOString();
+        const logEntry = `[${timestamp}] [${level}] ${message}\n`;
+        await fs.appendFile(LOG_FILE, logEntry);
+    } catch (error) {
+        // Игнорируем ошибку логирования
+    }
+}
+
 function getShortPath(fullPath) {
     if (!fullPath) return 'unknown';
 
@@ -100,7 +123,7 @@ class GitRepositoryHandler {
                 }
             }
         } catch (error) {
-            console.log(`Не удалось получить информацию о ветке: ${error.message}`);
+            await writeLog(`Не удалось получить информацию о ветке: ${error.message}`, 'WARN');
         }
         return 'main';
     }
@@ -294,7 +317,7 @@ class GitRepositoryHandler {
                 }
             }
         } catch (error) {
-            console.error('Ошибка очистки:', error);
+            await writeLog(`Ошибка очистки: ${error.message}`, 'ERROR');
         }
     }
 }
@@ -308,7 +331,7 @@ class AnalysisEngine {
     this.rules = [];
     this.results = [];
     this.cache = new Map();
-    this.verbose = false; //options.verbose || false;
+    this.verbose = false;
     this.maxFileSize = options.maxFileSize || 10 * 1024 * 1024;
   }
 
@@ -324,13 +347,11 @@ class AnalysisEngine {
       
       this.rules = rules.map(ruleConfig => new Rule(ruleConfig));
       
-      if (this.verbose) {
-        console.log(`Loaded ${this.rules.length} rules from ${configFile}`);
-      }
+      await writeLog(`Loaded ${this.rules.length} rules from ${configFile}`);
       
       return this;
     } catch (error) {
-      console.error(`Error loading rules from ${configFile}:`, error.message);
+      await writeLog(`Error loading rules from ${configFile}: ${error.message}`, 'ERROR');
       throw error;
     }
   }
@@ -421,7 +442,7 @@ class AnalysisEngine {
           }
         }
       } catch (e) {
-        if (this.verbose) console.log(`Rule error for ${rule.id}: ${e.message}`);
+        if (this.verbose) await writeLog(`Rule error for ${rule.id}: ${e.message}`, 'WARN');
       }
     }
     
@@ -486,7 +507,7 @@ class AnalysisEngine {
         }
       }
     } catch (e) {
-      if (this.verbose) console.log('YAML parse error in', filePath, ':', e.message);
+      if (this.verbose) await writeLog(`YAML parse error in ${filePath}: ${e.message}`, 'WARN');
     }
   }
 
@@ -536,7 +557,7 @@ class AnalysisEngine {
   async analyzeDirectory(dir) {
     const files = [];
     await this.walkDirectory(dir, files);
-    if (this.verbose) console.log(`Found ${files.length} files to analyze`);
+    await writeLog(`Found ${files.length} files to analyze`);
     for (const file of files) {
       await this.analyzeFile(file);
     }
@@ -576,7 +597,7 @@ class AnalysisEngine {
         }
       }
     } catch (error) {
-      console.error(`Error walking directory ${dir}:`, error.message);
+      await writeLog(`Error walking directory ${dir}: ${error.message}`, 'ERROR');
     }
   }
 
@@ -586,11 +607,9 @@ class AnalysisEngine {
       const content = await fs.readFile(filePath, 'utf-8');
       
       if (content.length > this.maxFileSize) {
-        if (this.verbose) console.log(`Skipping large file: ${path.basename(filePath)}`);
+        await writeLog(`Skipping large file: ${path.basename(filePath)}`);
         return;
       }
-      
-      if (this.verbose) console.log(`\nAnalyzing: ${path.basename(filePath)}`);
       
       // YAML/Terraform/Dockerfile - инфраструктурные файлы
       if (ext === '.yaml' || ext === '.yml' || ext === '.tf' || ext === '.tfvars' || ext === '.hcl' ||
@@ -615,7 +634,7 @@ class AnalysisEngine {
       }
       
     } catch (error) {
-      console.error(`Error analyzing ${filePath}:`, error.message);
+      await writeLog(`Error analyzing ${filePath}: ${error.message}`, 'ERROR');
     }
   }
 
@@ -651,7 +670,7 @@ class AnalysisEngine {
     }
   }
 
-async applyRuleToLines(rule, filePath, lines) {
+  async applyRuleToLines(rule, filePath, lines) {
     try {
       if (rule.type === 'regex') {
         const regex = new RegExp(rule.pattern, rule.flags || 'g');
@@ -667,31 +686,25 @@ async applyRuleToLines(rule, filePath, lines) {
           
           // Для HTTP правил - специальная проверка контекста
           if (rule.id === 'http-instead-https' || rule.id === 'owasp-crypto-failure') {
-            // Пропускаем console.log
             if (line.includes('console.log') || line.includes('console.info') || line.includes('console.debug')) {
               continue;
             }
             
-            // Пропускаем meta-теги (Open Graph, SEO)
             if (line.includes('<meta') && (line.includes('og:url') || line.includes('property="og:url"'))) {
               continue;
             }
             
-            // Пропускаем HTML ссылки (a href) - они обрабатываются браузером
             if (line.includes('<a href=') || line.includes('<link')) {
               continue;
             }
             
-            // Пропускаем комментарии в HTML
             if (line.includes('<!--') && line.includes('-->')) {
               continue;
             }
             
-            // Пропускаем примеры и тестовые данные
             if (line.includes('example.com') || line.includes('example.org') || 
                 line.includes('test.com') || line.includes('localhost') ||
                 line.includes('127.0.0.1')) {
-              // НО: если это реальный fetch или axios - проверяем дальше
               if (!line.includes('fetch(') && !line.includes('axios.') && 
                   !line.includes('http.get') && !line.includes('request(')) {
                 continue;
@@ -707,12 +720,11 @@ async applyRuleToLines(rule, filePath, lines) {
         }
       }
     } catch (e) {
-      if (this.verbose) console.log(`Error applying rule ${rule.id}: ${e.message}`);
+      if (this.verbose) await writeLog(`Error applying rule ${rule.id}: ${e.message}`, 'WARN');
     }
-}
+  }
 
   addResult(rule, filePath, line, column, code) {
-    // Пропускаем ложные срабатывания - числа и size
     const codeStr = String(code).trim();
     if (codeStr.match(/^\d+$/) || codeStr.match(/^size:\s*\d+$/i)) {
       return;
@@ -773,7 +785,7 @@ export async function analyzeCode(targetPath, rulesPath = './rules.json', option
         const results = await engine.analyze(targetPath);
         return results;
     } catch (error) {
-        console.error('Fatal error:', error.message);
+        await writeLog(`Fatal error: ${error.message}`, 'ERROR');
         throw error;
     }
 }
@@ -789,7 +801,7 @@ async function main() {
   const branch = args.find(a => a.startsWith('--branch='))?.split('=')[1];
   
   if (!configFile) {
-    console.error('Error: --config parameter is required');
+    await writeLog('Error: --config parameter is required', 'ERROR');
     process.exit(1);
   }
   
@@ -798,7 +810,7 @@ async function main() {
     
     if (outputFile) {
         await fs.writeFile(outputFile, JSON.stringify(results, null, 2));
-        if (verbose) console.log(`\nResults saved to ${outputFile}`);
+        if (verbose) await writeLog(`Results saved to ${outputFile}`);
     } else {
         process.stdout.write(JSON.stringify(results));
     }
@@ -807,14 +819,14 @@ async function main() {
     const highCount = results.summary.bySeverity.high || 0;
     if (criticalCount > 0 || highCount > 0) process.exit(1);
   } catch (error) {
-    console.error('Fatal error:', error.message);
+    await writeLog(`Fatal error: ${error.message}`, 'ERROR');
     process.exit(1);
   }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  main().catch(error => {
-    console.error('Fatal error:', error.message);
+  main().catch(async error => {
+    await writeLog(`Fatal error: ${error.message}`, 'ERROR');
     process.exit(1);
   });
 }
