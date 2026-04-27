@@ -13,7 +13,7 @@ const execAsync = promisify(exec);
 
 export class ArchiveExtractor {
     constructor(options = {}) {
-        this.extractDir = options.extractDir || './extracted';
+        this.extractDir = options.extractDir || './temp/sast/extracted';
         this.deleteAfter = options.deleteAfter || false;
     }
 

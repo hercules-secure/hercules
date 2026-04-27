@@ -9,6 +9,7 @@
       "severity": "critical",
       "type": "regex",
       "pattern": "(?:password|pass|pwd|secret|api[_-]?key|token|access[_-]?token|refresh[_-]?token)\\s*[=:]\\s*['\"`][^'\"`\\s]{6,}['\"`]",
+      "flags": "gi",
       "recommendation": "Используйте переменные окружения или менеджер секретов",
       "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp"]
     },
@@ -413,16 +414,6 @@
       "languages": ["all"]
     },
     {
-      "id": "owasp-injection",
-      "message": "Потенциальная инъекция (A03:2021)",
-      "severity": "critical",
-      "type": "regex",
-      "pattern": "(?:SELECT.*\\+|eval\\s*\\(.*\\+)",
-      "flags": "gi",
-      "recommendation": "Используйте параметризованные запросы",
-      "languages": ["all"]
-    },
-    {
       "id": "owasp-security-misconfig",
       "message": "Ошибка конфигурации безопасности (A05:2021)",
       "severity": "high",
@@ -433,16 +424,6 @@
       "languages": ["all"]
     },
     {
-      "id": "owasp-xss",
-      "message": "Потенциальная XSS (A07:2021)",
-      "severity": "high",
-      "type": "regex",
-      "pattern": "(?:innerHTML\\s*=\\s*[^=]*\\+|document\\.write\\s*\\()",
-      "flags": "gi",
-      "recommendation": "Экранируйте вывод, используйте CSP",
-      "languages": ["javascript", "typescript"]
-    },
-    {
       "id": "owasp-ssrf",
       "message": "Потенциальная SSRF (A10:2021)",
       "severity": "critical",
@@ -450,7 +431,7 @@
       "pattern": "(?:fetch\\s*\\([^)]*req\\.|http\\.get\\s*\\([^)]*query)",
       "flags": "gi",
       "recommendation": "Валидируйте URL по белому списку",
-      "languages": ["all"]
+      "languages": ["javascript", "typescript", "python", "java", "go", "php", "ruby", "csharp"]
     },
     {
       "id": "todo-comment",
@@ -468,6 +449,7 @@
       "severity": "medium",
       "type": "custom",
       "pattern": "",
+      "flags": "gi",
       "recommendation": "Установите requests и limits",
       "languages": ["yaml"]
     },
@@ -560,6 +542,106 @@
       "flags": "gi",
       "recommendation": "Передайте этот эндпоинт в фаззер для динамического тестирования",
       "languages": ["javascript", "typescript"]
+    },
+    {
+      "id": "xxe-vulnerability",
+      "message": "XXE: парсинг XML с внешними сущностями",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:XMLReader|SAXParser|DocumentBuilder|XPathExpression)\\s*\\([^)]*(?!.*FEATURE_SECURE_PROCESSING)",
+      "flags": "gi",
+      "recommendation": "Отключите внешние сущности (setFeature/FEATURE_SECURE_PROCESSING=true)",
+      "languages": ["java", "csharp", "php", "python"]
+    },
+    {
+      "id": "nosql-injection",
+      "message": "Потенциальная NoSQL инъекция",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:\\$where|\\$regex|\\$ne|\\$gt|\\$lt)\\s*:[^}]*req\\.",
+      "flags": "gi",
+      "recommendation": "Экранируйте или валидируйте входные данные для MongoDB/NoSQL",
+      "languages": ["javascript", "typescript", "python", "java", "go"]
+    },
+    {
+      "id": "ldap-injection",
+      "message": "Потенциальная LDAP инъекция",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(?:search\\s*\\([^)]*\\+|LdapContext\\s*\\()[^)]*req\\.",
+      "flags": "gi",
+      "recommendation": "Используйте экранирование LDAP специальных символов",
+      "languages": ["java", "python", "csharp", "php"]
+    },
+    {
+      "id": "ssti-vulnerability",
+      "message": "Потенциальная Server-Side Template Injection",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:render_template_string|eval\\(.*template|compile\\(.*template|\\$\\{.*\\}\\$\\{)",
+      "flags": "gi",
+      "recommendation": "Используйте изолированные песочницы или безопасные шаблонизаторы",
+      "languages": ["python", "javascript", "typescript", "java", "php"]
+    },
+    {
+      "id": "graphql-introspection",
+      "message": "GraphQL Introspection включена в production",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "graphql\\.org.*__schema|__typename.*__schema",
+      "flags": "gi",
+      "recommendation": "Отключите introspection в production",
+      "languages": ["javascript", "typescript", "python", "java", "go"]
+    },
+    {
+      "id": "s3-public-bucket",
+      "message": "S3 бакет имеет публичный доступ",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:x-amz-acl|acl)\\s*[=:]\\s*['\"]public-read['\"]",
+      "flags": "gi",
+      "recommendation": "Используйте private ACL с CloudFront/Signed URLs",
+      "languages": ["terraform", "yaml", "javascript", "typescript", "python"]
+    },
+    {
+      "id": "race-condition-toctou",
+      "message": "Time-of-check Time-of-use (TOCTOU) уязвимость",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "if\\s*\\(fs\\.existsSync\\([^)]+\\)\\)\\s*\\{[^}]*fs\\.(?:read|write|unlink)",
+      "flags": "gi",
+      "recommendation": "Используйте атомарные операции или блокировки",
+      "languages": ["javascript", "typescript", "python", "go", "java"]
+    },
+    {
+      "id": "docker-socket-mount",
+      "message": "Docker socket смонтирован в контейнер",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "/var/run/docker\\.sock",
+      "flags": "gi",
+      "recommendation": "Не монтируйте docker.sock в контейнеры",
+      "languages": ["yaml", "dockerfile"]
+    },
+    {
+      "id": "hardcoded-crypto-key",
+      "message": "Криптографический ключ захардкожен",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:privateKey|secretKey|apiSecret|signingKey)\\s*=\\s*['\"`][A-Za-z0-9+/=]{40,}['\"`]",
+      "flags": "gi",
+      "recommendation": "Используйте KMS (AWS KMS, GCP KMS, HashiCorp Vault)",
+      "languages": ["all"]
+    },
+    {
+      "id": "client-side-routing-xss",
+      "message": "XSS через фрагмент URL при рутинге",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "window\\.location\\.hash.*innerHTML",
+      "flags": "gi",
+      "recommendation": "Экранируйте window.location.hash",
+      "languages": ["javascript", "typescript", "html"]
     }
   ]
 }

@@ -1,5 +1,4 @@
 
-
 function showToolNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i> ${message}`;
@@ -1192,7 +1191,6 @@ class SCAPopupReporter {
                 </div>
             </div>
             <div class="sca-popup-footer">
-                <!--button class="sca-btn sca-btn-primary" >Скачать</button-->
                 <button id="downloadReport" style="
                     background: #10b981;
                     color: white;
