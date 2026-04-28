@@ -1,5 +1,8 @@
 # Геркулес
 
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+
 ## Установка и запуск
 
 ```bash
@@ -54,6 +57,8 @@ make clean // Очистка
 - `PHP`
 - `Ruby`
 - `C#`
+
+### Infrastructure as Code (IaC)
 - `Terraform`
 - `Kubernetes`
 - `Docker`
