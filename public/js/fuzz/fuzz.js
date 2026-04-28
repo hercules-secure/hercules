@@ -416,9 +416,6 @@ function createReplayModal() {
                         </div>
                         
                         <div class="replay-actions">
-                            <!--button id="sendReplayBtn" class="start-button-replay">
-                                <i class="fas fa-paper-plane"></i> Отправить
-                            </button-->
                             <button id="copyCurlBtn" class="start-button-replay">
                                 <i class="fas fa-terminal"></i> cURL
                             </button>
@@ -566,7 +563,7 @@ function toggleReplaySection(sectionName) {
 // ==================== REPLAY TEST ====================
 
 async function replayTest(testData) {
-    console.log('🎮 replayTest вызван с данными:', testData);
+
     
     // Удаляем старую модалку если есть
     const existingModal = document.getElementById('replayModal');
@@ -648,7 +645,6 @@ async function replayTest(testData) {
 // ==================== SEND REPLAY REQUEST ====================
 
 async function sendReplayRequest() {
-    console.log('📤 sendReplayRequest вызван');
     
     const methodSelect = document.getElementById('replayMethod');
     const urlInput = document.getElementById('replayUrl');
@@ -659,8 +655,6 @@ async function sendReplayRequest() {
     const url = urlInput?.value;
     const headersText = headersTextarea?.value;
     const bodyText = bodyTextarea?.value;
-    
-    console.log('📡 Запрос:', { method, url });
     
     if (!url) {
         showToolNotification('Введите URL запроса', 'error');
