@@ -118,18 +118,3 @@ export async function getArchiveInfo(archiveId) {
 
     return await response.json();
 }
-
-/**
- * Удаление архива
- */
-export async function deleteArchive(archiveId) {
-    const response = await fetch(`/api/archive/${archiveId}`, {
-        method: 'DELETE'
-    });
-    
-    if (!response.ok) {
-        throw new Error('Ошибка удаления архива');
-    }
-
-    return await response.json();
-}

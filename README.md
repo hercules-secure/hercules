@@ -29,13 +29,14 @@ make clean // Очистка
 
 | Экосистема | Менеджеры | Файлы |
 |------------|-----------|-------|
-| JavaScript/TypeScript | npm, yarn, pnpm | package.json, yarn.lock, pnpm-lock.yaml |
-| Python | pip, poetry | requirements.txt, Pipfile, pyproject.toml |
-| Go | go modules | go.mod |
-| Java | Maven, Gradle | pom.xml, build.gradle |
-| PHP | Composer | composer.json |
-| Ruby | Bundler | Gemfile |
-| Rust | Cargo | Cargo.toml |
+| `JavaScript/TypeScript` | `npm`, `yarn`, `pnpm` | `package.json`, `yarn.lock`, `pnpm-lock.yaml` |
+| `Python` | `pip`, `poetry` | `requirements.txt`, `Pipfile`, `pyproject.toml` |
+| `Go` | `go modules` | `go.mod` |
+| `Java` | `Maven`, `Gradle` | `pom.xml`, `build.gradle` |
+| `PHP` | `Composer` | `composer.json` |
+| `Ruby` | `Bundler` | `Gemfile` |
+| `Rust` | `Cargo` | `Cargo.toml` |
+| `C/C++` | `CMake`, `Conan`, `vcpkg`, `Make`, `Meson` | `CMakeLists.txt`, `conanfile.txt`, `conanfile.py`, `vcpkg.json`, `Makefile`, `meson.build` |
 
 ### Формат отчета:
 - HTML
@@ -49,17 +50,18 @@ make clean // Очистка
 JavaScript • TypeScript • Python • Java • Go • PHP • Ruby • C# • Terraform • Kubernetes • Docker
 
 ### Основные возможности:
+
 | Категория | Что проверяет |
 |-----------|----------------|
-| Обнаружение секретов | Пароли, API ключи, токены, JWT, приватные ключи |
-| Инъекционные атаки | SQL, NoSQL, команды, код (eval/exec) |
-| XSS и клиентские уязвимости | DOM XSS, prototype pollution, массовое присваивание |
-| Контроль доступа | Открытые редиректы, path traversal, SSRF |
-| Криптография | Слабые алгоритмы (MD5, SHA1, DES), HTTP вместо HTTPS |
-| Ошибки конфигурации | Debug режим, CORS wildcard, отсутствие CSRF/rate limiting |
-| Безопасность IaC | Terraform, Kubernetes, Docker уязвимости |
-| Языко-специфичные проверки | Python (eval, pickle), Go (race conditions) |
-| Качество кода | Console.log в production, TODO/FIXME комментарии |
+| `Обнаружение секретов` | `Пароли`, `API ключи`, `токены`, `JWT`, `приватные ключи` |
+| `Инъекционные атаки` | `SQL`, `NoSQL`, `команды`, `код (eval/exec)` |
+| `XSS и клиентские уязвимости` | `DOM XSS`, `prototype pollution`, `массовое присваивание` |
+| `Контроль доступа` | `открытые редиректы`, `path traversal`, `SSRF` |
+| `Криптография` | `слабые алгоритмы (MD5, SHA1, DES)`, `HTTP вместо HTTPS` |
+| `Ошибки конфигурации` | `Debug режим`, `CORS wildcard`, `отсутствие CSRF/rate limiting` |
+| `Безопасность IaC` | `Terraform`, `Kubernetes`, `Docker уязвимости` |
+| `Языко-специфичные проверки` | `Python (eval, pickle)`, `Go (race conditions)` |
+| `Качество кода` | `Console.log в production`, `TODO/FIXME комментарии` |
 
 ### Формат отчета:
 - HTML
@@ -82,14 +84,14 @@ ReST API
 
 | Категория | Что проверяет |
 |-----------|----------------|
-| Базовые тесты | Валидные запросы по OpenAPI схеме |
-| Инъекционные тесты | SQL, XSS, command injection, path traversal |
-| Тесты больших нагрузок | DoS через крупные payloads |
-| Мутационные тесты | Изменение структуры данных (удаление, замена типов) |
-| Тесты заголовков | IP spoofing, path override, CRLF injection, SSRF |
-| Rate Limit тесты | Быстрые запросы, постепенная нагрузка |
-| Генерация тестовых данных | Автоматическое создание payloads из OpenAPI схемы |
-| Обнаружение уязвимостей | SQL ошибки, XSS отражения, утечки данных |
+| `Базовые тесты` | `Валидные запросы по OpenAPI схеме` |
+| `Инъекционные тесты` | `SQL`, `XSS`, `command injection`, `path traversal` |
+| `Тесты больших нагрузок` | `DoS через крупные payloads` |
+| `Мутационные тесты` | `Изменение структуры данных (удаление, замена типов)` |
+| `Тесты заголовков` | `IP spoofing`, `path override`, `CRLF injection`, `SSRF` |
+| `Rate Limit тесты` | `Быстрые запросы`, `постепенная нагрузка` |
+| `Генерация тестовых данных` | `Автоматическое создание payloads из OpenAPI схемы` |
+| `Обнаружение уязвимостей` | `SQL ошибки`, `XSS отражения`, `утечки данных` |
 
 ### Формат отчета:
 - HTML
@@ -98,8 +100,8 @@ ReST API
 
 | Формат | Описание |
 |--------|----------|
-| **JSON** | Структурированный отчет для автоматизации |
-| **Postman Collection** | Импорт в Postman для ручного тестирования |
-| **cURL** | Команда для терминала |
-| **Fetch API** | JavaScript код для браузера |
-| **Raw HTTP** | Сырой HTTP запрос |
+| `JSON` | `Структурированный отчет для автоматизации` |
+| `Postman Collection` | `Импорт в Postman для ручного тестирования` |
+| `cURL` | `Команда для терминала` |
+| `Fetch API` | `JavaScript код для браузера` |
+| `Raw HTTP` | `Сырой HTTP запрос` |

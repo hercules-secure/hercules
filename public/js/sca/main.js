@@ -1088,7 +1088,7 @@ class SCAPopupReporter {
                 margin: 20px 0;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 overflow-x: auto;
-                font: normal 15px 'Ubuntu';
+                font: normal 13px 'Ubuntu';
             }
             .sca-vuln-table {
                 width: 100%;
