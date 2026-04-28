@@ -19,10 +19,10 @@ make clean // Очистка
 # Mодули
 
 ## Источники для анализа
-- GitHub репозитории
-- GitLab репозитории
-- Локальные папки (распакованные архивы)
-- Загруженные архивы (ZIP, TAR, TAR.GZ)
+- `GitHub репозитории`
+- `GitLab репозитории`
+- `Локальные папки (распакованные архивы)`
+- `Загруженные архивы (ZIP, TAR, TAR.GZ)`
 
 ## SCA (Композиционный анализ)
 ### Поддерживаемые экосистемы:
@@ -39,15 +39,24 @@ make clean // Очистка
 | `C/C++` | `CMake`, `Conan`, `vcpkg`, `Make`, `Meson` | `CMakeLists.txt`, `conanfile.txt`, `conanfile.py`, `vcpkg.json`, `Makefile`, `meson.build` |
 
 ### Формат отчета:
-- HTML
+- `HTML`
 
 ### Экспорт результатов:
-- JSON (CycloneDX 1.6)
+- `JSON (CycloneDX 1.6)`
 
 ## SAST (Поверхностный анализ исходного кода)
 
 ### Поддерживаемые языки:
-JavaScript • TypeScript • Python • Java • Go • PHP • Ruby • C# • Terraform • Kubernetes • Docker
+- `JavaScript/TypeScript`
+- `Python`
+- `Java`
+- `Go`
+- `PHP`
+- `Ruby`
+- `C#`
+- `Terraform`
+- `Kubernetes`
+- `Docker`
 
 ### Основные возможности:
 
@@ -64,21 +73,21 @@ JavaScript • TypeScript • Python • Java • Go • PHP • Ruby • C# •
 | `Качество кода` | `Console.log в production`, `TODO/FIXME комментарии` |
 
 ### Формат отчета:
-- HTML
+- `HTML`
 
 ### Экспорт результатов:
-- JSON
+- `JSON`
 
 ## FUZZ (Фаззинг API)
 ### Поддерживаемые интерфейсы:
-ReST API
+- `ReST API`
 
 ### Поддерживаемые форматы спецификаций:
-- OpenAPI 2.0 (Swagger)
-- OpenAPI 3.0.x
-- OpenAPI 3.1.x
-- JSON
-- YAML
+- `OpenAPI 2.0 (Swagger)`
+- `OpenAPI 3.0.x`
+- `OpenAPI 3.1.x`
+- `JSON`
+- `YAML`
 
 ### Основные возможности:
 
@@ -94,7 +103,7 @@ ReST API
 | `Обнаружение уязвимостей` | `SQL ошибки`, `XSS отражения`, `утечки данных` |
 
 ### Формат отчета:
-- HTML
+- `HTML`
 
 ### Экспорт результатов:
 
