@@ -1,0 +1,23 @@
+[
+  {
+    "id": "sast-scanner",
+    "name": "SAST",
+    "version": "1.0.0",
+    "installedAt": "2026-05-01T10:18:13.309Z",
+    "enabled": true
+  },
+  {
+    "id": "fuzz-scanner",
+    "name": "FUZZ",
+    "version": "1.0.0",
+    "installedAt": "2026-05-01T10:18:13.309Z",
+    "enabled": true
+  },
+  {
+    "id": "sca-scanner",
+    "name": "SCA",
+    "version": "1.0.0",
+    "installedAt": "2026-05-04T08:33:38.172Z",
+    "enabled": true
+  }
+]

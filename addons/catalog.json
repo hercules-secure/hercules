@@ -1,0 +1,57 @@
+{
+  "version": "2",
+  "updatedAt": "2026-05-01T12:00:00Z",
+  "categories": [
+    { "id": "all", "name": "Все", "icon": "fa-th-large" },
+    { "id": "scanner", "name": "Сканнеры", "icon": "fa-search" },
+    { "id": "integration", "name": "Интеграции", "icon": "fa-plug" },
+    { "id": "reporter", "name": "Отчеты", "icon": "fa-chart-bar" },
+    { "id": "automation", "name": "Автоматизация", "icon": "fa-robot" }
+  ],
+  "addons": [
+    {
+      "id": "sca-scanner",
+      "name": "SCA",
+      "version": "1.0.0",
+      "description": "Композиционный анализ",
+      "icon": "fas fa-sitemap",
+      "author": "Геркулес",
+      "tags": ["scanner", "sca"],
+      "category": "scanner",
+      "price": "Free"
+    },
+     {
+      "id": "sast-scanner",
+      "name": "SAST",
+      "version": "1.0.0",
+      "description": "Анализ исходного кода",
+      "icon": "fas fa-code",
+      "author": "Геркулес",
+      "tags": ["scanner", "sast"],
+      "category": "scanner",
+      "price": "Free"
+    },
+    {
+      "id": "fuzz-scanner",
+      "name": "FUZZ",
+      "version": "1.0.0",
+      "description": "Анализ API",
+      "icon": "fa-solid fa-bullseye",
+      "author": "Геркулес",
+      "tags": ["scanner", "fuzz"],
+      "category": "scanner",
+      "price": "Free"
+    },
+    {
+      "id": "blender",
+      "name": "Блендер",
+      "version": "1.0.0",
+      "description": "Комплексный анализ ",
+      "icon": "fas fa-flask",
+      "author": "Геркулес",
+      "tags": ["sca", "sast", "fuzz"],
+      "category": "automation",
+      "price": "Free"
+    }
+  ]
+}
