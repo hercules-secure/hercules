@@ -1202,7 +1202,7 @@ class SCAPopupReporter {
                     transition: all 0.2s;
                     font-family: 'Ubuntu';
                 ">
-                    <i class="fas fa-download"></i> Скачать отчет
+                    <i class="fas fa-download"></i> Скачать JSON
                 </button>
             </div>
         `;

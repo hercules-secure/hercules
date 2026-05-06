@@ -652,6 +652,77 @@
       "flags": "gi",
       "recommendation": "Экранируйте window.location.hash",
       "languages": ["javascript", "typescript", "html"]
+    },
+    {
+      "id": "cpp-gets-buffer-overflow",
+      "message": "Использование gets() - крайне опасно из-за переполнения буфера",
+      "severity": "critical",
+      "pattern": "\\bgets\\s*\\(",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp", "c"],
+      "recommendation": "Используйте fgets(buffer, size, stdin) вместо gets()"
+    },
+    {
+      "id": "cpp-strcpy-unsafe",
+      "message": "strcpy() не проверяет размер буфера",
+      "severity": "high",
+      "pattern": "\\bstrcpy\\s*\\(",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp", "c"],
+      "recommendation": "Используйте strncpy() или современные std::string"
+    },
+    {
+      "id": "cpp-sprintf-unsafe",
+      "message": "sprintf() не проверяет границы буфера",
+      "severity": "high",
+      "pattern": "\\bsprintf\\s*\\(",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp", "c"],
+      "recommendation": "Используйте snprintf() для безопасного форматирования"
+    },
+    {
+      "id": "cpp-printf-user-input",
+      "message": "Форматная строка содержит потенциально опасные данные",
+      "severity": "medium",
+      "pattern": "printf\\s*\\(\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*\\)",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp", "c"],
+      "recommendation": "Используйте printf(\"%s\", userInput) вместо printf(userInput)"
+    },
+    {
+      "id": "cpp-system-call",
+      "message": "Вызов system() с пользовательскими данными опасен",
+      "severity": "high",
+      "pattern": "\\bsystem\\s*\\(",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp", "c"],
+      "recommendation": "Избегайте system(), используйте прямые вызовы exec*()"
+    },
+    {
+      "id": "cpp-new-without-delete",
+      "message": "Потенциальная утечка памяти (new без соответствующего delete)",
+      "severity": "high",
+      "pattern": "\\bnew\\s+(?!.*\\bdelete\\b)",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp"],
+      "recommendation": "Используйте умные указатели (std::unique_ptr, std::shared_ptr)"
+    },
+    {
+      "id": "cpp-bare-pointer-return",
+      "message": "Возврат сырого указателя из функции может привести к утечке",
+      "severity": "medium",
+      "pattern": "\\*\\s*\\w+\\s*\\([^)]*\\)\\s*\\{[^}]*\\bnew\\b",
+      "type": "regex",
+      "flags": "gi",
+      "languages": ["cpp"],
+      "recommendation": "Возвращайте std::unique_ptr или std::shared_ptr"
     }
+
   ]
 }
