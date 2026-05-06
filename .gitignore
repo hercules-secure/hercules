@@ -4,3 +4,5 @@ extracted/
 temp/
 storage/
 .DS_Store
+*.log
+*.pid
