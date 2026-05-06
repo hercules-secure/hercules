@@ -69,7 +69,7 @@ export function showResultsModal(results, onClose) {
                 ${item.recommendation || 'Рекомендация не указана'}
             </div>
         </div>
-    `}).join('') : '<div style="text-align: center; padding: 40px;">Критических и высоких уязвимостей не найдено 🎉</div>';
+    `}).join('') : '<div style="text-align: center; padding: 40px;">Критических и высоких уязвимостей не найдено</div>';
 
     overlay.innerHTML = `
         <div class="modal-container" style="background: white; border-radius: 16px; width: 90%; max-width: 1000px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.3s ease;">

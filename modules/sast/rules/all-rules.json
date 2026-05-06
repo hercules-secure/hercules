@@ -1,7 +1,7 @@
 {
   "name": "Hercules Security Rules",
-  "version": "3.2.0",
-  "description": "Список публичных правил",
+  "version": "3.3.0",
+  "description": "Список публичных правил с расширенным покрытием Mass Assignment",
   "rules": [
     {
       "id": "hardcoded-credentials",
@@ -225,13 +225,23 @@
     },
     {
       "id": "mass-assignment",
-      "message": "Массовое присваивание (A01:2021)",
+      "message": "Массовое присваивание (A01:2021) - потенциальная эскалация привилегий или модификация данных",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:Model\\.create|Model\\.update)\\s*\\(req\\.body",
+      "pattern": "(?:Model\\.(?:create|update|insert)|\\w+\\.(?:save|update|patch)\\s*\\(\\s*req\\.body|req\\.body\\s*=\\s*\\w+|Object\\.assign\\([^,]+,\\s*req\\.body|BeanUtils\\.copyProperties\\([^,]+,\\s*\\w+\\)|c\\.(?:Bind|ShouldBind|BindJSON)\\(&\\w+\\)|serializer\\.save\\(\\s*data=\\s*request\\.data|db\\.(?:Create|Save|Updates)\\s*\\(\\w+\\)|\\w+\\.fill\\s*\\(req\\.body\\)|\\$set\\s*:\\s*req\\.body|fields\\s*=\\s*['\"]__all__['\"]|\\[HttpPost\\]\\s+public\\s+\\w+\\s*\\(\\w+\\s+\\w+\\)|@ModelAttribute\\s+\\w+\\s+\\w+|@RequestBody\\s+\\w+\\s+\\w+)",
       "flags": "gi",
-      "recommendation": "Используйте белые списки для разрешенных полей",
-      "languages": ["javascript", "typescript", "python", "ruby", "php"]
+      "recommendation": "Используйте белые списки разрешенных полей. Никогда не принимайте напрямую req.body, request.data или c.BindJSON() для моделей. Явно перечисляйте разрешенные поля (DTO/FormRequest) или используйте fillable/protected поля в ORM.",
+      "languages": ["javascript", "typescript", "python", "ruby", "php", "java", "go", "csharp"]
+    },
+    {
+      "id": "mass-assignment-critical-fields",
+      "message": "КРИТИЧЕСКОЕ: Массовое присваивание полей привилегий (isAdmin/role/permissions)",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:Model\\.(?:create|update|insert)|\\w+\\.(?:save|update)\\s*\\(\\s*req\\.body|c\\.Bind\\(&\\w+\\)|serializer\\.save\\(\\s*data=\\s*request\\.data).{0,50}(?:isAdmin|is_admin|role|permissions|isRoot|superuser|access_level|scopes)",
+      "flags": "gi",
+      "recommendation": "Поля привилегий НИКОГДА не должны приходить из пользовательского ввода. Установите их сервером или используйте read-only поля.",
+      "languages": ["javascript", "typescript", "python", "ruby", "php", "java", "go", "csharp"]
     },
     {
       "id": "insecure-cookie-config",
