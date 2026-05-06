@@ -47,7 +47,7 @@ make clean // Очистка
 ### Экспорт результатов:
 - `JSON (CycloneDX 1.6)`
 
-## SAST (Поверхностный анализ исходного кода)
+## SAST (Анализ поверхности исходного кода)
 
 ### Поддерживаемые языки:
 - `JavaScript/TypeScript`
@@ -57,11 +57,16 @@ make clean // Очистка
 - `PHP`
 - `Ruby`
 - `C#`
+- `C/C++`
 
 ### Infrastructure as Code (IaC)
 - `Terraform`
 - `Kubernetes`
 - `Docker`
+
+### Build Systems (Анализ сборки)
+- `CMakeLists.txt`
+- `Makefile`
 
 ### Основные возможности:
 
