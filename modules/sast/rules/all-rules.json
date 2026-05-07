@@ -1,7 +1,7 @@
 {
   "name": "Hercules Security Rules",
-  "version": "3.3.0",
-  "description": "Список публичных правил с расширенным покрытием Mass Assignment",
+  "version": "3.4.0",
+  "description": "Список публичных правил с расширенным покрытием Mass Assignment и Rate Limiting",
   "rules": [
     {
       "id": "hardcoded-credentials",
@@ -60,7 +60,7 @@
       "type": "regex",
       "pattern": "(?:execute|query|exec|raw)\\s*\\(\\s*['\"`][^'\"`]*\\+",
       "flags": "gi",
-      "recommendation": "Используйте параметризованные запросы",
+      "recommendation": "Используйте параметризованные запросы или ORM",
       "languages": ["javascript", "typescript", "python", "java", "php", "go", "ruby", "csharp"]
     },
     {
@@ -68,9 +68,9 @@
       "message": "Потенциальная инъекция команд (A03:2021)",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:exec|system|popen|Runtime\\.exec|subprocess\\.call)\\s*\\([^)]*\\+(?:req|request|params)",
+      "pattern": "(?:exec|system|popen|Runtime\\.exec|subprocess\\.call|os\\.system)\\s*\\([^)]*\\+(?:req|request|params|input|data)",
       "flags": "gi",
-      "recommendation": "Избегайте выполнения команд с пользовательским вводом",
+      "recommendation": "Избегайте выполнения команд с пользовательским вводом, используйте белые списки команд",
       "languages": ["javascript", "typescript", "python", "java", "php", "go"]
     },
     {
@@ -78,9 +78,9 @@
       "message": "Использование eval() или аналогичных функций",
       "severity": "critical",
       "type": "regex",
-      "pattern": "\\b(?:eval|Function)\\s*\\([^)]*(?:req|request|params|body)",
+      "pattern": "\\b(?:eval|Function|setTimeout|setInterval)\\s*\\([^)]*(?:req|request|params|body|query|input)",
       "flags": "gi",
-      "recommendation": "Избегайте динамического выполнения кода",
+      "recommendation": "Избегайте динамического выполнения кода, используйте безопасные парсеры",
       "languages": ["javascript", "typescript", "python"]
     },
     {
@@ -88,9 +88,9 @@
       "message": "Потенциальная XSS уязвимость (A07:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:innerHTML|outerHTML|document\\.write)\\s*=\\s*(?:req|request|params)",
+      "pattern": "(?:innerHTML|outerHTML|document\\.write|insertAdjacentHTML)\\s*=\\s*(?:req|request|params|query|body|\\+.*input)",
       "flags": "gi",
-      "recommendation": "Используйте textContent или DOMPurify",
+      "recommendation": "Используйте textContent/innerText или DOMPurify для санации HTML",
       "languages": ["javascript", "typescript"]
     },
     {
@@ -98,29 +98,29 @@
       "message": "Потенциальный обход пути (Path Traversal)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:fs\\.(?:readFile|writeFile|readdir|unlink))\\s*\\([^)]*\\.\\./",
+      "pattern": "(?:fs\\.(?:readFile|writeFile|readdir|unlink|createReadStream|createWriteStream))\\s*\\([^)]*\\.\\./",
       "flags": "gi",
-      "recommendation": "Валидируйте пути к файлам, используйте path.resolve()",
+      "recommendation": "Валидируйте пути, используйте path.resolve() и проверку на '..'",
       "languages": ["javascript", "typescript", "python", "java", "php", "go"]
     },
     {
       "id": "ssrf-vulnerability",
-      "message": "SSRF: запрос к пользовательскому URL",
+      "message": "SSRF: запрос к пользовательскому URL (A10:2021)",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:axios\\.(?:get|post|put|delete)|fetch|http\\.get|https\\.get|requests\\.get)\\s*\\(\\s*(?:req\\.query\\.\\w+|req\\.body\\.\\w+|req\\.params\\.\\w+|url|target|uri)\\s*\\)",
+      "pattern": "(?:axios\\.(?:get|post|put|delete|request)|fetch|http\\.get|https\\.get|requests\\.get|urllib\\.request|HttpClient)\\(\\s*(?:req\\.query\\.\\w+|req\\.body\\.\\w+|req\\.params\\.\\w+|url|target|uri|endpoint)\\s*\\)",
       "flags": "gi",
-      "recommendation": "Валидируйте URL по белому списку доменов",
-      "languages": ["javascript", "typescript", "python"]
+      "recommendation": "Валидируйте URL по белому списку доменов, блокируйте внутренние IP",
+      "languages": ["javascript", "typescript", "python", "java", "go", "csharp"]
     },
     {
       "id": "cloud-metadata-ssrf",
       "message": "SSRF: доступ к облачным метаданным",
       "severity": "critical",
       "type": "regex",
-      "pattern": "169\\.254\\.169\\.254|metadata\\.google\\.internal|100\\.100\\.100\\.200",
+      "pattern": "169\\.254\\.169\\.254|metadata\\.google\\.internal|100\\.100\\.100\\.200|\\[\\.\\]|\\[\\.\\]\\d+",
       "flags": "gi",
-      "recommendation": "Блокируйте доступ к внутренним IP",
+      "recommendation": "Блокируйте доступ к внутренним IP и облачным метаданным",
       "languages": ["all"]
     },
     {
@@ -128,59 +128,59 @@
       "message": "SSRF: доступ к file:// протоколу",
       "severity": "critical",
       "type": "regex",
-      "pattern": "fetch\\(`file://|axios\\.get\\(['\"]file://",
+      "pattern": "(?:fetch|axios\\.get|http\\.get|requests\\.get)\\s*\\(['\"`]file://",
       "flags": "gi",
-      "recommendation": "Блокируйте file:// протокол",
-      "languages": ["javascript", "typescript"]
+      "recommendation": "Блокируйте file://, gopher://, dict:// протоколы",
+      "languages": ["javascript", "typescript", "python", "java", "go"]
     },
     {
       "id": "open-redirect",
       "message": "Потенциальный открытый редирект (A01:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:redirect|res\\.redirect)\\s*\\([^)]*(?:req|request|params|headers\\[['\"]host['\"]\\]|headers\\[['\"]x-forwarded-host['\"]\\])",
+      "pattern": "(?:redirect|res\\.redirect|redirect_to)\\s*\\([^)]*(?:req|request|params|headers\\[['\"]host['\"]\\]|headers\\.host|return_to|next|callback)",
       "flags": "gi",
-      "recommendation": "Валидируйте URL редиректа по белому списку",
-      "languages": ["javascript", "typescript", "python", "java", "php", "go"]
+      "recommendation": "Валидируйте URL редиректа по белому списку или используйте относительные пути",
+      "languages": ["javascript", "typescript", "python", "java", "php", "go", "ruby", "csharp"]
     },
     {
       "id": "insecure-deserialization",
       "message": "Небезопасная десериализация (A08:2021)",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:pickle\\.loads|yaml\\.load\\(|unserialize)\\s*\\(",
+      "pattern": "(?:pickle\\.loads|yaml\\.load\\(|unserialize|ObjectInputStream|readObject|XmlSerializer|BinaryFormatter)\\([^)]*(?!.*safe)",
       "flags": "gi",
-      "recommendation": "Используйте JSON с валидацией схемы",
-      "languages": ["python", "java", "php", "ruby"]
+      "recommendation": "Используйте JSON с валидацией схемы или форматы с безопасной десериализацией",
+      "languages": ["python", "java", "php", "ruby", "csharp", "go"]
     },
     {
       "id": "weak-cryptography",
       "message": "Слабый криптографический алгоритм (A02:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "\\b(?:MD5|SHA1|DES|RC4)\\s*\\(",
+      "pattern": "\\b(?:MD5|SHA-?1|DES|RC4|RSA1024)\\s*\\(",
       "flags": "gi",
-      "recommendation": "Используйте AES-256-GCM, bcrypt или SHA-256",
-      "languages": ["javascript", "typescript", "python", "java", "php", "go"]
+      "recommendation": "Используйте AES-256-GCM, bcrypt, Argon2 или SHA-256/SHA-3",
+      "languages": ["javascript", "typescript", "python", "java", "php", "go", "csharp", "ruby"]
     },
     {
       "id": "http-instead-https",
       "message": "Использование HTTP вместо HTTPS (A02:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:fetch|axios|http\\.get|https\\.get)\\s*\\([^)]*\\bhttp:\\/\\/(?!localhost|127\\.0\\.0\\.1)",
+      "pattern": "(?:fetch|axios|http\\.get|https\\.get|requests\\.get|urllib\\.request)\\s*\\([^)]*\\bhttp:\\/\\/(?!localhost|127\\.0\\.0\\.1|::1|\\[\\.\\])",
       "flags": "gi",
-      "recommendation": "Используйте HTTPS",
-      "languages": ["javascript", "typescript", "python", "go", "java"]
+      "recommendation": "Всегда используйте HTTPS в production окружении",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp", "php"]
     },
     {
       "id": "cors-wildcard",
-      "message": "CORS заголовок Access-Control-Allow-Origin: *",
+      "message": "CORS заголовок Access-Control-Allow-Origin: * с чувствительными данными",
       "severity": "medium",
       "type": "regex",
       "pattern": "Access-Control-Allow-Origin\\s*:\\s*\\*",
       "flags": "gi",
-      "recommendation": "Укажите конкретные разрешенные домены",
+      "recommendation": "Укажите конкретные разрешенные домены, не используйте '*' с credentials",
       "languages": ["all"]
     },
     {
@@ -188,59 +188,59 @@
       "message": "Отсутствует защита от CSRF (A01:2021)",
       "severity": "medium",
       "type": "regex",
-      "pattern": "<form[^>]*(?!.*csrf)",
+      "pattern": "(?:<form[^>]*method=[\"']post[\"'][^>]*>)(?![\\s\\S]{0,200}(?:csrf|_token|nonce))",
       "flags": "gi",
-      "recommendation": "Внедрите CSRF токены",
-      "languages": ["html"]
+      "recommendation": "Внедрите CSRF токены или SameSite cookie с проверкой Origin/Referer",
+      "languages": ["html", "javascript", "typescript", "python", "php", "java"]
     },
     {
       "id": "log-sensitive-data",
       "message": "Логирование чувствительных данных (A09:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:console\\.log|logger\\.(?:info|debug))\\s*\\(.*(?:password|token|secret)",
+      "pattern": "(?:console\\.log|logger\\.(?:info|debug|warn|error|log)|System\\.out\\.println|logging\\.info)\\s*\\([^)]*(?:password|token|secret|api_key|authorization|cookie|credit_card)",
       "flags": "gi",
-      "recommendation": "Не логируйте чувствительные данные",
-      "languages": ["javascript", "typescript", "python", "java", "go"]
+      "recommendation": "Никогда не логируйте пароли, токены, PII данные",
+      "languages": ["javascript", "typescript", "python", "java", "go", "csharp", "php", "ruby"]
     },
     {
       "id": "debug-mode-production",
       "message": "Режим отладки включен (A05:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:DEBUG|NODE_ENV|APP_DEBUG)\\s*=\\s*(?:True|true|1|'development')",
+      "pattern": "(?:DEBUG|NODE_ENV|APP_DEBUG|DJANGO_DEBUG|FLASK_DEBUG|ASPNETCORE_ENVIRONMENT)\\s*=\\s*(?:True|true|1|'development'|'dev'|Development)",
       "flags": "gim",
-      "recommendation": "Отключите режим отладки в production",
-      "languages": ["python", "javascript", "typescript", "java", "php", "env"]
+      "recommendation": "Отключите режим отладки и детальные ошибки в production",
+      "languages": ["python", "javascript", "typescript", "java", "php", "env", "csharp"]
     },
     {
       "id": "prototype-pollution",
       "message": "Потенциальное загрязнение прототипа",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:merge|extend)\\s*\\([^,]*,\\s*(?:req|request|body)",
+      "pattern": "(?:merge|extend|clone|copy|assign)\\s*\\([^,]*,\\s*(?:req\\.body|req\\.query|params|input)",
       "flags": "gi",
-      "recommendation": "Используйте Object.create(null) или валидацию ключей",
+      "recommendation": "Используйте Object.create(null), валидацию JSON Schema или freeze",
       "languages": ["javascript", "typescript"]
     },
     {
       "id": "mass-assignment",
-      "message": "Массовое присваивание (A01:2021) - потенциальная эскалация привилегий или модификация данных",
+      "message": "Массовое присваивание (A01:2021) - эскалация привилегий",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:Model\\.(?:create|update|insert)|\\w+\\.(?:save|update|patch)\\s*\\(\\s*req\\.body|req\\.body\\s*=\\s*\\w+|Object\\.assign\\([^,]+,\\s*req\\.body|BeanUtils\\.copyProperties\\([^,]+,\\s*\\w+\\)|c\\.(?:Bind|ShouldBind|BindJSON)\\(&\\w+\\)|serializer\\.save\\(\\s*data=\\s*request\\.data|db\\.(?:Create|Save|Updates)\\s*\\(\\w+\\)|\\w+\\.fill\\s*\\(req\\.body\\)|\\$set\\s*:\\s*req\\.body|fields\\s*=\\s*['\"]__all__['\"]|\\[HttpPost\\]\\s+public\\s+\\w+\\s*\\(\\w+\\s+\\w+\\)|@ModelAttribute\\s+\\w+\\s+\\w+|@RequestBody\\s+\\w+\\s+\\w+)",
+      "pattern": "(?:Model\\.(?:create|update|insert|upsert)|\\w+\\.(?:save|update|patch|assignAttributes)\\s*\\(\\s*req\\.body|req\\.body\\s*(?:=|:)\\s*\\w+|Object\\.assign\\([^,]+,\\s*req\\.(?:body|query)|BeanUtils\\.copyProperties\\([^,]+,\\s*\\w+\\)|c\\.(?:Bind|ShouldBind|BindJSON)\\(&\\w+\\)|serializer\\.save\\(\\s*data=\\s*request\\.data|db\\.(?:Create|Save|Updates|FirstOrCreate)\\s*\\(\\w+\\)|\\w+\\.fill\\s*\\(req\\.(?:body|params)\\)|\\$set\\s*:\\s*req\\.body|fields\\s*=\\s*['\"]__all__['\"])",
       "flags": "gi",
-      "recommendation": "Используйте белые списки разрешенных полей. Никогда не принимайте напрямую req.body, request.data или c.BindJSON() для моделей. Явно перечисляйте разрешенные поля (DTO/FormRequest) или используйте fillable/protected поля в ORM.",
+      "recommendation": "Используйте DTO/FormRequest с явными разрешенными полями, никогда не принимайте весь req.body",
       "languages": ["javascript", "typescript", "python", "ruby", "php", "java", "go", "csharp"]
     },
     {
       "id": "mass-assignment-critical-fields",
-      "message": "КРИТИЧЕСКОЕ: Массовое присваивание полей привилегий (isAdmin/role/permissions)",
+      "message": "КРИТИЧЕСКОЕ: Массовое присваивание полей привилегий",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:Model\\.(?:create|update|insert)|\\w+\\.(?:save|update)\\s*\\(\\s*req\\.body|c\\.Bind\\(&\\w+\\)|serializer\\.save\\(\\s*data=\\s*request\\.data).{0,50}(?:isAdmin|is_admin|role|permissions|isRoot|superuser|access_level|scopes)",
+      "pattern": "(?:Model\\.(?:create|update|insert)|\\w+\\.(?:save|update)\\s*\\(\\s*req\\.body|c\\.Bind\\(&\\w+\\)|serializer\\.save|\\w+\\.update).{0,100}(?:isAdmin|is_admin|role|permissions|isRoot|superuser|access_level|scopes|user_type|account_type|privilege)",
       "flags": "gi",
-      "recommendation": "Поля привилегий НИКОГДА не должны приходить из пользовательского ввода. Установите их сервером или используйте read-only поля.",
+      "recommendation": "Поля привилегий НИКОГДА не должны приходить из input. Устанавливайте их сервером",
       "languages": ["javascript", "typescript", "python", "ruby", "php", "java", "go", "csharp"]
     },
     {
@@ -248,19 +248,19 @@
       "message": "Небезопасная конфигурация cookie",
       "severity": "medium",
       "type": "regex",
-      "pattern": "cookie\\s*\\([^)]*(?!(?:Secure|HttpOnly|SameSite))",
+      "pattern": "cookie\\s*\\([^)]*(?!(?:Secure|secure|HttpOnly|httpOnly|SameSite))",
       "flags": "gi",
-      "recommendation": "Установите Secure, HttpOnly и SameSite=Strict",
-      "languages": ["javascript", "typescript", "python", "java", "php", "go"]
+      "recommendation": "Установите Secure, HttpOnly, SameSite=Strict/Lax на всех production cookie",
+      "languages": ["javascript", "typescript", "python", "java", "php", "go", "csharp"]
     },
     {
       "id": "go-race-condition",
       "message": "Потенциальная гонка данных в Go",
       "severity": "high",
       "type": "regex",
-      "pattern": "go func\\(\\)\\s*\\{[^}]*\\}\\(\\)",
+      "pattern": "(?:(?:\\w+\\s*:?=)\\s*\\w+\\.\\w+\\s*\\{[^}]*\\}\\s*\\)?)\\s*go\\s+func\\s*\\(",
       "flags": "gi",
-      "recommendation": "Используйте sync.Mutex или каналы",
+      "recommendation": "Используйте sync.Mutex, sync.RWMutex или атомарные операции с sync/atomic",
       "languages": ["go"]
     },
     {
@@ -268,9 +268,9 @@
       "message": "Выполнение команд с пользовательским вводом",
       "severity": "critical",
       "type": "regex",
-      "pattern": "exec\\.Command\\([^)]*\\+",
+      "pattern": "exec\\.Command(?:Context)?\\s*\\([^)]*\\+",
       "flags": "gi",
-      "recommendation": "Избегайте конкатенации в exec.Command",
+      "recommendation": "Избегайте конкатенации строк в exec.Command, используйте аргументы списком",
       "languages": ["go"]
     },
     {
@@ -278,9 +278,9 @@
       "message": "Использование eval() или exec()",
       "severity": "critical",
       "type": "regex",
-      "pattern": "\\b(?:eval|exec)\\s*\\(",
+      "pattern": "\\b(?:eval|exec|compile)\\s*\\(",
       "flags": "gi",
-      "recommendation": "Используйте ast.literal_eval() для данных",
+      "recommendation": "Используйте ast.literal_eval() или json.loads() для безопасного парсинга",
       "languages": ["python"]
     },
     {
@@ -288,9 +288,9 @@
       "message": "Использование pickle для недоверенных данных",
       "severity": "critical",
       "type": "regex",
-      "pattern": "pickle\\.(?:loads|load)\\s*\\(",
+      "pattern": "pickle\\.(?:loads|load|Unpickler)\\s*\\(",
       "flags": "gi",
-      "recommendation": "Используйте JSON вместо pickle",
+      "recommendation": "Используйте JSON или другие безопасные форматы сериализации",
       "languages": ["python"]
     },
     {
@@ -298,7 +298,7 @@
       "message": "shell=True в subprocess",
       "severity": "critical",
       "type": "regex",
-      "pattern": "subprocess\\.(?:call|Popen|run)\\s*\\([^)]*shell\\s*=\\s*True",
+      "pattern": "subprocess\\.(?:call|Popen|run|check_output)\\s*\\([^)]*shell\\s*=\\s*True",
       "flags": "gi",
       "recommendation": "Избегайте shell=True, передавайте аргументы списком",
       "languages": ["python"]
@@ -308,9 +308,9 @@
       "message": "yaml.load() без SafeLoader",
       "severity": "high",
       "type": "regex",
-      "pattern": "yaml\\.load\\s*\\([^)]*(?!SafeLoader)",
+      "pattern": "yaml\\.load\\s*\\([^)]*(?!(?:SafeLoader|FullLoader|CSafeLoader))",
       "flags": "gi",
-      "recommendation": "Используйте yaml.safe_load()",
+      "recommendation": "Всегда используйте yaml.safe_load() или yaml.load(..., Loader=yaml.SafeLoader)",
       "languages": ["python"]
     },
     {
@@ -318,9 +318,9 @@
       "message": "Административные привилегии в IAM",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:AdministratorAccess|admin\\*|\\*:\\*)",
+      "pattern": "(?:AdministratorAccess|admin\\*|\\*:\\*|arn:aws:iam::\\*:user/\\*|aws:PrincipalArn)",
       "flags": "gi",
-      "recommendation": "Используйте принцип наименьших привилегий",
+      "recommendation": "Используйте принцип наименьших привилегий, избегайте wildcard *",
       "languages": ["terraform", "hcl"]
     },
     {
@@ -328,9 +328,9 @@
       "message": "Security group открыта для всего мира",
       "severity": "critical",
       "type": "regex",
-      "pattern": "0\\.0\\.0\\.0/0",
+      "pattern": "(?:cidr_blocks?|ipv6_cidr_blocks?)\\s*=\\s*\\[\\s*[\"']0\\.0\\.0\\.0/0[\"']",
       "flags": "gi",
-      "recommendation": "Ограничьте доступ конкретными IP",
+      "recommendation": "Ограничьте доступ конкретными IP диапазонами или VPC",
       "languages": ["terraform", "hcl"]
     },
     {
@@ -338,9 +338,9 @@
       "message": "Секреты в plaintext в Terraform",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:password|secret|api_key)\\s*=\\s*[\"'][^\"']+[\"'](?!.*var\\.)",
+      "pattern": "(?:password|secret|api_key|access_key|private_key)\\s*=\\s*[\"'][^\"']{8,}[\"'](?!.*(?:var\\.|data\\.|aws_secretsmanager|vault))",
       "flags": "gi",
-      "recommendation": "Используйте переменные или Secrets Manager",
+      "recommendation": "Используйте переменные, Secrets Manager или Vault",
       "languages": ["terraform", "hcl"]
     },
     {
@@ -348,9 +348,9 @@
       "message": "Привилегированный контейнер",
       "severity": "critical",
       "type": "regex",
-      "pattern": "privileged:\\s*true",
+      "pattern": "privileged\\s*:\\s*true",
       "flags": "gi",
-      "recommendation": "Установите privileged: false",
+      "recommendation": "Установите privileged: false, используйте securityContext с capabilities",
       "languages": ["yaml"]
     },
     {
@@ -358,9 +358,9 @@
       "message": "hostNetwork включен",
       "severity": "critical",
       "type": "regex",
-      "pattern": "hostNetwork:\\s*true",
+      "pattern": "hostNetwork\\s*:\\s*true",
       "flags": "gi",
-      "recommendation": "Избегайте hostNetwork",
+      "recommendation": "Избегайте hostNetwork, используйте порты NodePort или LoadBalancer",
       "languages": ["yaml"]
     },
     {
@@ -368,9 +368,9 @@
       "message": "Контейнер от root пользователя",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:runAsNonRoot:\\s*false|runAsUser:\\s*0)",
+      "pattern": "(?:runAsNonRoot\\s*:\\s*false|runAsUser\\s*:\\s*0)",
       "flags": "gim",
-      "recommendation": "Установите runAsNonRoot: true, runAsUser: 1000",
+      "recommendation": "Установите runAsNonRoot: true, runAsUser: 1000+",
       "languages": ["yaml"]
     },
     {
@@ -378,9 +378,9 @@
       "message": "Использование hostPath тома",
       "severity": "critical",
       "type": "regex",
-      "pattern": "hostPath:\\s*\\n\\s+path:",
+      "pattern": "hostPath\\s*:\\s*\\n\\s+path\\s*:",
       "flags": "gi",
-      "recommendation": "Используйте persistentVolume",
+      "recommendation": "Используйте persistentVolumeClaims вместо hostPath",
       "languages": ["yaml"]
     },
     {
@@ -390,7 +390,7 @@
       "type": "regex",
       "pattern": ":latest\\b",
       "flags": "gi",
-      "recommendation": "Используйте конкретную версию",
+      "recommendation": "Используйте конкретную версию тега (например, v1.2.3 или хеш)",
       "languages": ["yaml", "dockerfile"]
     },
     {
@@ -400,7 +400,7 @@
       "type": "regex",
       "pattern": "\\.env$",
       "flags": "gi",
-      "recommendation": "Добавьте .env в .gitignore",
+      "recommendation": "Добавьте .env в .gitignore, используйте .env.example",
       "languages": ["env"]
     },
     {
@@ -408,9 +408,9 @@
       "message": "Секреты в JSON конфигурации",
       "severity": "critical",
       "type": "regex",
-      "pattern": "\"(?:password|secret|token|api_key)\"\\s*:\\s*\"[^\"]+\"",
+      "pattern": "\"(?:password|secret|token|api_key|privateKey|clientSecret)\"\\s*:\\s*\"[^\"]{8,}\"",
       "flags": "gi",
-      "recommendation": "Используйте переменные окружения",
+      "recommendation": "Используйте переменные окружения или внешние секреты",
       "languages": ["json"]
     },
     {
@@ -418,29 +418,29 @@
       "message": "Нарушение контроля доступа (A01:2021)",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:isAdmin\\s*=\\s*false|role\\s*=\\s*['\"]user['\"])",
+      "pattern": "(?:if\\s*\\([^)]*(?:user\\.role|isAdmin|is_admin)\\s*==?\\s*(?:false|0|'user')\\)|role\\s*=\\s*['\"]user['\"])",
       "flags": "gi",
-      "recommendation": "Реализуйте проверку прав на сервере",
-      "languages": ["all"]
+      "recommendation": "Проверяйте права на сервере для каждого запроса, никогда не доверяйте клиенту",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp"]
     },
     {
       "id": "owasp-security-misconfig",
       "message": "Ошибка конфигурации безопасности (A05:2021)",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:debug\\s*=\\s*true|stack.*trace)",
+      "pattern": "(?:debug\\s*=\\s*true|stack[_\\s]?trace(?!.*false)|show_errors\\s*=\\s*on|expose_php\\s*=\\s*On)",
       "flags": "gi",
-      "recommendation": "Отключите отладку в production",
-      "languages": ["all"]
+      "recommendation": "Отключите отладку, детальные ошибки и информационные заголовки в production",
+      "languages": ["php", "python", "javascript", "java", "csharp"]
     },
     {
       "id": "owasp-ssrf",
       "message": "Потенциальная SSRF (A10:2021)",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:fetch\\s*\\([^)]*req\\.|http\\.get\\s*\\([^)]*query)",
+      "pattern": "(?:fetch\\s*\\([^)]*req\\.|http\\.get\\s*\\([^)]*query|axios\\([^)]*body\\.url|requests\\.get\\(params\\[)",
       "flags": "gi",
-      "recommendation": "Валидируйте URL по белому списку",
+      "recommendation": "Валидируйте URL по белому списку доменов, блокируйте URL с IP адресами",
       "languages": ["javascript", "typescript", "python", "java", "go", "php", "ruby", "csharp"]
     },
     {
@@ -448,19 +448,19 @@
       "message": "TODO/FIXME комментарий",
       "severity": "info",
       "type": "regex",
-      "pattern": "(?:\\/\\/|#|\\/\\*)\\s*(?:TODO|FIXME|XXX|HACK|BUG)",
+      "pattern": "(?:\\/\\/|#|\\/\\*|<!--)\\s*(?:TODO|FIXME|XXX|HACK|BUG|OPTIMIZE)",
       "flags": "gi",
-      "recommendation": "Выполните задачу перед релизом",
+      "recommendation": "Выполните или задокументируйте задачу перед релизом",
       "languages": ["all"]
     },
     {
       "id": "missing-resources",
       "message": "Отсутствуют ресурсы контейнера",
       "severity": "medium",
-      "type": "custom",
-      "pattern": "",
+      "type": "regex",
+      "pattern": "spec:\\s*\\n\\s*containers:\\s*\\n\\s*-\\s*name:(?![\\s\\S]{0,200}(?:limits|requests))",
       "flags": "gi",
-      "recommendation": "Установите requests и limits",
+      "recommendation": "Установите requests и limits для всех контейнеров",
       "languages": ["yaml"]
     },
     {
@@ -468,29 +468,19 @@
       "message": "Cache Poisoning: Использование X-Forwarded-Host без валидации",
       "severity": "high",
       "type": "regex",
-      "pattern": "req\\.headers\\[['\"]x-forwarded-host['\"]\\]",
+      "pattern": "req\\.headers\\[['\"]x-forwarded-host['\"]\\]|req\\.get\\('x-forwarded-host'\\)",
       "flags": "gi",
-      "recommendation": "Валидируйте X-Forwarded-Host по белому списку доменов",
-      "languages": ["javascript", "typescript"]
+      "recommendation": "Валидируйте X-Forwarded-Host по белому списку или игнорируйте этот заголовок полностью",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp"]
     },
     {
       "id": "cache-poisoning-html-injection",
-      "message": "Cache Poisoning: Инъекция хоста в HTML (link/script)",
+      "message": "Cache Poisoning: Инъекция хоста в HTML",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:href|src)=[\"']//\\$\\{.*host.*\\}",
+      "pattern": "(?:href|src|action|data)=[\"']//\\$\\{.*(?:host|domain|url).*\\}",
       "flags": "gi",
-      "recommendation": "Используйте относительные пути или абсолютные URL без подстановки",
-      "languages": ["javascript", "typescript", "html"]
-    },
-    {
-      "id": "cache-poisoning-meta-tag",
-      "message": "Cache Poisoning: Open Graph мета-теги с подставленным хостом",
-      "severity": "medium",
-      "type": "regex",
-      "pattern": "<meta\\s+property=\"og:(?:image|url)\"\\s+content=\"http:\\/\\/\\$\\{.*host.*\\}",
-      "flags": "gi",
-      "recommendation": "Используйте абсолютные URL без подстановки заголовков",
+      "recommendation": "Используйте относительные пути или абсолютные URL без подстановки из заголовков",
       "languages": ["javascript", "typescript", "html"]
     },
     {
@@ -498,29 +488,19 @@
       "message": "Cache Poisoning: Public cache для чувствительных данных",
       "severity": "high",
       "type": "regex",
-      "pattern": "Cache-Control.*public.*max-age",
+      "pattern": "Cache-Control\\s*:\\s*.*public.*(?:max-age|s-maxage)",
       "flags": "gi",
-      "recommendation": "Для user-specific данных используйте 'private' вместо 'public'",
-      "languages": ["javascript", "typescript", "java", "python", "go"]
+      "recommendation": "Для user-specific и авторизованных данных используйте 'private' или 'no-store'",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp", "php"]
     },
     {
       "id": "cache-poisoning-x-forwarded-for",
       "message": "Cache Poisoning: X-Forwarded-For отражается в ответе",
       "severity": "medium",
       "type": "regex",
-      "pattern": "req\\.headers\\[['\"]x-forwarded-for['\"]\\]",
+      "pattern": "req\\.headers\\[['\"]x-forwarded-for['\"]\\]|req\\.ip",
       "flags": "gi",
-      "recommendation": "Не отражайте заголовки в ответе без валидации и экранирования",
-      "languages": ["javascript", "typescript"]
-    },
-    {
-      "id": "header-reflection-xss",
-      "message": "XSS через отражение заголовков в ответе",
-      "severity": "high",
-      "type": "regex",
-      "pattern": "res\\.(?:send|json|end)\\s*\\([^)]*\\$\\{.*headers\\[.*\\].*\\}",
-      "flags": "gi",
-      "recommendation": "Экранируйте или валидируйте значения заголовков",
+      "recommendation": "Не отражайте заголовки в ответе без санации и экранирования HTML",
       "languages": ["javascript", "typescript"]
     },
     {
@@ -528,39 +508,29 @@
       "message": "Небезопасный Cache-Control заголовок",
       "severity": "medium",
       "type": "regex",
-      "pattern": "Cache-Control.*(?:public|max-age=\\d+)(?!.*private)",
+      "pattern": "Cache-Control\\s*:\\s*(?:public|max-age=\\d+)(?!.*(?:private|no-store|no-cache))",
       "flags": "gi",
-      "recommendation": "Для чувствительных данных используйте 'no-store' или 'private, no-cache'",
-      "languages": ["javascript", "typescript", "java", "python", "go"]
-    },
-    {
-      "id": "cache-poisoning-multiple-headers",
-      "message": "Cache Poisoning: Использование нескольких опасных заголовков",
-      "severity": "high",
-      "type": "regex",
-      "pattern": "(?:X-Forwarded-Host|X-Forwarded-Proto|X-Forwarded-Prefix|X-Original-URL)",
-      "flags": "gi",
-      "recommendation": "Валидируйте все forwarded заголовки перед использованием",
-      "languages": ["all"]
+      "recommendation": "Для чувствительных данных используйте Cache-Control: no-store, private",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp", "php"]
     },
     {
       "id": "api-endpoint-discovery",
       "message": "Обнаружен API эндпоинт (для фаззинга)",
       "severity": "info",
       "type": "regex",
-      "pattern": "(?:app\\.|router\\.)(?:get|post|put|delete|patch)\\s*\\(\\s*['\"`](/[^'\"`]+)['\"`]",
+      "pattern": "(?:app\\.|router\\.|api\\.|@RequestMapping)(?:\\.(?:get|post|put|delete|patch|options|head)\\()\\s*['\"`](/[^'\"`]+)['\"`]",
       "flags": "gi",
-      "recommendation": "Передайте этот эндпоинт в фаззер для динамического тестирования",
-      "languages": ["javascript", "typescript"]
+      "recommendation": "Передайте найденный эндпоинт в фаззер для динамического тестирования",
+      "languages": ["javascript", "typescript", "java", "python", "go", "csharp"]
     },
     {
       "id": "xxe-vulnerability",
       "message": "XXE: парсинг XML с внешними сущностями",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:XMLReader|SAXParser|DocumentBuilder|XPathExpression)\\s*\\([^)]*(?!.*FEATURE_SECURE_PROCESSING)",
+      "pattern": "(?:XMLReader|SAXParser|DocumentBuilder|XPathExpression|XmlDocument|XmlTextReader)\\s*\\([^)]*(?!(?:setFeature|FEATURE_SECURE_PROCESSING|DisableDtdProcessing))",
       "flags": "gi",
-      "recommendation": "Отключите внешние сущности (setFeature/FEATURE_SECURE_PROCESSING=true)",
+      "recommendation": "Отключите внешние сущности DTD (setFeature/FEATURE_SECURE_PROCESSING = true)",
       "languages": ["java", "csharp", "php", "python"]
     },
     {
@@ -568,161 +538,292 @@
       "message": "Потенциальная NoSQL инъекция",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:\\$where|\\$regex|\\$ne|\\$gt|\\$lt)\\s*:[^}]*req\\.",
+      "pattern": "(?:\\$where|\\$regex|\\$ne|\\$gt|\\$lt|\\$in|\\$nin|\\$or)\\s*:[^}]*(?:req\\.|params\\.|query\\.|body\\.)",
       "flags": "gi",
-      "recommendation": "Экранируйте или валидируйте входные данные для MongoDB/NoSQL",
-      "languages": ["javascript", "typescript", "python", "java", "go"]
+      "recommendation": "Санируйте входные данные, используйте параметризацию или validate схемы",
+      "languages": ["javascript", "typescript", "python", "java", "go", "csharp"]
     },
     {
       "id": "ldap-injection",
       "message": "Потенциальная LDAP инъекция",
       "severity": "high",
       "type": "regex",
-      "pattern": "(?:search\\s*\\([^)]*\\+|LdapContext\\s*\\()[^)]*req\\.",
+      "pattern": "(?:search\\s*\\([^)]*\\+|LdapContext\\s*\\([^)]*req\\.|ldap_search\\s*\\([^)]*\\+\\s*\\$_)",
       "flags": "gi",
-      "recommendation": "Используйте экранирование LDAP специальных символов",
-      "languages": ["java", "python", "csharp", "php"]
+      "recommendation": "Используйте экранирование LDAP специальных символов или параметризованные запросы",
+      "languages": ["java", "python", "csharp", "php", "go"]
     },
     {
       "id": "ssti-vulnerability",
       "message": "Потенциальная Server-Side Template Injection",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:render_template_string|eval\\(.*template|compile\\(.*template|\\$\\{.*\\}\\$\\{)",
+      "pattern": "(?:render_template_string|eval\\(.*template|compile\\(.*template|\\$\\{.*\\}\\$\\{|<\\.\\.\\s*\\$)",
       "flags": "gi",
-      "recommendation": "Используйте изолированные песочницы или безопасные шаблонизаторы",
-      "languages": ["python", "javascript", "typescript", "java", "php"]
+      "recommendation": "Используйте изолированные песочницы или безопасные шаблонизаторы (например, Go templates с escaping)",
+      "languages": ["python", "javascript", "typescript", "java", "php", "go"]
     },
     {
       "id": "graphql-introspection",
       "message": "GraphQL Introspection включена в production",
       "severity": "medium",
       "type": "regex",
-      "pattern": "graphql\\.org.*__schema|__typename.*__schema",
+      "pattern": "__schema\\s*\\{|__typename\\s*\\{",
       "flags": "gi",
-      "recommendation": "Отключите introspection в production",
-      "languages": ["javascript", "typescript", "python", "java", "go"]
-    },
-    {
-      "id": "s3-public-bucket",
-      "message": "S3 бакет имеет публичный доступ",
-      "severity": "critical",
-      "type": "regex",
-      "pattern": "(?:x-amz-acl|acl)\\s*[=:]\\s*['\"]public-read['\"]",
-      "flags": "gi",
-      "recommendation": "Используйте private ACL с CloudFront/Signed URLs",
-      "languages": ["terraform", "yaml", "javascript", "typescript", "python"]
+      "recommendation": "Отключите introspection в production окружении (graphql.setIntrospection(false))",
+      "languages": ["javascript", "typescript", "python", "java", "go", "csharp"]
     },
     {
       "id": "race-condition-toctou",
       "message": "Time-of-check Time-of-use (TOCTOU) уязвимость",
       "severity": "high",
       "type": "regex",
-      "pattern": "if\\s*\\(fs\\.existsSync\\([^)]+\\)\\)\\s*\\{[^}]*fs\\.(?:read|write|unlink)",
+      "pattern": "if\\s*\\(fs\\.existsSync\\([^)]+\\)\\)\\s*\\{[^}]{0,100}fs\\.(?:readFile|writeFile|unlink|rename|chmod)",
       "flags": "gi",
-      "recommendation": "Используйте атомарные операции или блокировки",
-      "languages": ["javascript", "typescript", "python", "go", "java"]
-    },
-    {
-      "id": "docker-socket-mount",
-      "message": "Docker socket смонтирован в контейнер",
-      "severity": "critical",
-      "type": "regex",
-      "pattern": "/var/run/docker\\.sock",
-      "flags": "gi",
-      "recommendation": "Не монтируйте docker.sock в контейнеры",
-      "languages": ["yaml", "dockerfile"]
+      "recommendation": "Используйте атомарные операции или advisory locks, избегайте проверки перед использованием",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp"]
     },
     {
       "id": "hardcoded-crypto-key",
       "message": "Криптографический ключ захардкожен",
       "severity": "critical",
       "type": "regex",
-      "pattern": "(?:privateKey|secretKey|apiSecret|signingKey)\\s*=\\s*['\"`][A-Za-z0-9+/=]{40,}['\"`]",
+      "pattern": "(?:privateKey|secretKey|apiSecret|signingKey|encryptionKey|hmacSecret)\\s*=\\s*['\"`][A-Za-z0-9+/=]{32,}['\"`]",
       "flags": "gi",
-      "recommendation": "Используйте KMS (AWS KMS, GCP KMS, HashiCorp Vault)",
+      "recommendation": "Используйте KMS (AWS KMS, GCP KMS, Azure Key Vault, HashiCorp Vault)",
       "languages": ["all"]
+    },
+    {
+      "id": "header-reflection-xss",
+      "message": "XSS через отражение заголовков в ответе",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "res\\.(?:send|json|end|write|writeHead)\\s*\\([^)]*\\$\\{.*headers\\[.*\\].*\\}[^)]*\\)",
+      "flags": "gi",
+      "recommendation": "Экранируйте или валидируйте все значения заголовков перед отражением",
+      "languages": ["javascript", "typescript"]
     },
     {
       "id": "client-side-routing-xss",
       "message": "XSS через фрагмент URL при рутинге",
       "severity": "high",
       "type": "regex",
-      "pattern": "window\\.location\\.hash.*innerHTML",
+      "pattern": "window\\.location\\.(?:hash|search|pathname).{0,50}(?:innerHTML|outerHTML|insertAdjacentHTML|document\\.write)",
       "flags": "gi",
-      "recommendation": "Экранируйте window.location.hash",
-      "languages": ["javascript", "typescript", "html"]
+      "recommendation": "Экранируйте window.location.hash/fragment перед использованием в DOM",
+      "languages": ["javascript", "typescript"]
     },
     {
       "id": "cpp-gets-buffer-overflow",
       "message": "Использование gets() - крайне опасно из-за переполнения буфера",
       "severity": "critical",
-      "pattern": "\\bgets\\s*\\(",
       "type": "regex",
+      "pattern": "\\bgets\\s*\\(",
       "flags": "gi",
-      "languages": ["cpp", "c"],
+      "languages": ["cpp", "c", "c++"],
       "recommendation": "Используйте fgets(buffer, size, stdin) вместо gets()"
     },
     {
       "id": "cpp-strcpy-unsafe",
       "message": "strcpy() не проверяет размер буфера",
       "severity": "high",
-      "pattern": "\\bstrcpy\\s*\\(",
       "type": "regex",
+      "pattern": "\\bstrcpy\\s*\\(",
       "flags": "gi",
-      "languages": ["cpp", "c"],
-      "recommendation": "Используйте strncpy() или современные std::string"
+      "languages": ["cpp", "c", "c++"],
+      "recommendation": "Используйте strncpy(), strlcpy() или std::string"
     },
     {
       "id": "cpp-sprintf-unsafe",
       "message": "sprintf() не проверяет границы буфера",
       "severity": "high",
-      "pattern": "\\bsprintf\\s*\\(",
       "type": "regex",
+      "pattern": "\\bsprintf\\s*\\(",
       "flags": "gi",
-      "languages": ["cpp", "c"],
+      "languages": ["cpp", "c", "c++"],
       "recommendation": "Используйте snprintf() для безопасного форматирования"
     },
     {
       "id": "cpp-printf-user-input",
       "message": "Форматная строка содержит потенциально опасные данные",
       "severity": "medium",
-      "pattern": "printf\\s*\\(\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*\\)",
       "type": "regex",
+      "pattern": "(?:printf|fprintf|sprintf|snprintf)\\s*\\(\\s*[a-zA-Z_][a-zA-Z0-9_]*\\s*[,)]",
       "flags": "gi",
-      "languages": ["cpp", "c"],
-      "recommendation": "Используйте printf(\"%s\", userInput) вместо printf(userInput)"
+      "languages": ["cpp", "c", "c++"],
+      "recommendation": "Используйте printf(\"%s\", userInput) вместо printf(userInput) - инъекция формата"
     },
     {
       "id": "cpp-system-call",
       "message": "Вызов system() с пользовательскими данными опасен",
       "severity": "high",
-      "pattern": "\\bsystem\\s*\\(",
       "type": "regex",
+      "pattern": "\\bsystem\\s*\\(",
       "flags": "gi",
-      "languages": ["cpp", "c"],
-      "recommendation": "Избегайте system(), используйте прямые вызовы exec*()"
+      "languages": ["cpp", "c", "c++"],
+      "recommendation": "Избегайте system(), используйте exec*() семейство с точными аргументами"
     },
     {
       "id": "cpp-new-without-delete",
       "message": "Потенциальная утечка памяти (new без соответствующего delete)",
       "severity": "high",
-      "pattern": "\\bnew\\s+(?!.*\\bdelete\\b)",
       "type": "regex",
+      "pattern": "\\bnew\\s+(?!.*\\bdelete\\b)",
       "flags": "gi",
       "languages": ["cpp"],
       "recommendation": "Используйте умные указатели (std::unique_ptr, std::shared_ptr)"
     },
     {
       "id": "cpp-bare-pointer-return",
-      "message": "Возврат сырого указателя из функции может привести к утечке",
+      "message": "Возврат сырого указателя может привести к утечке",
       "severity": "medium",
-      "pattern": "\\*\\s*\\w+\\s*\\([^)]*\\)\\s*\\{[^}]*\\bnew\\b",
       "type": "regex",
+      "pattern": "\\*\\s*\\w+\\s*\\([^)]*\\)\\s*\\{[^}]{0,200}\\bnew\\b",
       "flags": "gi",
       "languages": ["cpp"],
-      "recommendation": "Возвращайте std::unique_ptr или std::shared_ptr"
-    }
+      "recommendation": "Возвращайте std::unique_ptr или std::shared_ptr с явной семантикой владения"
+    },
 
+    {
+      "id": "rate-limit-missing",
+      "message": "Отсутствует ограничение частоты запросов (A04:2021)",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(?:@(?:PostMapping|GetMapping|RequestMapping|PutMapping|DeleteMapping)|router\\.(?:post|get|put|delete|patch|all)|@app\\.route|app\\.(?:post|get|put|delete|patch))(?![\\s\\S]{0,300}(?:@RateLimit|rateLimiter|limiter\\.|RateLimiter|throttle|limit\\.per|maxRequests|windowMs|burst|rate_limit))",
+      "flags": "gi",
+      "recommendation": "Внедрите rate limiting: express-rate-limit для Node.js, django-ratelimit для Python, Bucket4j для Java, rata для Go",
+      "languages": ["javascript", "typescript", "python", "java", "go", "php", "csharp", "ruby"]
+    },
+    {
+      "id": "rate-limit-too-high",
+      "message": "Слишком высокий лимит запросов - риск брутфорса и DoS",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "(?:maxRequests?|limit|points|max)\\s*[=:]\\s*\\b(?:1000|[5-9]\\d{2,}|[1-9]\\d{4,})\\b",
+      "flags": "gi",
+      "recommendation": "Установите адекватные лимиты: API: 100-500/мин, аутентификация: 5-10/мин",
+      "languages": ["javascript", "typescript", "python", "java", "go", "php", "csharp"]
+    },
+    {
+      "id": "auth-endpoint-no-rate-limit",
+      "message": "КРИТИЧЕСКОЕ: Эндпоинт аутентификации без rate limiting",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "(?:login|signin|auth|token|verify|otp|reset-password|change-password|2fa|mfa|recovery).{0,75}(?:@(?:PostMapping|GetMapping)|router\\.post|app\\.post|app\\.route)(?![\\s\\S]{0,300}(?:rateLimit|throttle|maxAttempts|max_attempts|bruteforce))",
+      "flags": "gi",
+      "recommendation": "Rate Limiting ОБЯЗАТЕЛЕН: 3-5 попыток за 5 минут, блокировка на 15-30 минут",
+      "languages": ["javascript", "typescript", "python", "java", "go", "php", "csharp", "ruby"]
+    },
+    {
+      "id": "no-global-rate-limit",
+      "message": "Отсутствует глобальный лимит запросов к API",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "app\\.(?:use|enable)\\s*\\([^)]*(?:express|limiter|throttle)(?![\\s\\S]{0,150}(?:rateLimit|rate limit))",
+      "flags": "gi",
+      "recommendation": "Установите глобальный rate limit на уровне приложения/API gateway: 1000-5000 запросов/IP в минуту",
+      "languages": ["javascript", "typescript", "python", "go", "csharp"]
+    },
+    {
+      "id": "login-no-delay",
+      "message": "Отсутствует искусственная задержка при неудачном входе",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "(?:password|login|signin).{0,100}(?:invalid|failed|wrong|incorrect).{0,100}(?:return|res\\.status|response)(?![\\s\\S]{0,150}(?:setTimeout|sleep|delay|usleep|time\\.Sleep))",
+      "flags": "gi",
+      "recommendation": "Добавьте случайную задержку 500-2000ms при неудачных попытках входа для замедления брутфорса",
+      "languages": ["javascript", "typescript", "python", "java", "go", "php", "csharp", "ruby"]
+    },
+    {
+      "id": "ip-based-rate-limit-missing",
+      "message": "Rate limiting только по пользователям (не по IP)",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "rateLimit\\s*\\(\\s*\\{[^}]*(?:keyGenerator|keyFunc|keyResolver|user[Ii]d)(?![^}]{0,50}(?:ip|Ip|IP))",
+      "flags": "gi",
+      "recommendation": "Всегда комбинируйте IP + UserID для rate limiting, защита от атак с подменой сессий",
+      "languages": ["javascript", "typescript", "java", "python", "go"]
+    },
+    {
+      "id": "no-headers-rate-limit",
+      "message": "Отсутствуют Rate Limit заголовки в ответе",
+      "severity": "low",
+      "type": "regex",
+      "pattern": "(?:rateLimit|limiter|throttle)(?![\\s\\S]{0,300}(?:X-RateLimit|RateLimit-|Retry-After))",
+      "flags": "gi",
+      "recommendation": "Добавьте заголовки X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After",
+      "languages": ["javascript", "typescript", "python", "java", "go", "php", "csharp"]
+    },
+    {
+      "id": "distributed-rate-limit-missing",
+      "message": "Rate limiting без распределенного хранилища",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(?:express-rate-limit|rate-limit-flexible|ratelimit)\\s*\\([^)]*(?!RedisStore|MemcachedStore|MongoStore|ClusterStore)",
+      "flags": "gi",
+      "recommendation": "При масштабировании используйте Redis/Memcached для централизованного хранения счетчиков",
+      "languages": ["javascript", "typescript", "python", "go", "java", "csharp"]
+    },
+    {
+      "id": "graphql-rate-limit-missing",
+      "message": "GraphQL без ограничения глубины/сложности запросов - DoS риск",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "(?:graphql|GraphQL|apollo-server|graphql-yoga|gql)(?![\\s\\S]{0,400}(?:depthLimit|costLimit|queryDepth|maxQueryComplexity|validationRules|maxQueryDepth))",
+      "flags": "gi",
+      "recommendation": "Ограничьте глубину запросов (5-10) и сложность, защита от DoS через аллокацию баллов",
+      "languages": ["javascript", "typescript", "python", "java", "go", "csharp"]
+    },
+    {
+      "id": "burst-handling-missing",
+      "message": "Нет защиты от burst-запросов (несколько параллельных запросов)",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "rateLimit\\s*\\([^)]*(?:windowMs|timeWindow|duration)(?![^}]{0,75}(?:burst|queue|leaky|token))",
+      "flags": "gi",
+      "recommendation": "Реализуйте token bucket или leaky bucket алгоритм для сглаживания burst-запросов",
+      "languages": ["javascript", "typescript", "java", "go"]
+    },
+    {
+      "id": "slowloris-protection-missing",
+      "message": "Отсутствует защита от Slowloris атак",
+      "severity": "medium",
+      "type": "regex",
+      "pattern": "(?:http\\.createServer|express\\(\\)|app\\s*=\\s*express|FastAPI\\(\\)|@\\w+\\s*class\\s+\\w+\\s*\\(HttpHandler\\))(?![\\s\\S]{0,300}(?:timeout|keepAliveTimeout|slowloris|requestTimeout|connectionTimeout))",
+      "flags": "gi",
+      "recommendation": "Установите таймауты соединения, используйте reverse proxy (nginx) с ограничениями",
+      "languages": ["javascript", "typescript", "go", "python", "java", "csharp"]
+    },
+
+    {
+      "id": "jwt-none-algorithm",
+      "message": "JWT с алгоритмом 'none' - критическая уязвимость",
+      "severity": "critical",
+      "type": "regex",
+      "pattern": "\"alg\"\\s*:\\s*\"none\"",
+      "flags": "gi",
+      "recommendation": "Запретите алгоритм 'none', всегда проверяйте и валидируйте алгоритм подписи",
+      "languages": ["all"]
+    },
+    {
+      "id": "jwt-no-expiration",
+      "message": "JWT без срока действия (exp)",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "jwt\\.sign\\([^)]*(?!(?:expiresIn|exp|expiration))",
+      "flags": "gi",
+      "recommendation": "Всегда устанавливайте короткое время жизни JWT (15-60 минут) с refresh токенами",
+      "languages": ["javascript", "typescript", "python", "java", "go", "csharp", "php"]
+    },
+    {
+      "id": "jwt-weak-secret",
+      "message": "JWT с коротким/простым секретом",
+      "severity": "high",
+      "type": "regex",
+      "pattern": "jwt\\.sign\\([^,]+,\\s*['\"`][a-zA-Z0-9]{,16}['\"`]",
+      "flags": "gi",
+      "recommendation": "Используйте секреты длиной от 32 символов или асимметричные ключи (RS256/ES256)",
+      "languages": ["javascript", "typescript", "python", "java", "go", "php"]
+    }
   ]
 }
