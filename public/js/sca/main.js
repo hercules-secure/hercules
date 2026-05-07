@@ -464,7 +464,7 @@ class AccessChecker {
                 };
             }
         } catch (error) {
-            console.error('Ошибка проверки GitLab:', error);
+            alert('Ошибка проверки GitLab:', error);
             return { 
                 accessible: false, 
                 requiresAuth: false, 
@@ -549,7 +549,7 @@ class AccessChecker {
             };
         }
     } catch (error) {
-        console.error('Ошибка проверки GitHub:', error);
+        alert('Ошибка проверки GitHub:', error);
         return { 
             accessible: false, 
             requiresAuth: false, 
@@ -579,7 +579,7 @@ class TokenStorage {
                 const tokens = JSON.parse(localStorage.getItem(this.storageKey) || '{}');
                 return tokens[domain] || null;
             } catch (error) {
-                console.error('Ошибка чтения токена из localStorage:', error);
+                alert('Ошибка чтения токена из localStorage:', error);
                 return null;
             }
         }
@@ -601,7 +601,7 @@ class TokenStorage {
                 localStorage.setItem(this.storageKey, JSON.stringify(tokens));
                 return Promise.resolve();
             } catch (error) {
-                console.error('Ошибка сохранения токена в localStorage:', error);
+                alert('Ошибка сохранения токена в localStorage:', error);
                 return Promise.reject(error);
             }
         }
@@ -623,7 +623,7 @@ class TokenStorage {
                 localStorage.setItem(this.storageKey, JSON.stringify(tokens));
                 return Promise.resolve();
             } catch (error) {
-                console.error('Ошибка удаления токена из localStorage:', error);
+                alert('Ошибка удаления токена из localStorage:', error);
                 return Promise.reject(error);
             }
         }
@@ -772,7 +772,7 @@ class HerculesMainApp {
             }
             
         } catch (error) {
-            console.error('Ошибка при проверке:', error);
+            alert('Ошибка при проверке:', error);
             alert('Не удалось проверить доступ к репозиторию');
             this.resetButton();
         }
@@ -828,7 +828,7 @@ class HerculesMainApp {
                         });
                         
                     } catch (error) {
-                        console.error('Ошибка при запросе к серверу:', error);
+                        alert('Ошибка при запросе к серверу:', error);
                         
                         if (error.message.includes('Токен недействителен')) {
                             const newToken = await this.tokenModal.show(url);
@@ -865,7 +865,7 @@ class HerculesMainApp {
                 });
             });
         } catch (error) {
-            console.error('Ошибка при анализе:', error);
+            alert('Ошибка при анализе:', error);
             alert('Произошла ошибка при анализе');
             this.resetButton();
         }
@@ -1042,10 +1042,10 @@ class SCAPopupReporter {
                 border-top: 1px solid #dee2e6;
                 display: flex;
                 justify-content: flex-end;
-                gap: 10px;
+                gap: 12px;
             }
             .sca-btn {
-                padding: 10px 20px;
+                padding: 10px 24px;
                 border: none;
                 border-radius: 6px;
                 font-size: 14px;
@@ -1053,10 +1053,30 @@ class SCAPopupReporter {
                 font-family: Ubuntu;
                 cursor: pointer;
                 transition: all 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
             }
-            .sca-btn-primary {
-                background: black;
+            .sca-btn-html {
+                background: #6f42c1;
                 color: white;
+            }
+            .sca-btn-html:hover {
+                background: #5a32a3;
+            }
+            .sca-btn-pdf {
+                background: #dc3545;
+                color: white;
+            }
+            .sca-btn-pdf:hover {
+                background: #b02a37;
+            }
+            .sca-btn-json {
+                background: #10b981;
+                color: white;
+            }
+            .sca-btn-json:hover {
+                background: #0e9f6e;
             }
             .sca-stats-grid {
                 display: grid;
@@ -1088,13 +1108,14 @@ class SCAPopupReporter {
                 margin: 20px 0;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 overflow-x: auto;
-                font: normal 13px 'Ubuntu';
+                font-family: 'Ubuntu';
             }
             .sca-vuln-table {
                 width: 100%;
                 border-collapse: collapse;
                 min-width: 500px;
-                font: normal 15px 'Ubuntu';
+                font-family: 'Ubuntu';
+                font-size: 14px;
             }
             .sca-vuln-table th {
                 background: #f8f9fa;
@@ -1118,25 +1139,6 @@ class SCAPopupReporter {
             .sca-cve-link:hover {
                 text-decoration: underline;
             }
-            .sca-pagination {
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                margin-top: 20px;
-                flex-wrap: wrap;
-            }
-            .sca-page-btn {
-                padding: 6px 12px;
-                border: 1px solid #dee2e6;
-                background: white;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-            .sca-page-btn.active {
-                background: #1a1a2a;
-                color: white;
-                border-color: #1a1a2a;
-            }
         `;
         
         const stats = this.extractStats();
@@ -1144,9 +1146,9 @@ class SCAPopupReporter {
         
         popup.innerHTML = `
             <div class="sca-popup-header">
-                    <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
-                     Результаты анализа
-                    </h3>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
+                    Результаты SCA анализа
+                </h3>
                 <button class="sca-popup-close" id="closePopup">&times;</button>
             </div>
             <div class="sca-popup-content">
@@ -1160,11 +1162,11 @@ class SCAPopupReporter {
                         <div class="sca-stat-label">Уязвимостей</div>
                     </div>
                     <div class="sca-stat-card">
-                        <div class="sca-stat-number" style="color:red">${stats.critical}</div>
+                        <div class="sca-stat-number" style="color:#dc3545">${stats.critical}</div>
                         <div class="sca-stat-label">Критических</div>
                     </div>
                     <div class="sca-stat-card">
-                        <div class="sca-stat-number" style="color:orange">${stats.high}</div>
+                        <div class="sca-stat-number" style="color:#fd7e14">${stats.high}</div>
                         <div class="sca-stat-label">Высоких</div>
                     </div>
                 </div>
@@ -1175,33 +1177,29 @@ class SCAPopupReporter {
                     <table class="sca-vuln-table">
                         <thead>
                             <tr><th>Компонент</th><th>CVE ID</th><th>Описание</th><th>Серьезность</th></tr>
-                            </thead>
-                            <tbody>
-                                ${vulnerabilities.map(v => `
-                                    <tr>
-                                        <td>${v.component} (${v.version})</td>
-                                        <td><a href="${v.url}" target="_blank" class="sca-cve-link">${v.id}</a></td>
-                                        <td style="font:normal 15px 'Ubuntu'">${v.description}</td>
-                                        <td class="sca-severity-${v.severity}">${v.severity}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    ` : '<div style="text-align:center;padding:40px;">Уязвимостей не найдено</div>'}
+                        </thead>
+                        <tbody>
+                            ${vulnerabilities.map(v => `
+                                <tr>
+                                    <td><strong>${this.escapeHtml(v.component)}</strong> (${v.version})</td>
+                                    <td><a href="${v.url}" target="_blank" class="sca-cve-link">${v.id}</a></td>
+                                    <td style="font-size:13px">${this.escapeHtml(v.description.substring(0, 150))}${v.description.length > 150 ? '...' : ''}</td>
+                                    <td class="sca-severity-${v.severity}">${v.severity}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                    ` : '<div style="text-align:center;padding:40px;">✅ Уязвимостей не найдено</div>'}
                 </div>
             </div>
             <div class="sca-popup-footer">
-                <button id="downloadReport" style="
-                    background: #10b981;
-                    color: white;
-                    border: none;
-                    padding: 10px 24px;
-                    border-radius: 6px;
-                    cursor: pointer;
-                    font-weight: 500;
-                    transition: all 0.2s;
-                    font-family: 'Ubuntu';
-                ">
+                <button id="downloadHtmlBtn" class="sca-btn sca-btn-html">
+                    <i class="fab fa-html5"></i> Скачать HTML
+                </button>
+                <button id="downloadPdfBtn" class="sca-btn sca-btn-pdf">
+                    <i class="fas fa-file-pdf"></i> Скачать PDF
+                </button>
+                <button id="downloadJsonBtn" class="sca-btn sca-btn-json">
                     <i class="fas fa-download"></i> Скачать JSON
                 </button>
             </div>
@@ -1212,6 +1210,16 @@ class SCAPopupReporter {
         document.body.appendChild(overlay);
         
         this.addEventListeners(overlay);
+    }
+    
+    escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
     }
     
     extractStats() {
@@ -1240,99 +1248,620 @@ class SCAPopupReporter {
     extractVulnerabilities() {
         if (!this.report.vulnerabilities) return [];
         
-
         return this.report.vulnerabilities.map(v => ({
             id: v.id || 'N/A',
-            component: v.component.name,
-            version: v.component.version,
+            component: v.component?.name || 'Unknown',
+            version: v.component?.version || 'Unknown',
             severity: v.ratings?.[0]?.severity || v.severity || 'UNKNOWN',
             url: v.source?.url || `https://osv.dev/vulnerability/${v.id}`,
-            description: v.description || ''
+            description: v.description || 'Нет описания'
         }));
     }
 
-    
-addEventListeners(overlay) {
-    const closePopupBtn = overlay.querySelector('#closePopup');
-    const closePopupBtn2 = overlay.querySelector('#closePopupBtn');
-    
-    if (closePopupBtn) {
-        closePopupBtn.addEventListener('click', () => {
-            if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
-            }
-
-            if (typeof ProgressReset !== 'undefined') {
-                ProgressReset.resetAllProgress();
-            }
-
-            if (typeof HerculesMainApp !== 'undefined' && HerculesMainApp.clearRepoInput) {
-                HerculesMainApp.clearRepoInput();
-            }
-        });
+    /**
+     * Скачать JSON отчет
+     */
+    downloadJSON() {
+        try {
+            const dataStr = JSON.stringify(this.report, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `sca-report-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            this.showNotification('JSON отчет успешно скачан', 'success');
+        } catch (error) {
+            alert('JSON download error:', error);
+            this.showNotification('Ошибка при скачивании JSON', 'error');
+        }
     }
-    
-    if (closePopupBtn2) {
-        closePopupBtn2.addEventListener('click', () => {
-            if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
-            }
-            if (typeof ProgressReset !== 'undefined') {
-                ProgressReset.resetAllProgress();
-            }
-            if (typeof HerculesMainApp !== 'undefined' && HerculesMainApp.clearRepoInput) {
-                HerculesMainApp.clearRepoInput();
-            }
-        });
+
+    /**
+     * Скачать HTML отчет
+     */
+    downloadHTML() {
+        try {
+            this.showNotification('Генерация HTML отчета...', 'info');
+            const htmlContent = this.generateFullHTMLReport();
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `sca-report-${new Date().toISOString().split('T')[0]}.html`;
+            link.click();
+            URL.revokeObjectURL(url);
+            this.showNotification('HTML отчет успешно скачан', 'success');
+        } catch (error) {
+            alert('HTML download error:', error);
+            this.showNotification('Ошибка при скачивании HTML', 'error');
+        }
     }
-    
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
+
+    /**
+     * Скачать PDF отчет
+     */
+    downloadPDF() {
+        try {
+            this.showNotification('Подготовка PDF отчета...', 'info');
+            
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.top = '-9999px';
+            iframe.style.left = '-9999px';
+            iframe.style.width = '800px';
+            iframe.style.height = '600px';
+            document.body.appendChild(iframe);
+            
+            const htmlContent = this.generatePDFHTML();
+            
+            iframe.contentDocument.open();
+            iframe.contentDocument.write(htmlContent);
+            iframe.contentDocument.close();
+            
+            setTimeout(() => {
+                try {
+                    iframe.contentWindow.print();
+                    this.showNotification('PDF отчет готов к сохранению', 'success');
+                    
+                    setTimeout(() => {
+                        document.body.removeChild(iframe);
+                    }, 1000);
+                } catch (err) {
+                    alert('Print error:', err);
+                    this.showNotification('Ошибка при генерации PDF', 'error');
+                    document.body.removeChild(iframe);
+                }
+            }, 500);
+            
+        } catch (error) {
+            alert('PDF generation error:', error);
+            this.showNotification('Ошибка при генерации PDF: ' + error.message, 'error');
+        }
+    }
+
+    /**
+     * Генерация полноценного HTML отчета
+     */
+    generateFullHTMLReport() {
+        const stats = this.extractStats();
+        const vulnerabilities = this.extractVulnerabilities();
+        
+        const severityOrder = { 'CRITICAL': 0, 'HIGH': 1, 'MODERATE': 2, 'LOW': 3, 'UNKNOWN': 4 };
+        const sortedVulns = [...vulnerabilities].sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+        
+        return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    <title>Геркулес | SCA - ${new Date().toLocaleDateString()}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Ubuntu';
+            background: white;
+            padding: 20px;
+            color: #333;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: black;
+            color: white;
+            padding: 40px;
+        }
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        .header .meta {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-card .label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+        .stat-card .value {
+            font-size: 36px;
+            font-weight: bold;
+        }
+        .content {
+            padding: 30px;
+        }
+        .filter-bar {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .filter-btn {
+            padding: 8px 16px;
+            background: #e9ecef;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+        .search-box {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .vuln-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .vuln-table th {
+            background: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .vuln-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+            font-family: 'Ubuntu';
+        }
+        .severity-CRITICAL { color: #dc3545; font-weight: bold; }
+        .severity-HIGH { color: #fd7e14; font-weight: bold; }
+        .severity-MODERATE { color: #ffc107; }
+        .severity-LOW { color: #28a745; }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px 30px;
+            text-align: center;
+            color: #6c757d;
+            font-size: 12px;
+            border-top: 1px solid #e9ecef;
+        }
+        @media (max-width: 768px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
             }
-            if (typeof ProgressReset !== 'undefined') {
-                ProgressReset.resetAllProgress();
+            .vuln-table {
+                font-size: 12px;
             }
-            if (typeof HerculesMainApp !== 'undefined' && HerculesMainApp.clearRepoInput) {
-                HerculesMainApp.clearRepoInput();
+            .vuln-table th, .vuln-table td {
+                padding: 8px;
             }
         }
-    });
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Геркулес | SCA</h1>
+            <div class="meta">
+                <div>Дата генерации: ${new Date().toLocaleString()}</div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <div class="label">Компонентов</div>
+                <div class="value" style="color: #667eea;">${stats.components}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Уязвимостей</div>
+                <div class="value" style="color: #fd7e14;">${stats.vulnerabilities}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Критических</div>
+                <div class="value" style="color: #dc3545;">${stats.critical}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Высоких</div>
+                <div class="value" style="color: #fd7e14;">${stats.high}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Средних</div>
+                <div class="value" style="color: #ffc107;">${stats.moderate}</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Низких</div>
+                <div class="value" style="color: #28a745;">${stats.low}</div>
+            </div>
+        </div>
+        
+        <div class="content">
+            <div class="filter-bar">
+                <input type="text" class="search-box" id="searchInput" placeholder="Поиск по компоненту, CVE ID или описанию...">
+                <button class="filter-btn active" data-filter="all">Все <font style="font-family: 'Alef'">(${vulnerabilities.length})</font></button>
+                <button class="filter-btn" data-filter="CRITICAL">Критические <font style="font-family: 'Alef'">(${stats.critical})</font></button>
+                <button class="filter-btn" data-filter="HIGH">Высокие <font style="font-family: 'Alef'">(${stats.high})</font></button>
+                <button class="filter-btn" data-filter="MODERATE">Средние <font style="font-family: 'Alef'">(${stats.moderate})</font></button>
+                <button class="filter-btn" data-filter="LOW">Низкие <font style="font-family: 'Alef'">(${stats.low})</font></button>
+            </div>
+            
+            <table class="vuln-table" id="vulnTable">
+                <thead>
+                    <tr>
+                        <th>Компонент</th>
+                        <th>Версия</th>
+                        <th>CVE ID</th>
+                        <th>Описание</th>
+                        <th>Серьезность</th>
+                    </tr>
+                </thead>
+                <tbody id="vulnTableBody">
+                    ${sortedVulns.map(v => `
+                        <tr data-severity="${v.severity}" data-component="${this.escapeHtml(v.component)}" data-cve="${v.id}" data-description="${this.escapeHtml(v.description)}">
+                            <td><strong>${this.escapeHtml(v.component)}</strong></td>
+                            <td>${v.version}</td>
+                            <td><a href="${v.url}" target="_blank" style="color: #0066cc;">${v.id}</a></td>
+                            <td style="font-size:13px">${this.escapeHtml(v.description.substring(0, 100))}${v.description.length > 100 ? '...' : ''}</td>
+                            <td class="severity-${v.severity}">${v.severity}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="footer">
+            <p>Сгенерировано с помощью Геркулес | Анализ выполнены на основе данных публичных баз CVE</p>
+            <p>Рекомендуется обновить уязвимые компоненты до последних версий</p>
+        </div>
+    </div>
     
-    const escHandler = (e) => {
-        if (e.key === 'Escape') {
-            if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+        const searchInput = document.getElementById('searchInput');
+        const tableBody = document.getElementById('vulnTableBody');
+        const rows = Array.from(document.querySelectorAll('#vulnTableBody tr'));
+        
+        let currentFilter = 'all';
+        
+        function filterRows() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            rows.forEach(row => {
+                const severity = row.dataset.severity;
+                const component = row.dataset.component?.toLowerCase() || '';
+                const cve = row.dataset.cve?.toLowerCase() || '';
+                const description = row.dataset.description?.toLowerCase() || '';
+                
+                const matchesFilter = currentFilter === 'all' || severity === currentFilter;
+                const matchesSearch = searchTerm === '' || 
+                    component.includes(searchTerm) || 
+                    cve.includes(searchTerm) || 
+                    description.includes(searchTerm);
+                
+                row.style.display = matchesFilter && matchesSearch ? '' : 'none';
+            });
+        }
+        
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentFilter = btn.dataset.filter;
+                filterRows();
+            });
+        });
+        
+        searchInput.addEventListener('input', filterRows);
+        
+    </script>
+</body>
+</html>`;
+    }
+
+    /**
+     * Генерация HTML для PDF (упрощенная версия)
+     */
+    generatePDFHTML() {
+        const stats = this.extractStats();
+        const vulnerabilities = this.extractVulnerabilities();
+        
+        const criticalHigh = vulnerabilities.filter(v => v.severity === 'CRITICAL' || v.severity === 'HIGH');
+        
+        return `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SCA Security Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 20px;
+            color: #212529;
+            background: white;
+        }
+        .header {
+            margin-bottom: 30px;
+            text-align: center;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 20px;
+        }
+        h1 {
+            color: #1f2937;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .date {
+            color: #6c757d;
+            font-size: 12px;
+        }
+        .stats-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e5e7eb;
+            flex: 1;
+            min-width: 80px;
+        }
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .stat-label {
+            color: #6c757d;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+        .section-title {
+            margin: 30px 0 20px 0;
+            color: #1f2937;
+            font-size: 18px;
+            border-left: 4px solid #dc3545;
+            padding-left: 12px;
+        }
+        .vuln-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #dc3545;
+            page-break-inside: avoid;
+        }
+        .severity-CRITICAL { color: #dc3545; font-weight: bold; }
+        .severity-HIGH { color: #fd7e14; font-weight: bold; }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6c757d;
+            font-size: 10px;
+        }
+        .no-vulns {
+            text-align: center;
+            padding: 40px;
+            color: #28a745;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔒 SCA отчет по безопасности</h1>
+        <div class="date">Дата генерации: ${new Date().toLocaleString()}</div>
+    </div>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number" style="color: #667eea;">${stats.components}</div>
+            <div class="stat-label">Компонентов</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color: #fd7e14;">${stats.vulnerabilities}</div>
+            <div class="stat-label">Уязвимостей</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color: #dc3545;">${stats.critical}</div>
+            <div class="stat-label">Критические</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-number" style="color: #fd7e14;">${stats.high}</div>
+            <div class="stat-label">Высокие</div>
+        </div>
+    </div>
+    
+    <div class="section-title">
+        📋 Критические и высокие уязвимости (${criticalHigh.length})
+    </div>
+    
+    ${criticalHigh.length > 0 ? criticalHigh.map(v => `
+        <div class="vuln-item">
+            <div style="margin-bottom: 10px;">
+                <span class="severity-${v.severity}" style="font-weight: bold;">${v.severity}</span>
+                <code style="background: #e9ecef; padding: 4px 8px; border-radius: 4px; font-size: 11px; margin-left: 10px;">
+                    ${this.escapeHtml(v.component)} (${v.version})
+                </code>
+            </div>
+            <p style="margin: 10px 0;"><strong>CVE:</strong> <a href="${v.url}" style="color: #0066cc;">${v.id}</a></p>
+            <p style="margin: 10px 0; font-size: 13px;">${this.escapeHtml(v.description)}</p>
+        </div>
+    `).join('') : '<div class="no-vulns">✅ Критических и высоких уязвимостей не найдено</div>'}
+    
+    <div class="footer">
+        <p>Сгенерировано с помощью Hercules SCA Scanner</p>
+        <p>Всего найдено уязвимостей: ${stats.vulnerabilities}</p>
+    </div>
+</body>
+</html>`;
+    }
+
+    /**
+     * Показать уведомление
+     */
+    showNotification(message, type = 'success') {
+        const notification = document.createElement('div');
+        notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}`;
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(20px)';
+            notification.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    addEventListeners(overlay) {
+        const closePopupBtn = overlay.querySelector('#closePopup');
+        
+        if (closePopupBtn) {
+            closePopupBtn.addEventListener('click', () => {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
                 if (typeof ProgressReset !== 'undefined') {
                     ProgressReset.resetAllProgress();
                 }
-                if (typeof HerculesMainApp !== 'undefined' && HerculesMainApp.clearRepoInput) {
-                    HerculesMainApp.clearRepoInput();
-                }
-                document.removeEventListener('keydown', escHandler);
-            }
+            });
         }
-    };
-    document.addEventListener('keydown', escHandler);
-    
-    const downloadBtn = overlay.querySelector('#downloadReport');
-    if (downloadBtn) {
-        downloadBtn.addEventListener('click', () => this.downloadReport());
+        
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                }
+                if (typeof ProgressReset !== 'undefined') {
+                    ProgressReset.resetAllProgress();
+                }
+            }
+        });
+        
+        const escHandler = (e) => {
+            if (e.key === 'Escape') {
+                if (document.body.contains(overlay)) {
+                    document.body.removeChild(overlay);
+                    if (typeof ProgressReset !== 'undefined') {
+                        ProgressReset.resetAllProgress();
+                    }
+                    document.removeEventListener('keydown', escHandler);
+                }
+            }
+        };
+        document.addEventListener('keydown', escHandler);
+        
+        const downloadJsonBtn = overlay.querySelector('#downloadJsonBtn');
+        if (downloadJsonBtn) {
+            downloadJsonBtn.addEventListener('click', () => this.downloadJSON());
+        }
+        
+        const downloadHtmlBtn = overlay.querySelector('#downloadHtmlBtn');
+        if (downloadHtmlBtn) {
+            downloadHtmlBtn.addEventListener('click', () => this.downloadHTML());
+        }
+        
+        const downloadPdfBtn = overlay.querySelector('#downloadPdfBtn');
+        if (downloadPdfBtn) {
+            downloadPdfBtn.addEventListener('click', () => this.downloadPDF());
+        }
     }
 }
-    
-    downloadReport() {
-        const dataStr = JSON.stringify(this.report, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `sca-report-${new Date().toISOString().split('T')[0]}.json`;
-        link.click();
-        URL.revokeObjectURL(url);
-    }
-}
+
+// Обновленная функция handleReportData
 function handleReportData(reportData) {
     if (!reportData) {
         alert('Ошибка: нет данных для отображения');
@@ -1342,7 +1871,7 @@ function handleReportData(reportData) {
         const reporter = new SCAPopupReporter(reportData);
         reporter.showPopup();
     } catch (error) {
-        console.error('Error in handleReportData:', error);
+    
         alert('Ошибка при отображении отчета: ' + error.message);
     }
 }
