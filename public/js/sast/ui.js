@@ -246,7 +246,7 @@ function generateFullHTMLReport(results) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
-    <title>Геркулес | SAST - ${new Date().toLocaleDateString()}</title>
+    <title>Геркулес - ${new Date().toLocaleDateString()}</title>
     <style>
         * {
             margin: 0;
@@ -417,7 +417,7 @@ function generateFullHTMLReport(results) {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Геркулес  | SAST</h1>
+            <h1>Геркулес | SAST</h1>
             <div class="meta">
                 <div>Дата генерации: ${new Date().toLocaleString()}</div>
             </div>
@@ -469,7 +469,7 @@ function generateFullHTMLReport(results) {
         </div>
         
         <div class="footer">
-            <p>Сгенерировано с помощью Геркулес | SAST | Отчет содержит результаты статического анализа безопасности кода</p>
+            <p>Сгенерировано с помощью Геркулес | Отчет содержит результаты статического анализа безопасности кода</p>
             <p>Рекомендации по исправлению уязвимостей должны быть применены в соответствии с политикой безопасности организации</p>
         </div>
     </div>
