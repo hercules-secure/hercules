@@ -233,7 +233,7 @@ function generateFullHTMLReport(results) {
                 </div>
                 ` : ''}
                 <div class="recommendation" style="background: rgba(40, 167, 69, 0.1); padding: 12px; border-radius: 6px; font-size: 13px; color: #28a745;">
-                    <strong>💡 Рекомендация:</strong> ${item.recommendation || 'Рекомендация не указана'}
+                    <strong>Рекомендация:</strong> ${item.recommendation || 'Рекомендация не указана'}
                 </div>
             </div>
         `;
@@ -459,8 +459,8 @@ function generateFullHTMLReport(results) {
                 <button class="filter-btn" data-filter="medium">Средние <font style="font-family: 'Alef'">(${results.summary.bySeverity.medium})</font></button>
                 <button class="filter-btn" data-filter="low">Низкие <font style="font-family: 'Alef'">(${results.summary.bySeverity.low})</font></button>
                 <button class="filter-btn" data-filter="info">Инфо <font style="font-family: 'Alef'">(${results.summary.bySeverity.info})</font></button>
-                <button id="expandAllBtn" class="filter-btn" style="background: #28a745; color: white;">📖 Развернуть все</button>
-                <button id="collapseAllBtn" class="filter-btn" style="background: #6c757d; color: white;">📕 Свернуть все</button>
+                <button id="expandAllBtn" class="filter-btn" style="background: #28a745; color: white;">Развернуть</button>
+                <button id="collapseAllBtn" class="filter-btn" style="background: #6c757d; color: white;">Свернуть</button>
             </div>
             
             <div id="vulnerabilitiesContainer">
