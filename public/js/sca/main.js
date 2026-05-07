@@ -1189,7 +1189,7 @@ class SCAPopupReporter {
                             `).join('')}
                         </tbody>
                     </table>
-                    ` : '<div style="text-align:center;padding:40px;">✅ Уязвимостей не найдено</div>'}
+                    ` : '<div style="text-align:center;padding:40px;">Уязвимостей не найдено</div>'}
                 </div>
             </div>
             <div class="sca-popup-footer">
@@ -1760,7 +1760,7 @@ class SCAPopupReporter {
             <p style="margin: 10px 0;"><strong>CVE:</strong> <a href="${v.url}" style="color: #0066cc;">${v.id}</a></p>
             <p style="margin: 10px 0; font-size: 13px;">${this.escapeHtml(v.description)}</p>
         </div>
-    `).join('') : '<div class="no-vulns">✅ Критических и высоких уязвимостей не найдено</div>'}
+    `).join('') : '<div class="no-vulns">Критических и высоких уязвимостей не найдено</div>'}
     
     <div class="footer">
         <p>Сгенерировано с помощью Hercules SCA Scanner</p>
