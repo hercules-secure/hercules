@@ -560,7 +560,7 @@
       "type": "regex",
       "pattern": "(?:render_template_string|eval\\(.*template|compile\\(.*template|\\$\\{.*\\}\\$\\{|<\\.\\.\\s*\\$)",
       "flags": "gi",
-      "recommendation": "Используйте изолированные песочницы или безопасные шаблонизаторы (например, Go templates с escaping)",
+      "recommendation": "Используйте изолированные песочницы или безопасные шаблонизаторы",
       "languages": ["python", "javascript", "typescript", "java", "php", "go"]
     },
     {
