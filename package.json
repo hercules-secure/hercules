@@ -10,7 +10,8 @@
     "test": "node test.js",
     "build": "node build.js",
     "clean": "rimraf downloads/* cache/* logs/*",
-    "setup": "npm install && npm run clean"
+    "setup": "npm install && npm run clean",
+    "start:prod": "NODE_ENV=production node server.js"
   },
   "dependencies": {
     "@babel/parser": "^7.29.2",
