@@ -1,23 +1,29 @@
 [
   {
+    "id": "sca-scanner",
+    "name": "SCA",
+    "version": "1.0.0",
+    "description": "Композиционный анализ",
+    "icon": "fas fa-sitemap",
+    "url": "/sca",
+    "order": 3
+  },
+  {
     "id": "sast-scanner",
     "name": "SAST",
     "version": "1.0.0",
-    "installedAt": "2026-05-01T10:18:13.309Z",
-    "enabled": true
+    "description": "Анализ исходного кода",
+    "icon": "fas fa-code",
+    "url": "/sast",
+    "order": 6
   },
   {
     "id": "fuzz-scanner",
     "name": "FUZZ",
     "version": "1.0.0",
-    "installedAt": "2026-05-01T10:18:13.309Z",
-    "enabled": true
-  },
-  {
-    "id": "sca-scanner",
-    "name": "SCA",
-    "version": "1.0.0",
-    "installedAt": "2026-05-04T08:33:38.172Z",
-    "enabled": true
+    "description": "Анализ API",
+    "icon": "fa-solid fa-bullseye",
+    "url": "/fuzz",
+    "order": 7
   }
 ]

@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html data-page="construction" data-version="1.27.0" lang="ru">
+<head>
+    <title>Геркулес | FUZZ</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/main/main.css">
+    <link rel="stylesheet" href="/css/fuzz/replay.css">
+    <link rel="stylesheet" href="/css/fuzz/fuzz.css">
+    <link rel="stylesheet" href="/css/main/sidebar.css">   
+    <!--script type="text/javascript" src="/js/fuzz/replay.js"></script-->
+    <script type="text/javascript" src="/js/fuzz/fuzz.js"></script>
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+    
+    <style>
+        /* Дополнительные стили для единообразия */
+
+                .icons-row {
+            display: flex;
+            gap: 2vw;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-top: 3vh;
+            margin-bottom: 3vh;
+         }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Ubuntu';
+            font-size: 14px;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+
+        .tech-stack {
+            margin-bottom: 20px;
+        }
+        .platforms-row {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--bg-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 10px;
+        }
+        .upload-area:hover {
+            border-color: var(--accent-color);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        .upload-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+        .upload-text {
+            color: var(--text-primary);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        .upload-hint {
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        .file-info {
+            display: none;
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+        }
+        .file-info.active {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .remove-file {
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+        .remove-file:hover {
+            color: #ef4444;
+        }
+        .supported-formats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+        .base-url-input {
+            width: 100%;
+            padding: 12px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Ubuntu';
+        }
+        .spec-preview {
+            margin-top: 20px;
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 16px;
+            display: none;
+        }
+        .spec-preview.active {
+            display: block;
+        }
+        .spec-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        .spec-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+       
+                .format-badge {
+            background: var(--bg-secondary);
+            border: none;
+            padding: 4px 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div id="box" class="fade-in">
+        <!-- ЛЕВАЯ КОЛОНКА - ИНСТРУМЕНТЫ -->
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title" id="toolsTitle">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Инструменты</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                
+                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Загрузка...
+                    </div>
+                </div>
+                
+                <!-- РАСШИРЕНИЯ - ВСЕГДА ВНИЗУ -->
+                <div class="tool-divider"></div>
+                <a href="/addon" style="text-decoration: none;">
+                    <div class="tool-item" id="addonToolItem">
+                        <div class="tool-icon">
+                            <i class="fa fa-puzzle-piece black-icon"></i> 
+                        </div>
+                        <div class="tool-info">
+                            <span class="tool-name">Расширения</span>
+                            <span class="tool-desc">Максимум возможностей</span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА -->
+        <div id="center">
+            <h2 class="section-title">Выберите источник</h2>
+
+            <!-- Поле для ввода ссылки -->
+            <div class="input-group">
+                <input type="text" id="specUrl" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI) и нажмите Enter" aria-label="Ссылка на спецификацию">
+                <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
+            </div>
+
+            <!-- Блок загрузки архива -->
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt black-icon"></i>
+                </div>
+                <div class="upload-text">
+                    Нажмите для выбора файла спецификации<br>
+                    <span style="font-size: 9px">
+                        <div class="icons-row">
+                            <span class="format-badge"><i class="fas fa-file-code" style="color:orange; font-size:15px"></i> JSON</span>
+                            <span class="format-badge"><i class="fas fa-file-alt" style="color:rgb(47, 49, 47); font-size:15px"></i> YAML</span>
+                            <span class="format-badge"><i class="fas fa-file" style="color:rgb(12, 120, 102); font-size:15px"></i> YML</span>
+                        </div>
+                    </span>
+                </div>
+                <div class="upload-hint">
+                    Поддерживаются Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
+                </div>
+                <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
+            </div>
+
+            <!-- Информация о выбранном файле -->
+            <div class="file-info" id="fileInfo">
+                <div class="file-details">
+                    <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
+                    <span class="file-name" id="fileName"></span>
+                    <span class="file-size" id="fileSize"></span>
+                    <span class="remove-file" onclick="removeFile()">
+                        <i class="fas fa-times"></i>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Базовый URL для API -->
+            <div style="margin-top: 20px;">
+                <label style="font-size: 14px; margin-bottom: 8px; display: block; color: var(--text-primary);">
+                    <i class="fas fa-server"></i> Базовый URL API
+                </label>
+                <input type="text" id="baseUrl" class="base-url-input" placeholder="Пример: https://api.example.com/v1/api">
+            </div>
+
+            <!-- Предпросмотр спецификации -->
+            <div class="spec-preview" id="specPreview">
+                <div class="spec-info">
+                    <div class="spec-info-item">
+                        <i class="fas fa-tag"></i>
+                        <span id="specTitle">Название</span>
+                    </div>
+                    <div class="spec-info-item">
+                        <i class="fas fa-code-branch"></i>
+                        <span id="specVersion">Версия</span>
+                    </div>
+                    <div class="spec-info-item">
+                        <i class="fas fa-cube"></i>
+                        <span id="specFormat">Формат</span>
+                    </div>
+                </div>
+                <div class="spec-endpoints" id="specEndpoints"></div>
+            </div>
+
+            <!-- Карточки прогресса -->
+            <div class="card-table">
+                <div class="card-section">
+                    <h2 class="section-title" style="margin-top: 2vh;">Подготовка</h2>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">1.1</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Загрузка и парсинг спецификации</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-section">
+                    <h3 class="section-title">Анализ интерфейсов</h3>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">2.1</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Генерация тестовых случаев</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">2.2</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Выполнение фаззинг тестов</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">2.3</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Анализ результатов</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="fuzzModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>Результаты анализа</h3>
+                <span class="modal-close" onclick="closeFuzzModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="fuzzModalBody"></div>
+            <div class="modal-footer">
+            <button id="downloadReport" style="
+                    background: #10b981;
+                    color: white;
+                    border: none;
+                    padding: 10px 24px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                    font-family: 'Ubuntu';
+                ">
+                    <i class="fas fa-download"></i> Скачать отчет
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <script type="text/javascript" src="/js/main/sidebar.js"></script>
+      <script type="text/javascript" src="/js/main/menu.js"></script>
+    <script>
+        loadMenu();
+    </script>
+    
+</body>
+</html>
