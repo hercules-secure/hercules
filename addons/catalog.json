@@ -50,20 +50,6 @@
       "tags": ["scanner", "fuzz"],
       "category": "scanner",
       "price": "Free"
-    },
-    {
-      "id": "blender",
-      "name": "Блендер",
-      "version": "1.0.0",
-      "description": "Комплексный анализ ",
-      "icon": "fas fa-flask",
-      "url": "/blender",
-      "ui": "./ui/blender/blender.html",
-      "router": "./addons/blender/router.js",
-      "author": "Геркулес",
-      "tags": ["sca", "sast", "fuzz"],
-      "category": "automation",
-      "price": "Free"
     }
   ]
 }
