@@ -6,6 +6,7 @@
 ## Установка и запуск
 
 ```bash
+git clone https://github.com/hercules-secure/hercules.git && cd hercules
 make install && make run          # Запуск в foreground
 make install && make run-background # Запуск в background
 ```
