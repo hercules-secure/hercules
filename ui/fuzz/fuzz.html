@@ -10,154 +10,17 @@
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/main/main.css">
-    <link rel="stylesheet" href="/css/fuzz/replay.css">
-    <link rel="stylesheet" href="/css/fuzz/fuzz.css">
-    <link rel="stylesheet" href="/css/main/sidebar.css">   
-    <!--script type="text/javascript" src="/js/fuzz/replay.js"></script-->
-    <script type="text/javascript" src="/js/fuzz/fuzz.js"></script>
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="replay.css">
+    <link rel="stylesheet" href="fuzz.css">
+    <link rel="stylesheet" href="sidebar.css">   
+    <script type="text/javascript" src="fuzz.js"></script>
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     
     <style>
         /* Дополнительные стили для единообразия */
 
-                .icons-row {
-            display: flex;
-            gap: 2vw;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            margin-top: 3vh;
-            margin-bottom: 3vh;
-         }
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .input-group input {
-            flex: 1;
-            padding: 12px 16px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: 'Ubuntu';
-            font-size: 14px;
-        }
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--accent-color);
-        }
-
-
-        .tech-stack {
-            margin-bottom: 20px;
-        }
-        .platforms-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .upload-area {
-            border: 2px dashed var(--border-color);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            background: var(--bg-secondary);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 10px;
-        }
-        .upload-area:hover {
-            border-color: var(--accent-color);
-            background: rgba(99, 102, 241, 0.05);
-        }
-        .upload-icon {
-            font-size: 48px;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
-        }
-        .upload-text {
-            color: var(--text-primary);
-            font-weight: 500;
-            margin-bottom: 8px;
-        }
-        .upload-hint {
-            color: var(--text-secondary);
-            font-size: 13px;
-        }
-        .file-info {
-            display: none;
-            background: var(--bg-secondary);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 15px;
-        }
-        .file-info.active {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .file-details {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .remove-file {
-            cursor: pointer;
-            color: var(--text-secondary);
-        }
-        .remove-file:hover {
-            color: #ef4444;
-        }
-        .supported-formats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-        }
-        .base-url-input {
-            width: 100%;
-            padding: 12px;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            color: var(--text-primary);
-            font-family: 'Ubuntu';
-        }
-        .spec-preview {
-            margin-top: 20px;
-            background: var(--bg-secondary);
-            border-radius: 12px;
-            padding: 16px;
-            display: none;
-        }
-        .spec-preview.active {
-            display: block;
-        }
-        .spec-info {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        .spec-info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 14px;
-        }
-       
-                .format-badge {
-            background: var(--bg-secondary);
-            border: none;
-            padding: 4px 12px;
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
+        
         
     </style>
 </head>
@@ -362,8 +225,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-    <script type="text/javascript" src="/js/main/sidebar.js"></script>
-      <script type="text/javascript" src="/js/main/menu.js"></script>
+    <script type="text/javascript" src="sidebar.js"></script>
+      <script type="text/javascript" src="menu.js"></script>
     <script>
         loadMenu();
     </script>

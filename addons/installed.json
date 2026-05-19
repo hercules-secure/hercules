@@ -1,29 +1,35 @@
 [
   {
-    "id": "sca-scanner",
+    "id": "sca",
     "name": "SCA",
     "version": "1.0.0",
     "description": "Композиционный анализ",
     "icon": "fas fa-sitemap",
     "url": "/sca",
-    "order": 3
+    "router": "./addons/sca/router.js",
+    "ui": "./ui/sca/sca.html",
+    "order": 1
   },
   {
-    "id": "sast-scanner",
+    "id": "sast",
     "name": "SAST",
     "version": "1.0.0",
     "description": "Анализ исходного кода",
     "icon": "fas fa-code",
     "url": "/sast",
-    "order": 6
+    "router": "./addons/sast/router.js",
+    "ui": "./ui/sast/sast.html",
+    "order": 2
   },
   {
-    "id": "fuzz-scanner",
+    "id": "fuzz",
     "name": "FUZZ",
     "version": "1.0.0",
     "description": "Анализ API",
     "icon": "fa-solid fa-bullseye",
     "url": "/fuzz",
-    "order": 7
+    "router": "./addons/fuzz/router.js",
+    "ui": "./ui/fuzz/fuzz.html",
+    "order": 3
   }
 ]
