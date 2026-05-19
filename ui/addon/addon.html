@@ -10,12 +10,11 @@
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/main/main.css">
-    <link rel="stylesheet" href="/css/main/sidebar.css">   
-    <link rel="stylesheet" href="/css/addon/main.css">   
+    <link rel="stylesheet" href="addon.css">
+    <link rel="stylesheet" href="sidebar.css">   
+    <link rel="stylesheet" href="main.css">   
+    <link rel="stylesheet" href="modal.css">
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
-    
-    
 </head>
 <body>
     <div id="box" class="fade-in">
@@ -32,7 +31,6 @@
                 </div>
                 <div class="tool-divider"></div>
                 
-                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
@@ -40,7 +38,6 @@
                     </div>
                 </div>
                 
-                <!-- РАСШИРЕНИЯ - ВСЕГДА ВНИЗУ -->
                 <div class="tool-divider"></div>
                 <a href="/addon" style="text-decoration: none;">
                     <div class="tool-item" id="addonToolItem">
@@ -56,14 +53,18 @@
             </div>
         </div>
         
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА - РАСШИРЕНИЯ -->
         <div id="center">
             <div class="extensions-header">
-                <h2><i class="fas fa-puzzle-piece black-icon"></i> Расширения</h2>
-                <p>Расширьте возможности Геркулеса с помощью плагинов и интеграций</p>
+                <div>
+                    <h2><i class="fas fa-puzzle-piece black-icon"></i> Расширения</h2>
+                    <p>Расширьте возможности Геркулеса с помощью плагинов и интеграций</p>
+                </div>
+                <button class="addon-button" id="addExtensionBtn">
+                    <i class="fas fa-plus"></i> Добавить расширение
+                </button>
             </div>
             
-<div class="categories-container" id="categoriesContainer"></div>
+            <div class="categories-container" id="categoriesContainer"></div>
             
             <div class="extensions-grid" id="extensionsGrid">
                 <div class="coming-soon">
@@ -74,13 +75,46 @@
         </div>
     </div>
     
+    <!-- Модальное окно для загрузки расширения -->
+    <div id="addonModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus"></i> Добавить расширение</h3>
+                <span class="modal-close" id="modalClose">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <strong>Нажмите для выбора</strong> или перетащите архив<br>
+                        <small>Поддерживаются ZIP, TAR, TAR.GZ (до 50МБ)</small>
+                    </div>
+                    <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz" style="display:none">
+                </div>
+                
+                <div id="fileInfo" class="file-info">
+                    <i class="fas fa-file-archive"></i>
+                    <span class="file-name" id="fileName"></span>
+                </div>
+                
+                <div id="uploadStatus" class="upload-status"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancelBtn">Отмена</button>
+                <button class="btn btn-primary" id="submitBtn" disabled>Отправить на проверку</button>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script type="text/javascript" src="/js/main/sidebar.js"></script>
-    <script type="text/javascript" src="/js/addon/main.js"></script>
-    <script type="text/javascript" src="/js/main/menu.js"></script>
+    <script type="text/javascript" src="sidebar.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+    <script type="text/javascript" src="modal.js"></script>
+    <script type="text/javascript" src="menu.js"></script>
     <script>
         loadMenu();
     </script>
-    
 </body>
 </html>
