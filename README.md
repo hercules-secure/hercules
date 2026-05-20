@@ -11,7 +11,8 @@
 ```bash
 git clone https://github.com/hercules-secure/hercules.git
 cd hercules
-# Сделать исполняемым (если нужно)
+
+# Сделать исполняемым
 chmod +x hercules.sh
 
 # Установка зависимостей
