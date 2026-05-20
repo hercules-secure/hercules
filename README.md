@@ -15,15 +15,6 @@ cd hercules
 ./hercules.sh start
 ```
 
-### Способ 2: Скачивание архива
-```bash
-wget https://hercules-security.ru/repo/hercules.tar.gz
-tar -xzvf hercules.tar.gz
-cd hercules
-./hercules.sh install
-./hercules.sh start
-```
-
 ## Дополнительные команды
 ```bash
 # Сделать исполняемым (если нужно)
