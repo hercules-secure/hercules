@@ -7,9 +7,16 @@
 PORT=${PORT:-6565}
 HOST=${HOST:-localhost}
 PID_FILE="app.pid"
-LOG_FILE="app.log"
+LOG_DIR="logs"
+LOG_COMBINED="$LOG_DIR/combined.log"
+LOG_ERRORS="$LOG_DIR/errors.log"
 ENV_FILE=".env"
 ENV_EXAMPLE=".env.example"
+
+# Определяем абсолютный путь к директории скрипта
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+LOG_COMBINED_PATH="$SCRIPT_DIR/$LOG_COMBINED"
+LOG_ERRORS_PATH="$SCRIPT_DIR/$LOG_ERRORS"
 
 # ============================================
 # Цвета
@@ -33,19 +40,28 @@ show_help() {
     echo "Hercules Server Manager"
     echo ""
     echo "Команды:"
-    echo "  ./hercules.sh install         - Установка зависимостей"
-    echo "  ./hercules.sh start           - Запуск сервера"
-    echo "  ./hercules.sh stop            - Остановка сервера"
-    echo "  ./hercules.sh restart         - Перезапуск сервера"
-    echo "  ./hercules.sh status          - Статус сервера"
-    echo "  ./hercules.sh logs            - Показать логи"
-    echo "  ./hercules.sh logs-follow     - Логи в реальном времени"
-    echo "  ./hercules.sh clean           - Очистка"
-    echo "  ./hercules.sh help            - Эта справка"
+    echo "  ./hercules.sh install              - Установка зависимостей"
+    echo "  ./hercules.sh start                - Запуск сервера"
+    echo "  ./hercules.sh stop                 - Остановка сервера"
+    echo "  ./hercules.sh restart              - Перезапуск сервера"
+    echo "  ./hercules.sh status               - Статус сервера"
+    echo ""
+    echo "  ./hercules.sh logs                 - Показать все логи"
+    echo "  ./hercules.sh logs-combined        - Показать combined.log"
+    echo "  ./hercules.sh logs-errors          - Показать errors.log"
+    echo "  ./hercules.sh logs-follow          - Логи в реальном времени (combined)"
+    echo "  ./hercules.sh logs-follow-errors   - Логи ошибок в реальном времени"
+    echo "  ./hercules.sh logs-clear           - Очистить логи"
+    echo "  ./hercules.sh logs-size            - Показать размер логов"
+    echo ""
+    echo "  ./hercules.sh clean                - Очистка"
+    echo "  ./hercules.sh help                 - Эта справка"
     echo ""
     echo "Примеры:"
     echo "  PORT=3000 ./hercules.sh start"
     echo "  HOST=0.0.0.0 ./hercules.sh start"
+    echo "  ./hercules.sh logs-errors          # только ошибки"
+    echo "  ./hercules.sh logs-follow-errors   # ошибки в реальном времени"
     echo ""
 }
 
@@ -112,6 +128,14 @@ EOF
     fi
 }
 
+# Создание директории для логов
+setup_logs_dir() {
+    if [ ! -d "$LOG_DIR" ]; then
+        mkdir -p "$LOG_DIR"
+        print_success "Создана директория $LOG_DIR"
+    fi
+}
+
 # Установка зависимостей
 cmd_install() {
     print_info "Проверка окружения..."
@@ -120,6 +144,9 @@ cmd_install() {
     
     print_info "Настройка .env..."
     setup_env
+    
+    print_info "Настройка директории логов..."
+    setup_logs_dir
     
     print_info "Установка зависимостей..."
     npm install
@@ -134,6 +161,7 @@ cmd_install() {
 cmd_start() {
     check_node
     
+    # Проверяем, не запущен ли уже сервер
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
         if kill -0 "$PID" 2>/dev/null; then
@@ -144,23 +172,45 @@ cmd_start() {
         fi
     fi
     
+    # Создаём директорию для логов
+    setup_logs_dir
+    
     print_info "Запуск сервера..."
+    print_info "Лог (combined): $LOG_COMBINED"
+    print_info "Лог (errors): $LOG_ERRORS"
     
     export PORT=$PORT
     export HOST=$HOST
     
-    nohup node server.js > "$LOG_FILE" 2>&1 &
+    # Запускаем сервер, разделяя stdout/stderr
+    nohup node server.js >> "$LOG_COMBINED" 2>> "$LOG_ERRORS" &
     echo $! > "$PID_FILE"
     
-    sleep 2
+    # Даём время на запуск
+    sleep 3
     
+    # Проверяем, запустился ли сервер
     if kill -0 $(cat "$PID_FILE") 2>/dev/null; then
         print_success "Сервер запущен (PID: $(cat $PID_FILE))"
         print_info "Порт: $PORT, Хост: $HOST"
-        print_info "Логи: $LOG_FILE"
+        
+        # Показываем последние строки лога
+        if [ -f "$LOG_COMBINED" ] && [ -s "$LOG_COMBINED" ]; then
+            echo ""
+            print_info "Последние записи в combined.log:"
+            echo "----------------------------------------"
+            tail -10 "$LOG_COMBINED"
+            echo "----------------------------------------"
+        fi
     else
         print_error "Ошибка запуска сервера"
-        cat "$LOG_FILE"
+        if [ -f "$LOG_ERRORS" ] && [ -s "$LOG_ERRORS" ]; then
+            echo ""
+            print_info "Содержимое errors.log:"
+            echo "----------------------------------------"
+            cat "$LOG_ERRORS"
+            echo "----------------------------------------"
+        fi
         exit 1
     fi
 }
@@ -173,6 +223,21 @@ cmd_stop() {
         PID=$(cat "$PID_FILE")
         if kill -0 "$PID" 2>/dev/null; then
             kill "$PID"
+            
+            # Ждём завершения процесса
+            for i in {1..10}; do
+                if ! kill -0 "$PID" 2>/dev/null; then
+                    break
+                fi
+                sleep 1
+            done
+            
+            # Принудительно убиваем, если не завершился
+            if kill -0 "$PID" 2>/dev/null; then
+                print_warning "Процесс не завершился, принудительное убийство"
+                kill -9 "$PID"
+            fi
+            
             print_success "Сервер остановлен (PID: $PID)"
             rm -f "$PID_FILE"
         else
@@ -192,6 +257,7 @@ cmd_stop() {
 
 # Перезапуск
 cmd_restart() {
+    print_info "Перезапуск сервера..."
     cmd_stop
     sleep 2
     cmd_start
@@ -203,7 +269,12 @@ cmd_status() {
         PID=$(cat "$PID_FILE")
         if kill -0 "$PID" 2>/dev/null; then
             print_success "Сервер запущен (PID: $PID)"
+            echo ""
             ps -p "$PID" -o pid,ppid,state,pcpu,pmem,etime,command | grep -v COMMAND
+            echo ""
+            
+            # Показываем информацию о логах
+            cmd_logs_size
         else
             print_error "Сервер не запущен (PID файл существует, но процесс не найден)"
         fi
@@ -217,22 +288,113 @@ cmd_status() {
     fi
 }
 
-# Показать логи
+# Показать все логи
 cmd_logs() {
-    if [ -f "$LOG_FILE" ]; then
-        tail -50 "$LOG_FILE"
+    echo ""
+    print_info "=== LOGS ==="
+    echo ""
+    cmd_logs_combined
+    echo ""
+    cmd_logs_errors
+}
+
+# Показать combined.log
+cmd_logs_combined() {
+    if [ -f "$LOG_COMBINED" ]; then
+        if [ -s "$LOG_COMBINED" ]; then
+            print_info "Последние 50 строк combined.log:"
+            echo "----------------------------------------"
+            tail -50 "$LOG_COMBINED"
+            echo "----------------------------------------"
+            print_info "Всего строк: $(wc -l < "$LOG_COMBINED")"
+        else
+            print_warning "combined.log пуст"
+        fi
     else
-        print_error "Лог файл не найден"
+        print_error "combined.log не найден: $LOG_COMBINED"
+        print_info "Сначала запустите сервер: ./hercules.sh start"
     fi
 }
 
-# Логи в реальном времени
-cmd_logs_follow() {
-    if [ -f "$LOG_FILE" ]; then
-        tail -f "$LOG_FILE"
+# Показать errors.log
+cmd_logs_errors() {
+    if [ -f "$LOG_ERRORS" ]; then
+        if [ -s "$LOG_ERRORS" ]; then
+            print_info "Последние 50 строк errors.log:"
+            echo "----------------------------------------"
+            tail -50 "$LOG_ERRORS"
+            echo "----------------------------------------"
+            print_info "Всего строк: $(wc -l < "$LOG_ERRORS")"
+        else
+            print_warning "errors.log пуст (ошибок нет)"
+        fi
     else
-        print_error "Лог файл не найден"
+        print_error "errors.log не найден: $LOG_ERRORS"
     fi
+}
+
+# Логи в реальном времени (combined)
+cmd_logs_follow() {
+    if [ -f "$LOG_COMBINED" ]; then
+        print_info "Логи в реальном времени (combined.log), Ctrl+C для выхода"
+        echo "----------------------------------------"
+        tail -f "$LOG_COMBINED"
+    else
+        print_error "combined.log не найден"
+        print_info "Сначала запустите сервер: ./hercules.sh start"
+    fi
+}
+
+# Логи ошибок в реальном времени
+cmd_logs_follow_errors() {
+    if [ -f "$LOG_ERRORS" ]; then
+        print_info "Логи ошибок в реальном времени (errors.log), Ctrl+C для выхода"
+        echo "----------------------------------------"
+        tail -f "$LOG_ERRORS"
+    else
+        print_error "errors.log не найден"
+    fi
+}
+
+# Очистить логи
+cmd_logs_clear() {
+    print_info "Очистка логов..."
+    
+    if [ -f "$LOG_COMBINED" ]; then
+        > "$LOG_COMBINED"
+        print_success "Очищен combined.log"
+    fi
+    
+    if [ -f "$LOG_ERRORS" ]; then
+        > "$LOG_ERRORS"
+        print_success "Очищен errors.log"
+    fi
+    
+    print_success "Логи очищены"
+}
+
+# Показать размер логов
+cmd_logs_size() {
+    echo ""
+    print_info "Размер логов:"
+    echo "----------------------------------------"
+    
+    if [ -f "$LOG_COMBINED" ]; then
+        SIZE=$(du -h "$LOG_COMBINED" | cut -f1)
+        LINES=$(wc -l < "$LOG_COMBINED")
+        echo "  combined.log: $SIZE ($LINES строк)"
+    else
+        echo "  combined.log: не существует"
+    fi
+    
+    if [ -f "$LOG_ERRORS" ]; then
+        SIZE=$(du -h "$LOG_ERRORS" | cut -f1)
+        LINES=$(wc -l < "$LOG_ERRORS")
+        echo "  errors.log: $SIZE ($LINES строк)"
+    else
+        echo "  errors.log: не существует"
+    fi
+    echo "----------------------------------------"
 }
 
 # Очистка
@@ -254,9 +416,9 @@ cmd_clean() {
         print_success "Удален PID файл"
     fi
     
-    if [ -f "$LOG_FILE" ]; then
-        rm -f "$LOG_FILE"
-        print_success "Удалены логи"
+    if [ -d "$LOG_DIR" ]; then
+        rm -rf "$LOG_DIR"
+        print_success "Удалена директория логов"
     fi
     
     print_success "Очистка завершена"
@@ -284,8 +446,23 @@ case "$1" in
     logs)
         cmd_logs
         ;;
+    logs-combined)
+        cmd_logs_combined
+        ;;
+    logs-errors)
+        cmd_logs_errors
+        ;;
     logs-follow)
         cmd_logs_follow
+        ;;
+    logs-follow-errors)
+        cmd_logs_follow_errors
+        ;;
+    logs-clear)
+        cmd_logs_clear
+        ;;
+    logs-size)
+        cmd_logs_size
         ;;
     clean)
         cmd_clean
