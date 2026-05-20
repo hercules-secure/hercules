@@ -5,19 +5,59 @@
 
 ## Установка и запуск
 
+
+### Способ 1: Клонирование через Git
+
 ```bash
-git clone https://github.com/hercules-secure/hercules.git && cd hercules
-make install && make run          # Запуск в foreground
-make install && make run-background # Запуск в background
+git clone https://github.com/hercules-secure/hercules.git
+cd hercules
+./hercules.sh install
+./hercules.sh start
+```
+
+### Способ 2: Скачивание архива
+```bash
+wget https://hercules-security.ru/repo/hercules.tar.gz
+tar -xzvf hercules.tar.gz
+cd hercules
+./hercules.sh install
+./hercules.sh start
 ```
 
 ## Дополнительные команды
 ```bash
-make status-server // Проверка статуса
-make logs // Просмотр логов
-make stop // Остановка
-make restart //Перезапуск
-make clean // Очистка
+# Сделать исполняемым (если нужно)
+chmod +x hercules.sh
+
+# Установка зависимостей
+./hercules.sh install
+
+# Запуск сервера
+./hercules.sh start
+
+# Запуск с другим портом
+PORT=3000 ./hercules.sh start
+
+# Статус сервера
+./hercules.sh status
+
+# Просмотр логов
+./hercules.sh logs
+
+# Логи в реальном времени
+./hercules.sh logs-follow
+
+# Перезапуск сервера
+./hercules.sh restart
+
+# Остановка сервера
+./hercules.sh stop
+
+# Очистка временных файлов
+./hercules.sh clean
+
+# Помощь
+./hercules.sh help
 ```
 
 # Mодули
