@@ -15,15 +15,6 @@ cd hercules
 ./hercules.sh start
 ```
 
-### Способ 2: Скачивание архива
-```bash
-wget https://hercules-security.ru/repo/hercules.tar.gz
-tar -xzvf hercules.tar.gz
-cd hercules
-./hercules.sh install
-./hercules.sh start
-```
-
 ## Дополнительные команды
 ```bash
 # Сделать исполняемым (если нужно)
@@ -41,11 +32,26 @@ PORT=3000 ./hercules.sh start
 # Статус сервера
 ./hercules.sh status
 
-# Просмотр логов
+# Показать все логи (оба файла)
 ./hercules.sh logs
 
-# Логи в реальном времени
+# Показать только combined.log
+./hercules.sh logs-combined
+
+# Показать только errors.log
+./hercules.sh logs-errors
+
+# Логи в реальном времени (combined.log)
 ./hercules.sh logs-follow
+
+# Логи ошибок в реальном времени
+./hercules.sh logs-follow-errors
+
+# Очистить логи
+./hercules.sh logs-clear
+
+# Показать размер логов
+./hercules.sh logs-size
 
 # Перезапуск сервера
 ./hercules.sh restart
