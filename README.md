@@ -11,12 +11,6 @@
 ```bash
 git clone https://github.com/hercules-secure/hercules.git
 cd hercules
-./hercules.sh install
-./hercules.sh start
-```
-
-## Дополнительные команды
-```bash
 # Сделать исполняемым (если нужно)
 chmod +x hercules.sh
 
@@ -25,6 +19,10 @@ chmod +x hercules.sh
 
 # Запуск сервера
 ./hercules.sh start
+```
+
+## Дополнительные команды
+```bash
 
 # Запуск с другим портом
 PORT=3000 ./hercules.sh start
