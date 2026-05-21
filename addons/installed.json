@@ -3,6 +3,7 @@
     "id": "sca",
     "name": "SCA",
     "version": "1.0.0",
+    "shortDesc": "Композиционный анализ",
     "description": "Композиционный анализ",
     "icon": "fas fa-sitemap",
     "url": "/sca",
@@ -14,6 +15,7 @@
     "id": "sast",
     "name": "SAST",
     "version": "1.0.0",
+    "shortDesc": "Анализ исходного кода",
     "description": "Анализ исходного кода",
     "icon": "fas fa-code",
     "url": "/sast",
@@ -25,11 +27,25 @@
     "id": "fuzz",
     "name": "FUZZ",
     "version": "1.0.0",
+    "shortDesc": "Анализ API",
     "description": "Анализ API",
     "icon": "fa-solid fa-bullseye",
     "url": "/fuzz",
     "router": "./addons/fuzz/router.js",
     "ui": "./ui/fuzz/fuzz.html",
     "order": 3
-  }
+  },
+  {
+    "id": "blender",
+    "name": "Блендер (Beta)",
+    "version": "1.0.0",
+    "shortDesc": "Комплексный анализ",
+    "description": "Универсальный анализатор безопасности кода, объединяющий SCA, SAST и Fuzzing.",
+    "icon": "fas fa-flask",
+    "url": "/blender",
+    "ui": "./ui/blender/main.html",
+    "router": "./addons/blender/router.js",
+    "order": 4
+}
+
 ]

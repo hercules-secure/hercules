@@ -1,0 +1,380 @@
+
+        /* Дополнительные стили для кнопок в заголовке */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .page-header h2 {
+            margin: 0;
+        }
+        
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .header-btn {
+            background: transparent;
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary, #0f172a);
+            font-family: 'Ubuntu';
+        }
+        
+        .header-btn:hover {
+            background: var(--primary-color, #2563eb);
+            border-color: var(--primary-color, #2563eb);
+            color: white;
+            font-family: 'Ubuntu';
+        }
+        
+        .header-btn i {
+            font-size: 14px;
+        }
+        
+        /* Модальное окно для настроек */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+
+        }
+        
+        .settings-modal.active {
+            display: flex;
+        }
+        
+        .settings-content {
+            background: var(--card-bg, #fff);
+            border-radius: 16px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+        }
+        
+        .settings-header h3 {
+            margin: 0;
+        }
+        
+        .settings-close {
+            cursor: pointer;
+            font-size: 24px;
+            color: #999;
+        }
+        
+        .settings-body {
+            padding: 24px;
+        }
+        
+        .settings-section {
+            margin-bottom: 20px;
+        }
+        
+        .settings-section h4 {
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .settings-option {
+            margin-bottom: 12px;
+        }
+        
+        .settings-option label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        
+        .settings-footer {
+            padding: 16px 24px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+           .settings-option i {
+            width: 28px;
+            margin-right: 12px;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        /* Для мобильных устройств */
+        @media (max-width: 768px) {
+            .settings-option i {
+                width: 32px;
+                margin-right: 16px;
+            }
+        }
+        .btn-save {
+            background: var(--primary-color, #2563eb);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Ubuntu';
+        }
+        
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Ubuntu';
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+/* Модальное окно */
+.settings-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-modal.active {
+    display: flex;
+}
+
+.settings-content {
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e2e8f0;
+    background: #f8fafc;
+    border-radius: 16px 16px 0 0;
+}
+
+.settings-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.settings-header h3 i {
+    margin-right: 8px;
+    color: #3b82f6;
+}
+
+.settings-close {
+    font-size: 28px;
+    cursor: pointer;
+    color: #94a3b8;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.settings-close:hover {
+    color: #1e293b;
+}
+
+/* Двухколоночный макет */
+.unified-layout {
+    display: flex;
+    min-height: 400px;
+}
+.unified-layout i {
+    font-size: 18px;
+}
+/* Левая колонка */
+.unified-left {
+    flex: 1;
+    padding: 24px;
+    border-right: 1px solid #e2e8f0;
+}
+
+/* Правая колонка */
+.unified-right {
+    width: 320px;
+    padding: 24px;
+    background: #f8fafc;
+}
+
+.settings-section {
+    margin-bottom: 28px;
+}
+
+.settings-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.settings-option {
+    margin-bottom: 12px;
+}
+
+.settings-option label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #334155;
+}
+
+.settings-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+}
+
+/* Информация о расширении */
+.about-info {
+    text-align: center;
+}
+
+.about-info .flask-icon {
+    font-size: 56px;
+    color: #1e293b;
+    margin-bottom: 20px;
+}
+
+.about-info h3 {
+    font-size: 24px;
+    margin: 0 0 8px 0;
+    color: #1e293b;
+}
+
+.about-info .version {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.about-info .description {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.about-info .divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #cbd5e1;
+}
+
+.about-info .author {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.about-info .license-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.about-info .license-link:hover {
+    text-decoration: underline;
+}
+
+/* Футер */
+.settings-footer {
+    padding: 16px 24px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    background: white;
+    border-radius: 0 0 16px 16px;
+}
+
+.btn-save {
+    padding: 8px 20px;
+    background: #1e293b;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save:hover {
+    background: #0f172a;
+}
+
+/* Адаптив */
+@media (max-width: 700px) {
+    .unified-layout {
+        flex-direction: column;
+    }
+    
+    .unified-left {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    
+    .unified-right {
+        width: auto;
+    }
+}

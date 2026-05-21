@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Геркулес | blender</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="modal.css">
+    <link rel="stylesheet" href="sidebar.css">  
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+</head>
+<body>
+    <div id="box" class="fade-in">
+        <!-- ЛЕВАЯ КОЛОНКА - ИНСТРУМЕНТЫ -->
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title" id="toolsTitle">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Инструменты</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                
+                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Загрузка...
+                    </div>
+                </div>
+                
+                <div class="tool-divider"></div>
+
+            </div>
+        </div>
+
+    <div id="center">
+        <!-- Заголовок с кнопками -->
+        <div class="page-header">
+            <h2 class="section-title" id="pageTitle">Выберите источник</h2>
+            <div class="header-buttons">
+                <button class="header-btn" id="aboutBtn">
+                    <i class="fas fa-info-circle"></i> Возможности
+                </button>
+            </div>
+        </div>
+        
+        <!-- Селектор источника -->
+        <div class="source-selector">
+            <button class="source-btn active" onclick="switchSource('git')">
+                <i class="fab fa-git-alt"></i>URL
+            </button>
+            <button class="source-btn" onclick="switchSource('archive')">
+                <i class="fas fa-file-archive"></i> Архив
+            </button>
+            <button class="source-btn" onclick="switchSource('local')">
+                <i class="fas fa-folder-open"></i> Локальный проект
+            </button>
+        </div>
+
+        <!-- Git источник -->
+        <div id="git-source" class="source-content active">
+            <div class="input-group">
+                <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий (github/gitlab)" aria-label="Ссылка на репозиторий github gitlab">
+                <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
+            </div>
+            <div class="tech-stack">
+                <div class="platforms-row">
+                    <span class="format-badge">
+                        <i class="fab fa-github fa-1x" style="color: #181717;"></i>
+                        <span>GitHub</span>
+                    </span>
+                    <span class="format-badge">
+                        <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
+                        <span>GitLab</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Архив источник -->
+        <div id="archive-source" class="source-content">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt black-icon"></i>
+                </div>
+                <div class="upload-text">
+                    Нажмите для выбора архива<br>
+                    <span style="font-size: 9px">
+                        <div class="icons-row">
+                            <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;" title="Загрузить архив"></i></span>
+                        </div>
+                    </span>
+                </div>
+                <div class="supported-formats">
+                    <span class="supported-format-badge">ZIP</span>
+                    <span class="supported-format-badge">TAR</span>
+                    <span class="supported-format-badge">GZ</span>
+                    <span class="supported-format-badge">7Z</span>
+                </div>
+                <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
+            </div>
+            <div id="archiveFileInfo" class="file-info"></div>
+            <button class="start-button" id="archive-start-btn" type="button" disabled style="margin-top: 15px; width: 100%;">Начать анализ архива</button>
+        </div>
+
+        <!-- Локальный источник -->
+        <div id="local-source" class="source-content">
+            <div class="upload-area" id="localUploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt black-icon"></i>
+                </div>
+                <div class="upload-text">
+                    Нажмите для выбора локального проекта<br>
+                    <span style="font-size: 9px">
+                        <div class="icons-row">
+                            <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;" title="Выбрать локальный проект"></i></span>
+                        </div>
+                    </span>
+                </div>
+                <div class="supported-formats">
+                    <span class="supported-format-badge">Любая папка</span>
+                </div>
+                <input type="file" id="localFolderInput" webkitdirectory directory style="display: none;">
+            </div>
+            <div id="localFolderInfo" class="file-info"></div>
+            <button class="start-button" id="local-start-btn" type="button" disabled style="margin-top: 15px; width: 100%;">Начать анализ проекта</button>
+        </div>
+
+        <!-- Карточки задач с прогресс-барами -->
+        <div class="card-table" style="margin-top: 2vh;">
+    <!-- Общий прогресс-бар -->
+    <div class="overall-progress-section">
+        <div class="overall-progress-header">
+            <span>Общий прогресс анализа</span>
+            <span class="overall-percent" id="overallPercent">0%</span>
+        </div>
+        <div class="overall-progress-container">
+            <div class="overall-progress" id="overallProgress" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Горизонтальный список задач -->
+    <div class="tasks-wrapper">
+        <div class="tasks-horizontal" id="tasksContainer">
+            <div class="task-step pending-step" id="task1">
+                <div class="step-icon pending" id="task1-icon">
+                    <i class="fas fa-download"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task1-title">Загрузка</div>
+                    <div class="step-status" id="task1-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task1-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="task-step pending-step" id="task2">
+                <div class="step-icon pending" id="task2-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task2-title">Сканирование</div>
+                    <div class="step-status" id="task2-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task2-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="task-step pending-step" id="task3">
+                <div class="step-icon pending" id="task3-icon">
+                    <i class="fas fa-cubes"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task3-title">Компоненты</div>
+                    <div class="step-status" id="task3-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task3-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="task-step pending-step" id="task4">
+                <div class="step-icon pending" id="task4-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task4-title">Анализ кода</div>
+                    <div class="step-status" id="task4-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task4-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="task-step pending-step" id="task5">
+                <div class="step-icon pending" id="task5-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task5-title">Уязвимости</div>
+                    <div class="step-status" id="task5-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task5-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="task-step pending-step" id="task6">
+                <div class="step-icon pending" id="task6-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task6-title">API поиск</div>
+                    <div class="step-status" id="task6-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task6-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="task-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <div class="task-step pending-step" id="task7">
+                <div class="step-icon pending" id="task7-icon">
+                    <i class="fas fa-file-alt"></i>
+                </div>
+                <div class="step-content">
+                    <div class="step-title" id="task7-title">Отчёт</div>
+                    <div class="step-status" id="task7-status">Ожидание</div>
+                    <div class="step-progress">
+                        <div class="step-progress-bar" id="task7-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Общий прогресс-бар */
+.overall-progress-section {
+    margin-bottom: 24px;
+    padding: clamp(12px, 4vw, 20px);
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.overall-progress-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: clamp(12px, 3vw, 14px);
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.overall-percent {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.overall-progress-container {
+    height: clamp(8px, 2vw, 12px);
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.overall-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 20px;
+    transition: width 0.3s ease;
+}
+
+/* Обертка для горизонтального скролла */
+.tasks-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+}
+
+.tasks-wrapper::-webkit-scrollbar {
+    height: 6px;
+}
+
+.tasks-wrapper::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.tasks-wrapper::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 3px;
+}
+
+/* Горизонтальный список */
+.tasks-horizontal {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(4px, 2vw, 12px);
+    padding: clamp(8px, 2vw, 16px);
+    min-width: min-content;
+}
+
+/* Карточка задачи */
+.task-step {
+    flex-shrink: 0;
+    width: clamp(100px, 20vw, 140px);
+    padding: clamp(10px, 2vw, 14px);
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+/* Успешный шаг - зеленая рамка */
+.task-step.success-step {
+    border-color: #10b981;
+}
+
+/* Ошибочный шаг - красная рамка */
+.task-step.error-step {
+    border-color: #ef4444;
+}
+
+/* В процессе - синяя рамка */
+.task-step.in-progress-step {
+    border-color: var(--primary-color);
+}
+
+/* Ожидание - серая рамка */
+.task-step.pending-step {
+    border-color: var(--border-color);
+}
+
+.task-step:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+/* Иконка */
+.step-icon {
+    width: clamp(36px, 8vw, 48px);
+    height: clamp(36px, 8vw, 48px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: clamp(16px, 4vw, 20px);
+    margin: 0 auto 10px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+    background: transparent;
+}
+
+/* Цвета иконок */
+.step-icon.pending {
+    color: var(--text-secondary);
+}
+
+.step-icon.in-progress {
+    color: #d97706;
+}
+
+.step-icon.completed {
+    color: #10b981;
+}
+
+.step-icon.error {
+    color: #ef4444;
+}
+
+/* Контент */
+.step-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.step-title {
+    font-weight: 600;
+    font-size: clamp(11px, 3vw, 13px);
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+
+.step-title::-webkit-scrollbar {
+    display: none;
+}
+
+/* Статус - только текст, без фона */
+.step-status {
+    font-size: clamp(9px, 2.5vw, 11px);
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    white-space: nowrap;
+    background: transparent;
+    padding: 0;
+}
+
+/* Прогресс-бар внутри карточки */
+.step-progress {
+    height: 4px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: auto;
+}
+
+.step-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* Стрелка между задачами */
+.task-arrow {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: clamp(12px, 3vw, 16px);
+    padding: 0 2px;
+}
+
+/* Адаптив для планшетов */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .task-step {
+        width: 130px;
+    }
+    
+    .step-icon {
+        width: 44px;
+        height: 44px;
+    }
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 768px) {
+    .overall-progress-section {
+        margin-bottom: 16px;
+        padding: 12px;
+    }
+    
+    .tasks-horizontal {
+        gap: 6px;
+        padding: 10px;
+    }
+    
+    .task-step {
+        width: 110px;
+        padding: 10px;
+    }
+    
+    .step-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
+    
+    .step-title {
+        white-space: normal;
+        word-break: keep-all;
+        line-height: 1.3;
+    }
+    
+    .task-arrow {
+        font-size: 12px;
+    }
+}
+
+/* Адаптив для очень маленьких экранов */
+@media (max-width: 480px) {
+    .task-step {
+        width: 95px;
+        padding: 8px;
+    }
+    
+    .step-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    .step-title {
+        font-size: 10px;
+    }
+    
+    .step-status {
+        font-size: 8px;
+        margin-bottom: 6px;
+    }
+    
+    .task-arrow {
+        font-size: 10px;
+    }
+}
+
+/* Тёмная тема */
+@media (prefers-color-scheme: dark) {
+    .step-icon.pending {
+        color: #94a3b8;
+    }
+    
+    .step-icon.in-progress {
+        color: #fbbf24;
+    }
+    
+    .step-icon.completed {
+        color: #34d399;
+    }
+    
+    .step-icon.error {
+        color: #f87171;
+    }
+}
+
+/* Крупные экраны */
+@media (min-width: 1200px) {
+    .tasks-horizontal {
+        justify-content: center;
+    }
+    
+    .task-step {
+        width: 150px;
+        padding: 16px;
+    }
+    
+    .step-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 24px;
+    }
+    
+    .step-title {
+        font-size: 14px;
+    }
+    
+    .step-status {
+        font-size: 11px;
+    }
+}
+
+/* Очень большие экраны */
+@media (min-width: 1600px) {
+    .task-step {
+        width: 170px;
+    }
+}
+</style>
+
+<script>
+// Функции для обновления статуса шага
+/*function updateTaskStatus(taskId, status, progress = null) {
+    const taskElement = document.getElementById(taskId);
+    const statusElement = document.getElementById(`${taskId}-status`);
+    const iconElement = document.getElementById(`${taskId}-icon`);
+    const progressBar = document.getElementById(`${taskId}-progress`);
+    
+    // Удаляем старые классы
+    taskElement.classList.remove('pending-step', 'in-progress-step', 'success-step', 'error-step');
+    iconElement.classList.remove('pending', 'in-progress', 'completed', 'error');
+    
+    // Добавляем новые классы в зависимости от статуса
+    switch(status) {
+        case 'pending':
+            taskElement.classList.add('pending-step');
+            iconElement.classList.add('pending');
+            if (statusElement) statusElement.textContent = 'Ожидание';
+            break;
+        case 'in-progress':
+            taskElement.classList.add('in-progress-step');
+            iconElement.classList.add('in-progress');
+            if (statusElement) statusElement.textContent = 'В процессе';
+            break;
+        case 'success':
+            taskElement.classList.add('success-step');
+            iconElement.classList.add('completed');
+            if (statusElement) statusElement.textContent = 'Завершён';
+            break;
+        case 'error':
+            taskElement.classList.add('error-step');
+            iconElement.classList.add('error');
+            if (statusElement) statusElement.textContent = 'Ошибка';
+            break;
+    }
+    
+    // Обновляем прогресс, если передан
+    if (progressBar && progress !== null) {
+        progressBar.style.width = `${progress}%`;
+    }
+}*/
+
+// Пример использования:
+// updateTaskStatus('task1', 'in-progress', 50);
+// updateTaskStatus('task2', 'success');
+// updateTaskStatus('task3', 'error');
+</script>
+        
+        <div id="alertMessage" class="alert-message"></div>
+    </div>
+    </div>
+
+
+<!-- Модальное окно -->
+<div id="unifiedModal" class="settings-modal">
+    <div class="settings-content">
+        <div class="settings-header">
+            <h3><i class="fas fa-puzzle-piece black-icon"></i> Ключевые возможности</h3>
+            <span class="settings-close" id="unifiedClose">&times;</span>
+        </div>
+        
+        <div class="unified-layout">
+            <!-- Левая колонка: возможности -->
+           <div class="unified-left">
+
+    <div class="settings-section">
+        <h4>Типы анализа</h4>
+        <div class="settings-option">
+            <i class="fas fa-sitemap" style="color: #8B5CF6; width: 28px;"></i>
+            <span>Композиционный анализ</span>
+        </div>
+        <div class="settings-option">
+            <i class="fas fa-code" style="color: #3B82F6; width: 28px;"></i>
+            <span>Анализ исходного кода</span>
+        </div>
+        <div class="settings-option">
+            <i class="fas fa-bullseye" style="color: #EF4444; width: 28px;"></i>
+            <span>Поиск и фаззинг API</span>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h4>Поддерживаемые источники</h4>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 150px;">
+                <div class="settings-option">
+                    <i class="fab fa-github" style="width: 28px;"></i>
+                    <span>GitHub</span>
+                </div>
+                <div class="settings-option">
+                    <i class="fab fa-gitlab" style="color: #fc6d26; width: 28px;"></i>
+                    <span>GitLab</span>
+                </div>
+                <div class="settings-option">
+                    <i class="fab fa-bitbucket" style="color: blue; width: 28px;"></i>
+                    <span>Bitbucket</span>
+                </div>
+                <div class="settings-option">
+                    <i class="fab fa-git-alt" style="color: #FF6445; width: 28px;"></i>
+                    <span>Корпоративные репозитории</span>
+                </div>
+            </div>
+            <div style="flex: 1; min-width: 150px;">
+                <div class="settings-option">
+                    <i class="fas fa-file-archive" style="color: #fc6d26; width: 28px;"></i>
+                    <span>Архив</span>
+                </div>
+                <div class="settings-option">
+                    <i class="fas fa-folder-open" style="color: #8e9016; width: 28px;"></i>
+                    <span>Локальный проект</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="settings-section">
+        <h4>Форматы отчетов</h4>
+        <div class="settings-option">
+            <i class="fab fa-html5" style="width: 28px;color: #E44D26;"></i>
+            <span>HTML</span>
+        </div>
+        <div class="settings-option">
+            <i class="fas fa-download" style="width: 28px;color: #5E5E5E;"></i>
+            <span>JSON</span>
+        </div>
+    </div>
+</div>
+
+            <!-- Правая колонка: информация -->
+            <div class="unified-right">
+                <div class="about-info">
+                    <i class="fas fa-flask flask-icon"></i>
+                    <h3>Blender</h3>
+                    <div class="version">Версия 1.0.0</div>
+                    <div class="description">
+                        Универсальный анализатор безопасности кода, объединяющий SCA, SAST и Fuzzing.
+                    </div>
+                    <hr class="divider">
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+    <script type="module" src="utils.js"></script>
+    <script type="module" src="main.js"></script>    
+    <script type="text/javascript" src="modal.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script>
+        loadMenu();
+    </script>
+    
+    <!-- Модальное окно для результатов -->
+    <div id="resultModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3><i class="fas fa-chart-bar"></i> Результаты анализа</h3>
+                <button class="modal-close" onclick="closeResultModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="result-tabs">
+                    <button class="result-tab active" onclick="showResultTab('summary')">Обзор</button>
+                    <button class="result-tab" onclick="showResultTab('dependencies')">Зависимости</button>
+                    <button class="result-tab" onclick="showResultTab('api')">API эндпоинты</button>
+                    <button class="result-tab" onclick="showResultTab('code')">Анализ кода</button>
+                </div>
+                <div id="resultContent" class="result-content">
+                    <!-- Содержимое будет подставлено динамически -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-download" onclick="downloadJSON()">
+                    <i class="fas fa-download"></i> Скачать JSON
+                </button>
+                <button class="btn-download-html" onclick="downloadHTML()">
+                    <i class="fas fa-file-alt"></i> Скачать HTML
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
