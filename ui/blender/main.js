@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSource = 'git';
     let currentTaskId = null;
     let currentReport = null;
-    let progressInterval = null; // Для эмулятора прогресса
+    let progressInterval = null;
     let currentOverallProgress = 0;
     
     // DOM элементы
@@ -43,16 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ========== ЭМУЛЯТОР ПРОГРЕССА ==========
     
-    // Запуск эмуляции прогресса
     function startProgressEmulation() {
-        stopProgressEmulation(); // Останавливаем предыдущий
+        stopProgressEmulation();
         
         currentOverallProgress = 0;
         if (overallProgress) overallProgress.style.width = '0%';
         if (overallPercent) overallPercent.textContent = '0%';
         
-        // Эмулируем прогресс для каждого шага
-        let step = 0;
         const steps = [
             { id: 'task1', name: 'Загрузка данных', maxProgress: 100 },
             { id: 'task2', name: 'Сканирование структуры', maxProgress: 100 },
@@ -66,14 +63,12 @@ document.addEventListener('DOMContentLoaded', () => {
         let currentStepIndex = 0;
         let currentStepProgress = 0;
         
-        // Устанавливаем первый шаг как "в процессе"
         if (currentStepIndex < steps.length) {
             updateTaskStatus(steps[currentStepIndex].id, 'in-progress', currentStepProgress);
         }
         
         progressInterval = setInterval(() => {
             if (currentStepIndex >= steps.length) {
-                // Все шаги завершены
                 if (currentOverallProgress < 100) {
                     currentOverallProgress = 100;
                     if (overallProgress) overallProgress.style.width = '100%';
@@ -84,19 +79,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             const currentStep = steps[currentStepIndex];
-            
-            // Увеличиваем прогресс текущего шага
             currentStepProgress += Math.random() * 15 + 5;
             
             if (currentStepProgress >= 100) {
-                // Текущий шаг завершен
                 currentStepProgress = 100;
                 updateTaskStatus(currentStep.id, 'success', 100);
-                
-                // Переходим к следующему шагу
                 currentStepIndex++;
                 currentStepProgress = 0;
-                
                 if (currentStepIndex < steps.length) {
                     updateTaskStatus(steps[currentStepIndex].id, 'in-progress', 0);
                 }
@@ -104,18 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateTaskStatus(currentStep.id, 'in-progress', currentStepProgress);
             }
             
-            // Обновляем общий прогресс
             const completedSteps = currentStepIndex;
             const totalSteps = steps.length;
             currentOverallProgress = ((completedSteps * 100) + currentStepProgress) / totalSteps;
             
             if (overallProgress) overallProgress.style.width = `${currentOverallProgress}%`;
             if (overallPercent) overallPercent.textContent = `${Math.round(currentOverallProgress)}%`;
-            
         }, 800);
     }
     
-    // Остановка эмуляции прогресса
     function stopProgressEmulation() {
         if (progressInterval) {
             clearInterval(progressInterval);
@@ -123,10 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Сброс всех прогрессов
     function resetAllProgress() {
         stopProgressEmulation();
-        
         currentOverallProgress = 0;
         if (overallProgress) overallProgress.style.width = '0%';
         if (overallPercent) overallPercent.textContent = '0%';
@@ -154,12 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const response = await fetch(url, options);
-            
             if (!response.ok) {
                 const error = await response.json();
                 throw new Error(error.error || `HTTP ${response.status}`);
             }
-            
             return await response.json();
         } catch (error) {
             console.error(`API Error ${endpoint}:`, error);
@@ -218,13 +200,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!taskElement) return;
         
-        // Удаляем старые классы
         taskElement.classList.remove('pending-step', 'in-progress-step', 'success-step', 'error-step');
         if (iconElement) {
             iconElement.classList.remove('pending', 'in-progress', 'completed', 'error');
         }
         
-        // Добавляем новые классы в зависимости от статуса
         switch(status) {
             case 'pending':
                 taskElement.classList.add('pending-step');
@@ -248,21 +228,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 break;
         }
         
-        // Обновляем прогресс, если передан
         if (progressBar && progress !== null) {
             progressBar.style.width = `${progress}%`;
-        }
-    }
-    
-    function updateAllTasksProgress(progress) {
-        if (progress) {
-            if (progress.task1) updateTaskStatus('task1', progress.task1.status, progress.task1.percent);
-            if (progress.task2) updateTaskStatus('task2', progress.task2.status, progress.task2.percent);
-            if (progress.task3) updateTaskStatus('task3', progress.task3.status, progress.task3.percent);
-            if (progress.task4) updateTaskStatus('task4', progress.task4.status, progress.task4.percent);
-            if (progress.task5) updateTaskStatus('task5', progress.task5.status, progress.task5.percent);
-            if (progress.task6) updateTaskStatus('task6', progress.task6.status, progress.task6.percent);
-            if (progress.task7) updateTaskStatus('task7', progress.task7.status, progress.task7.percent);
         }
     }
     
@@ -294,7 +261,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Опрос статуса задачи
     function pollTaskStatus(taskId, onComplete) {
         const maxAttempts = 120;
         let attempts = 0;
@@ -307,9 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if (result.status === 'completed' || (result.sca && result.sast)) {
                     clearInterval(poll);
-                    stopProgressEmulation(); // Останавливаем эмуляцию
+                    stopProgressEmulation();
                     
-                    // Устанавливаем все шаги как успешные
                     const tasks = ['task1', 'task2', 'task3', 'task4', 'task5', 'task6', 'task7'];
                     tasks.forEach(task => {
                         updateTaskStatus(task, 'success', 100);
@@ -340,65 +305,82 @@ document.addEventListener('DOMContentLoaded', () => {
     // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ОТЧЁТОМ ==========
     
     function transformReport(report) {
-        let sastIssues = [];
-        let sastStatistics = { total: 0, critical: 0, high: 0, medium: 0, low: 0 };
-        
-        if (report.sast) {
-            if (report.sast.issues && Array.isArray(report.sast.issues)) {
-                sastIssues = report.sast.issues;
-                if (report.sast.statistics) {
-                    sastStatistics = report.sast.statistics;
-                } else {
-                    sastStatistics = {
-                        total: sastIssues.length,
-                        critical: sastIssues.filter(i => i.severity === 'CRITICAL' || i.severity === 'critical').length,
-                        high: sastIssues.filter(i => i.severity === 'HIGH' || i.severity === 'high').length,
-                        medium: sastIssues.filter(i => i.severity === 'MEDIUM' || i.severity === 'medium').length,
-                        low: sastIssues.filter(i => i.severity === 'LOW' || i.severity === 'low').length
-                    };
-                }
-            }
-        }
-        
-        let scaDependencies = [];
-        let scaStatistics = { totalDependencies: 0, totalVulnerabilities: 0 };
-        
-        if (report.sca) {
-            if (report.sca.dependencies && Array.isArray(report.sca.dependencies)) {
-                scaDependencies = report.sca.dependencies;
-            }
-            if (report.sca.statistics) {
-                scaStatistics = report.sca.statistics;
+    let sastIssues = [];
+    let sastStatistics = { total: 0, critical: 0, high: 0, medium: 0, low: 0 };
+    
+    if (report.sast) {
+        if (report.sast.issues && Array.isArray(report.sast.issues)) {
+            sastIssues = report.sast.issues;
+            if (report.sast.statistics) {
+                sastStatistics = report.sast.statistics;
             } else {
-                scaStatistics.totalDependencies = scaDependencies.length;
+                sastStatistics = {
+                    total: sastIssues.length,
+                    critical: sastIssues.filter(i => i.severity === 'CRITICAL' || i.severity === 'critical').length,
+                    high: sastIssues.filter(i => i.severity === 'HIGH' || i.severity === 'high').length,
+                    medium: sastIssues.filter(i => i.severity === 'MEDIUM' || i.severity === 'medium').length,
+                    low: sastIssues.filter(i => i.severity === 'LOW' || i.severity === 'low').length
+                };
             }
         }
-        
-        return {
-            success: report.success,
-            source: report.source,
-            branch: report.branch,
-            analyzedAt: report.analyzedAt,
-            taskId: report.taskId,
-            sca: {
-                dependencies: scaDependencies,
-                vulnerabilities: report.sca?.vulnerabilities || [],
-                statistics: scaStatistics
-            },
-            sast: {
-                issues: sastIssues,
-                statistics: sastStatistics
-            },
-            structure: { files: report.fileCount || 0, directories: 0 },
-            dependencies: { packages: scaDependencies },
-            codeAnalysis: {
-                filesProcessed: sastStatistics.total || 0,
-                totalLines: 0,
-                issues: sastIssues
-            },
-            apiEndpoints: []
-        };
     }
+    
+    let scaDependencies = [];
+    let scaStatistics = { totalDependencies: 0, totalVulnerabilities: 0 };
+    
+    if (report.sca) {
+        if (report.sca.dependencies && Array.isArray(report.sca.dependencies)) {
+            scaDependencies = report.sca.dependencies;
+        }
+        if (report.sca.statistics) {
+            scaStatistics = report.sca.statistics;
+        } else {
+            scaStatistics.totalDependencies = scaDependencies.length;
+        }
+    }
+    
+    // ИЗВЛЕКАЕМ API ENDPOINTS ИЗ FUZZ
+    let apiEndpoints = [];
+    let fuzzStatistics = {};
+    
+    if (report.fuzz) {
+        if (report.fuzz.endpoints && Array.isArray(report.fuzz.endpoints)) {
+            apiEndpoints = report.fuzz.endpoints;
+        }
+        if (report.fuzz.statistics) {
+            fuzzStatistics = report.fuzz.statistics;
+        }
+    }
+    
+    return {
+        success: report.success,
+        source: report.source,
+        branch: report.branch,
+        analyzedAt: report.analyzedAt,
+        taskId: report.taskId,
+        sca: {
+            dependencies: scaDependencies,
+            vulnerabilities: report.sca?.vulnerabilities || [],
+            statistics: scaStatistics
+        },
+        sast: {
+            issues: sastIssues,
+            statistics: sastStatistics
+        },
+        fuzz: {                           // <-- ДОБАВЛЯЕМ fuzz
+            endpoints: apiEndpoints,
+            statistics: fuzzStatistics
+        },
+        structure: { files: report.fileCount || 0, directories: 0 },
+        dependencies: { packages: scaDependencies },
+        codeAnalysis: {
+            filesProcessed: sastStatistics.total || 0,
+            totalLines: 0,
+            issues: sastIssues
+        },
+        apiEndpoints: apiEndpoints        // <-- ЗАПОЛНЯЕМ apiEndpoints
+    };
+}
     
     function displayReport(report) {
         const transformed = transformReport(report);
@@ -412,29 +394,28 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С МОДАЛЬНЫМ ОКНОМ ==========
     
-window.closeResultModal = function() {
-    const modal = document.getElementById('resultModal');
-    if (modal) {
-        modal.classList.remove('active');
-        resetAllProgress();
-        
-        // Деактивируем кнопку в зависимости от текущего источника
-        switch(currentSource) {
-            case 'git':
-                deactivateButton(startBtn);
-                break;
-            case 'archive':
-                deactivateButton(archiveStartBtn);
-                break;
-            case 'local':
-                deactivateButton(localStartBtn);
-                break;
-            default:
-                deactivateButton(startBtn);
+    window.closeResultModal = function() {
+        const modal = document.getElementById('resultModal');
+        if (modal) {
+            modal.classList.remove('active');
+            resetAllProgress();
+            
+            switch(currentSource) {
+                case 'git':
+                    deactivateButton(startBtn);
+                    break;
+                case 'archive':
+                    deactivateButton(archiveStartBtn);
+                    break;
+                case 'local':
+                    deactivateButton(localStartBtn);
+                    break;
+                default:
+                    deactivateButton(startBtn);
+            }
         }
-    }
-    currentReport = null;
-};
+        currentReport = null;
+    };
     
     window.showResultTab = function(tabName) {
         const tabs = document.querySelectorAll('.result-tab');
@@ -572,28 +553,46 @@ window.closeResultModal = function() {
         });
     }
     
-    // ========== ОБРАБОТЧИКИ ДЛЯ ЛОКАЛЬНОЙ ПАПКИ ==========
+    // ========== ОБРАБОТЧИКИ ДЛЯ ЛОКАЛЬНОЙ ПАПКИ (ИСПРАВЛЕННЫЕ) ==========
     
     if (localFolderInput && localStartBtn && localFolderInfo) {
         localFolderInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files.length > 0) {
+                // Сохраняем файлы сразу при выборе
                 selectedFolderFiles = Array.from(e.target.files);
-                const path = e.target.files[0].webkitRelativePath;
-                selectedFolder = path.split('/')[0];
                 
-                const fileCount = selectedFolderFiles.length;
-                const totalSize = selectedFolderFiles.reduce((sum, file) => sum + file.size, 0);
+                // Получаем имя папки из первого файла
+                const firstFilePath = e.target.files[0].webkitRelativePath || e.target.files[0].name;
+                selectedFolder = firstFilePath.split('/')[0];
+                
+                // Проверяем валидность файлов
+                let validFiles = 0;
+                let totalSize = 0;
+                
+                for (const file of selectedFolderFiles) {
+                    if (file.size > 0) {
+                        validFiles++;
+                        totalSize += file.size;
+                    }
+                }
+                
+                if (validFiles === 0) {
+                    showAlert('Выбрана пустая папка или нет доступных файлов', 'error');
+                    clearFolder();
+                    return;
+                }
                 
                 localFolderInfo.innerHTML = `
                     <div class="file-details">
                         <i class="fas fa-folder-open"></i>
                         <span class="file-name">${escapeHtml(selectedFolder)}</span>
-                        <span class="file-size">(${fileCount} файлов, ${formatBytes(totalSize)})</span>
+                        <span class="file-size">(${validFiles} файлов, ${formatBytes(totalSize)})</span>
                         <i class="fas fa-times remove-file" onclick="clearFolder()"></i>
                     </div>
                 `;
                 localFolderInfo.classList.add('active');
                 activateButton(localStartBtn);
+                
             }
         });
     }
@@ -668,7 +667,6 @@ window.closeResultModal = function() {
         
         deactivateButton(startBtn);
         resetAllProgress();
-        startProgressEmulation(); // ЗАПУСКАЕМ ЭМУЛЯТОР ПРОГРЕССА
         
         showAlert('Отправка запроса на анализ...', 'info');
         
@@ -676,6 +674,7 @@ window.closeResultModal = function() {
             const result = await analyzeGitRepo(repo, branch);
             
             if (result.success) {
+                startProgressEmulation();
                 showAlert(`Анализ запущен (ID: ${result.taskId})`, 'success');
                 
                 pollTaskStatus(result.taskId, (finalResult) => {
@@ -705,7 +704,6 @@ window.closeResultModal = function() {
         
         deactivateButton(archiveStartBtn);
         resetAllProgress();
-        startProgressEmulation(); // ЗАПУСКАЕМ ЭМУЛЯТОР ПРОГРЕССА
         
         showAlert(`Отправка архива ${selectedArchive.name} на анализ...`, 'info');
         
@@ -725,6 +723,7 @@ window.closeResultModal = function() {
             const result = await response.json();
             
             if (result.success) {
+                startProgressEmulation();
                 showAlert(`Анализ архива запущен (ID: ${result.taskId})`, 'success');
                 
                 pollTaskStatus(result.taskId, (finalResult) => {
@@ -745,6 +744,8 @@ window.closeResultModal = function() {
         }
     }
     
+    // ========== АНАЛИЗ ЛОКАЛЬНОГО ПРОЕКТА (ИСПРАВЛЕННЫЙ) ==========
+    
     async function startLocalAnalysis() {
         if (!selectedFolderFiles.length) {
             showAlert('Пожалуйста, выберите папку проекта', 'error');
@@ -753,11 +754,8 @@ window.closeResultModal = function() {
         
         deactivateButton(localStartBtn);
         resetAllProgress();
-        startProgressEmulation(); // ЗАПУСКАЕМ ЭМУЛЯТОР ПРОГРЕССА
         
-        const copyMode = copyProjectCheck ? copyProjectCheck.checked : true;
-        
-        showAlert(`Создание архива из папки ${selectedFolder}...`, 'info');
+        showAlert(`Подготовка архива из папки ${selectedFolder}...`, 'info');
         
         try {
             if (!window.JSZip) {
@@ -766,7 +764,38 @@ window.closeResultModal = function() {
             
             showArchiveProgress(0, 'Подготовка файлов');
             
-            const zipBlob = await createZipArchive(selectedFolderFiles, selectedFolder);
+            // Фильтруем и валидируем файлы перед созданием ZIP
+            const validFiles = [];
+            let processedCount = 0;
+            let skippedCount = 0;
+            
+            for (const file of selectedFolderFiles) {
+                processedCount++;
+                const percent = Math.round((processedCount / selectedFolderFiles.length) * 50);
+                showArchiveProgress(percent, `Проверка файлов (${processedCount}/${selectedFolderFiles.length})...`);
+                
+                try {
+                    // Проверяем, можно ли прочитать файл
+                    const testSlice = file.slice(0, 1);
+                    await testSlice.arrayBuffer();
+                    validFiles.push(file);
+                } catch (readError) {
+                    skippedCount++;
+                    console.warn(`Файл пропущен (не читается): ${file.name}`, readError);
+                }
+            }
+            
+            if (validFiles.length === 0) {
+                throw new Error('Нет доступных файлов для архивации');
+            }
+            
+            if (skippedCount > 0) {
+                showAlert(`Пропущено ${skippedCount} недоступных файлов`, 'warning');
+            }
+            
+            showArchiveProgress(50, `Создание архива (${validFiles.length} файлов)...`);
+            
+            const zipBlob = await createZipArchive(validFiles, selectedFolder);
             
             showArchiveProgress(100, 'Архив создан');
             
@@ -775,6 +804,7 @@ window.closeResultModal = function() {
             const result = await uploadArchive(zipBlob, `${selectedFolder}.zip`);
             
             if (result.success) {
+                startProgressEmulation();
                 showAlert(`Анализ локального проекта запущен (ID: ${result.taskId})`, 'success');
                 
                 pollTaskStatus(result.taskId, (finalResult) => {

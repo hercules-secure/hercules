@@ -595,53 +595,7 @@
 }
 </style>
 
-<script>
-// Функции для обновления статуса шага
-/*function updateTaskStatus(taskId, status, progress = null) {
-    const taskElement = document.getElementById(taskId);
-    const statusElement = document.getElementById(`${taskId}-status`);
-    const iconElement = document.getElementById(`${taskId}-icon`);
-    const progressBar = document.getElementById(`${taskId}-progress`);
-    
-    // Удаляем старые классы
-    taskElement.classList.remove('pending-step', 'in-progress-step', 'success-step', 'error-step');
-    iconElement.classList.remove('pending', 'in-progress', 'completed', 'error');
-    
-    // Добавляем новые классы в зависимости от статуса
-    switch(status) {
-        case 'pending':
-            taskElement.classList.add('pending-step');
-            iconElement.classList.add('pending');
-            if (statusElement) statusElement.textContent = 'Ожидание';
-            break;
-        case 'in-progress':
-            taskElement.classList.add('in-progress-step');
-            iconElement.classList.add('in-progress');
-            if (statusElement) statusElement.textContent = 'В процессе';
-            break;
-        case 'success':
-            taskElement.classList.add('success-step');
-            iconElement.classList.add('completed');
-            if (statusElement) statusElement.textContent = 'Завершён';
-            break;
-        case 'error':
-            taskElement.classList.add('error-step');
-            iconElement.classList.add('error');
-            if (statusElement) statusElement.textContent = 'Ошибка';
-            break;
-    }
-    
-    // Обновляем прогресс, если передан
-    if (progressBar && progress !== null) {
-        progressBar.style.width = `${progress}%`;
-    }
-}*/
 
-// Пример использования:
-// updateTaskStatus('task1', 'in-progress', 50);
-// updateTaskStatus('task2', 'success');
-// updateTaskStatus('task3', 'error');
-</script>
         
         <div id="alertMessage" class="alert-message"></div>
     </div>
