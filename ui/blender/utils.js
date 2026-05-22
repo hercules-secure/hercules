@@ -177,6 +177,7 @@ export function generateDependenciesHTML(report) {
                             <th style="padding: 10px; text-align: left;">Название</th>
                             <th style="padding: 10px; text-align: left;">Версия</th>
                             <th style="padding: 10px; text-align: left;">Файл</th>
+                            <th style="padding: 10px; text-align: left;">Количество CVE/CWE</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -185,6 +186,7 @@ export function generateDependenciesHTML(report) {
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(dep.name)}</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Alef'">${escapeHtml(dep.version || 'unknown')}</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(dep.file || '-')}</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Alef'">0</td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -246,7 +248,7 @@ export function generateApiHTML(report) {
                     const fileInfo = ep.file ? `<span style="font-size: 11px; color: #64748b; margin-left: 8px;">📄 ${escapeHtml(ep.file)}${ep.line ? `:${ep.line}` : ''}</span>` : '';
                     
                     return `
-                        <div class="endpoint-item" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: #f8fafc; border-radius: 8px; border-left: 4px solid ${methodColor};">
+                        <div class="endpoint-item" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: white; border-radius: 8px;">
                             <span class="method-badge" style="font-weight: 600; font-size: 12px; min-width: 60px; color: ${methodColor};">${escapeHtml(method)}</span>
                             <span style="font-family: monospace; font-size: 13px; flex: 1; word-break: break-all;">${escapeHtml(path)}</span>
                             ${fileInfo}
@@ -442,7 +444,7 @@ export function generateSummaryHTML(report) {
     `;
 }
 
-// Генерация полного HTML отчета
+// Генерация полного HTML отчета с ТАБАМИ
 export function generateHTMLReport(report) {
     const normalizedReport = {
         ...report,
@@ -451,6 +453,11 @@ export function generateHTMLReport(report) {
         fuzz: report.fuzz || { endpoints: [], statistics: {} }
     };
     
+    // Подсчет для бейджей на табах
+    const sastIssuesCount = normalizedReport.sast.issues?.length || 0;
+    const scaVulnsCount = normalizedReport.sca.vulnerabilities?.length || 0;
+    const apiEndpointsCount = normalizedReport.fuzz.endpoints?.length || 0;
+    
     return `<!DOCTYPE html>
 <html>
 <head>
@@ -458,96 +465,290 @@ export function generateHTMLReport(report) {
     <title>Отчет анализа безопасности - ${new Date().toISOString()}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #f1f5f9;
+            font-family: 'Ubuntu';
+            background: white;
             padding: 40px 20px;
             line-height: 1.5;
         }
         .report-container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 35px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             overflow: hidden;
         }
         .report-header {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
             color: white;
             padding: 32px 40px;
         }
-        .report-header h1 { font-size: 28px; margin-bottom: 8px; }
-        .report-header p { opacity: 0.8; font-size: 14px; }
-        .report-content { padding: 32px 40px; }
-        
-        .section {
-            margin-bottom: 40px;
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 24px;
+        .report-header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
-        .section:last-child { border-bottom: none; margin-bottom: 0; }
-        .section-title {
-            font-size: 20px;
-            font-weight: 600;
-            color: #0f172a;
-            margin-bottom: 20px;
+        .report-header h1 i {
+            font-size: 32px;
+            color: white;
+        }
+        .report-header p {
+            opacity: 0.8;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        
+        /* TAB Navigation */
+        .tab-bar {
+            display: flex;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 40px;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            padding: 16px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
+            color: #64748b;
+            transition: all 0.2s ease;
+            border-radius: 12px 12px 0 0;
+            font-family: 'Ubuntu', sans-serif;
         }
-        .section-title i { color: #3b82f6; }
+        .tab-btn i {
+            font-size: 16px;
+        }
+        .tab-btn:hover {
+            background: #e2e8f0;
+            color: #1e293b;
+        }
+        .tab-btn.active {
+            background: white;
+            color: #3b82f6;
+            border-bottom: 3px solid #3b82f6;
+            font-weight: 600;
+        }
+        .tab-badge {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 6px;
+        }
+        .tab-badge.critical {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+        .tab-badge.warning {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+        
+        /* TAB Content */
+        .tab-content {
+            display: none;
+            padding: 32px 40px;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Cards & Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .stat-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-critical { background: #fee2e2; color: #dc2626; }
+        .badge-high { background: #ffedd5; color: #ea580c; }
+        .badge-medium { background: #fef9c3; color: #ca8a04; }
+        .badge-low { background: #dcfce7; color: #16a34a; }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f8fafc;
+            font-size: 13px;
+            font-family: 'Ubuntu';
+            color: #0f172a;
+        }
+        tr:hover {
+            background: #f8fafc;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px;
+            color: #94a3b8;
+        }
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        .info-box {
+            background: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
         
         @media (max-width: 768px) {
-            .report-content { padding: 20px; }
+            .tab-bar { padding: 0 16px; }
+            .tab-content { padding: 20px; }
             .report-header { padding: 24px; }
+            .tab-btn { padding: 12px 16px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
     <div class="report-container">
         <div class="report-header">
-            <h1><i class="fas fa-chart-line"></i> Геркулес | Блендер</h1>
-            <p>Отчет о проблемах безопасности</p>
-            <p>Сгенерировано: ${new Date().toISOString()}</p>
+            <h1>
+                <i class="fas fa-flask"></i>
+                Геркулес | Блендер
+            </h1>
+            <p>Отчет о проблемах безопасности — ${new Date().toLocaleString()}</p>
         </div>
-        <div class="report-content">
-            <div class="section">
-                <div class="section-title">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Общая сводка</span>
-                </div>
-                ${generateSummaryHTML(normalizedReport)}
-            </div>
-            
-            <div class="section">
-                <div class="section-title">
-                    <i class="fas fa-cubes"></i>
-                    <span>Зависимости (SCA)</span>
-                </div>
-                ${generateDependenciesHTML(normalizedReport)}
-            </div>
-            
-            <div class="section">
-                <div class="section-title">
-                    <i class="fas fa-code"></i>
-                    <span>Анализ исходного кода (SAST)</span>
-                </div>
-                ${generateCodeHTML(normalizedReport)}
-            </div>
-            
-            <div class="section">
-                <div class="section-title">
-                    <i class="fas fa-plug"></i>
-                    <span>API Эндпоинты</span>
-                </div>
-                ${generateApiHTML(normalizedReport)}
-            </div>
+        
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+            <button class="tab-btn active" data-tab="summary">
+                <i class="fas fa-chart-pie"></i> Общая сводка
+            </button>
+            <button class="tab-btn" data-tab="sca">
+                <i class="fas fa-cubes"></i> Зависимости (SCA)
+                ${scaVulnsCount > 0 ? `<span class="tab-badge critical">${scaVulnsCount}</span>` : ''}
+            </button>
+            <button class="tab-btn" data-tab="sast">
+                <i class="fas fa-code"></i> SAST
+                ${sastIssuesCount > 0 ? `<span class="tab-badge ${sastIssuesCount > 5 ? 'critical' : 'warning'}">${sastIssuesCount}</span>` : ''}
+            </button>
+            <button class="tab-btn" data-tab="api">
+                <i class="fas fa-plug"></i> API Эндпоинты
+                ${apiEndpointsCount > 0 ? `<span class="tab-badge">${apiEndpointsCount}</span>` : ''}
+            </button>
+        </div>
+        
+        <!-- TAB CONTENT: Summary -->
+        <div id="tab-summary" class="tab-content active">
+            ${generateSummaryHTML(normalizedReport)}
+        </div>
+        
+        <!-- TAB CONTENT: SCA -->
+        <div id="tab-sca" class="tab-content">
+            ${generateDependenciesHTML(normalizedReport)}
+        </div>
+        
+        <!-- TAB CONTENT: SAST -->
+        <div id="tab-sast" class="tab-content">
+            ${generateCodeHTML(normalizedReport)}
+        </div>
+        
+        <!-- TAB CONTENT: API -->
+        <div id="tab-api" class="tab-content">
+            ${generateApiHTML(normalizedReport)}
         </div>
     </div>
+    
+    <script>
+        // Таб-переключение
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                // Убираем активные классы у всех кнопок
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Прячем все контенты
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // Показываем выбранный контент
+                const targetContent = document.getElementById('tab-' + tabId);
+                if (targetContent) {
+                    targetContent.classList.add('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>`;
 }
+
+export default {
+    formatBytes,
+    delay,
+    escapeHtml,
+    loadJSZip,
+    createZipArchive,
+    emulateProgress,
+    generateDependenciesHTML,
+    generateApiHTML,
+    generateCodeHTML,
+    generateSummaryHTML,
+    generateHTMLReport
+};

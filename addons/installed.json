@@ -41,7 +41,7 @@
     "version": "1.0.0",
     "shortDesc": "Комплексный анализ",
     "description": "Универсальный анализатор безопасности кода, объединяющий SCA, SAST и Fuzzing.",
-    "icon": "fas fa-flask",
+    "icon": "fa-flask",
     "url": "/blender",
     "ui": "./ui/blender/main.html",
     "router": "./addons/blender/router.js",
