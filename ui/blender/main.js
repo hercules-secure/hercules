@@ -367,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
             issues: sastIssues,
             statistics: sastStatistics
         },
-        fuzz: {                           // <-- ДОБАВЛЯЕМ fuzz
+        fuzz: {                          
             endpoints: apiEndpoints,
             statistics: fuzzStatistics
         },
@@ -378,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
             totalLines: 0,
             issues: sastIssues
         },
-        apiEndpoints: apiEndpoints        // <-- ЗАПОЛНЯЕМ apiEndpoints
+        apiEndpoints: apiEndpoints       
     };
 }
     
