@@ -144,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             return await response.json();
         } catch (error) {
-            console.error(`API Error ${endpoint}:`, error);
-            throw error;
+
+            //throw error;
         }
     }
     
@@ -297,9 +297,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     showAlert('Превышено время ожидания анализа', 'error');
                 }
             } catch (error) {
-                console.error('Ошибка при опросе статуса:', error);
+
             }
-        }, 1000);
+        }, 5000);
     }
     
     // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ОТЧЁТОМ ==========
@@ -474,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `analysis_report_${Date.now()}.html`;
+        a.download = `blender_analysis_report_${Date.now()}.html`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -690,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             stopProgressEmulation();
-            console.error('Git analysis error:', error);
+
             showAlert(`Ошибка: ${error.message}`, 'error');
             activateButton(startBtn);
         }
@@ -781,7 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     validFiles.push(file);
                 } catch (readError) {
                     skippedCount++;
-                    console.warn(`Файл пропущен (не читается): ${file.name}`, readError);
+
                 }
             }
             
@@ -820,7 +820,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             stopProgressEmulation();
-            console.error('Ошибка:', error);
             showAlert(`Ошибка при создании или отправке архива: ${error.message}`, 'error');
             activateButton(localStartBtn);
         }

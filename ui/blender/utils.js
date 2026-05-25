@@ -143,19 +143,36 @@ function extractApiStatistics(report, endpoints) {
         fromSwagger: endpoints.filter(e => e.source === 'swagger').length
     };
 }
-
-// Генерация HTML зависимостей
 export function generateDependenciesHTML(report) {
     let dependencies = [];
+    let vulnerabilityStats = {
+        critical: 0,
+        high: 0,
+        medium: 0,
+        low: 0,
+        total: 0
+    };
     
-    if (report.sca?.dependencies) {
+    if (report.dependencies && Array.isArray(report.dependencies) && report.dependencies.length > 0) {
+        dependencies = report.dependencies;
+        
+        // Подсчитываем статистику уязвимостей
+        for (const dep of dependencies) {
+            const cveCount = typeof dep.cveCount === 'number' ? dep.cveCount : 0;
+            vulnerabilityStats.total += cveCount;
+            
+            const cveSummary = dep.cveSummary || {};
+            vulnerabilityStats.critical += typeof cveSummary.critical === 'number' ? cveSummary.critical : 0;
+            vulnerabilityStats.high += typeof cveSummary.high === 'number' ? cveSummary.high : 0;
+            vulnerabilityStats.medium += typeof cveSummary.medium === 'number' ? cveSummary.medium : 0;
+            vulnerabilityStats.low += typeof cveSummary.low === 'number' ? cveSummary.low : 0;
+        }
+    } else if (report.sca?.dependencies && report.sca.dependencies.length > 0) {
         dependencies = report.sca.dependencies;
-    } else if (report.dependencies?.packages) {
-        dependencies = report.dependencies.packages;
     }
     
     if (!dependencies?.length) {
-        return '<div class="info-box" style="text-align: left;">Зависимости не найдены</div>';
+        return '<div class="info-box">Зависимости не найдены</div>';
     }
     
     const grouped = dependencies.reduce((acc, dep) => {
@@ -165,40 +182,84 @@ export function generateDependenciesHTML(report) {
         return acc;
     }, {});
     
-    let html = `<div class="dependencies-container"><h4 style="margin-bottom: 15px;">Найдено зависимостей: ${dependencies.length}</h4>`;
+    // Добавляем блок статистики
+    let html = `
+        <div class="vuln-stats" style="display: flex; gap: 16px; margin-bottom: 24px;">
+            <div class="summary-card critical" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div class="card-value" style="font-size: 28px; font-weight: 700; color: #dc2626;">${vulnerabilityStats.critical}</div>
+                <div class="card-label" style="font-size: 12px; color: #64748b;">Critical</div>
+            </div>
+            <div class="summary-card high" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div class="card-value" style="font-size: 28px; font-weight: 700; color: #f97316;">${vulnerabilityStats.high}</div>
+                <div class="card-label" style="font-size: 12px; color: #64748b;">High</div>
+            </div>
+        </div>
+    `;
+    
+    html += `<h4 style="margin-bottom: 16px;">Найдено зависимостей: ${dependencies.length}</h4>`;
     
     for (const [manager, items] of Object.entries(grouped)) {
         html += `
-            <div class="dep-group" style="margin-bottom: 20px;">
-                <h5 style="margin-bottom: 10px; padding-bottom: 5px; border-bottom: 2px solid #3b82f6; display: inline-block;">${escapeHtml(manager).toUpperCase()}</h5>
-                <table class="dep-table" style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                    <thead>
-                        <tr style="background: #f1f5f9;">
-                            <th style="padding: 10px; text-align: left;">Название</th>
-                            <th style="padding: 10px; text-align: left;">Версия</th>
-                            <th style="padding: 10px; text-align: left;">Лицензия</th>
-                            <th style="padding: 10px; text-align: left;">Файл</th>
-                            <th style="padding: 10px; text-align: left;">Уязвимости</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${items.map(dep => `
-                            <tr>
-                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(dep.name)}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Alef'">${escapeHtml(dep.version || 'unknown')}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Ubuntu'">${escapeHtml(dep.licence || 'не найдена')}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(dep.file || '-')}</td>
-                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Alef'">0</td>
+            <div class="dep-group" style="margin-bottom: 24px;">
+                <h5 style="margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #3b82f6; display: inline-flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-box"></i>
+                    ${escapeHtml(manager).toUpperCase()}
+                    <span style="font-size: 12px; font-weight: normal; color: #64748b;">(${items.length})</span>
+                </h5>
+                <div style="overflow-x: auto;">
+                    <table class="dep-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="background: #f1f5f9;">
+                                <th style="padding: 10px; text-align: left;">Пакет</th>
+                                <th style="padding: 10px; text-align: left;">Версия</th>
+                                <th style="padding: 10px; text-align: left;">Источник</th>
+                                <th style="padding: 10px; text-align: center;">Уязвимости</th>
+                                <th style="padding: 10px; text-align: left;">Лицензия</th>
                             </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            ${items.map(dep => `
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 10px;"><strong>${escapeHtml(dep.name)}</strong>${dep.type === 'development' ? '<span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">dev</span>' : ''}</td>
+                                    <td style="padding: 10px; font-family: monospace;">${escapeHtml(dep.version || 'unknown')}</td>
+                                    <td style="padding: 10px; font-size: 11px; color: #64748b;">${escapeHtml(dep.file || '-')}</td>
+                                    <td style="padding: 10px; text-align: center;">
+                                    ${dep.cveCount > 0 ? `
+                                        <span style="background: #f9731620; color: #f97316; padding: 2px 8px; border-radius: 16px; font-weight: 600; font-size: 12px;">
+                                            ${dep.cveCount}
+                                        </span>
+                                    ` : `
+                                        <span style="color: #10b981;">Нет</span>
+                                    `}
+                                </td>
+                                <td style="padding: 10px;">
+                                    <span style="background: #94a3b820; color: #94a3b8; padding: 4px 8px; border-radius: 12px; font-size: 11px;">
+                                        ${escapeHtml(dep.license || 'UNKNOWN')}
+                                    </span>
+                                </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         `;
     }
     
-    html += `</div>`;
     return html;
+}
+
+// Вспомогательная функция для получения рекомендации по лицензии
+function getLicenseRecommendation(license) {
+    const recommendations = {
+        'GPL-2.0': 'Требует открытия исходного кода при распространении',
+        'GPL-3.0': 'Требует открытия исходного кода при распространении',
+        'AGPL-3.0': 'Требует открытия исходного кода даже при использовании через сеть',
+        'MPL-2.0': 'Требует открытия только изменённых файлов',
+        'CC-BY-NC-4.0': 'Запрещено коммерческое использование',
+        'UNKNOWN': 'Требуется проверка лицензии юристом'
+    };
+    return recommendations[license] || 'Лицензия совместима с коммерческим использованием';
 }
 
 // Генерация HTML API эндпоинтов
@@ -265,6 +326,7 @@ export function generateApiHTML(report) {
 }
 
 // Генерация HTML кода (SAST)
+
 export function generateCodeHTML(report) {
     let issues = [];
     let statistics = { total: 0, critical: 0, high: 0, medium: 0, low: 0 };
@@ -304,7 +366,7 @@ export function generateCodeHTML(report) {
             <div class="empty-state">
                 <i class="fas fa-shield-alt"></i>
                 <h3>Критических проблем не найдено</h3>
-                <p>Найдено только проблем низкой и средней критичности (Medium: ${mediumCount}, Low: ${lowCount})</p>
+                <p>Найдено только проблем низкой и средней критичности (Medium: ${escapeHtml(String(mediumCount))}, Low: ${escapeHtml(String(lowCount))})</p>
                 <p style="margin-top: 12px; font-size: 12px; opacity: 0.7;">Полный отчет доступен в загружаемом HTML файле</p>
             </div>
         `;
@@ -314,22 +376,22 @@ export function generateCodeHTML(report) {
         <div class="sast-summary">
             <div class="summary-cards" style="display: flex; gap: 16px; margin-bottom: 20px;">
                 <div class="summary-card critical" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                    <div class="card-value" style="font-size: 28px; font-weight: 700; color: #dc2626;">${criticalCount}</div>
+                    <div class="card-value" style="font-size: 28px; font-weight: 700; color: #dc2626;">${escapeHtml(String(criticalCount))}</div>
                     <div class="card-label" style="font-size: 12px; color: #64748b;">Critical</div>
                 </div>
                 <div class="summary-card high" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                    <div class="card-value" style="font-size: 28px; font-weight: 700; color: #f97316;">${highCount}</div>
+                    <div class="card-value" style="font-size: 28px; font-weight: 700; color: #f97316;">${escapeHtml(String(highCount))}</div>
                     <div class="card-label" style="font-size: 12px; color: #64748b;">High</div>
                 </div>
             </div>
             ${mediumCount > 0 || lowCount > 0 ? `
                 <div class="info-note" style="margin-top: 12px; padding: 8px 12px; background: #fef9c3; border-radius: 8px; color: #854d0e; font-size: 12px;">
-                    <i class="fas fa-info-circle"></i> Дополнительно: Medium (${mediumCount}), Low (${lowCount}) — доступны в полном отчете
+                    <i class="fas fa-info-circle"></i> Дополнительно: Medium (${escapeHtml(String(mediumCount))}), Low (${escapeHtml(String(lowCount))}) — доступны в полном отчете
                 </div>
             ` : ''}
         </div>
         <div class="issues-list" style="margin-top: 20px;">
-            <h3 style="margin-bottom: 16px;">Критические проблемы безопасности (${filteredIssues.length})</h3>
+            <h3 style="margin-bottom: 16px;">Критические проблемы безопасности (${escapeHtml(String(filteredIssues.length))})</h3>
     `;
     
     for (const issue of filteredIssues) {
@@ -346,21 +408,35 @@ export function generateCodeHTML(report) {
             }
         }
         
+        // Экранируем все поля
+        const escapedSeverity = escapeHtml(issue.severity || 'LOW');
+        const escapedRule = escapeHtml(issue.rule || issue.type || 'unknown');
+        const escapedMessage = escapeHtml(issue.message || issue.description || 'Описание отсутствует');
+        const escapedFile = escapeHtml(issue.file || issue.filePath || 'unknown');
+        const escapedLine = issue.line ? escapeHtml(String(issue.line)) : '';
+        const escapedSnippet = snippetText ? escapeHtml(snippetText.substring(0, 500)) : '';
+        const escapedRecommendation = issue.recommendation ? escapeHtml(issue.recommendation) : '';
+        
         html += `
             <div class="issue-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-bottom: 12px;">
                 <div class="issue-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span class="issue-severity ${severityClass}" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: ${severityClass === 'critical' ? '#fee2e2' : '#ffedd5'}; color: ${severityClass === 'critical' ? '#dc2626' : '#f97316'};">${(issue.severity || 'LOW').toUpperCase()}</span>
-                    <span class="issue-rule" style="font-family: monospace; font-size: 11px; background: #e2e8f0; padding: 4px 8px; border-radius: 6px;">${escapeHtml(issue.rule || issue.type || 'unknown')}</span>
+                    <span class="issue-severity ${severityClass}" style="padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: ${severityClass === 'critical' ? '#fee2e2' : '#ffedd5'}; color: ${severityClass === 'critical' ? '#dc2626' : '#f97316'};">${escapedSeverity.toUpperCase()}</span>
+                    <span class="issue-rule" style="font-family: monospace; font-size: 11px; background: #e2e8f0; padding: 4px 8px; border-radius: 6px;">${escapedRule}</span>
                 </div>
-                <div class="issue-message" style="font-size: 14px; font-weight: 500; margin-bottom: 8px;">${escapeHtml(issue.message || issue.description || 'Описание отсутствует')}</div>
+                <div class="issue-message" style="font-size: 14px; font-weight: 500; margin-bottom: 8px;">${escapedMessage}</div>
                 <div class="issue-location" style="font-size: 12px; color: #64748b; margin-bottom: 8px;">
                     <i class="fas fa-file-alt"></i>
-                    ${escapeHtml(issue.file || issue.filePath || 'unknown')}
-                    ${issue.line ? `:${issue.line}` : ''}
+                    ${escapedFile}
+                    ${escapedLine ? `:${escapedLine}` : ''}
                 </div>
-                ${snippetText ? `
+                ${escapedSnippet ? `
                     <div class="issue-snippet" style="background: #1e293b; border-radius: 8px; padding: 12px; overflow-x: auto; margin-top: 8px;">
-                        <code style="font-family: 'Consolas', monospace; font-size: 11px; color: #a5f3fc; white-space: pre-wrap;">${escapeHtml(snippetText.substring(0, 500))}${snippetText.length > 500 ? '...' : ''}</code>
+                        <code style="font-family: 'Consolas', monospace; font-size: 11px; color: #a5f3fc; white-space: pre-wrap;">${escapedSnippet}${snippetText.length > 500 ? '...' : ''}</code>
+                    </div>
+                ` : ''}
+                ${escapedRecommendation ? `
+                    <div style="margin-top: 8px; padding: 8px; background: #eff6ff; border-radius: 6px; font-size: 12px; color: #1e40af;">
+                        <i class="fas fa-lightbulb"></i> ${escapedRecommendation}
                     </div>
                 ` : ''}
             </div>
