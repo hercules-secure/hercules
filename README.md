@@ -28,6 +28,9 @@ chmod +x hercules.sh
 # Запуск с другим портом
 PORT=3000 ./hercules.sh start
 
+# Обновление сервера (остановка, git pull, установка зависимостей, запуск)
+./hercules.sh update
+
 # Статус сервера
 ./hercules.sh status
 
