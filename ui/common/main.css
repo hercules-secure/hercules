@@ -120,6 +120,7 @@
             background: white;
             border-color: var(--primary-color);
             opacity:.2;
+            cursor: default;
         } 
         .tool-icon {
             width: 32px;
@@ -604,3 +605,73 @@
         .black-icon.active {
             background: #eff6ff;
         }
+
+        
+    /* Стили для языков в правой колонке */
+.languages-section {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.languages-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary, #1e293b);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+}
+
+.languages-title i {
+    color: var(--primary-color, #2563eb);
+    font-size: 14px;
+}
+
+.languages-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.lang-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 12px;
+    background: var(--bg-secondary, #f8fafc);
+    border-radius: 12px;
+    min-width: 70px;
+    transition: all 0.2s ease;
+}
+
+.lang-item:hover {
+    transform: translateY(-2px);
+    background: var(--card-bg, white);
+    box-shadow: var(--shadow-sm, 0 1px 3px rgba(0,0,0,0.1));
+}
+
+.lang-item i {
+    font-size: 28px;
+}
+
+.lang-item span {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-primary, #0f172a);
+}
+
+/* Тёмная тема для языков */
+@media (prefers-color-scheme: dark) {
+    .lang-item {
+        background: #1e293b;
+    }
+    
+    .lang-item:hover {
+        background: #334155;
+    }
+}

@@ -159,11 +159,32 @@ function downloadJSONReport(results) {
     }
 }
 
-/**
- * Скачать отчет в HTML формате (полноценная страница)
- */
-function downloadHTMLReport(results) {
+function downloadHTMLReport(results, sourceName = null) {
     try {
+        const defaultName = sourceName 
+            ? `sast-report-${sourceName}-${new Date().toISOString().split('T')[0]}`
+            : `sast-report-${new Date().toISOString().split('T')[0]}`;
+        
+        let reportName = prompt('Введите имя отчета:', defaultName);
+        
+        // Если пользователь нажал Отмена - ничего не скачиваем
+        if (reportName === null) {
+            showToolNotification('Скачивание отменено', 'info');
+            return;
+        }
+        
+        // Если ввели пустую строку - используем имя по умолчанию
+        if (reportName.trim() === '') {
+            reportName = defaultName;
+        }
+        
+        // Очищаем имя от недопустимых символов
+        reportName = reportName
+            .trim()
+            .replace(/[<>:"/\\|?*]/g, '_')
+            .replace(/\s+/g, '_')
+            .substring(0, 100);
+        
         showToolNotification('Генерация HTML отчета...', 'info');
         
         const htmlContent = generateFullHTMLReport(results);
@@ -171,17 +192,18 @@ function downloadHTMLReport(results) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `sast-report-${new Date().toISOString().split('T')[0]}.html`;
+        a.download = `${reportName}.html`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        showToolNotification('HTML отчет успешно скачан', 'success');
+        showToolNotification(`HTML отчет "${reportName}.html" успешно скачан`, 'success');
     } catch (error) {
         console.error('HTML download error:', error);
         showToolNotification('Ошибка при скачивании HTML отчета', 'error');
     }
 }
+
 
 /**
  * Генерация полноценного HTML отчета (для скачивания)

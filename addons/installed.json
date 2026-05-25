@@ -37,15 +37,14 @@
   },
   {
     "id": "blender",
-    "name": "Блендер (Beta)",
+    "name": "Блендер",
     "version": "1.0.0",
     "shortDesc": "Комплексный анализ",
     "description": "Универсальный анализатор безопасности кода, объединяющий SCA, SAST и Fuzzing.",
     "icon": "fa-flask",
     "url": "/blender",
-    "ui": "./ui/blender/main.html",
+    "ui": "./ui/blender/blender.html",
     "router": "./addons/blender/router.js",
     "order": 4
 }
-
 ]
