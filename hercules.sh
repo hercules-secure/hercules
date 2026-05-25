@@ -45,6 +45,7 @@ show_help() {
     echo "  ./hercules.sh stop                 - Остановка сервера"
     echo "  ./hercules.sh restart              - Перезапуск сервера"
     echo "  ./hercules.sh status               - Статус сервера"
+    echo "  ./hercules.sh update               - Обновление из git + перезапуск"
     echo ""
     echo "  ./hercules.sh logs                 - Показать все логи"
     echo "  ./hercules.sh logs-combined        - Показать combined.log"
@@ -60,6 +61,7 @@ show_help() {
     echo "Примеры:"
     echo "  PORT=3000 ./hercules.sh start"
     echo "  HOST=0.0.0.0 ./hercules.sh start"
+    echo "  ./hercules.sh update               # обновить и перезапустить"
     echo "  ./hercules.sh logs-errors          # только ошибки"
     echo "  ./hercules.sh logs-follow-errors   # ошибки в реальном времени"
     echo ""
@@ -263,6 +265,69 @@ cmd_restart() {
     cmd_start
 }
 
+# ============================================
+# НОВАЯ КОМАНДА: UPDATE
+# ============================================
+cmd_update() {
+    print_info "=== ОБНОВЛЕНИЕ СЕРВЕРА ==="
+    echo ""
+    
+    # 1. Останавливаем сервер
+    print_info "Остановка сервера..."
+    cmd_stop
+    sleep 2
+    
+    # 2. Сохраняем текущую версию
+    if [ -f ".current_version" ]; then
+        OLD_VERSION=$(cat ".current_version")
+        print_info "Текущая версия: $OLD_VERSION"
+    fi
+    
+    # 3. Git pull
+    print_info "Выполнение git pull..."
+    
+    # Определяем текущую ветку
+    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
+    if [ -z "$CURRENT_BRANCH" ]; then
+        CURRENT_BRANCH="main"
+    fi
+    print_info "Текущая ветка: $CURRENT_BRANCH"
+    
+    # Выполняем pull
+    git pull origin "$CURRENT_BRANCH"
+    
+    if [ $? -eq 0 ]; then
+        print_success "Git pull выполнен успешно"
+    else
+        print_error "Ошибка git pull"
+        exit 1
+    fi
+    
+    # 4. Обновляем зависимости
+    print_info "Проверка и обновление зависимостей..."
+    
+    if [ -f "package.json" ]; then
+        # Проверяем, изменился ли package.json
+        if git diff HEAD@{1} --name-only | grep -q "package.json"; then
+            print_info "package.json изменился, установка зависимостей..."
+            npm install --production
+        else
+            print_info "package.json не изменился, пропуск npm install"
+        fi
+    fi
+    
+    # 5. Создаём новую версию
+    NEW_VERSION=$(date +%Y%m%d%H%M%S)
+    echo $NEW_VERSION > ".current_version"
+    print_success "Новая версия: $NEW_VERSION"
+    
+    # 6. Запускаем сервер
+    print_info "Запуск сервера..."
+    cmd_start
+    
+    print_success "=== ОБНОВЛЕНИЕ ЗАВЕРШЕНО ==="
+}
+
 # Статус
 cmd_status() {
     if [ -f "$PID_FILE" ]; then
@@ -275,6 +340,13 @@ cmd_status() {
             
             # Показываем информацию о логах
             cmd_logs_size
+            
+            # Показываем версию если есть
+            if [ -f ".current_version" ]; then
+                VERSION=$(cat ".current_version")
+                echo ""
+                print_info "Версия: $VERSION"
+            fi
         else
             print_error "Сервер не запущен (PID файл существует, но процесс не найден)"
         fi
@@ -370,6 +442,16 @@ cmd_logs_clear() {
         print_success "Очищен errors.log"
     fi
     
+    # Очищаем логи addons
+    if [ -d "addons" ]; then
+        for addon in blender sca sast fuzz; do
+            if [ -f "addons/$addon/log.txt" ]; then
+                > "addons/$addon/log.txt"
+                print_success "Очищен addons/$addon/log.txt"
+            fi
+        done
+    fi
+    
     print_success "Логи очищены"
 }
 
@@ -393,6 +475,17 @@ cmd_logs_size() {
         echo "  errors.log: $SIZE ($LINES строк)"
     else
         echo "  errors.log: не существует"
+    fi
+    
+    # Размер логов addons
+    if [ -d "addons" ]; then
+        for addon in blender sca sast fuzz; do
+            if [ -f "addons/$addon/log.txt" ]; then
+                SIZE=$(du -h "addons/$addon/log.txt" | cut -f1)
+                LINES=$(wc -l < "addons/$addon/log.txt")
+                echo "  addons/$addon/log.txt: $SIZE ($LINES строк)"
+            fi
+        done
     fi
     echo "----------------------------------------"
 }
@@ -421,6 +514,16 @@ cmd_clean() {
         print_success "Удалена директория логов"
     fi
     
+    # Очищаем логи addons
+    if [ -d "addons" ]; then
+        for addon in blender sca sast fuzz; do
+            if [ -f "addons/$addon/log.txt" ]; then
+                rm -f "addons/$addon/log.txt"
+                print_success "Удален addons/$addon/log.txt"
+            fi
+        done
+    fi
+    
     print_success "Очистка завершена"
 }
 
@@ -439,6 +542,9 @@ case "$1" in
         ;;
     restart)
         cmd_restart
+        ;;
+    update)
+        cmd_update
         ;;
     status)
         cmd_status
