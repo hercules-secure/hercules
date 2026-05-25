@@ -268,22 +268,52 @@ cmd_restart() {
 # ============================================
 # НОВАЯ КОМАНДА: UPDATE
 # ============================================
+# ============================================
+# НОВАЯ КОМАНДА: UPDATE
+# ============================================
 cmd_update() {
     print_info "=== ОБНОВЛЕНИЕ СЕРВЕРА ==="
     echo ""
     
-    # 1. Останавливаем сервер
+    # 1. Сохраняем текущие параметры запуска
+    print_info "Сохранение параметров запуска..."
+    
+    # Читаем текущие переменные окружения из .env
+    if [ -f "$ENV_FILE" ]; then
+        CURRENT_PORT=$(grep -E "^PORT=" "$ENV_FILE" | cut -d'=' -f2)
+        CURRENT_HOST=$(grep -E "^HOST=" "$ENV_FILE" | cut -d'=' -f2)
+        
+        if [ -n "$CURRENT_PORT" ]; then
+            export PORT="$CURRENT_PORT"
+            print_info "Сохранён PORT: $PORT"
+        fi
+        
+        if [ -n "$CURRENT_HOST" ]; then
+            export HOST="$CURRENT_HOST"
+            print_info "Сохранён HOST: $HOST"
+        fi
+    else
+        print_warning ".env файл не найден, используем значения по умолчанию"
+    fi
+    
+    # Сохраняем PID для проверки
+    OLD_PID=""
+    if [ -f "$PID_FILE" ]; then
+        OLD_PID=$(cat "$PID_FILE")
+    fi
+    
+    # 2. Останавливаем сервер
     print_info "Остановка сервера..."
     cmd_stop
     sleep 2
     
-    # 2. Сохраняем текущую версию
+    # 3. Сохраняем текущую версию
     if [ -f ".current_version" ]; then
         OLD_VERSION=$(cat ".current_version")
         print_info "Текущая версия: $OLD_VERSION"
     fi
     
-    # 3. Git pull
+    # 4. Git pull
     print_info "Выполнение git pull..."
     
     # Определяем текущую ветку
@@ -303,7 +333,7 @@ cmd_update() {
         exit 1
     fi
     
-    # 4. Обновляем зависимости
+    # 5. Обновляем зависимости
     print_info "Проверка и обновление зависимостей..."
     
     if [ -f "package.json" ]; then
@@ -316,13 +346,47 @@ cmd_update() {
         fi
     fi
     
-    # 5. Создаём новую версию
+    # 6. Восстанавливаем параметры в .env (если были изменены)
+    if [ -n "$CURRENT_PORT" ] || [ -n "$CURRENT_HOST" ]; then
+        print_info "Восстановление параметров в .env..."
+        
+        # Создаём временный файл
+        TMP_ENV=$(mktemp)
+        
+        if [ -f "$ENV_FILE" ]; then
+            cp "$ENV_FILE" "$TMP_ENV"
+            
+            if [ -n "$CURRENT_PORT" ]; then
+                if grep -q "^PORT=" "$TMP_ENV"; then
+                    sed -i "s/^PORT=.*/PORT=$CURRENT_PORT/" "$TMP_ENV"
+                else
+                    echo "PORT=$CURRENT_PORT" >> "$TMP_ENV"
+                fi
+            fi
+            
+            if [ -n "$CURRENT_HOST" ]; then
+                if grep -q "^HOST=" "$TMP_ENV"; then
+                    sed -i "s/^HOST=.*/HOST=$CURRENT_HOST/" "$TMP_ENV"
+                else
+                    echo "HOST=$CURRENT_HOST" >> "$TMP_ENV"
+                fi
+            fi
+            
+            mv "$TMP_ENV" "$ENV_FILE"
+            print_success "Параметры восстановлены в .env"
+        fi
+    fi
+    
+    # 7. Создаём новую версию
     NEW_VERSION=$(date +%Y%m%d%H%M%S)
     echo $NEW_VERSION > ".current_version"
     print_success "Новая версия: $NEW_VERSION"
     
-    # 6. Запускаем сервер
-    print_info "Запуск сервера..."
+    # 8. Запускаем сервер с сохранёнными параметрами
+    print_info "Запуск сервера с параметрами:"
+    print_info "  PORT: ${PORT:-6565}"
+    print_info "  HOST: ${HOST:-localhost}"
+    
     cmd_start
     
     print_success "=== ОБНОВЛЕНИЕ ЗАВЕРШЕНО ==="
