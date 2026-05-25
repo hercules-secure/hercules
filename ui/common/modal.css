@@ -1,0 +1,350 @@
+/* ========================================
+   ОБЩИЕ СТИЛИ
+   ======================================== */
+
+
+
+/* Стили для заголовка и кнопки в одной строке */
+.page-header,
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.page-header .section-title,
+.header-row .section-title,
+.page-header h2 {
+    margin-bottom: 0;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.header-btn {
+    background: transparent;
+    border: 1px solid var(--border-color, #e2e8f0);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary, #0f172a);
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.header-btn:hover {
+    background: var(--primary-color, #2563eb);
+    border-color: var(--primary-color, #2563eb);
+    color: white;
+}
+
+.header-btn i {
+    font-size: 14px;
+}
+
+/* ========================================
+   МОДАЛЬНОЕ ОКНО
+   ======================================== */
+
+.settings-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.settings-modal.active {
+    display: flex;
+}
+
+.settings-content {
+    background: var(--card-bg, #fff);
+    border-radius: 16px;
+    width: 90%;
+    max-width: 1100px;
+    height: 85vh;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 35px rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.3s ease;
+}
+
+/* Шапка модального окна - фиксированная */
+.settings-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    background: #f8fafc;
+    border-radius: 16px 16px 0 0;
+    flex-shrink: 0;
+}
+
+.settings-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.settings-header h3 i {
+    margin-right: 8px;
+    color: #3b82f6;
+}
+
+.settings-close {
+    font-size: 28px;
+    cursor: pointer;
+    color: #94a3b8;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.settings-close:hover {
+    color: #1e293b;
+}
+
+/* Двухколоночный макет - занимает всё оставшееся место */
+.unified-layout {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.unified-layout i {
+    font-size: 18px;
+}
+
+/* Левая колонка - скроллится */
+.unified-left {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Правая колонка */
+.unified-right {
+    width: 320px;
+    padding: 24px;
+    background: #f8fafc;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+/* Стилизация скроллбара для левой колонки */
+.unified-left::-webkit-scrollbar {
+    width: 6px;
+}
+
+.unified-left::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.unified-left::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.unified-left::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Секции настроек */
+.settings-section {
+    margin-bottom: 28px;
+}
+
+.settings-section h4 {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.settings-option {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    font-size: 11px;
+}
+
+.settings-option i {
+    width: 28px;
+    margin-right: 12px;
+    text-align: center;
+    display: inline-block;
+}
+
+.settings-option label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #334155;
+}
+
+.settings-option input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: #3b82f6;
+}
+
+/* Футер модального окна */
+.settings-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color, #e2e8f0);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    background: white;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Кнопки */
+.btn-save {
+    background: var(--primary-color, #2563eb);
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-save:hover {
+    background: #1d4ed8;
+}
+
+.btn-cancel {
+    background: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.btn-cancel:hover {
+    background: #e0e0e0;
+}
+
+/* Информация о расширении */
+.about-info {
+    text-align: center;
+}
+
+.about-info .flask-icon {
+    font-size: 56px;
+    color: #1e293b;
+    margin-bottom: 20px;
+}
+
+.about-info h3 {
+    font-size: 24px;
+    margin: 0 0 8px 0;
+    color: #1e293b;
+}
+
+.about-info .version {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+.about-info .description {
+    color: #475569;
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+.about-info .divider {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid #cbd5e1;
+}
+
+.about-info .author {
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.6;
+}
+
+.about-info .license-link {
+    color: #3b82f6;
+    text-decoration: none;
+    font-size: 12px;
+}
+
+.about-info .license-link:hover {
+    text-decoration: underline;
+}
+
+/* Анимации */
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   АДАПТИВНОСТЬ
+   ======================================== */
+
+@media (max-width: 768px) {
+    .settings-option i {
+        width: 32px;
+        margin-right: 16px;
+    }
+}
+
+@media (max-width: 700px) {
+    .unified-layout {
+        flex-direction: column;
+    }
+    
+    .unified-left {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        max-height: 60vh;
+    }
+    
+    .unified-right {
+        width: auto;
+        flex-shrink: 1;
+    }
+}

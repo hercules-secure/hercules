@@ -176,8 +176,9 @@ export function generateDependenciesHTML(report) {
                         <tr style="background: #f1f5f9;">
                             <th style="padding: 10px; text-align: left;">Название</th>
                             <th style="padding: 10px; text-align: left;">Версия</th>
+                            <th style="padding: 10px; text-align: left;">Лицензия</th>
                             <th style="padding: 10px; text-align: left;">Файл</th>
-                            <th style="padding: 10px; text-align: left;">Количество CVE/CWE</th>
+                            <th style="padding: 10px; text-align: left;">Уязвимости</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -185,6 +186,7 @@ export function generateDependenciesHTML(report) {
                             <tr>
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(dep.name)}</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Alef'">${escapeHtml(dep.version || 'unknown')}</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Ubuntu'">${escapeHtml(dep.licence || 'не найдена')}</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0;">${escapeHtml(dep.file || '-')}</td>
                                 <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-family: 'Alef'">0</td>
                             </tr>

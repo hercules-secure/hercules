@@ -1281,24 +1281,43 @@ class SCAPopupReporter {
     /**
      * Скачать HTML отчет
      */
-    downloadHTML() {
-        try {
-            this.showNotification('Генерация HTML отчета...', 'info');
-            const htmlContent = this.generateFullHTMLReport();
-            const blob = new Blob([htmlContent], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `sca-report-${new Date().toISOString().split('T')[0]}.html`;
-            link.click();
-            URL.revokeObjectURL(url);
-            this.showNotification('HTML отчет успешно скачан', 'success');
-        } catch (error) {
-            alert('HTML download error:', error);
-            this.showNotification('Ошибка при скачивании HTML', 'error');
+downloadHTML() {
+    try {
+        const defaultName = `sca-report-${new Date().toISOString().split('T')[0]}`;
+        let reportName = prompt('Введите имя отчета:', defaultName);
+        
+        // Если пользователь нажал Отмена - ничего не скачиваем
+        if (reportName === null) {
+            return; // ← Выходим из функции, ничего не скачивая
         }
+        
+        // Если ввели пустую строку - используем имя по умолчанию
+        if (reportName.trim() === '') {
+            reportName = defaultName;
+        }
+        
+        // Очищаем имя от недопустимых символов
+        reportName = reportName
+            .trim()
+            .replace(/[<>:"/\\|?*]/g, '_')
+            .replace(/\s+/g, '_')
+            .substring(0, 100);
+        
+        this.showNotification('Генерация HTML отчета...', 'info');
+        const htmlContent = this.generateFullHTMLReport();
+        const blob = new Blob([htmlContent], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${reportName}.html`;
+        link.click();
+        URL.revokeObjectURL(url);
+        this.showNotification(`HTML отчет "${reportName}.html" успешно скачан`, 'success');
+    } catch (error) {
+        console.error('HTML download error:', error);
+        this.showNotification('Ошибка при скачивании HTML', 'error');
     }
-
+}
     /**
      * Скачать PDF отчет
      */

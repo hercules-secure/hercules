@@ -7,8 +7,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="main.css">
-    <link rel="stylesheet" href="modal.css">
-    <link rel="stylesheet" href="sidebar.css">  
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="stylesheet" href="../common/sidebar.css">  
+    <link rel="stylesheet" href="progress.css">  
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
 </head>
 <body>
@@ -36,7 +37,19 @@
                 </div>
                 
                 <div class="tool-divider"></div>
-
+                <div class="tools-grid" id="toolsGrid">
+                    <a href="/config">
+                    <div class="tool-item ">
+                        <div class="tool-icon">
+                            <i class="fas fa-cogs black-icon"></i>
+                        </div>
+                        <div class="tool-info">
+                            <span class="tool-name">Настройки</span>
+                            <span class="tool-desc">Управление параметрами</span>
+                        </div>
+                    </div>
+                   </a> 
+                </div>
             </div>
         </div>
 
@@ -46,7 +59,7 @@
             <h2 class="section-title" id="pageTitle">Выберите источник</h2>
             <div class="header-buttons">
                 <button class="header-btn" id="aboutBtn">
-                    <i class="fas fa-info-circle"></i> Возможности
+                    <i class="fas fa-info-circle"></i> О расширении
                 </button>
             </div>
         </div>
@@ -239,7 +252,7 @@
                     <i class="fas fa-plug"></i>
                 </div>
                 <div class="step-content">
-                    <div class="step-title" id="task6-title">API поиск</div>
+                    <div class="step-title" id="task6-title">API фаззинг</div>
                     <div class="step-status" id="task6-status">Ожидание</div>
                     <div class="step-progress">
                         <div class="step-progress-bar" id="task6-progress" style="width: 0%"></div>
@@ -267,333 +280,6 @@
     </div>
 </div>
 
-<style>
-/* Общий прогресс-бар */
-.overall-progress-section {
-    margin-bottom: 24px;
-    padding: clamp(12px, 4vw, 20px);
-    background: var(--card-bg);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-}
-
-.overall-progress-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 8px;
-    font-size: clamp(12px, 3vw, 14px);
-    font-weight: 500;
-    color: var(--text-primary);
-}
-
-.overall-percent {
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.overall-progress-container {
-    height: clamp(8px, 2vw, 12px);
-    background: var(--bg-secondary);
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.overall-progress {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    border-radius: 20px;
-    transition: width 0.3s ease;
-}
-
-/* Обертка для горизонтального скролла */
-.tasks-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: thin;
-}
-
-.tasks-wrapper::-webkit-scrollbar {
-    height: 6px;
-}
-
-.tasks-wrapper::-webkit-scrollbar-track {
-    background: var(--bg-secondary);
-    border-radius: 3px;
-}
-
-.tasks-wrapper::-webkit-scrollbar-thumb {
-    background: var(--secondary-color);
-    border-radius: 3px;
-}
-
-/* Горизонтальный список */
-.tasks-horizontal {
-    display: flex;
-    align-items: stretch;
-    gap: clamp(4px, 2vw, 12px);
-    padding: clamp(8px, 2vw, 16px);
-    min-width: min-content;
-}
-
-/* Карточка задачи */
-.task-step {
-    flex-shrink: 0;
-    width: clamp(100px, 20vw, 140px);
-    padding: clamp(10px, 2vw, 14px);
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-}
-
-/* Успешный шаг - зеленая рамка */
-.task-step.success-step {
-    border-color: #10b981;
-}
-
-/* Ошибочный шаг - красная рамка */
-.task-step.error-step {
-    border-color: #ef4444;
-}
-
-/* В процессе - синяя рамка */
-.task-step.in-progress-step {
-    border-color: var(--primary-color);
-}
-
-/* Ожидание - серая рамка */
-.task-step.pending-step {
-    border-color: var(--border-color);
-}
-
-.task-step:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-sm);
-}
-
-/* Иконка */
-.step-icon {
-    width: clamp(36px, 8vw, 48px);
-    height: clamp(36px, 8vw, 48px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: clamp(16px, 4vw, 20px);
-    margin: 0 auto 10px;
-    transition: all 0.2s ease;
-    flex-shrink: 0;
-    background: transparent;
-}
-
-/* Цвета иконок */
-.step-icon.pending {
-    color: var(--text-secondary);
-}
-
-.step-icon.in-progress {
-    color: #d97706;
-}
-
-.step-icon.completed {
-    color: #10b981;
-}
-
-.step-icon.error {
-    color: #ef4444;
-}
-
-/* Контент */
-.step-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-}
-
-.step-title {
-    font-weight: 600;
-    font-size: clamp(11px, 3vw, 13px);
-    color: var(--text-primary);
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scrollbar-width: none;
-}
-
-.step-title::-webkit-scrollbar {
-    display: none;
-}
-
-/* Статус - только текст, без фона */
-.step-status {
-    font-size: clamp(9px, 2.5vw, 11px);
-    color: var(--text-secondary);
-    margin-bottom: 8px;
-    white-space: nowrap;
-    background: transparent;
-    padding: 0;
-}
-
-/* Прогресс-бар внутри карточки */
-.step-progress {
-    height: 4px;
-    background: var(--bg-secondary);
-    border-radius: 10px;
-    overflow: hidden;
-    margin-top: auto;
-}
-
-.step-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-    border-radius: 10px;
-    transition: width 0.3s ease;
-}
-
-/* Стрелка между задачами */
-.task-arrow {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    color: var(--text-secondary);
-    font-size: clamp(12px, 3vw, 16px);
-    padding: 0 2px;
-}
-
-/* Адаптив для планшетов */
-@media (max-width: 1024px) and (min-width: 769px) {
-    .task-step {
-        width: 130px;
-    }
-    
-    .step-icon {
-        width: 44px;
-        height: 44px;
-    }
-}
-
-/* Адаптив для мобильных */
-@media (max-width: 768px) {
-    .overall-progress-section {
-        margin-bottom: 16px;
-        padding: 12px;
-    }
-    
-    .tasks-horizontal {
-        gap: 6px;
-        padding: 10px;
-    }
-    
-    .task-step {
-        width: 110px;
-        padding: 10px;
-    }
-    
-    .step-icon {
-        width: 40px;
-        height: 40px;
-        font-size: 18px;
-        margin-bottom: 8px;
-    }
-    
-    .step-title {
-        white-space: normal;
-        word-break: keep-all;
-        line-height: 1.3;
-    }
-    
-    .task-arrow {
-        font-size: 12px;
-    }
-}
-
-/* Адаптив для очень маленьких экранов */
-@media (max-width: 480px) {
-    .task-step {
-        width: 95px;
-        padding: 8px;
-    }
-    
-    .step-icon {
-        width: 36px;
-        height: 36px;
-        font-size: 16px;
-        margin-bottom: 6px;
-    }
-    
-    .step-title {
-        font-size: 10px;
-    }
-    
-    .step-status {
-        font-size: 8px;
-        margin-bottom: 6px;
-    }
-    
-    .task-arrow {
-        font-size: 10px;
-    }
-}
-
-/* Тёмная тема */
-@media (prefers-color-scheme: dark) {
-    .step-icon.pending {
-        color: #94a3b8;
-    }
-    
-    .step-icon.in-progress {
-        color: #fbbf24;
-    }
-    
-    .step-icon.completed {
-        color: #34d399;
-    }
-    
-    .step-icon.error {
-        color: #f87171;
-    }
-}
-
-/* Крупные экраны */
-@media (min-width: 1200px) {
-    .tasks-horizontal {
-        justify-content: center;
-    }
-    
-    .task-step {
-        width: 150px;
-        padding: 16px;
-    }
-    
-    .step-icon {
-        width: 56px;
-        height: 56px;
-        font-size: 24px;
-    }
-    
-    .step-title {
-        font-size: 14px;
-    }
-    
-    .step-status {
-        font-size: 11px;
-    }
-}
-
-/* Очень большие экраны */
-@media (min-width: 1600px) {
-    .task-step {
-        width: 170px;
-    }
-}
-</style>
 
 
         
@@ -606,92 +292,198 @@
 <div id="unifiedModal" class="settings-modal">
     <div class="settings-content">
         <div class="settings-header">
-            <h3><i class="fas fa-puzzle-piece black-icon"></i> Ключевые возможности</h3>
+            <h3><i class="fas fa-puzzle-piece black-icon" style="background: none;"></i> Описание расширения</h3>
             <span class="settings-close" id="unifiedClose">&times;</span>
         </div>
         
         <div class="unified-layout">
-            <!-- Левая колонка: возможности -->
-           <div class="unified-left">
+            <!-- Левая колонка: возможности (скроллится) -->
+            <div class="unified-left">
+                <!-- Ключевые возможности -->
+                <div class="settings-section">
+                    <h4>Ключевые возможности</h4>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 160px;">
+                            <div class="settings-option">
+                                <i class="fas fa-file-alt" style="color: #3B82F6; width: 28px;"></i>
+                                <span>Формирование SBOM (CycloneDX)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-shield-alt" style="color: #EF4444; width: 28px;"></i>
+                                <span>Поиск уязвимостей (OSV/NVD)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-key" style="color: #F59E0B; width: 28px;"></i>
+                                <span>Поиск секретов в коде</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 160px;">
+                            <div class="settings-option">
+                                <i class="fas fa-gavel" style="color: #8B5CF6; width: 28px;"></i>
+                                <span>Проверка лицензий</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-plug" style="color: #06B6D4; width: 28px;"></i>
+                                <span>Анализ API эндпоинтов</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-chart-line" style="color: #10B981; width: 28px;"></i>
+                                <span>CI/CD интеграция</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <div class="settings-section">
-        <h4>Типы анализа</h4>
-        <div class="settings-option">
-            <i class="fas fa-sitemap" style="color: #8B5CF6; width: 28px;"></i>
-            <span>Композиционный анализ</span>
-        </div>
-        <div class="settings-option">
-            <i class="fas fa-code" style="color: #3B82F6; width: 28px;"></i>
-            <span>Анализ исходного кода</span>
-        </div>
-        <div class="settings-option">
-            <i class="fas fa-bullseye" style="color: #EF4444; width: 28px;"></i>
-            <span>Поиск и фаззинг API</span>
-        </div>
-    </div>
-    
-    <div class="settings-section">
-        <h4>Поддерживаемые источники</h4>
-        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 150px;">
-                <div class="settings-option">
-                    <i class="fab fa-github" style="width: 28px;"></i>
-                    <span>GitHub</span>
+                <!-- Поддерживаемые языки (SAST) -->
+                <div class="settings-section">
+                    <h4>Поддерживаемые языки</h4>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option"><i class="fab fa-js" style="color: #F7DF1E; width: 28px;"></i><span>JavaScript/TypeScript</span></div>
+                            <div class="settings-option"><i class="fab fa-python" style="color: #3776AB; width: 28px;"></i><span>Python</span></div>
+                            <div class="settings-option"><i class="fab fa-golang" style="color: #00ADD8; width: 28px;"></i><span>Go</span></div>
+                            <div class="settings-option"><i class="fab fa-java" style="color: #007396; width: 28px;"></i><span>Java</span></div>
+                            <div class="settings-option"><i class="fas fa-file-alt" style="color: #6B7280; width: 28px;"></i><span>YAML</span></div>
+                        </div>
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option"><i class="fab fa-php" style="color: #777BB4; width: 28px;"></i><span>PHP</span></div>
+                            <div class="settings-option"><i class="fas fa-code-branch" style="color: #00599C; width: 28px;"></i><span>C/C++</span></div>
+                            <div class="settings-option"><i class="fas fa-cloud" style="color: #7B42BC; width: 28px;"></i><span>Terraform</span></div>
+                            <div class="settings-option"><i class="fab fa-docker" style="color: #2496ED; width: 28px;"></i><span>Dockerfile</span></div>
+                            <div class="settings-option"><i class="fab fa-rust" style="color: #DEA584; width: 28px;"></i><span>Rust</span></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="settings-option">
-                    <i class="fab fa-gitlab" style="color: #fc6d26; width: 28px;"></i>
-                    <span>GitLab</span>
+                <!-- Поддерживаемые экосистемы (SCA) -->
+                <div class="settings-section">
+                    <h4>Поддерживаемые экосистемы</h4>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option">
+                                <i class="fab fa-npm" style="color: #CB3837; width: 28px;"></i>
+                                <span>npm (Node.js)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-python" style="color: #3776AB; width: 28px;"></i>
+                                <span>PyPI (Python)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-golang" style="color: #00ADD8; width: 28px;"></i>
+                                <span>Go Modules</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-java" style="color: #007396; width: 28px;"></i>
+                                <span>Maven (Java)</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option">
+                                <i class="fab fa-php" style="color: #777BB4; width: 28px;"></i>
+                                <span>Composer (PHP)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-rust" style="color: #DEA584; width: 28px;"></i>
+                                <span>Cargo (Rust)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-gem" style="color: #CC342D; width: 28px;"></i>
+                                <span>RubyGems</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-code-branch" style="color: #00599C; width: 28px;"></i>
+                                <span>C/C++ (CMake/Conan)</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="settings-option">
-                    <i class="fab fa-bitbucket" style="color: blue; width: 28px;"></i>
-                    <span>Bitbucket</span>
+
+                <!-- Форматы API спецификаций (Fuzzing) -->
+                <div class="settings-section">
+                    <h4>Форматы API спецификаций</h4>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option">
+                                <i class="fas fa-file-alt" style="color: #85EA2D; width: 28px;"></i>
+                                <span>Swagger 2.0 (JSON/YAML)</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option">
+                                <i class="fas fa-file-alt" style="color: #6BA539; width: 28px;"></i>
+                                <span>OpenAPI 3.0 / 3.1 (JSON/YAML)</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="settings-option">
-                    <i class="fab fa-git-alt" style="color: #FF6445; width: 28px;"></i>
-                    <span>Корпоративные репозитории</span>
+
+                <!-- Поддерживаемые источники -->
+                <div class="settings-section">
+                    <h4>Поддерживаемые источники</h4>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option">
+                                <i class="fab fa-github" style="width: 28px;"></i>
+                                <span>GitHub</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-gitlab" style="color: #fc6d26; width: 28px;"></i>
+                                <span>GitLab</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-bitbucket" style="color: blue; width: 28px;"></i>
+                                <span>Bitbucket</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 150px;">
+                            <div class="settings-option">
+                                <i class="fas fa-file-archive" style="color: #fc6d26; width: 28px;"></i>
+                                <span>Архив (ZIP/TAR/GZ/7Z)</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fas fa-folder-open" style="color: #8e9016; width: 28px;"></i>
+                                <span>Локальный проект</span>
+                            </div>
+                            <div class="settings-option">
+                                <i class="fab fa-git-alt" style="color: #FF6445; width: 28px;"></i>
+                                <span>Корпоративные репозитории</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Форматы отчетов -->
+                <div class="settings-section">
+                    <h4>Форматы отчетов</h4>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div class="settings-option">
+                            <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
+                            <span>HTML</span>
+                        </div>
+                        <div class="settings-option">
+                            <i class="far fa-file-code" style="width: 28px; color: #F7DF1E;"></i>
+                            <span>JSON</span>
+                        </div>
+                        <div class="settings-option">
+                            <i class="fas fa-file-pdf" style="width: 28px; color: #DC143C;"></i>
+                            <span>PDF</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div style="flex: 1; min-width: 150px;">
-                <div class="settings-option">
-                    <i class="fas fa-file-archive" style="color: #fc6d26; width: 28px;"></i>
-                    <span>Архив</span>
-                </div>
-                <div class="settings-option">
-                    <i class="fas fa-folder-open" style="color: #8e9016; width: 28px;"></i>
-                    <span>Локальный проект</span>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="settings-section">
-        <h4>Форматы отчетов</h4>
-        <div class="settings-option">
-            <i class="fab fa-html5" style="width: 28px;color: #E44D26;"></i>
-            <span>HTML</span>
-        </div>
-        <div class="settings-option">
-            <i class="fas fa-download" style="width: 28px;color: #5E5E5E;"></i>
-            <span>JSON</span>
-        </div>
-    </div>
-</div>
 
-            <!-- Правая колонка: информация -->
+            <!-- Правая колонка: информация о инструменте (не скроллится) -->
             <div class="unified-right">
                 <div class="about-info">
                     <i class="fas fa-flask flask-icon"></i>
-                    <h3>Blender</h3>
+                    <h3>Блендер</h3>
                     <div class="version">Версия 1.0.0</div>
                     <div class="description">
                         Универсальный анализатор безопасности кода, объединяющий SCA, SAST и Fuzzing.
                     </div>
                     <hr class="divider">
-
                 </div>
             </div>
         </div>
-
     </div>
 </div>
 
