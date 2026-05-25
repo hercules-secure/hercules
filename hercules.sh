@@ -275,119 +275,149 @@ cmd_update() {
     print_info "=== ОБНОВЛЕНИЕ СЕРВЕРА ==="
     echo ""
     
-    # 1. Сохраняем текущие параметры запуска
+    # 1. Сохраняем текущие параметры из .env файла (самый надёжный способ)
     print_info "Сохранение параметров запуска..."
     
-    # Читаем текущие переменные окружения из .env
+    SAVED_PORT=""
+    SAVED_HOST=""
+    
+    # Читаем из .env
     if [ -f "$ENV_FILE" ]; then
-        CURRENT_PORT=$(grep -E "^PORT=" "$ENV_FILE" | cut -d'=' -f2)
-        CURRENT_HOST=$(grep -E "^HOST=" "$ENV_FILE" | cut -d'=' -f2)
+        SAVED_PORT=$(grep -E "^PORT=" "$ENV_FILE" | cut -d'=' -f2 | tr -d '"' | tr -d "'" | xargs)
+        SAVED_HOST=$(grep -E "^HOST=" "$ENV_FILE" | cut -d'=' -f2 | tr -d '"' | tr -d "'" | xargs)
         
-        if [ -n "$CURRENT_PORT" ]; then
-            export PORT="$CURRENT_PORT"
-            print_info "Сохранён PORT: $PORT"
-        fi
+        # Убираем комментарии если есть
+        SAVED_PORT=$(echo "$SAVED_PORT" | cut -d'#' -f1 | xargs)
+        SAVED_HOST=$(echo "$SAVED_HOST" | cut -d'#' -f1 | xargs)
         
-        if [ -n "$CURRENT_HOST" ]; then
-            export HOST="$CURRENT_HOST"
-            print_info "Сохранён HOST: $HOST"
+        if [ -n "$SAVED_PORT" ]; then
+            print_info "Найден PORT: $SAVED_PORT"
         fi
-    else
-        print_warning ".env файл не найден, используем значения по умолчанию"
+        if [ -n "$SAVED_HOST" ]; then
+            print_info "Найден HOST: $SAVED_HOST"
+        fi
     fi
     
-    # Сохраняем PID для проверки
-    OLD_PID=""
-    if [ -f "$PID_FILE" ]; then
-        OLD_PID=$(cat "$PID_FILE")
+    # Если в .env нет, проверяем переменные окружения
+    if [ -z "$SAVED_PORT" ] && [ -n "$PORT" ]; then
+        SAVED_PORT="$PORT"
     fi
+    
+    if [ -z "$SAVED_HOST" ] && [ -n "$HOST" ]; then
+        SAVED_HOST="$HOST"
+    fi
+    
+    # Значения по умолчанию
+    SAVED_PORT="${SAVED_PORT:-6565}"
+    SAVED_HOST="${SAVED_HOST:-localhost}"
+    
+    print_info "Будут использованы: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     
     # 2. Останавливаем сервер
     print_info "Остановка сервера..."
     cmd_stop
     sleep 2
     
-    # 3. Сохраняем текущую версию
-    if [ -f ".current_version" ]; then
-        OLD_VERSION=$(cat ".current_version")
-        print_info "Текущая версия: $OLD_VERSION"
-    fi
-    
-    # 4. Git pull
+    # 3. Git pull
     print_info "Выполнение git pull..."
-    
-    # Определяем текущую ветку
-    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null)
-    if [ -z "$CURRENT_BRANCH" ]; then
-        CURRENT_BRANCH="main"
-    fi
-    print_info "Текущая ветка: $CURRENT_BRANCH"
-    
-    # Выполняем pull
+    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
     git pull origin "$CURRENT_BRANCH"
     
-    if [ $? -eq 0 ]; then
-        print_success "Git pull выполнен успешно"
-    else
+    if [ $? -ne 0 ]; then
         print_error "Ошибка git pull"
         exit 1
     fi
+    print_success "Git pull выполнен успешно"
     
-    # 5. Обновляем зависимости
-    print_info "Проверка и обновление зависимостей..."
+    # 4. Обновляем .env файл (восстанавливаем сохранённые параметры)
+    print_info "Восстановление параметров в .env..."
     
+    if [ -f "$ENV_FILE" ]; then
+        # Обновляем или добавляем PORT
+        if grep -q "^PORT=" "$ENV_FILE"; then
+            sed -i "s/^PORT=.*/PORT=$SAVED_PORT/" "$ENV_FILE"
+        else
+            echo "PORT=$SAVED_PORT" >> "$ENV_FILE"
+        fi
+        
+        # Обновляем или добавляем HOST
+        if grep -q "^HOST=" "$ENV_FILE"; then
+            sed -i "s/^HOST=.*/HOST=$SAVED_HOST/" "$ENV_FILE"
+        else
+            echo "HOST=$SAVED_HOST" >> "$ENV_FILE"
+        fi
+        
+        print_success ".env обновлён: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
+    else
+        # Создаём .env с сохранёнными параметрами
+        cat > "$ENV_FILE" << EOF
+# Hercules Server Configuration
+PORT=$SAVED_PORT
+HOST=$SAVED_HOST
+NODE_ENV=production
+GITHUB_TOKEN=
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=15
+MAX_FILE_SIZE=104857600
+LOG_DIR=./logs
+EOF
+        print_success ".env создан с параметрами: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
+    fi
+    
+    # 5. Обновляем зависимости (если package.json изменился)
     if [ -f "package.json" ]; then
-        # Проверяем, изменился ли package.json
         if git diff HEAD@{1} --name-only | grep -q "package.json"; then
-            print_info "package.json изменился, установка зависимостей..."
+            print_info "Обновление зависимостей..."
             npm install --production
         else
-            print_info "package.json не изменился, пропуск npm install"
+            print_info "Зависимости не изменились"
         fi
     fi
     
-    # 6. Восстанавливаем параметры в .env (если были изменены)
-    if [ -n "$CURRENT_PORT" ] || [ -n "$CURRENT_HOST" ]; then
-        print_info "Восстановление параметров в .env..."
-        
-        # Создаём временный файл
-        TMP_ENV=$(mktemp)
-        
-        if [ -f "$ENV_FILE" ]; then
-            cp "$ENV_FILE" "$TMP_ENV"
-            
-            if [ -n "$CURRENT_PORT" ]; then
-                if grep -q "^PORT=" "$TMP_ENV"; then
-                    sed -i "s/^PORT=.*/PORT=$CURRENT_PORT/" "$TMP_ENV"
-                else
-                    echo "PORT=$CURRENT_PORT" >> "$TMP_ENV"
-                fi
-            fi
-            
-            if [ -n "$CURRENT_HOST" ]; then
-                if grep -q "^HOST=" "$TMP_ENV"; then
-                    sed -i "s/^HOST=.*/HOST=$CURRENT_HOST/" "$TMP_ENV"
-                else
-                    echo "HOST=$CURRENT_HOST" >> "$TMP_ENV"
-                fi
-            fi
-            
-            mv "$TMP_ENV" "$ENV_FILE"
-            print_success "Параметры восстановлены в .env"
-        fi
-    fi
-    
-    # 7. Создаём новую версию
+    # 6. Создаём новую версию
     NEW_VERSION=$(date +%Y%m%d%H%M%S)
     echo $NEW_VERSION > ".current_version"
     print_success "Новая версия: $NEW_VERSION"
     
-    # 8. Запускаем сервер с сохранёнными параметрами
-    print_info "Запуск сервера с параметрами:"
-    print_info "  PORT: ${PORT:-6565}"
-    print_info "  HOST: ${HOST:-localhost}"
+    # 7. Запускаем сервер с сохранёнными параметрами
+    print_info "Запуск сервера..."
     
-    cmd_start
+    # Экспортируем переменные
+    export PORT="$SAVED_PORT"
+    export HOST="$SAVED_HOST"
+    
+    # Создаём директорию для логов
+    setup_logs_dir
+    
+    # Запускаем
+    nohup node server.js >> "$LOG_COMBINED" 2>> "$LOG_ERRORS" &
+    echo $! > "$PID_FILE"
+    
+    sleep 3
+    
+    if kill -0 $(cat "$PID_FILE") 2>/dev/null; then
+        print_success "Сервер запущен (PID: $(cat $PID_FILE))"
+        print_info "Порт: $PORT, Хост: $HOST"
+        
+        # Показываем последние строки лога
+        if [ -f "$LOG_COMBINED" ] && [ -s "$LOG_COMBINED" ]; then
+            echo ""
+            print_info "Последние записи в combined.log:"
+            echo "----------------------------------------"
+            tail -5 "$LOG_COMBINED"
+            echo "----------------------------------------"
+        fi
+    else
+        print_error "Ошибка запуска сервера"
+        if [ -f "$LOG_ERRORS" ] && [ -s "$LOG_ERRORS" ]; then
+            echo ""
+            print_info "Содержимое errors.log:"
+            echo "----------------------------------------"
+            cat "$LOG_ERRORS"
+            echo "----------------------------------------"
+        fi
+        exit 1
+    fi
     
     print_success "=== ОБНОВЛЕНИЕ ЗАВЕРШЕНО ==="
 }
