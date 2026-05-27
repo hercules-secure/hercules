@@ -4,11 +4,5 @@
     "versionStatus": "latest",
     "licenseType": "MIT / Open Source",
     "licenseExpiry": "Бессрочная"
-  },
-  "auth": {
-    "authEnabled": true,
-    "loginUsername": "root",
-    "loginPassword": "12345678@qw",
-    "sessionTimeout": "480"
   }
 }
