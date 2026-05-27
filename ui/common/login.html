@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Геркулес | Вход</title>
+    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Ubuntu';
+            background: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        input{
+            font-family: 'Ubuntu';
+            font-size: 11px;
+        }
+        .login-container { width: 100%; max-width: 400px; padding: 20px; }
+        .login-card {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        .login-header { 
+            text-align: center; 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .login-header i { 
+            font-size: 36px; 
+            color: #667eea;
+        }
+        .login-header h2 { 
+            color: #333; 
+            font-size: 28px;
+            margin: 0;
+        }
+        .login-subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            color: #555; 
+            font-weight: 500;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        .form-group input:focus { 
+            outline: none; 
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: black;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: 'Ubuntu';
+            font-size: 11px;
+        }
+        .login-btn:hover { background: #5a67d8; }
+        .login-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .error-message {
+            background: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+            font-size: 14px;
+        }
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <i class="fas fa-rocket" style="color:black"></i>
+                <h2>Геркулес</h2>
+            </div>
+            <div class="login-subtitle">
+                Вход в систему
+            </div>
+            <div id="errorMessage" class="error-message"></div>
+            <div class="form-group">
+                <label>Логин</label>
+                <input type="text" id="username" placeholder="Введите логин" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="password" placeholder="Введите пароль" autocomplete="current-password">
+            </div>
+            <button class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Войти</span>
+            </button>
+        </div>
+    </div>
+    <script>
+        // Получаем элементы
+        const loginBtn = document.getElementById('loginBtn');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const errorDiv = document.getElementById('errorMessage');
+        
+        // Функция показа ошибки
+        function showError(message) {
+            if (errorDiv) {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    if (errorDiv) errorDiv.style.display = 'none';
+                }, 3000);
+            } else {
+                alert(message);
+            }
+        }
+        
+        // Функция показа загрузки
+        function showLoading(isLoading) {
+            if (!loginBtn) return;
+            
+            if (isLoading) {
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<div class="spinner"></div><span>Вход...</span>';
+            } else {
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Войти</span>';
+            }
+        }
+        
+        // Валидация
+        function validateInputs() {
+            const username = usernameInput ? usernameInput.value.trim() : '';
+            const password = passwordInput ? passwordInput.value : '';
+            
+            if (!username) {
+                showError('Введите логин');
+                return false;
+            }
+            
+            if (!password) {
+                showError('Введите пароль');
+                return false;
+            }
+            
+            if (password.length < 4) {
+                showError('Пароль должен быть не менее 4 символов');
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Логин
+        async function login() {
+            // Скрываем предыдущие ошибки
+            if (errorDiv) errorDiv.style.display = 'none';
+            
+            // Клиентская валидация
+            if (!validateInputs()) {
+                return;
+            }
+            
+            const username = usernameInput.value.trim();
+            const password = passwordInput.value;
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Успешный вход
+                    localStorage.setItem('hercules_auth', JSON.stringify({
+                        authenticated: true,
+                        username: username,
+                        loginTime: Date.now()
+                    }));
+                    
+                    // Перенаправляем
+                    const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
+                    localStorage.removeItem('redirectAfterLogin');
+                    window.location.href = redirectUrl;
+                } else {
+                    showError(data.message || data.error || 'Неверный логин или пароль');
+                    showLoading(false);
+                }
+            } catch (err) {
+                console.error('Login error:', err);
+                showError('Ошибка соединения с сервером');
+                showLoading(false);
+            }
+        }
+        
+        // Обработчики событий (проверяем существование элементов)
+        if (loginBtn) {
+            loginBtn.addEventListener('click', login);
+        }
+        
+        if (passwordInput) {
+            passwordInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    login();
+                }
+            });
+        }
+        
+        if (usernameInput) {
+            usernameInput.addEventListener('input', () => {
+                if (errorDiv) errorDiv.style.display = 'none';
+            });
+        }
+        
+        if (passwordInput) {
+            passwordInput.addEventListener('input', () => {
+                if (errorDiv) errorDiv.style.display = 'none';
+            });
+        }
+        
+        // Проверяем существующую сессию
+        async function checkExistingSession() {
+            try {
+                const response = await fetch('/api/auth/check', {
+                    credentials: 'include'
+                });
+                const data = await response.json();
+                
+                if (data.authenticated) {
+                    const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
+                    localStorage.removeItem('redirectAfterLogin');
+                    window.location.href = redirectUrl;
+                }
+            } catch (err) {
+                // Ошибка, ничего не делаем
+            }
+        }
+        
+        // Запускаем проверку сессии
+        checkExistingSession();
+    </script>
+</body>
+</html>

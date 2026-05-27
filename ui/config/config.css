@@ -451,3 +451,81 @@
     margin-top: 8px;
     padding-top: 0;
 }
+
+.settings-actions {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-color, #e2e8f0);
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-family: 'Ubuntu';
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+}
+
+.btn-secondary {
+    background: #64748b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+    font-family: 'Ubuntu';
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.btn-danger {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+}
+
+.settings-input {
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 6px;
+    font-size: 14px;
+    background: var(--input-bg, white);
+    font-family: 'Ubuntu';
+}
+
+.settings-select {
+    width: 200px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color, #e2e8f0);
+    border-radius: 6px;
+    font-size: 14px;
+    background: var(--input-bg, white);
+    font-family: 'Ubuntu';
+}

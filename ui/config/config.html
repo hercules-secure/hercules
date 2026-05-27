@@ -55,55 +55,114 @@
         
         <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА - НАСТРОЙКИ -->
         <div id="center">
+    <div class="settings-container">
+        <h2 class="section-title">
+            Настройки и параметры
+        </h2>
+        
+        <!-- БЛОК: Версия и обновления -->
+        <div class="settings-section" style="margin-top: 12px;">
+            <div class="settings-section-title">
+                <i class="fas fa-code-branch black-icon"></i>
+                <span>Версия и обновления</span>
+            </div>
             
-            <div class="settings-container">
-                <h2 class="section-title">
-                    Настройки и параметры
-                </h2>
-                <!-- БЛОК: Версия и обновления -->
-                <div class="settings-section" style="margin-top: 12px;">
-                    <div class="settings-section-title">
-                        <i class="fas fa-code-branch black-icon"></i>
-                        <span>Версия и обновления</span>
-                    </div>
-                    
-                    <!-- Текущая версия -->
-                    <div class="setting-row">
-                        <div class="setting-info">
-                            <div class="setting-label">Текущая версия</div>
-                            <div class="setting-description">Установленная версия платформы</div>
-                        </div>
-                        <div class="version-badge">
-                            <span class="version-number">v1.0.1</span>
-                            <span class="version-status latest">Актуальная</span>
-                        </div>
-                    </div>
-                    
-                   
-                    <!-- Информация о лицензии -->
-                    <div class="setting-row">
-                        <div class="setting-info">
-                            <div class="setting-label">Лицензия</div>
-                            <div class="setting-description">Тип лицензии и срок действия</div>
-                        </div>
-                        <div class="license-info">
-                            <span class="license-type">MIT / Open Source</span>
-                            <span class="license-expiry">Бессрочная</span>
-                        </div>
-                    </div>
-                    
+            <!-- Текущая версия -->
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Текущая версия</div>
+                    <div class="setting-description">Установленная версия платформы</div>
                 </div>
-
+                <div class="version-badge">
+                    <span class="version-number" id="versionNumber" data-path="info.versionNumber"></span>
+                    <span class="version-status" id="versionStatus" data-path="info.versionStatus">Загрузка...</span>
+                </div>
+            </div>
+            
+            <!-- Информация о лицензии -->
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Лицензия</div>
+                    <div class="setting-description">Тип лицензии и срок действия</div>
+                </div>
+                <div class="license-info">
+                    <span class="license-type" id="licenseType" data-path="info.licenseType">Загрузка...</span>
+                    <span class="license-expiry" id="licenseExpiry" data-path="info.licenseExpiry">Загрузка...</span>
+                </div>
             </div>
         </div>
+
+        <!-- БЛОК: Вход по логину -->
+        <div class="settings-section" style="margin-top: 24px;">
+            <div class="settings-section-title">
+                <i class="fas fa-sign-in-alt" style="color:black"></i>
+                <span>Вход по логину</span>
+            </div>
+            
+            <!-- Включить авторизацию -->
+            <div class="setting-row">
+                <div class="setting-info">
+                    <div class="setting-label">Включить авторизацию</div>
+                    <div class="setting-description">Требовать логин и пароль для доступа</div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="authEnabled" data-path="auth.authEnabled">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <!-- Поля логина и пароля (скрыты по умолчанию) -->
+            <div id="passwordFields" style="display: none;">
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <div class="setting-label">Логин</div>
+                        <div class="setting-description">Имя пользователя для входа</div>
+                    </div>
+                    <input type="text" id="loginUsername" class="settings-input" placeholder="admin" data-path="auth.users.loginUsername">
+                </div>
+                
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <div class="setting-label">Пароль</div>
+                        <div class="setting-description">Пароль для входа (мин. 4 символа)</div>
+                    </div>
+                    <input type="text" id="loginPassword" class="settings-input" data-path="auth.users.loginPassword">
+                </div>
+                
+                <div class="setting-row">
+                    <div class="setting-info">
+                        <div class="setting-label">Таймаут сессии</div>
+                        <div class="setting-description">Время бездействия до выхода (минуты)</div>
+                    </div>
+                    <select id="sessionTimeout" class="settings-select" data-path="auth.users.sessionTimeout">
+                        <option value="15">15 минут</option>
+                        <option value="30" selected>30 минут</option>
+                        <option value="60">1 час</option>
+                        <option value="120">2 часа</option>
+                        <option value="480">8 часов</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Кнопки сохранения и сброса -->
+        <div class="settings-actions">
+            <button class="btn-primary" id="saveBtn">
+                <i class="fas fa-save"></i> Сохранить
+            </button>
+            <button class="btn-secondary" id="resetBtn">
+                <i class="fas fa-undo-alt"></i> Сбросить
+            </button>
+        </div>
     </div>
-    <script type="text/javascript" src="config.js"></script>
+</div>
+    </div>
+    <script type="module" src="client.js"></script>
+    <script type="module" src="config.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script>
         loadMenu();
-
-        
     </script>
 </body>
 </html>

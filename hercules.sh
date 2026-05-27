@@ -265,28 +265,21 @@ cmd_restart() {
     cmd_start
 }
 
-# ============================================
-# НОВАЯ КОМАНДА: UPDATE
-# ============================================
-# ============================================
-# НОВАЯ КОМАНДА: UPDATE
-# ============================================
+
 cmd_update() {
     print_info "=== ОБНОВЛЕНИЕ СЕРВЕРА ==="
     echo ""
     
-    # 1. Сохраняем текущие параметры из .env файла (самый надёжный способ)
+    # 1. Сохраняем текущие параметры из .env файла
     print_info "Сохранение параметров запуска..."
     
     SAVED_PORT=""
     SAVED_HOST=""
     
-    # Читаем из .env
     if [ -f "$ENV_FILE" ]; then
         SAVED_PORT=$(grep -E "^PORT=" "$ENV_FILE" | cut -d'=' -f2 | tr -d '"' | tr -d "'" | xargs)
         SAVED_HOST=$(grep -E "^HOST=" "$ENV_FILE" | cut -d'=' -f2 | tr -d '"' | tr -d "'" | xargs)
         
-        # Убираем комментарии если есть
         SAVED_PORT=$(echo "$SAVED_PORT" | cut -d'#' -f1 | xargs)
         SAVED_HOST=$(echo "$SAVED_HOST" | cut -d'#' -f1 | xargs)
         
@@ -298,7 +291,6 @@ cmd_update() {
         fi
     fi
     
-    # Если в .env нет, проверяем переменные окружения
     if [ -z "$SAVED_PORT" ] && [ -n "$PORT" ]; then
         SAVED_PORT="$PORT"
     fi
@@ -307,7 +299,6 @@ cmd_update() {
         SAVED_HOST="$HOST"
     fi
     
-    # Значения по умолчанию
     SAVED_PORT="${SAVED_PORT:-6565}"
     SAVED_HOST="${SAVED_HOST:-localhost}"
     
@@ -318,29 +309,40 @@ cmd_update() {
     cmd_stop
     sleep 2
     
-    # 3. Git pull
-    print_info "Выполнение git pull..."
+    # 3. Git fetch + reset (вместо pull) - только обновления, без локальных изменений
+    print_info "Выполнение git fetch..."
+    
     CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
-    git pull origin "$CURRENT_BRANCH"
+    
+    # Скачиваем изменения
+    git fetch origin "$CURRENT_BRANCH"
     
     if [ $? -ne 0 ]; then
-        print_error "Ошибка git pull"
+        print_error "Ошибка git fetch"
         exit 1
     fi
-    print_success "Git pull выполнен успешно"
     
-    # 4. Обновляем .env файл (восстанавливаем сохранённые параметры)
+    # Применяем изменения (сбрасываем локальные изменения)
+    print_info "Применение изменений (git reset --hard)..."
+    git reset --hard "origin/$CURRENT_BRANCH"
+    
+    if [ $? -ne 0 ]; then
+        print_error "Ошибка git reset"
+        exit 1
+    fi
+    
+    print_success "Git fetch + reset выполнен успешно"
+    
+    # 4. Обновляем .env файл
     print_info "Восстановление параметров в .env..."
     
     if [ -f "$ENV_FILE" ]; then
-        # Обновляем или добавляем PORT
         if grep -q "^PORT=" "$ENV_FILE"; then
             sed -i "s/^PORT=.*/PORT=$SAVED_PORT/" "$ENV_FILE"
         else
             echo "PORT=$SAVED_PORT" >> "$ENV_FILE"
         fi
         
-        # Обновляем или добавляем HOST
         if grep -q "^HOST=" "$ENV_FILE"; then
             sed -i "s/^HOST=.*/HOST=$SAVED_HOST/" "$ENV_FILE"
         else
@@ -349,7 +351,6 @@ cmd_update() {
         
         print_success ".env обновлён: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     else
-        # Создаём .env с сохранёнными параметрами
         cat > "$ENV_FILE" << EOF
 # Hercules Server Configuration
 PORT=$SAVED_PORT
@@ -361,10 +362,10 @@ RATE_LIMIT_WINDOW=15
 MAX_FILE_SIZE=104857600
 LOG_DIR=./logs
 EOF
-        print_success ".env создан с параметрами: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
+        print_success ".env создан"
     fi
     
-    # 5. Обновляем зависимости (если package.json изменился)
+    # 5. Обновляем зависимости
     if [ -f "package.json" ]; then
         if git diff HEAD@{1} --name-only | grep -q "package.json"; then
             print_info "Обновление зависимостей..."
@@ -379,17 +380,14 @@ EOF
     echo $NEW_VERSION > ".current_version"
     print_success "Новая версия: $NEW_VERSION"
     
-    # 7. Запускаем сервер с сохранёнными параметрами
+    # 7. Запускаем сервер
     print_info "Запуск сервера..."
     
-    # Экспортируем переменные
     export PORT="$SAVED_PORT"
     export HOST="$SAVED_HOST"
     
-    # Создаём директорию для логов
     setup_logs_dir
     
-    # Запускаем
     nohup node server.js >> "$LOG_COMBINED" 2>> "$LOG_ERRORS" &
     echo $! > "$PID_FILE"
     
@@ -399,7 +397,6 @@ EOF
         print_success "Сервер запущен (PID: $(cat $PID_FILE))"
         print_info "Порт: $PORT, Хост: $HOST"
         
-        # Показываем последние строки лога
         if [ -f "$LOG_COMBINED" ] && [ -s "$LOG_COMBINED" ]; then
             echo ""
             print_info "Последние записи в combined.log:"
