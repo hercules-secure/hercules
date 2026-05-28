@@ -1,13 +1,17 @@
 
+
 async function loadMenu() {
     const container = document.getElementById('toolsGrid');
     if (!container) return;
     
     container.innerHTML = '<div class="tools-loader"><i class="fas fa-spinner fa-spin"></i><br>Загрузка...</div>';
+
     
     try {
         // Эндпоинт возвращает ТОЛЬКО установленные расширения
         const response = await fetch('/addons/api/extensions/installed');
+
+       
         const data = await response.json();
         
         let html = '';
