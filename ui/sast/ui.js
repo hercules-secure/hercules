@@ -13,6 +13,12 @@ export function showResultsModal(results, onClose) {
         r.severity === 'critical' || r.severity === 'high'
     );
     
+    // Функция для экранирования HTML
+    const escapeHtml = (str) => {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+    
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
     overlay.style.cssText = `
@@ -45,6 +51,32 @@ export function showResultsModal(results, onClose) {
         info: 'Информационный'
     };
 
+    // Функция для отображения блока кода с контекстом
+    const renderCodeBlock = (item) => {
+        if (item.codeBlock && item.codeBlock.lines && item.codeBlock.lines.length > 0) {
+            return `
+                <div style="background: #1f2937; color: #e5e7eb; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 10px; overflow-x: auto;">
+                    ${item.codeBlock.lines.map(line => `
+                        <div style="${line.isVulnerable ? 'background: rgba(239, 68, 68, 0.2); border-left: 3px solid #ef4444; padding-left: 8px;' : 'padding-left: 8px;'}">
+                            <span style="color: #888; display: inline-block; width: 45px;">${line.number}</span>
+                            <span style="${line.isVulnerable ? 'color: #ef4444;' : ''}">${escapeHtml(line.code)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        } else if (item.code) {
+            return `
+                <div style="background: #1f2937; color: #e5e7eb; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 10px; overflow-x: auto;">
+                    <div style="padding-left: 8px;">
+                        <span style="color: #888; display: inline-block; width: 45px;">${item.line || '?'}</span>
+                        <span>${escapeHtml(item.code)}</span>
+                    </div>
+                </div>
+            `;
+        }
+        return '<div style="color: #6c757d; padding: 10px;">Нет данных</div>';
+    };
+
     const criticalHighHtml = criticalHigh.length > 0 ? criticalHigh.map((item) => {
         const shortPath = getShortPath(item.file);
         
@@ -62,15 +94,14 @@ export function showResultsModal(results, onClose) {
                 <span style="color: #6c757d;">${item.ruleId || 'unknown'}</span>
             </div>
             <p style="margin: 0 0 12px 0; font-weight: 500;">${item.message}</p>
-            <div style="background: #1f2937; color: #e5e7eb; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 10px; overflow-x: auto;">
-                ${item.code ? item.code.replace(/</g, '&lt;').replace(/>/g, '&gt;') : ''}
-            </div>
+            ${renderCodeBlock(item)}
             <div style="background: rgba(40, 167, 69, 0.1); padding: 10px; border-radius: 6px; font-size: 12px; color: #28a745;">
                 ${item.recommendation || 'Рекомендация не указана'}
             </div>
         </div>
     `}).join('') : '<div style="text-align: center; padding: 40px;">Критических и высоких уязвимостей не найдено</div>';
 
+    // ... остальной код модального окна без изменений ...
     overlay.innerHTML = `
         <div class="modal-container" style="background: white; border-radius: 16px; width: 90%; max-width: 1000px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.3s ease;">
             <div class="modal-header" style="padding: 20px 24px; background: black; display: flex; justify-content: space-between; align-items: center; color: white;">
@@ -231,12 +262,44 @@ function generateFullHTMLReport(results) {
         info: '#6c757d'
     };
     
+    // Функция для экранирования HTML
+    const escapeHtml = (str) => {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    };
+    
+    // Функция для отображения блока кода с контекстом
+    const renderCodeBlock = (item) => {
+        // Если есть codeBlock с контекстом
+        if (item.codeBlock && item.codeBlock.lines && item.codeBlock.lines.length > 0) {
+            return `
+                <div class="code-block" style="background: #1f2937; color: #e5e7eb; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; margin-bottom: 12px; overflow-x: auto;">
+                    ${item.codeBlock.lines.map(line => `
+                        <div style="${line.isVulnerable ? 'background: rgba(239, 68, 68, 0.2); border-left: 3px solid #ef4444; padding-left: 8px;' : 'padding-left: 8px;'}">
+                            <span style="color: #888; display: inline-block; width: 45px;">${line.number}</span>
+                            <span style="${line.isVulnerable ? 'color: #ef4444;' : ''}">${escapeHtml(line.code)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+        // Если есть просто code (одна строка)
+        else if (item.code) {
+            return `
+                <div class="code-block" style="background: #1f2937; color: #e5e7eb; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; margin-bottom: 12px; overflow-x: auto;">
+                    <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(item.code)}</pre>
+                </div>
+            `;
+        }
+        return '';
+    };
+    
     // Генерируем HTML для всех уязвимостей (не только critical/high)
     const allVulnerabilitiesHtml = allResults.map((item, index) => {
         const shortPath = getShortPath(item.file);
         
         return `
-            <div class="vuln-item" style="background: #f8f9fa; padding: 16px; margin-bottom: 16px; border-radius: 8px; ">
+            <div class="vuln-item" data-severity="${item.severity}" style="background: #f8f9fa; padding: 16px; margin-bottom: 16px; border-radius: 8px; ">
                 <div class="vuln-header" style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
                     <div>
                         <span class="severity-badge" style="display: inline-block; padding: 4px 12px; border-radius: 4px; font-size: 12px; font-weight: bold; color: white; background: ${severityColors[item.severity]};">
@@ -248,14 +311,10 @@ function generateFullHTMLReport(results) {
                     </div>
                     <span class="rule-id" style="color: #6c757d; font-size: 12px;">${item.ruleId || 'unknown'}</span>
                 </div>
-                <p class="vuln-message" style="margin: 0 0 12px 0; font-weight: 500; color: #212529;">${item.message}</p>
-                ${item.code ? `
-                <div class="code-block" style="background: #1f2937; color: #e5e7eb; padding: 12px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 12px; margin-bottom: 12px; overflow-x: auto;">
-                    <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word;">${item.code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</pre>
-                </div>
-                ` : ''}
+                <p class="vuln-message" style="margin: 0 0 12px 0; font-weight: 500; color: #212529;">${escapeHtml(item.message)}</p>
+                ${renderCodeBlock(item)}
                 <div class="recommendation" style="background: rgba(40, 167, 69, 0.1); padding: 12px; border-radius: 6px; font-size: 13px; color: #28a745;">
-                    <strong>Рекомендация:</strong> ${item.recommendation || 'Рекомендация не указана'}
+                    <strong>Рекомендация:</strong> ${escapeHtml(item.recommendation || 'Рекомендация не указана')}
                 </div>
             </div>
         `;
@@ -266,9 +325,9 @@ function generateFullHTMLReport(results) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
-    <title>Геркулес - ${new Date().toLocaleDateString()}</title>
+    <title>Геркулес | SAST - ${new Date().toLocaleDateString()}</title>
     <style>
         * {
             margin: 0;
@@ -278,13 +337,13 @@ function generateFullHTMLReport(results) {
         
         body {
             font-family: 'Ubuntu';
-            background: white;
+            background: #f5f5f5;
             padding: 20px;
             color: #333;
         }
         
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             background: white;
             border-radius: 12px;
@@ -339,7 +398,7 @@ function generateFullHTMLReport(results) {
         .stat-card .value {
             font-size: 36px;
             font-weight: bold;
-            font-family: 'Alef'
+            font-family: 'Alef';
         }
         
         .total-card {
@@ -371,7 +430,7 @@ function generateFullHTMLReport(results) {
             cursor: pointer;
             font-size: 14px;
             transition: all 0.2s;
-            font-family:'Ubuntu';
+            font-family: 'Ubuntu';
         }
         
         .filter-btn.active {
@@ -391,7 +450,7 @@ function generateFullHTMLReport(results) {
             border-radius: 6px;
             font-size: 14px;
             min-width: 200px;
-            font-family: 'Ubuntu'
+            font-family: 'Ubuntu';
         }
         
         .search-box:focus {
@@ -412,6 +471,23 @@ function generateFullHTMLReport(results) {
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+        
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin-bottom: 12px;
+            overflow-x: auto;
+        }
+        
+        .code-block pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
         }
         
         .footer {
@@ -442,6 +518,7 @@ function generateFullHTMLReport(results) {
             <h1>Геркулес | SAST</h1>
             <div class="meta">
                 <div>Дата генерации: ${new Date().toLocaleString()}</div>
+                <div>Целевой репозиторий: ${results.metadata?.target || 'Не указан'}</div>
             </div>
         </div>
         
@@ -475,14 +552,12 @@ function generateFullHTMLReport(results) {
         <div class="content">
             <div class="filter-bar">
                 <input type="text" class="search-box" id="searchInput" placeholder="Поиск по сообщению, файлу или rule ID...">
-                <button class="filter-btn active" data-filter="all">Все <font style="font-family: 'Alef'">(${results.results.length})</font></button>
-                <button class="filter-btn" data-filter="critical">Критические <font style="font-family: 'Alef'">(${results.summary.bySeverity.critical})</font></button>
-                <button class="filter-btn" data-filter="high">Высокие <font style="font-family: 'Alef'">(${results.summary.bySeverity.high})</font></button>
-                <button class="filter-btn" data-filter="medium">Средние <font style="font-family: 'Alef'">(${results.summary.bySeverity.medium})</font></button>
-                <button class="filter-btn" data-filter="low">Низкие <font style="font-family: 'Alef'">(${results.summary.bySeverity.low})</font></button>
-                <button class="filter-btn" data-filter="info">Инфо <font style="font-family: 'Alef'">(${results.summary.bySeverity.info})</font></button>
-                <button id="expandAllBtn" class="filter-btn" style="background: #28a745; color: white;">Развернуть</button>
-                <button id="collapseAllBtn" class="filter-btn" style="background: #6c757d; color: white;">Свернуть</button>
+                <button class="filter-btn active" data-filter="all">Все <span style="font-family: 'Alef'">(${results.results.length})</span></button>
+                <button class="filter-btn" data-filter="critical">Критические <span style="font-family: 'Alef'">(${results.summary.bySeverity.critical})</span></button>
+                <button class="filter-btn" data-filter="high">Высокие <span style="font-family: 'Alef'">(${results.summary.bySeverity.high})</span></button>
+                <button class="filter-btn" data-filter="medium">Средние <span style="font-family: 'Alef'">(${results.summary.bySeverity.medium})</span></button>
+                <button class="filter-btn" data-filter="low">Низкие <span style="font-family: 'Alef'">(${results.summary.bySeverity.low})</span></button>
+                <button class="filter-btn" data-filter="info">Инфо <span style="font-family: 'Alef'">(${results.summary.bySeverity.info})</span></button>
             </div>
             
             <div id="vulnerabilitiesContainer">
@@ -497,7 +572,6 @@ function generateFullHTMLReport(results) {
     </div>
     
     <script>
-        // Фильтрация по severity
         const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
         const vulnItems = document.querySelectorAll('.vuln-item');
         const searchInput = document.getElementById('searchInput');
@@ -508,11 +582,11 @@ function generateFullHTMLReport(results) {
             const searchTerm = searchInput.value.toLowerCase();
             
             vulnItems.forEach(item => {
-                const severity = getSeverityFromItem(item);
+                const severity = item.dataset.severity;
                 const message = item.querySelector('.vuln-message')?.textContent.toLowerCase() || '';
                 const filePath = item.querySelector('.file-path')?.textContent.toLowerCase() || '';
                 const ruleId = item.querySelector('.rule-id')?.textContent.toLowerCase() || '';
-                const code = item.querySelector('.code-block pre')?.textContent.toLowerCase() || '';
+                const code = item.querySelector('.code-block')?.textContent.toLowerCase() || '';
                 
                 const matchesFilter = currentFilter === 'all' || severity === currentFilter;
                 const matchesSearch = searchTerm === '' || 
@@ -521,23 +595,8 @@ function generateFullHTMLReport(results) {
                     ruleId.includes(searchTerm) ||
                     code.includes(searchTerm);
                 
-                if (matchesFilter && matchesSearch) {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
+                item.style.display = (matchesFilter && matchesSearch) ? 'block' : 'none';
             });
-        }
-        
-        function getSeverityFromItem(item) {
-            const badge = item.querySelector('.severity-badge');
-            if (!badge) return 'info';
-            const text = badge.textContent.toLowerCase();
-            if (text.includes('критический')) return 'critical';
-            if (text.includes('высокий')) return 'high';
-            if (text.includes('средний')) return 'medium';
-            if (text.includes('низкий')) return 'low';
-            return 'info';
         }
         
         filterBtns.forEach(btn => {
@@ -551,20 +610,6 @@ function generateFullHTMLReport(results) {
         
         searchInput.addEventListener('input', filterItems);
         
-        // Развернуть/свернуть все (если есть детали)
-        document.getElementById('expandAllBtn')?.addEventListener('click', () => {
-            document.querySelectorAll('.code-block').forEach(block => {
-                block.style.display = 'block';
-            });
-        });
-        
-        document.getElementById('collapseAllBtn')?.addEventListener('click', () => {
-            document.querySelectorAll('.code-block').forEach(block => {
-                block.style.display = 'none';
-            });
-        });
-        
-        // Анимация появления
         console.log('Отчет загружен, найдено уязвимостей: ${results.results.length}');
     </script>
 </body>
