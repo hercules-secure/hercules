@@ -55,9 +55,9 @@ export function showResultsModal(results, onClose) {
     const renderCodeBlock = (item) => {
         if (item.codeBlock && item.codeBlock.lines && item.codeBlock.lines.length > 0) {
             return `
-                <div style="background: #1f2937; color: #e5e7eb; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 10px; overflow-x: auto;">
+                <div style="background: #49505b; color: #e5e7eb; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 12px; margin-bottom: 10px; overflow-x: auto;">
                     ${item.codeBlock.lines.map(line => `
-                        <div style="${line.isVulnerable ? 'background: rgba(239, 68, 68, 0.2); border-left: 3px solid #ef4444; padding-left: 8px;' : 'padding-left: 8px;'}">
+                        <div style="${line.isVulnerable ? 'border: rgba(239, 68, 68, 0.2); border-left: 3px solid #ef4444; padding-left: 8px;' : 'padding-left: 8px;'}">
                             <span style="color: #888; display: inline-block; width: 45px;">${line.number}</span>
                             <span style="${line.isVulnerable ? 'color: #ef4444;' : ''}">${escapeHtml(line.code)}</span>
                         </div>

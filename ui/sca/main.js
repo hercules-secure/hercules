@@ -982,7 +982,7 @@ class SCAPopupReporter {
             .sca-popup {
                 background: white;
                 width: 100%;
-                max-width: 1200px;
+                max-width: 1400px;
                 max-height: 90vh;
                 border-radius: 12px;
                 box-shadow: 0 10px 40px rgba(0,0,0,0.3);
@@ -1113,7 +1113,7 @@ class SCAPopupReporter {
             .sca-vuln-table {
                 width: 100%;
                 border-collapse: collapse;
-                min-width: 500px;
+                min-width: 600px;
                 font-family: 'Ubuntu';
                 font-size: 14px;
             }
@@ -1139,6 +1139,87 @@ class SCAPopupReporter {
             .sca-cve-link:hover {
                 text-decoration: underline;
             }
+            .sca-vuln-row {
+                cursor: pointer;
+            }
+            .sca-vuln-row:hover {
+                background: #f8f9fa;
+            }
+            .sca-expand-icon {
+                transition: transform 0.2s;
+                display: inline-block;
+                width: 20px;
+                text-align: center;
+                font-size: 14px;
+                color: #667eea;
+            }
+            .sca-expand-icon.expanded {
+                transform: rotate(90deg);
+            }
+            .sca-details-row {
+                display: none;
+                background: #f8f9fa;
+            }
+            .sca-details-row.show {
+                display: table-row;
+            }
+            .sca-details-cell {
+                padding: 15px 20px !important;
+            }
+            .sca-details-container {
+                background: white;
+                border-radius: 8px;
+                padding: 15px;
+                margin: 5px 0;
+                border: 1px solid #e5e7eb;
+            }
+            .sca-details-section {
+                margin-bottom: 12px;
+            }
+            .sca-details-label {
+                font-weight: 600;
+                color: #374151;
+                font-size: 13px;
+                margin-bottom: 5px;
+            }
+            .sca-details-value {
+                color: #4b5563;
+                font-size: 13px;
+                word-break: break-word;
+            }
+            .sca-details-value code {
+                background: #f3f4f6;
+                padding: 2px 6px;
+                border-radius: 4px;
+                font-size: 12px;
+                font-family: monospace;
+            }
+            .sca-reachable-true {
+                color: #dc3545;
+                font-weight: bold;
+            }
+            .sca-reachable-false {
+                color: #28a745;
+                font-weight: bold;
+            }
+            .sca-reachable-unknown {
+                color: #ffc107;
+                font-weight: bold;
+            }
+            .sca-files-list {
+                list-style: none;
+                padding: 0;
+                margin: 5px 0 0 0;
+            }
+            .sca-files-list li {
+                font-size: 12px;
+                padding: 4px 0;
+                font-family: monospace;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .sca-files-list li:last-child {
+                border-bottom: none;
+            }
         `;
         
         const stats = this.extractStats();
@@ -1146,9 +1227,10 @@ class SCAPopupReporter {
         
         popup.innerHTML = `
             <div class="sca-popup-header">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600;">
+                <div class="sca-popup-title">
+                    <i class="fas fas fa-sitemap"></i>
                     Результаты SCA анализа
-                </h3>
+                </div>
                 <button class="sca-popup-close" id="closePopup">&times;</button>
             </div>
             <div class="sca-popup-content">
@@ -1169,6 +1251,14 @@ class SCAPopupReporter {
                         <div class="sca-stat-number" style="color:#fd7e14">${stats.high}</div>
                         <div class="sca-stat-label">Высоких</div>
                     </div>
+                    <div class="sca-stat-card">
+                        <div class="sca-stat-number" style="color:#ffc107">${stats.moderate}</div>
+                        <div class="sca-stat-label">Средних</div>
+                    </div>
+                    <div class="sca-stat-card">
+                        <div class="sca-stat-number" style="color:#28a745">${stats.low}</div>
+                        <div class="sca-stat-label">Низких</div>
+                    </div>
                 </div>
                 
                 <div class="sca-vuln-table-container">
@@ -1176,15 +1266,80 @@ class SCAPopupReporter {
                     ${vulnerabilities.length > 0 ? `
                     <table class="sca-vuln-table">
                         <thead>
-                            <tr><th>Компонент</th><th>CVE ID</th><th>Описание</th><th>Серьезность</th></tr>
+                            <tr>
+                                <th style="width: 30px"></th>
+                                <th>Компонент</th>
+                                <th>CVE ID</th>
+                                <th>Описание</th>
+                                <th>Серьезность</th>
+                                <th>Достижимость</th>
+                            </tr>
                         </thead>
                         <tbody>
-                            ${vulnerabilities.map(v => `
-                                <tr>
+                            ${vulnerabilities.map((v, idx) => `
+                                <tr class="sca-vuln-row" data-idx="${idx}">
+                                    <td class="sca-expand-td"><span class="sca-expand-icon">▶</span></td>
                                     <td><strong>${this.escapeHtml(v.component)}</strong> (${v.version})</td>
                                     <td><a href="${v.url}" target="_blank" class="sca-cve-link">${v.id}</a></td>
                                     <td style="font-size:13px">${this.escapeHtml(v.description.substring(0, 150))}${v.description.length > 150 ? '...' : ''}</td>
                                     <td class="sca-severity-${v.severity}">${v.severity}</td>
+                                    <td class="sca-reachable-${v.reachable}">${v.reachableTitle}</td>
+                                </tr>
+                                <tr class="sca-details-row" data-details-idx="${idx}">
+                                    <td colspan="6" class="sca-details-cell">
+                                        <div class="sca-details-container">
+                                            <div class="sca-details-section">
+                                                <div class="sca-details-label">Полное описание</div>
+                                                <div class="sca-details-value">${this.escapeHtml(v.description)}</div>
+                                            </div>
+                                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                                <div class="sca-details-section">
+                                                    <div class="sca-details-label">Опубликовано</div>
+                                                    <div class="sca-details-value">${v.published || 'Не указано'}</div>
+                                                </div>
+                                                <div class="sca-details-section">
+                                                    <div class="sca-details-label">Обновлено</div>
+                                                    <div class="sca-details-value">${v.updated || 'Не указано'}</div>
+                                                </div>
+                                                <div class="sca-details-section">
+                                                    <div class="sca-details-label">CVSS Score</div>
+                                                    <div class="sca-details-value">${v.score || 'Не указано'}</div>
+                                                </div>
+                                                <div class="sca-details-section">
+                                                    <div class="sca-details-label">Статус анализа</div>
+                                                    <div class="sca-details-value">${v.analysis || 'Не указано'}</div>
+                                                </div>
+                                            </div>
+                                            ${v.reachableDetails && v.reachableDetails.files && v.reachableDetails.files.length > 0 ? `
+                                            <div class="sca-details-section">
+                                                <div class="sca-details-label">Файлы с использованием (${v.reachableDetails.files.length})</div>
+                                                <ul class="sca-files-list">
+                                                    ${v.reachableDetails.files.slice(0, 10).map(f => `<li><code>${this.escapeHtml(f)}</code></li>`).join('')}
+                                                    ${v.reachableDetails.files.length > 10 ? `<li><em>...и еще ${v.reachableDetails.files.length - 10} файлов</em></li>` : ''}
+                                                </ul>
+                                            </div>
+                                            ` : ''}
+                                            ${v.reachableDetails && v.reachableDetails.locations && v.reachableDetails.locations.length > 0 ? `
+                                            <div class="sca-details-section">
+                                                <div class="sca-details-label">Точное расположение</div>
+                                                <ul class="sca-files-list">
+                                                    ${v.reachableDetails.locations.slice(0, 10).map(l => `<li><code>${this.escapeHtml(l.file)}${l.line ? `:${l.line}` : ''}</code> <span style="color:#888">(${l.type})</span></li>`).join('')}
+                                                </ul>
+                                            </div>
+                                            ` : ''}
+                                            ${v.reachable === 'REACHABLE' ? `
+                                            <div class="sca-details-section">
+                                                <div class="sca-details-label" style="color:#dc3545">Предупреждение</div>
+                                                <div class="sca-details-value">Уязвимость достижима в коде проекта. Рекомендуется немедленное обновление компонента.</div>
+                                            </div>
+                                            ` : v.reachable === 'NOT_REACHABLE' ? `
+                                            <div class="sca-details-section">
+                                                <div class="sca-details-label" style="color:#28a745">Информация</div>
+                                                <div class="sca-details-value">Уязвимость не достижима - компонент не используется в коде или находится в development зависимостях.</div>
+                                            </div>
+                                            ` : ''}
+                                        </div>
+                                    </td>
                                 </tr>
                             `).join('')}
                         </tbody>
@@ -1210,6 +1365,28 @@ class SCAPopupReporter {
         document.body.appendChild(overlay);
         
         this.addEventListeners(overlay);
+        this.addExpandHandlers(overlay);
+    }
+    
+    addExpandHandlers(overlay) {
+        const rows = overlay.querySelectorAll('.sca-vuln-row');
+        
+        rows.forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (e.target.tagName === 'A') return;
+                
+                const idx = row.dataset.idx;
+                const detailsRow = overlay.querySelector(`.sca-details-row[data-details-idx="${idx}"]`);
+                const expandIcon = row.querySelector('.sca-expand-icon');
+                
+                if (detailsRow) {
+                    detailsRow.classList.toggle('show');
+                    if (expandIcon) {
+                        expandIcon.classList.toggle('expanded');
+                    }
+                }
+            });
+        });
     }
     
     escapeHtml(str) {
@@ -1254,13 +1431,17 @@ class SCAPopupReporter {
             version: v.component?.version || 'Unknown',
             severity: v.ratings?.[0]?.severity || v.severity || 'UNKNOWN',
             url: v.source?.url || `https://osv.dev/vulnerability/${v.id}`,
-            description: v.description || 'Нет описания'
+            description: v.description || 'Нет описания',
+            reachable: v.reachable === true ? 'REACHABLE' : (v.reachable === false ? 'NOT_REACHABLE' : 'UNKNOWN'),
+            reachableTitle: v.reachable === true ? 'Да' : (v.reachable === false ? 'Нет' : 'Не определено'),
+            published: v.published || 'Не указано',
+            updated: v.updated || 'Не указано',
+            score: v.ratings?.[0]?.score || 'Не указано',
+            reachableDetails: v.reachableDetails || {},
+            analysis: v.analysis?.state || 'Не указано'
         }));
     }
 
-    /**
-     * Скачать JSON отчет
-     */
     downloadJSON() {
         try {
             const dataStr = JSON.stringify(this.report, null, 2);
@@ -1273,54 +1454,46 @@ class SCAPopupReporter {
             URL.revokeObjectURL(url);
             this.showNotification('JSON отчет успешно скачан', 'success');
         } catch (error) {
-            alert('JSON download error:', error);
+            console.error('JSON download error:', error);
             this.showNotification('Ошибка при скачивании JSON', 'error');
         }
     }
 
-    /**
-     * Скачать HTML отчет
-     */
-downloadHTML() {
-    try {
-        const defaultName = `sca-report-${new Date().toISOString().split('T')[0]}`;
-        let reportName = prompt('Введите имя отчета:', defaultName);
-        
-        // Если пользователь нажал Отмена - ничего не скачиваем
-        if (reportName === null) {
-            return; // ← Выходим из функции, ничего не скачивая
+    downloadHTML() {
+        try {
+            const defaultName = `sca-report-${new Date().toISOString().split('T')[0]}`;
+            let reportName = prompt('Введите имя отчета:', defaultName);
+            
+            if (reportName === null) {
+                return;
+            }
+            
+            if (reportName.trim() === '') {
+                reportName = defaultName;
+            }
+            
+            reportName = reportName
+                .trim()
+                .replace(/[<>:"/\\|?*]/g, '_')
+                .replace(/\s+/g, '_')
+                .substring(0, 100);
+            
+            this.showNotification('Генерация HTML отчета...', 'info');
+            const htmlContent = this.generateFullHTMLReport();
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${reportName}.html`;
+            link.click();
+            URL.revokeObjectURL(url);
+            this.showNotification(`HTML отчет "${reportName}.html" успешно скачан`, 'success');
+        } catch (error) {
+            console.error('HTML download error:', error);
+            this.showNotification('Ошибка при скачивании HTML', 'error');
         }
-        
-        // Если ввели пустую строку - используем имя по умолчанию
-        if (reportName.trim() === '') {
-            reportName = defaultName;
-        }
-        
-        // Очищаем имя от недопустимых символов
-        reportName = reportName
-            .trim()
-            .replace(/[<>:"/\\|?*]/g, '_')
-            .replace(/\s+/g, '_')
-            .substring(0, 100);
-        
-        this.showNotification('Генерация HTML отчета...', 'info');
-        const htmlContent = this.generateFullHTMLReport();
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${reportName}.html`;
-        link.click();
-        URL.revokeObjectURL(url);
-        this.showNotification(`HTML отчет "${reportName}.html" успешно скачан`, 'success');
-    } catch (error) {
-        console.error('HTML download error:', error);
-        this.showNotification('Ошибка при скачивании HTML', 'error');
     }
-}
-    /**
-     * Скачать PDF отчет
-     */
+    
     downloadPDF() {
         try {
             this.showNotification('Подготовка PDF отчета...', 'info');
@@ -1348,21 +1521,18 @@ downloadHTML() {
                         document.body.removeChild(iframe);
                     }, 1000);
                 } catch (err) {
-                    alert('Print error:', err);
+                    console.error('Print error:', err);
                     this.showNotification('Ошибка при генерации PDF', 'error');
                     document.body.removeChild(iframe);
                 }
             }, 500);
             
         } catch (error) {
-            alert('PDF generation error:', error);
+            console.error('PDF generation error:', error);
             this.showNotification('Ошибка при генерации PDF: ' + error.message, 'error');
         }
     }
 
-    /**
-     * Генерация полноценного HTML отчета
-     */
     generateFullHTMLReport() {
         const stats = this.extractStats();
         const vulnerabilities = this.extractVulnerabilities();
@@ -1376,460 +1546,345 @@ downloadHTML() {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
     <title>Геркулес | SCA - ${new Date().toLocaleDateString()}</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: 'Ubuntu';
-            background: white;
-            padding: 20px;
-            color: #333;
-        }
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-        }
-        .header {
-            background: black;
-            color: white;
-            padding: 40px;
-        }
-        .header h1 {
-            font-size: 32px;
-            margin-bottom: 10px;
-        }
-        .header .meta {
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            padding: 30px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #e9ecef;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-            transition: transform 0.2s;
-        }
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-        .stat-card .label {
-            font-size: 14px;
-            color: #6c757d;
-            margin-bottom: 10px;
-        }
-        .stat-card .value {
-            font-size: 36px;
-            font-weight: bold;
-        }
-        .content {
-            padding: 30px;
-        }
-        .filter-bar {
-            margin-bottom: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .filter-btn {
-            padding: 8px 16px;
-            background: #e9ecef;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .filter-btn.active {
-            background: #667eea;
-            color: white;
-        }
-        .filter-btn:hover {
-            background: #667eea;
-            color: white;
-        }
-        .search-box {
-            flex: 1;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            font-size: 14px;
-            min-width: 200px;
-        }
-        .search-box:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .vuln-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        .vuln-table th {
-            background: #f8f9fa;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid #dee2e6;
-        }
-        .vuln-table td {
-            padding: 12px;
-            border-bottom: 1px solid #dee2e6;
-            font-size: 13px;
-            font-family: 'Ubuntu';
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Ubuntu', sans-serif; background: white; padding: 20px; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: #1a1a2a; color: white; padding: 40px; }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }
+        .stat-card .label { font-size: 14px; color: #6c757d; margin-bottom: 10px; }
+        .stat-card .value { font-size: 36px; font-weight: bold; }
+        .content { padding: 30px; }
+        .vuln-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .vuln-table th { background: #f8f9fa; padding: 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; }
+        .vuln-table td { padding: 12px; border-bottom: 1px solid #dee2e6; font-size: 13px; }
         .severity-CRITICAL { color: #dc3545; font-weight: bold; }
         .severity-HIGH { color: #fd7e14; font-weight: bold; }
         .severity-MODERATE { color: #ffc107; }
         .severity-LOW { color: #28a745; }
-        .footer {
-            background: #f8f9fa;
-            padding: 20px 30px;
-            text-align: center;
-            color: #6c757d;
-            font-size: 12px;
-            border-top: 1px solid #e9ecef;
-        }
+        .footer { background: #f8f9fa; padding: 20px 30px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }
         @media (max-width: 768px) {
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .vuln-table {
-                font-size: 12px;
-            }
-            .vuln-table th, .vuln-table td {
-                padding: 8px;
-            }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .vuln-table { font-size: 12px; }
+            .vuln-table th, .vuln-table td { padding: 8px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Геркулес | SCA</h1>
-            <div class="meta">
-                <div>Дата генерации: ${new Date().toLocaleString()}</div>
-            </div>
+            <h1>🛡️ Геркулес | SCA отчет</h1>
+            <div>Дата генерации: ${new Date().toLocaleString()}</div>
         </div>
         
         <div class="stats">
-            <div class="stat-card">
-                <div class="label">Компонентов</div>
-                <div class="value" style="color: #667eea;">${stats.components}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Уязвимостей</div>
-                <div class="value" style="color: #fd7e14;">${stats.vulnerabilities}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Критических</div>
-                <div class="value" style="color: #dc3545;">${stats.critical}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Высоких</div>
-                <div class="value" style="color: #fd7e14;">${stats.high}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Средних</div>
-                <div class="value" style="color: #ffc107;">${stats.moderate}</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">Низких</div>
-                <div class="value" style="color: #28a745;">${stats.low}</div>
-            </div>
+            <div class="stat-card"><div class="label">Компонентов</div><div class="value" style="color: #667eea;">${stats.components}</div></div>
+            <div class="stat-card"><div class="label">Уязвимостей</div><div class="value" style="color: #fd7e14;">${stats.vulnerabilities}</div></div>
+            <div class="stat-card"><div class="label">Критических</div><div class="value" style="color: #dc3545;">${stats.critical}</div></div>
+            <div class="stat-card"><div class="label">Высоких</div><div class="value" style="color: #fd7e14;">${stats.high}</div></div>
+            <div class="stat-card"><div class="label">Средних</div><div class="value" style="color: #ffc107;">${stats.moderate}</div></div>
+            <div class="stat-card"><div class="label">Низких</div><div class="value" style="color: #28a745;">${stats.low}</div></div>
         </div>
         
         <div class="content">
-            <div class="filter-bar">
-                <input type="text" class="search-box" id="searchInput" placeholder="Поиск по компоненту, CVE ID или описанию...">
-                <button class="filter-btn active" data-filter="all">Все <font style="font-family: 'Alef'">(${vulnerabilities.length})</font></button>
-                <button class="filter-btn" data-filter="CRITICAL">Критические <font style="font-family: 'Alef'">(${stats.critical})</font></button>
-                <button class="filter-btn" data-filter="HIGH">Высокие <font style="font-family: 'Alef'">(${stats.high})</font></button>
-                <button class="filter-btn" data-filter="MODERATE">Средние <font style="font-family: 'Alef'">(${stats.moderate})</font></button>
-                <button class="filter-btn" data-filter="LOW">Низкие <font style="font-family: 'Alef'">(${stats.low})</font></button>
-            </div>
-            
-            <table class="vuln-table" id="vulnTable">
-                <thead>
-                    <tr>
-                        <th>Компонент</th>
-                        <th>Версия</th>
-                        <th>CVE ID</th>
-                        <th>Описание</th>
-                        <th>Серьезность</th>
-                    </tr>
-                </thead>
-                <tbody id="vulnTableBody">
+            <h3>Все найденные уязвимости</h3>
+            ${vulnerabilities.length > 0 ? `
+            <table class="vuln-table">
+                <thead><tr><th>Компонент</th><th>Версия</th><th>CVE ID</th><th>Описание</th><th>Серьезность</th><th>Достижимость</th></tr></thead>
+                <tbody>
                     ${sortedVulns.map(v => `
-                        <tr data-severity="${v.severity}" data-component="${this.escapeHtml(v.component)}" data-cve="${v.id}" data-description="${this.escapeHtml(v.description)}">
+                        <tr>
                             <td><strong>${this.escapeHtml(v.component)}</strong></td>
                             <td>${v.version}</td>
                             <td><a href="${v.url}" target="_blank" style="color: #0066cc;">${v.id}</a></td>
                             <td style="font-size:13px">${this.escapeHtml(v.description.substring(0, 100))}${v.description.length > 100 ? '...' : ''}</td>
                             <td class="severity-${v.severity}">${v.severity}</td>
+                            <td>${v.reachableTitle}</td>
                         </tr>
                     `).join('')}
+                </tbody>
+            </table>
+            ` : '<div style="text-align:center;padding:40px;">Уязвимостей не найдено</div>'}
+        </div>
+        
+        <div class="footer">
+            <p>Сгенерировано с помощью Геркулес | Анализ выполнен на основе данных публичных баз CVE</p>
+            <p>Рекомендуется обновить уязвимые компоненты до последних версий</p>
+        </div>
+    </div>
+</body>
+</html>`;
+    }
+
+generateFullHTMLReport() {
+    const stats = this.extractStats();
+    const vulnerabilities = this.extractVulnerabilities();
+    
+    const severityOrder = { 'CRITICAL': 0, 'HIGH': 1, 'MODERATE': 2, 'LOW': 3, 'UNKNOWN': 4 };
+    const sortedVulns = [...vulnerabilities].sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
+    
+    return `<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&amp;display=swap">
+    <title>Геркулес | SCA - ${new Date().toLocaleDateString()}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 20px; color: #333; }
+        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%); color: white; padding: 40px; }
+        .header h1 { font-size: 32px; margin-bottom: 10px; }
+        .header .meta { opacity: 0.8; font-size: 14px; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; transition: transform 0.2s; }
+        .stat-card:hover { transform: translateY(-2px); }
+        .stat-card .label { font-size: 14px; color: #6c757d; margin-bottom: 10px; }
+        .stat-card .value { font-size: 36px; font-weight: bold; }
+        .content { padding: 30px; }
+        .filter-bar { margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+        .filter-btn { padding: 8px 16px; background: #e9ecef; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.2s; font-family: 'Ubuntu'; }
+        .filter-btn.active { background: #667eea; color: white; }
+        .filter-btn:hover { background: #667eea; color: white; }
+        .search-box { flex: 1; padding: 8px 12px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; min-width: 200px; font-family: 'Ubuntu'; }
+        .search-box:focus { outline: none; border-color: #667eea; }
+        .vuln-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .vuln-table th { background: #f8f9fa; padding: 14px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; }
+        .vuln-table td { padding: 12px; border-bottom: 1px solid #dee2e6; font-size: 13px; }
+        .severity-CRITICAL { color: #dc3545; font-weight: bold; }
+        .severity-HIGH { color: #fd7e14; font-weight: bold; }
+        .severity-MODERATE { color: #ffc107; font-weight: bold; }
+        .severity-LOW { color: #28a745; font-weight: bold; }
+        .reachable-yes { color: #dc3545; font-weight: bold; }
+        .reachable-no { color: #28a745; font-weight: bold; }
+        .reachable-unknown { color: #ffc107; font-weight: bold; }
+        .footer { background: #f8f9fa; padding: 20px 30px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }
+        .vuln-row { cursor: pointer; }
+        .vuln-row:hover { background: #f8f9fa; }
+        .expand-icon { transition: transform 0.2s; display: inline-block; width: 20px; text-align: center; font-size: 14px; color: #667eea; }
+        .expand-icon.expanded { transform: rotate(90deg); }
+        .details-row { display: none; background: #f8f9fa; }
+        .details-row.show { display: table-row; }
+        .details-cell { padding: 15px 20px !important; }
+        .details-container { background: white; border-radius: 8px; padding: 15px; margin: 5px 0; border: 1px solid #e5e7eb; }
+        .details-section { margin-bottom: 12px; }
+        .details-label { font-weight: 600; color: #374151; font-size: 13px; margin-bottom: 5px; }
+        .details-value { color: #4b5563; font-size: 13px; word-break: break-word; }
+        .details-value code { background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 12px; font-family: monospace; }
+        .files-list { list-style: none; padding: 0; margin: 5px 0 0 0; }
+        .files-list li { font-size: 12px; padding: 4px 0; font-family: monospace; border-bottom: 1px solid #f0f0f0; }
+        .files-list li:last-child { border-bottom: none; }
+        .warning-text { color: #dc3545; }
+        .success-text { color: #28a745; }
+        @media (max-width: 768px) {
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .vuln-table { font-size: 12px; }
+            .vuln-table th, .vuln-table td { padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Геркулес | SCA отчет</h1>
+            <div class="meta">Дата генерации: ${new Date().toLocaleString()}</div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-card"><div class="label">Компонентов</div><div class="value" style="color: #667eea;">${stats.components}</div></div>
+            <div class="stat-card"><div class="label">Уязвимостей</div><div class="value" style="color: #fd7e14;">${stats.vulnerabilities}</div></div>
+            <div class="stat-card"><div class="label">Критических</div><div class="value" style="color: #dc3545;">${stats.critical}</div></div>
+            <div class="stat-card"><div class="label">Высоких</div><div class="value" style="color: #fd7e14;">${stats.high}</div></div>
+            <div class="stat-card"><div class="label">Средних</div><div class="value" style="color: #ffc107;">${stats.moderate}</div></div>
+            <div class="stat-card"><div class="label">Низких</div><div class="value" style="color: #28a745;">${stats.low}</div></div>
+        </div>
+        
+        <div class="content">
+            <div class="filter-bar">
+                <input type="text" class="search-box" id="searchInput" placeholder="Поиск по компоненту, CVE ID или описанию...">
+                <button class="filter-btn active" data-filter="all">Все (${vulnerabilities.length})</button>
+                <button class="filter-btn" data-filter="CRITICAL">Критические (${stats.critical})</button>
+                <button class="filter-btn" data-filter="HIGH">Высокие (${stats.high})</button>
+                <button class="filter-btn" data-filter="MODERATE">Средние (${stats.moderate})</button>
+                <button class="filter-btn" data-filter="LOW">Низкие (${stats.low})</button>
+            </div>
+            
+            <table class="vuln-table" id="vulnTable">
+                <thead>
+                    <tr>
+                        <th style="width: 30px"></th>
+                        <th>Компонент</th>
+                        <th>Версия</th>
+                        <th>CVE ID</th>
+                        <th>Описание</th>
+                        <th>Серьезность</th>
+                        <th>Достижимость</th>
+                    </tr>
+                </thead>
+                <tbody id="vulnTableBody">
+                    ${sortedVulns.map((v, idx) => {
+                        const reachableClass = v.reachable === 'REACHABLE' ? 'yes' : (v.reachable === 'NOT_REACHABLE' ? 'no' : 'unknown');
+                        const reachableTitle = v.reachableTitle;
+                        const descriptionShort = v.description.substring(0, 100) + (v.description.length > 100 ? '...' : '');
+                        
+                        return `
+                        <tr class="vuln-row" data-idx="${idx}" data-severity="${v.severity}" data-component="${this.escapeHtml(v.component)}" data-cve="${v.id}" data-description="${this.escapeHtml(v.description)}">
+                            <td><span class="expand-icon">▶</span></td>
+                            <td><strong>${this.escapeHtml(v.component)}</strong></td>
+                            <td>${v.version}</td>
+                            <td><a href="${v.url}" target="_blank" style="color: #0066cc;">${v.id}</a></td>
+                            <td style="font-size:13px">${this.escapeHtml(descriptionShort)}</td>
+                            <td class="severity-${v.severity}">${v.severity}</td>
+                            <td class="reachable-${reachableClass}">${reachableTitle}</td>
+                        </tr>
+                        <tr class="details-row" data-details-idx="${idx}">
+                            <td colspan="7" class="details-cell">
+                                <div class="details-container">
+                                    <div class="details-section">
+                                        <div class="details-label">Полное описание</div>
+                                        <div class="details-value">${this.escapeHtml(v.description)}</div>
+                                    </div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 12px;">
+                                        <div class="details-section">
+                                            <div class="details-label">Опубликовано</div>
+                                            <div class="details-value">${v.published || 'Не указано'}</div>
+                                        </div>
+                                        <div class="details-section">
+                                            <div class="details-label">Обновлено</div>
+                                            <div class="details-value">${v.updated || 'Не указано'}</div>
+                                        </div>
+                                        <div class="details-section">
+                                            <div class="details-label">CVSS Score</div>
+                                            <div class="details-value">${v.score || 'Не указано'}</div>
+                                        </div>
+                                        <div class="details-section">
+                                            <div class="details-label">Статус анализа</div>
+                                            <div class="details-value">${v.analysis || 'Не указано'}</div>
+                                        </div>
+                                    </div>
+                                    ${v.reachableDetails && v.reachableDetails.files && v.reachableDetails.files.length > 0 ? `
+                                    <div class="details-section">
+                                        <div class="details-label">Файлы с использованием (${v.reachableDetails.files.length})</div>
+                                        <ul class="files-list">
+                                            ${v.reachableDetails.files.slice(0, 10).map(f => `<li><code>${this.escapeHtml(f)}</code></li>`).join('')}
+                                            ${v.reachableDetails.files.length > 10 ? `<li><em>...и еще ${v.reachableDetails.files.length - 10} файлов</em></li>` : ''}
+                                        </ul>
+                                    </div>
+                                    ` : ''}
+                                    ${v.reachableDetails && v.reachableDetails.locations && v.reachableDetails.locations.length > 0 ? `
+                                    <div class="details-section">
+                                        <div class="details-label">Точное расположение</div>
+                                        <ul class="files-list">
+                                            ${v.reachableDetails.locations.slice(0, 10).map(l => `<li><code>${this.escapeHtml(l.file)}${l.line ? ':' + l.line : ''}</code> <span style="color:#888">(${l.type})</span></li>`).join('')}
+                                        </ul>
+                                    </div>
+                                    ` : ''}
+                                    ${v.reachable === 'REACHABLE' ? `
+                                    <div class="details-section">
+                                        <div class="details-label warning-text">Предупреждение</div>
+                                        <div class="details-value">Уязвимость достижима в коде проекта. Рекомендуется немедленное обновление компонента.</div>
+                                    </div>
+                                    ` : v.reachable === 'NOT_REACHABLE' ? `
+                                    <div class="details-section">
+                                        <div class="details-label success-text">Информация</div>
+                                        <div class="details-value">Уязвимость не достижима - компонент не используется в коде или находится в development зависимостях.</div>
+                                    </div>
+                                    ` : ''}
+                                </div>
+                            </td>
+                        </tr>
+                        `;
+                    }).join('')}
                 </tbody>
             </table>
         </div>
         
         <div class="footer">
-            <p>Сгенерировано с помощью Геркулес | Анализ выполнены на основе данных публичных баз CVE</p>
+            <p>Сгенерировано с помощью Геркулес | Анализ выполнен на основе данных публичных баз CVE</p>
             <p>Рекомендуется обновить уязвимые компоненты до последних версий</p>
         </div>
     </div>
     
     <script>
-        const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
-        const searchInput = document.getElementById('searchInput');
-        const tableBody = document.getElementById('vulnTableBody');
-        const rows = Array.from(document.querySelectorAll('#vulnTableBody tr'));
-        
-        let currentFilter = 'all';
-        
-        function filterRows() {
-            const searchTerm = searchInput.value.toLowerCase();
+        (function() {
+            const filterBtns = document.querySelectorAll('.filter-btn[data-filter]');
+            const searchInput = document.getElementById('searchInput');
+            const rows = document.querySelectorAll('.vuln-row');
             
-            rows.forEach(row => {
-                const severity = row.dataset.severity;
-                const component = row.dataset.component?.toLowerCase() || '';
-                const cve = row.dataset.cve?.toLowerCase() || '';
-                const description = row.dataset.description?.toLowerCase() || '';
-                
-                const matchesFilter = currentFilter === 'all' || severity === currentFilter;
-                const matchesSearch = searchTerm === '' || 
-                    component.includes(searchTerm) || 
-                    cve.includes(searchTerm) || 
-                    description.includes(searchTerm);
-                
-                row.style.display = matchesFilter && matchesSearch ? '' : 'none';
+            // Функция для раскрытия/скрытия деталей
+            document.querySelectorAll('.vuln-row').forEach(function(row) {
+                row.addEventListener('click', function(e) {
+                    if (e.target.tagName === 'A') return;
+                    
+                    var idx = row.dataset.idx;
+                    var detailsRow = document.querySelector('.details-row[data-details-idx="' + idx + '"]');
+                    var expandIcon = row.querySelector('.expand-icon');
+                    
+                    if (detailsRow) {
+                        detailsRow.classList.toggle('show');
+                        if (expandIcon) {
+                            expandIcon.classList.toggle('expanded');
+                        }
+                    }
+                });
             });
-        }
-        
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                currentFilter = btn.dataset.filter;
-                filterRows();
+            
+            // Функция фильтрации
+            function filterRows() {
+                var searchTerm = searchInput.value.toLowerCase();
+                
+                rows.forEach(function(row) {
+                    var severity = row.dataset.severity;
+                    var component = (row.dataset.component || '').toLowerCase();
+                    var cve = (row.dataset.cve || '').toLowerCase();
+                    var description = (row.dataset.description || '').toLowerCase();
+                    var matchesFilter = currentFilter === 'all' || severity === currentFilter;
+                    var matchesSearch = searchTerm === '' || 
+                        component.indexOf(searchTerm) !== -1 || 
+                        cve.indexOf(searchTerm) !== -1 || 
+                        description.indexOf(searchTerm) !== -1;
+                    
+                    var display = matchesFilter && matchesSearch ? '' : 'none';
+                    row.style.display = display;
+                    
+                    // Скрываем соответствующие детали
+                    var idx = row.dataset.idx;
+                    var detailsRow = document.querySelector('.details-row[data-details-idx="' + idx + '"]');
+                    if (detailsRow && display === 'none') {
+                        detailsRow.classList.remove('show');
+                        var expandIcon = row.querySelector('.expand-icon');
+                        if (expandIcon) {
+                            expandIcon.classList.remove('expanded');
+                        }
+                    }
+                });
+            }
+            
+            var currentFilter = 'all';
+            
+            filterBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    filterBtns.forEach(function(b) {
+                        b.classList.remove('active');
+                    });
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    filterRows();
+                });
             });
-        });
-        
-        searchInput.addEventListener('input', filterRows);
-        
+            
+            if (searchInput) {
+                searchInput.addEventListener('input', filterRows);
+            }
+        })();
     </script>
 </body>
 </html>`;
-    }
-
-    /**
-     * Генерация HTML для PDF (упрощенная версия)
-     */
-    generatePDFHTML() {
-    const stats = this.extractStats();
-    const vulnerabilities = this.extractVulnerabilities();
-    
-    // Сортируем по серьезности (критические и высокие первыми)
-    const severityOrder = { 'CRITICAL': 0, 'HIGH': 1, 'MODERATE': 2, 'LOW': 3, 'UNKNOWN': 4 };
-    const sortedVulns = [...vulnerabilities].sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
-    
-    return `<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Геркулес | SCA</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Ubuntu;
-            padding: 20px;
-            color: #212529;
-            background: white;
-        }
-        .header {
-            margin-bottom: 30px;
-            text-align: center;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 20px;
-        }
-        h1 {
-            color: #1f2937;
-            font-size: 24px;
-            margin-bottom: 10px;
-        }
-        .date {
-            color: #6c757d;
-            font-size: 12px;
-        }
-        .stats-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin: 30px 0;
-            flex-wrap: wrap;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            border: 1px solid #e5e7eb;
-            flex: 1;
-            min-width: 80px;
-        }
-        .stat-number {
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .stat-label {
-            color: #6c757d;
-            font-size: 11px;
-            margin-top: 5px;
-        }
-        .section-title {
-            margin: 30px 0 20px 0;
-            color: #1f2937;
-            font-size: 18px;
-            padding-left: 12px;
-        }
-        .vuln-item {
-            background: #f8f9fa;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            page-break-inside: avoid;
-        }
-        .severity-CRITICAL { color: #dc3545; font-weight: bold; }
-        .severity-HIGH { color: #fd7e14; font-weight: bold; }
-        .severity-MODERATE { color: #ffc107; }
-        .severity-LOW { color: #28a745; }
-        .footer {
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #e5e7eb;
-            text-align: center;
-            color: #6c757d;
-            font-size: 10px;
-        }
-        .no-vulns {
-            text-align: center;
-            padding: 40px;
-            color: #28a745;
-            font-size: 16px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 12px;
-        }
-        th {
-            background: #f8f9fa;
-            padding: 10px;
-            text-align: left;
-            border-bottom: 2px solid #dee2e6;
-        }
-        td {
-            padding: 10px;
-            border-bottom: 1px solid #dee2e6;
-        }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>SCA отчет по безопасности</h1>
-        <div class="date">Дата генерации: ${new Date().toLocaleString()}</div>
-    </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <div class="stat-number" style="color: #667eea;"><font style="font-family: 'Alef'">${stats.components}</font></div>
-            <div class="stat-label">Компонентов</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: #fd7e14;"><font style="font-family: 'Alef'">${stats.vulnerabilities}</font></div>
-            <div class="stat-label">Уязвимостей</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: #dc3545;"><font style="font-family: 'Alef'">${stats.critical}</font></div>
-            <div class="stat-label">Критические</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: #fd7e14;"><font style="font-family: 'Alef'">${stats.high}</font></div>
-            <div class="stat-label">Высокие</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: #ffc107;"><font style="font-family: 'Alef'">${stats.moderate}</font></div>
-            <div class="stat-label">Средние</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number" style="color: #28a745;"><font style="font-family: 'Alef'">${stats.low}</font></div>
-            <div class="stat-label">Низкие</div>
-        </div>
-    </div>
-    
-    <div class="section-title">
-        Все найденные уязвимости (${vulnerabilities.length})
-    </div>
-    
-    ${vulnerabilities.length > 0 ? `
-    <table>
-        <thead>
-            <tr>
-                <th>Компонент</th>
-                <th>Версия</th>
-                <th>CVE ID</th>
-                <th>Серьезность</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${sortedVulns.map(v => `
-                <tr>
-                    <td><strong>${this.escapeHtml(v.component)}</strong></td>
-                    <td>${v.version}</td>
-                    <td><a href="${v.url}" style="color: #0066cc;">${v.id}</a></td>
-                    <td class="severity-${v.severity}">${v.severity}</td>
-                </tr>
-            `).join('')}
-        </tbody>
-    </table>
-    ` : '<div class="no-vulns">Уязвимостей не найдено</div>'}
-    
-    <div class="footer">
-        <p>Сгенерировано с помощью Геркулес</p>
-        <p>Всего найдено уязвимостей: ${stats.vulnerabilities}</p>
-    </div>
-</body>
-</html>`;
 }
-
-    /**
-     * Показать уведомление
-     */
     showNotification(message, type = 'success') {
         const notification = document.createElement('div');
         notification.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i> ${message}`;
@@ -1917,7 +1972,6 @@ downloadHTML() {
         }
     }
 }
-
 // Обновленная функция handleReportData
 function handleReportData(reportData) {
     if (!reportData) {
