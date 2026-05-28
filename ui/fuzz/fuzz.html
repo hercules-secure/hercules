@@ -241,7 +241,24 @@
             </div>
         </div>
     </div>
-
+    <div id="fuzzModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3> Результаты анализа</h3>
+                <span class="modal-close" onclick="closeFuzzModal()">&times;</span>
+            </div>
+            <div class="modal-body" id="fuzzModalBody">
+            </div>
+            <div class="modal-footer">
+                <button class="start-button" onclick="downloadReport()" style="background: #28a745;">
+                    <i class="fas fa-download"></i> Скачать отчет
+                </button>
+                <button class="start-button" onclick="closeFuzzModal()" style="background: #6c757d;">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
     <!-- Модальное окно с информацией о расширении -->
 
 <div id="unifiedModal" class="settings-modal">
