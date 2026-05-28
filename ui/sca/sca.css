@@ -107,3 +107,6 @@
             margin-top: 3vh;
             margin-bottom: 3vh;
          }
+.sca-reachable-REACHABLE { color: #dc3545; font-weight: normal; font-family: 'Ubuntu';}
+.sca-reachable-NOT_REACHABLE { color: #28a745; font-weight: normal; font-family: 'Ubuntu';}
+.sca-reachable-UNKNOWN { color: #6c757d; font-style: normal; font-family: 'Ubuntu';}
