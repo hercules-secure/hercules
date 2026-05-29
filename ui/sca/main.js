@@ -1228,8 +1228,7 @@ class SCAPopupReporter {
         popup.innerHTML = `
             <div class="sca-popup-header">
                 <div class="sca-popup-title">
-                    <i class="fas fas fa-sitemap"></i>
-                    Результаты SCA анализа
+                    Результаты анализа
                 </div>
                 <button class="sca-popup-close" id="closePopup">&times;</button>
             </div>
