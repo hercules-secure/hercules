@@ -273,24 +273,6 @@
     }
 }
 
-/* Тёмная тема */
-@media (prefers-color-scheme: dark) {
-    .step-icon.pending {
-        color: #94a3b8;
-    }
-    
-    .step-icon.in-progress {
-        color: #fbbf24;
-    }
-    
-    .step-icon.completed {
-        color: #34d399;
-    }
-    
-    .step-icon.error {
-        color: #f87171;
-    }
-}
 
 /* Крупные экраны */
 @media (min-width: 1200px) {

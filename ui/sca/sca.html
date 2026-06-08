@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html data-page="construction" data-version="1.27.0" lang="ru">
+
 <head>
     <title>Геркулес | SCA</title>
     <meta charset="utf-8">
@@ -9,32 +10,75 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../common/main.css">
-    <link rel="stylesheet" href="sca.css">    
-    <link rel="stylesheet" href="../common/sidebar.css">  
-    <link rel="stylesheet" href="../common/modal.css">  
+    <link rel="stylesheet" href="sca.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="stylesheet" href="../common/modal.css">
     <script type="text/javascript" src="main.js"></script>
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
-    
+
     <style>
         .tools-loader {
             text-align: center;
             padding: 20px;
             color: #666;
         }
+
         .tools-loader i {
             font-size: 24px;
             margin-bottom: 10px;
             display: inline-block;
         }
+
         .error-message {
             text-align: center;
             padding: 20px;
             color: #d32f2f;
         }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .header-row .section-title {
+            margin-bottom: 0;
+        }
+
+        .header-btn {
+            background: transparent;
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary, #0f172a);
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .header-btn:hover {
+            background: var(--primary-color, #2563eb);
+            border-color: var(--primary-color, #2563eb);
+            color: white;
+        }
+
+        .header-btn i {
+            font-size: 14px;
+        }
     </style>
 </head>
+
 <body>
     <div id="box" class="fade-in">
         <!-- ЛЕВАЯ КОЛОНКА - МЕНЮ ИНСТРУМЕНТОВ -->
@@ -50,7 +94,7 @@
                     </button>
                 </div>
                 <div class="tool-divider"></div>
-                
+
                 <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
@@ -58,299 +102,156 @@
                         Загрузка...
                     </div>
                 </div>
-               
+
                 <div class="tool-divider"></div>
-                <div class="tools-grid" id="toolsGrid">
-                  <a href="/config">
-                    <div class="tool-item ">
-                        <div class="tool-icon">
-                            <i class="fas fa-cogs black-icon"></i>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">История</span>
+                                <span class="tool-desc">Журнал сканирований</span>
+                            </div>
                         </div>
-                        <div class="tool-info">
-                            <span class="tool-name">Настройки</span>
-                            <span class="tool-desc">Управление параметрами</span>
+                    </a>
+                    <div class="tool-divider"></div>
+                    <a href="/config">
+                        <div class="tool-item ">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Настройки</span>
+                                <span class="tool-desc">Управление параметрами</span>
+                            </div>
                         </div>
-                    </div>
-                   </a> 
+                    </a>
                 </div>
             </div>
         </div>
-        
+
         <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА - РАБОЧАЯ ОБЛАСТЬ -->
-<div id="center">
-    <div class="header-row">
-        <h2 class="section-title" id="pageTitle">Выберите источник</h2>
-        <button class="header-btn" id="aboutBtn">
-            <i class="fas fa-info-circle"></i> О расширении
-        </button>
+        <div id="center">
+            <div class="header-row">
+                <h2 class="section-title" id="pageTitle">Выберите источник</h2>
+                <button class="header-btn" onclick="showToolInfo('sca')">
+                    <i class="fas fa-info-circle"></i> Описание инструмента
+                </button>
+            </div>
+
+            <div class="input-group">
+                <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий"
+                    aria-label="Ссылка на репозиторий github gitlab">
+                <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
+            </div>
+
+            <div class="tech-stack">
+                <div class="platforms-row">
+                    <span class="format-badge">
+                        <i class="fab fa-github fa-1x" style="color: #181717;"></i>
+                        <span>GitHub</span>
+                    </span>
+                    <span class="format-badge">
+                        <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
+                        <span>GitLab</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">
+                    <i class="fas fa-cloud-upload-alt black-icon"></i>
+                </div>
+                <div class="upload-text">
+                    Нажмите для выбора архива или локального проекта<br>
+                    <span style="font-size: 9px">
+                        <div class="icons-row">
+                            <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;"
+                                    title="Загрузить архив"></i></span>
+                            <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;"
+                                    title="Загрузить локальный проект"></i></span>
+                        </div>
+                    </span>
+                </div>
+                <div class="supported-formats">
+                    <span class="supported-format-badge">ZIP</span>
+                    <span class="supported-format-badge">TAR</span>
+                    <span class="supported-format-badge">GZ</span>
+                    <span class="supported-format-badge">7Z</span>
+                </div>
+                <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
+            </div>
+
+            <div class="card-table" style="margin-top: 2vh;">
+                <div class="card-section">
+                    <h2 class="section-title">Подготовка</h2>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">1.1</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Сбор данных</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-section">
+                    <h3 class="section-title">Анализ композиционной модели</h3>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">2.1</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Формирование списка зависимостей</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <span class="task-id">2.2</span>
+                            <span class="task-status pending">В ожидании</span>
+                        </div>
+                        <div class="card-body">
+                            <h4>Анализ зависимостей</h4>
+                            <div class="progress-container">
+                                <div class="progress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     
-    <div class="input-group">
-        <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий" aria-label="Ссылка на репозиторий github gitlab">
-        <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
-    </div>
-    
-    <div class="tech-stack">
-        <div class="platforms-row">
-            <span class="format-badge">
-                <i class="fab fa-github fa-1x" style="color: #181717;"></i>
-                <span>GitHub</span>
-            </span>
-            <span class="format-badge">
-                <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
-                <span>GitLab</span>
-            </span>
-        </div>
-    </div>
-
-    <div class="upload-area" id="uploadArea">
-        <div class="upload-icon">
-            <i class="fas fa-cloud-upload-alt black-icon"></i>
-        </div>
-        <div class="upload-text">
-            Нажмите для выбора архива или локального проекта<br>
-            <span style="font-size: 9px">
-                <div class="icons-row">
-                    <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;" title="Загрузить архив"></i></span>
-                    <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;" title="Загрузить локальный проект"></i></span>
-                </div>
-            </span>
-        </div>
-        <div class="supported-formats">
-            <span class="supported-format-badge">ZIP</span>
-            <span class="supported-format-badge">TAR</span>
-            <span class="supported-format-badge">GZ</span>
-            <span class="supported-format-badge">7Z</span>
-        </div>
-        <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
-    </div>
-
-    <div class="card-table" style="margin-top: 2vh;">
-        <div class="card-section">
-            <h2 class="section-title">Подготовка</h2>
-            
-            <div class="card">
-                <div class="card-header">
-                    <span class="task-id">1.1</span>
-                    <span class="task-status pending">В ожидании</span>
-                </div>
-                <div class="card-body">
-                    <h4>Сбор данных</h4>
-                    <div class="progress-container">
-                        <div class="progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="card-section">
-            <h3 class="section-title">Анализ композиционной модели</h3>
-            
-            <div class="card">
-                <div class="card-header">
-                    <span class="task-id">2.1</span>
-                    <span class="task-status pending">В ожидании</span>
-                </div>
-                <div class="card-body">
-                    <h4>Формирование списка зависимостей</h4>
-                    <div class="progress-container">
-                        <div class="progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card">
-                <div class="card-header">
-                    <span class="task-id">2.2</span>
-                    <span class="task-status pending">В ожидании</span>
-                </div>
-                <div class="card-body">
-                    <h4>Анализ зависимостей</h4>
-                    <div class="progress-container">
-                        <div class="progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-    </div>
-    <!-- Модальное окно -->
 <div id="unifiedModal" class="settings-modal">
     <div class="settings-content">
         <div class="settings-header">
-            <h3><i class="fas fa-puzzle-piece black-icon" style="background: none;"></i> Описание расширения</h3>
-            <span class="settings-close" id="unifiedClose">&times;</span>
+            <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+            <span class="settings-close" onclick="closeToolModal()">&times;</span>
         </div>
-        
         <div class="unified-layout">
-            <!-- Левая колонка: возможности -->
-            <div class="unified-left">
-                <!-- Возможности SCA -->
-                <div class="settings-section">
-                    <h4>Ключевые возможности</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 160px;">
-                            <div class="settings-option">
-                                <i class="fas fa-file-alt" style="color: #3B82F6; width: 28px;"></i>
-                                <span>Формирование SBOM</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-shield-alt" style="color: #EF4444; width: 28px;"></i>
-                                <span>Поиск уязвимостей</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-chart-line" style="color: #10B981; width: 28px;"></i>
-                                <span>Анализ версий</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 160px;">
-                            <div class="settings-option">
-                                <i class="fas fa-gavel" style="color: #8B5CF6; width: 28px;"></i>
-                                <span>Проверка лицензий</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-chart-pie" style="color: #F59E0B; width: 28px;"></i>
-                                <span>Статистика зависимостей</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-file-export" style="color: #06B6D4; width: 28px;"></i>
-                                <span>Экспорт SBOM (CycloneDX/SPDX)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Поддерживаемые экосистемы -->
-                <div class="settings-section">
-                        <h4>Поддерживаемые экосистемы</h4>
-                        <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                            <div style="flex: 1; min-width: 150px;">
-                                <div class="settings-option">
-                                    <i class="fab fa-npm" style="color: #CB3837; width: 28px;"></i>
-                                    <span>npm (Node.js)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fab fa-yarn" style="color: #2C8EBB; width: 28px;"></i>
-                                    <span>Yarn</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fab fa-python" style="color: #3776AB; width: 28px;"></i>
-                                    <span>PyPI (Python)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fab fa-golang" style="color: #00ADD8; width: 28px;"></i>
-                                    <span>Go Modules</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fab fa-java" style="color: #007396; width: 28px;"></i>
-                                    <span>Maven (Java)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fab fa-android" style="color: #3DDC84; width: 28px;"></i>
-                                    <span>Gradle</span>
-                                </div>
-                            </div>
-                            <div style="flex: 1; min-width: 150px;">
-                                <div class="settings-option">
-                                    <i class="fab fa-php" style="color: #777BB4; width: 28px;"></i>
-                                    <span>Composer (PHP)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fab fa-rust" style="color: #DEA584; width: 28px;"></i>
-                                    <span>Cargo (Rust)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fas fa-gem" style="color: #CC342D; width: 28px;"></i>
-                                    <span>RubyGems</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fas fa-box" style="color: #6B7280; width: 28px;"></i>
-                                    <span>NuGet (.NET)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fas fa-code-branch" style="color: #00599C; width: 28px;"></i>
-                                    <span>C/C++ (CMake/Conan)</span>
-                                </div>
-                                <div class="settings-option">
-                                    <i class="fas fa-terminal" style="color: #4EAA25; width: 28px;"></i>
-                                    <span>Make / Autotools</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                <!-- Поддерживаемые источники -->
-                <div class="settings-section">
-                    <h4> Поддерживаемые источники</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fab fa-github" style="width: 28px;"></i>
-                                <span>GitHub</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-gitlab" style="color: #fc6d26; width: 28px;"></i>
-                                <span>GitLab</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-bitbucket" style="color: blue; width: 28px;"></i>
-                                <span>Bitbucket</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fab fa-git-alt" style="color: #FF6445; width: 28px;"></i>
-                                <span>Корпоративные репозитории</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-file-archive" style="color: #fc6d26; width: 28px;"></i>
-                                <span>Архив</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-folder-open" style="color: #8e9016; width: 28px;"></i>
-                                <span>Локальный проект</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Форматы отчетов -->
-                <div class="settings-section">
-                    <h4>Форматы отчетов</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div class="settings-option">
-                            <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
-                            <span>HTML</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="far fa-file-code" style="width: 28px; color: #F7DF1E;"></i>
-                            <span>JSON</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-file-pdf" style="width: 28px; color: #DC143C;"></i>
-                            <span>PDF</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Правая колонка: информация о SCA -->
-            <div class="unified-right">
-                <div class="about-info">
-                    <i class="fas fa-sitemap flask-icon"></i>
-                    <h3>SCA</h3>
-                    <div class="version">Версия 1.0.0</div>
-                    <div class="description">
-                        Инструмент для анализа зависимостей и формирования SBOM
-                    </div>
-                    <hr class="divider">
-                </div>
-            </div>
+            <div class="unified-left"></div>
+            <div class="unified-right"></div>
         </div>
     </div>
 </div>
+
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script type="text/javascript" src="uploader.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="../common/modal.js"></script>
@@ -358,6 +259,9 @@
         // Инициализация для SCA
         loadMenu();
         const scaUploader = initSCAUploader();
+
+
     </script>
 </body>
+
 </html>

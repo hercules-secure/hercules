@@ -742,6 +742,46 @@
     animation: slideIn 0.3s ease-out, fadeOut 2s ease-out 1.7s forwards;
 }
 
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-header .section-title {
+            margin-bottom: 0;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .header-btn {
+            background: transparent;
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary, #0f172a);
+            font-family: 'Ubuntu', sans-serif;
+        }
+        .header-btn:hover {
+            background: var(--primary-color, #2563eb);
+            border-color: var(--primary-color, #2563eb);
+            color: white;
+        }
+        .header-btn i {
+            font-size: 14px;
+        }
+
+
 /* === Анимации (объединённые) === */
 @keyframes slideIn {
     from {

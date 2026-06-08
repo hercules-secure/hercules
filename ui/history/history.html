@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html data-page="construction" data-version="1.27.0" lang="ru">
+
+<head>
+    <title>Геркулес | История сканирований</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="history.css">    
+    <link rel="stylesheet" href="../common/main.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="icon" type="image/x-icon" href="../rocket.ico">
+</head>
+
+<body>
+    <div id="box" class="fade-in">
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title" id="toolsTitle">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Инструменты</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Загрузка...
+                    </div>
+                </div>
+
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                        <div class="tool-item active">
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">История</span>
+                                <span class="tool-desc">Журнал сканирований</span>
+                            </div>
+                        </div>
+                    <div class="tool-divider"></div>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Настройки</span>
+                                <span class="tool-desc">Управление параметрами</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="center">
+            <div class="header-row">
+                <h2 class="section-title">История сканирований</h2>
+                <div style="display: flex; gap: 10px;">
+                    <button class="header-btn" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> Обновить
+                    </button>
+                    <button class="header-btn" id="clearHistoryBtn">
+                        <i class="fas fa-trash-alt"></i> Очистить
+                    </button>
+                </div>
+            </div>
+
+            <div class="history-table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Инструмент</th>
+                            <th>Тип источника</th>
+                            <th>Источник</th>
+                            <th>Дата и время</th>
+                            <th>Длительность</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">
+                                <i class="fas fa-history"></i>
+                                <p>Загрузка истории...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="pagination"></div>
+        </div>
+    </div>
+
+    <div id="detailModal" class="settings-modal" style="display: none;">
+        <div class="settings-content" style="max-width: 550px;">
+            <div class="settings-header">
+                <h3><i class="fas fa-info-circle"></i> Детали сканирования</h3>
+                <span class="settings-close" onclick="closeDetailModal()">&times;</span>
+            </div>
+            <div class="unified-layout">
+                <div class="unified-left" style="width: 100%;">
+                    <div id="detailContent"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="history.js"></script>     
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+
+    <script>
+        loadMenu();
+
+        let currentRecords = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        // Функция извлечения короткого имени из полного пути
+        function getShortName(sourceName, sourceType) {
+            if (!sourceName) return '—';
+            
+            if (sourceType === 'archive') {
+                const parts = sourceName.split(/[/\\]/);
+                return parts[parts.length - 1];
+            } else {
+                let name = sourceName;
+                const parts = name.split('/');
+                let repoName = parts[parts.length - 1];
+                return repoName;
+            }
+        }
+
+        // Загрузка истории (GET /api/history)
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const data = await response.json();
+                
+                if (data.success) {
+                    currentRecords = data.records || [];
+                    renderTable();
+                    renderPagination();
+                } else {
+                    showError('Ошибка загрузки истории');
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                showError('Ошибка соединения');
+            }
+        }
+
+        // Рендер таблицы
+        function renderTable() {
+            const tbody = document.getElementById('historyTableBody');
+            
+            if (!currentRecords.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state">
+                            <i class="fas fa-history"></i>
+                            <p>История сканирований пуста</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageRecords = currentRecords.slice(start, end);
+
+            tbody.innerHTML = pageRecords.map(record => {
+                const shortName = getShortName(record.sourceName, record.sourceType);
+                const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : 'Архив';
+                const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 'source-type-archive';
+                const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : '<i class="fas fa-file-archive"></i>';
+                
+                return `
+                    <tr>
+                        <td><strong>${record.tool?.toUpperCase() || '—'}</strong></td>
+                        <td>
+                            <span class="source-type-badge ${sourceTypeClass}">
+                                ${sourceTypeIcon} ${sourceTypeLabel}
+                            </span>
+                        </td>
+                        <td class="source-name" title="${escapeHtml(record.sourceName)}">
+                            ${escapeHtml(shortName)}
+                        </td>
+                        <td>${new Date(record.endTime || record.startTime).toLocaleString()}</td>
+                        <td>${formatDuration(record.duration)}</td>
+                        <td>
+                            <span class="status-badge status-${record.status}">
+                                ${record.status === 'success' ? 'Успешно' : record.status === 'error' ? 'Ошибка' : 'В процессе'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="action-btn" onclick="viewDetails('${record.tool}', '${record.reportId}')" title="Посмотреть отчет">
+                                <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
+                            </button>
+                           ${record.sourceType === 'repository' ? `
+                            <button id="history-replay" data-tool="${record.tool}" data-url="${record.sourceName}" data-branch="${record.branch || 'main'}" 
+                                 onclick="historyReplay(this.id)"
+                                 style="background: white; border: none; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; color: black; transition: all 0.2s;">
+                                <i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>
+                            </button>
+                        ` : ''}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function formatDuration(ms) {
+            if (!ms && ms !== 0) return '—';
+            if (ms < 1000) return `${ms}ms`;
+            if (ms < 60000) return `${(ms / 1000).toFixed(1)}с`;
+            return `${Math.floor(ms / 60000)}м ${Math.floor((ms % 60000) / 1000)}с`;
+        }
+
+        function renderPagination() {
+            const pagination = document.getElementById('pagination');
+            const totalPages = Math.ceil(currentRecords.length / rowsPerPage);
+            
+            if (totalPages <= 1) {
+                pagination.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            pagination.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+            window.viewDetails = function(tool, reportId) {
+                if (!tool || !reportId) {
+                    console.error('Missing parameters');
+                    return;
+                }
+                const url = `${window.location.origin}/api/${tool}/history/${reportId}`;
+                window.open(url, '_blank', 'noopener,noreferrer');
+            };
+
+        window.closeDetailModal = function() {
+            document.getElementById('detailModal').style.display = 'none';
+        };
+
+        // Очистка истории (DELETE /api/history)
+        async function clearHistory() {
+            if (!confirm('Вы уверены, что хотите очистить всю историю сканирований?')) return;
+            
+            try {
+                const response = await fetch('/api/history', { method: 'DELETE' });
+                const data = await response.json();
+                
+                if (data.success) {
+                    showNotification('История очищена', 'success');
+                    loadHistory();
+                } else {
+                    showNotification('Ошибка очистки', 'error');
+                }
+            } catch (error) {
+                showNotification('Ошибка очистки', 'error');
+            }
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                background: ${type === 'success' ? '#10b981' : '#ef4444'};
+                color: white;
+                padding: 12px 20px;
+                border-radius: 8px;
+                z-index: 1001;
+                animation: slideIn 0.3s ease;
+                font-family: Ubuntu;
+            `;
+            notification.innerHTML = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function showError(message) {
+            const tbody = document.getElementById('historyTableBody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>${message}</p>
+                    </td>
+                </tr>
+            `;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // Обработчики
+        document.getElementById('refreshBtn')?.addEventListener('click', () => loadHistory());
+        document.getElementById('clearHistoryBtn')?.addEventListener('click', () => clearHistory());
+
+        loadHistory();
+    </script>
+</body>
+
+</html>

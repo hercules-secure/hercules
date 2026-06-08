@@ -20,7 +20,6 @@
             align-items: center;
             gap: 10px;
             padding-bottom: 12px;
-            border-bottom: 1px solid var(--border, #e2e8f0);
         }
 
         .settings-section-title i {
@@ -34,6 +33,8 @@
             align-items: center;
             padding: 12px 0;
             border-bottom: 1px solid var(--border, #e2e8f0);
+            font-family: 'Ubuntu';
+            font-size: 13px;
         }
 
         .setting-row:last-child {

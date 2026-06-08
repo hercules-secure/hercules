@@ -1,0 +1,16 @@
+{
+  "records": [
+    {
+      "id": "1780932989826",
+      "tool": "blender",
+      "sourceType": "archive",
+      "sourceName": "taint.zip",
+      "startTime": "2026-06-08T15:36:29.740Z",
+      "endTime": "2026-06-08T15:36:29.826Z",
+      "duration": 86,
+      "reportId": null,
+      "status": "success",
+      "error": null
+    }
+  ]
+}

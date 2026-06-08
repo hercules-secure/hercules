@@ -1,84 +1,203 @@
-{
-  "rules": [
-    {
-      "id": "command-injection",
-      "category": "injection",
-      "message": "Потенциальная инъекция команд (A03:2021)",
-      "severity": "critical",
-      "pattern": "(?:exec|system|popen|Runtime\\.exec|subprocess\\.call|os\\.system|std::process::Command|Child::new)\\s*\\([^)]*\\+(?:req|request|params|input|data)",
-      "flags": "gi",
-      "recommendation": "Избегайте выполнения команд с пользовательским вводом",
-      "languages": ["javascript", "typescript", "python", "java", "php", "go", "rust", "ruby"]
-    },
-    {
-      "id": "sql-injection",
-      "category": "injection",
-      "message": "Потенциальная SQL инъекция (A03:2021)",
-      "severity": "critical",
-      "pattern": "(?:execute|query|exec|raw)\\s*\\(\\s*['\"`][^'\"`]*\\+",
-      "flags": "gi",
-      "recommendation": "Используйте параметризованные запросы или ORM",
-      "languages": ["javascript", "typescript", "python", "java", "php", "go", "ruby", "csharp", "rust"]
-    },
-    {
-      "id": "path-traversal",
-      "category": "owasp",
-      "message": "Потенциальный обход пути (Path Traversal)",
-      "severity": "high",
-      "pattern": "(?:fs\\.(?:readFile|writeFile|readdir|unlink|createReadStream|createWriteStream)|std::fs::(?:read|write|read_to_string|metadata)|std::fs::File::open)\\s*\\([^)]*\\.\\./",
-      "flags": "gi",
-      "recommendation": "Валидируйте пути, используйте path.resolve()",
-      "languages": ["javascript", "typescript", "python", "java", "php", "go", "rust"]
-    },
-    {
-      "id": "ssrf-vulnerability",
-      "category": "ssrf",
-      "message": "SSRF: запрос к пользовательскому URL (A10:2021)",
-      "severity": "critical",
-      "pattern": "(?:axios\\.(?:get|post|put|delete|request)|fetch|http\\.get|https\\.get|requests\\.get|urllib\\.request|HttpClient|reqwest::(?:get|post|put|delete|request))\\s*\\(\\s*(?:req\\.query\\.\\w+|req\\.body\\.\\w+|req\\.params\\.\\w+|url|target|uri|endpoint)\\s*\\)",
-      "flags": "gi",
-      "recommendation": "Валидируйте URL по белому списку доменов",
-      "languages": ["javascript", "typescript", "python", "java", "go", "csharp", "rust"]
-    },
-    {
-      "id": "insecure-deserialization",
-      "category": "owasp",
-      "message": "Небезопасная десериализация (A08:2021)",
-      "severity": "critical",
-      "pattern": "(?:pickle\\.loads|yaml\\.load\\(|unserialize|ObjectInputStream|readObject|XmlSerializer|BinaryFormatter|serde_json::from_str|serde_json::from_reader|bincode::deserialize)\\s*\\([^)]*(?!.*safe)",
-      "flags": "gi",
-      "recommendation": "Используйте JSON с валидацией схемы",
-      "languages": ["python", "java", "php", "ruby", "csharp", "go", "rust"]
-    },
-    {
-      "id": "hardcoded-credentials",
-      "category": "credentials",
-      "message": "Обнаружены жестко закодированные учетные данные",
-      "severity": "critical",
-      "pattern": "(?:password|pass|pwd|secret|api[_-]?key|token|access[_-]?token|refresh[_-]?token)\\s*[=:]\\s*['\"`][^'\"`\\s]{6,}['\"`]",
-      "flags": "gi",
-      "recommendation": "Используйте переменные окружения или менеджер секретов",
-      "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp", "rust"]
-    },
-    {
-      "id": "log-sensitive-data",
-      "category": "config",
-      "message": "Логирование чувствительных данных (A09:2021)",
-      "severity": "high",
-      "pattern": "(?:console\\.log|logger\\.(?:info|debug|warn|error|log)|System\\.out\\.println|logging\\.info|println!|eprintln!)\\s*\\([^)]*(?:password|token|secret|api_key|authorization|cookie|credit_card)",
-      "flags": "gi",
-      "recommendation": "Никогда не логируйте чувствительные данные",
-      "languages": ["javascript", "typescript", "python", "java", "go", "csharp", "php", "ruby", "rust"]
-    },
-    {
-      "id": "race-condition-toctou",
-      "category": "memory",
-      "message": "TOCTOU уязвимость",
-      "severity": "high",
-      "pattern": "if\\s*\\(fs\\.existsSync\\([^)]+\\)\\)\\s*\\{[^}]{0,100}fs\\.(?:readFile|writeFile|unlink|rename|chmod)",
-      "flags": "gi",
-      "recommendation": "Используйте атомарные операции",
-      "languages": ["javascript", "typescript", "python", "go", "java", "csharp", "rust"]
-    }
-  ]
+[
+  {
+    "id": "command-injection",
+    "category": "injection",
+    "message": "Потенциальная инъекция команд (A03:2021)",
+    "severity": "critical",
+    "pattern": "(?:exec|system|popen|Runtime\\.exec|subprocess\\.call|os\\.system|std::process::Command)\\s*\\([^)]*\\+(?:req|request|params|input|data)",
+    "flags": "gi",
+    "recommendation": "Избегайте выполнения команд с пользовательским вводом",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "rust", "ruby"]
+  },
+  {
+    "id": "sql-injection",
+    "category": "injection",
+    "message": "Потенциальная SQL инъекция (A03:2021)",
+    "severity": "critical",
+    "pattern": "(?:execute|query|exec|raw)\\s*\\(\\s*['\"`][^'\"`]*\\+",
+    "flags": "gi",
+    "recommendation": "Используйте параметризованные запросы или ORM",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "ruby", "csharp", "rust"]
+  },
+  {
+    "id": "path-traversal",
+    "category": "owasp",
+    "message": "Потенциальный обход пути (Path Traversal)",
+    "severity": "high",
+    "pattern": "(?:fs\\.(?:readFile|writeFile|readdir|unlink|createReadStream|createWriteStream)|std::fs::(?:read|write|read_to_string|metadata)|std::fs::File::open)\\s*\\([^)]*\\.\\./",
+    "flags": "gi",
+    "recommendation": "Валидируйте пути, используйте path.resolve()",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "rust"]
+  },
+  {
+    "id": "ssrf-vulnerability",
+    "category": "ssrf",
+    "message": "SSRF: запрос к пользовательскому URL (A10:2021)",
+    "severity": "critical",
+    "pattern": "(?:axios\\.(?:get|post|put|delete|request)|fetch|http\\.get|https\\.get|requests\\.get|urllib\\.request|HttpClient|reqwest::(?:get|post|put|delete|request))\\s*\\(\\s*(?:req\\.query\\.\\w+|req\\.body\\.\\w+|req\\.params\\.\\w+|url|target|uri|endpoint)\\s*\\)",
+    "flags": "gi",
+    "recommendation": "Валидируйте URL по белому списку доменов",
+    "languages": ["javascript", "typescript", "python", "java", "go", "csharp", "rust"]
+  },
+  {
+    "id": "insecure-deserialization",
+    "category": "owasp",
+    "message": "Небезопасная десериализация (A08:2021)",
+    "severity": "critical",
+    "pattern": "(?:pickle\\.loads|yaml\\.load\\(|unserialize|ObjectInputStream|readObject|XmlSerializer|BinaryFormatter|serde_json::from_str|serde_json::from_reader|bincode::deserialize)\\s*\\([^)]*(?!.*safe)",
+    "flags": "gi",
+    "recommendation": "Используйте JSON с валидацией схемы",
+    "languages": ["python", "java", "php", "ruby", "csharp", "go", "rust"]
+  },
+  {
+    "id": "hardcoded-credentials",
+    "category": "credentials",
+    "message": "Обнаружены жестко закодированные учетные данные",
+    "severity": "critical",
+    "pattern": "(?:password|pass|pwd|secret|api[_-]?key|token|access[_-]?token|refresh[_-]?token)\\s*[=:]\\s*['\"`][^'\"`\\s]{6,}['\"`]",
+    "flags": "gi",
+    "recommendation": "Используйте переменные окружения или менеджер секретов",
+    "languages": ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp", "rust"]
+  },
+  {
+    "id": "log-sensitive-data",
+    "category": "config",
+    "message": "Логирование чувствительных данных (A09:2021)",
+    "severity": "high",
+    "pattern": "(?:console\\.log|logger\\.(?:info|debug|warn|error|log)|System\\.out\\.println|logging\\.info|println!|eprintln!)\\s*\\([^)]*(?:password|token|secret|api_key|authorization|cookie|credit_card)",
+    "flags": "gi",
+    "recommendation": "Никогда не логируйте чувствительные данные",
+    "languages": ["javascript", "typescript", "python", "java", "go", "csharp", "php", "ruby", "rust"]
+  },
+  {
+    "id": "race-condition-toctou",
+    "category": "memory",
+    "message": "TOCTOU уязвимость",
+    "severity": "high",
+    "pattern": "if\\s*\\(fs\\.existsSync\\([^)]+\\)\\)\\s*\\{[^}]{0,100}fs\\.(?:readFile|writeFile|unlink|rename|chmod)",
+    "flags": "gi",
+    "recommendation": "Используйте атомарные операции",
+    "languages": ["javascript", "typescript", "python", "go", "java", "csharp", "rust"]
+  },
+  {
+    "id": "bola-idor",
+    "category": "authorization",
+    "message": "BOLA/IDOR: прямая подстановка ID без проверки прав доступа",
+    "severity": "critical",
+    "pattern": "(?:@PathVariable|@PathParam|req\\.params\\.|req\\.query\\.|:id|:userId|:accountId|:documentId|:recordId)\\s*(?:[\\w]+)\\s*.*?(?:find|get|fetch|delete|update|save|select|where|findById|findOne|getById|deleteById|updateById)\\s*\\([^)]*\\{?[^}]*(?:id|userId|accountId)",
+    "flags": "gi",
+    "recommendation": "Всегда проверяйте права доступа",
+    "languages": ["javascript", "typescript", "java", "python", "php", "go", "ruby", "csharp", "rust"]
+  },
+  {
+    "id": "xss",
+    "category": "injection",
+    "message": "Потенциальная XSS уязвимость (A07:2021)",
+    "severity": "high",
+    "pattern": "(?:innerHTML|outerHTML|document\\.write|insertAdjacentHTML|dangerouslySetInnerHTML)\\s*=\\s*(?:req|request|params|query|body|\\+.*input)",
+    "flags": "gi",
+    "recommendation": "Используйте textContent или DOMPurify",
+    "languages": ["javascript", "typescript"]
+  },
+  {
+    "id": "mass-assignment",
+    "category": "authorization",
+    "message": "Массовое присваивание (эскалация привилегий)",
+    "severity": "high",
+    "pattern": "(?:Model\\.(?:create|update|insert|upsert)|\\w+\\.(?:save|update|patch|assignAttributes)\\s*\\(\\s*req\\.body|req\\.body\\s*(?:=|:)\\s*\\w+|Object\\.assign\\([^,]+,\\s*req\\.(?:body|query)|c\\.(?:Bind|ShouldBind|BindJSON)\\(&\\w+\\)|fields\\s*=\\s*['\"]__all__['\"])",
+    "flags": "gi",
+    "recommendation": "Используйте DTO с явными разрешенными полями",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "csharp", "ruby"]
+  },
+  {
+    "id": "jwt-none-algorithm",
+    "category": "crypto",
+    "message": "JWT с алгоритмом 'none' - критическая уязвимость",
+    "severity": "critical",
+    "pattern": "\"alg\"\\s*:\\s*\"none\"",
+    "flags": "gi",
+    "recommendation": "Запретите алгоритм 'none', всегда проверяйте подпись JWT",
+    "languages": ["javascript", "typescript", "python", "java", "go", "csharp"]
+  },
+  {
+    "id": "weak-cryptography",
+    "category": "crypto",
+    "message": "Слабый криптографический алгоритм (A02:2021)",
+    "severity": "high",
+    "pattern": "\\b(?:MD5|SHA-?1|DES|RC4|RSA1024)\\s*\\(",
+    "flags": "gi",
+    "recommendation": "Используйте AES-256-GCM, bcrypt, Argon2 или SHA-256",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "csharp", "rust"]
+  },
+  {
+    "id": "nosql-injection",
+    "category": "injection",
+    "message": "Потенциальная NoSQL инъекция",
+    "severity": "critical",
+    "pattern": "(?:\\$where|\\$regex|\\$ne|\\$gt|\\$lt|\\$in|\\$nin|\\$or)\\s*:[^}]*(?:req\\.|params\\.|query\\.|body\\.)",
+    "flags": "gi",
+    "recommendation": "Санируйте входные данные",
+    "languages": ["javascript", "typescript", "python", "java", "go"]
+  },
+  {
+    "id": "xxe",
+    "category": "injection",
+    "message": "XXE (XML External Entity) уязвимость",
+    "severity": "critical",
+    "pattern": "(?:XMLReader|SAXReader|DocumentBuilder|XmlDocument|SimpleXML|DOMDocument).*?(?:parse|load)\\s*\\([^)]*(?!.*(?:disable|Feature|PROHIBIT_DTD))",
+    "flags": "gi",
+    "recommendation": "Отключите внешние сущности",
+    "languages": ["java", "python", "php", "csharp", "javascript", "typescript"]
+  },
+  {
+    "id": "debug-mode-production",
+    "category": "config",
+    "message": "Режим отладки включен в production (A05:2021)",
+    "severity": "high",
+    "pattern": "(?:DEBUG|NODE_ENV|APP_DEBUG|DJANGO_DEBUG|FLASK_DEBUG|ASPNETCORE_ENVIRONMENT)\\s*=\\s*(?:True|true|1|'development'|'dev'|Development)",
+    "flags": "gi",
+    "recommendation": "Отключите режим отладки в production",
+    "languages": ["javascript", "typescript", "python", "java", "php", "go", "csharp", "ruby", "rust"]
+  },
+  {
+    "id": "cors-wildcard",
+    "category": "config",
+    "message": "CORS с '*' разрешает доступ любому домену",
+    "severity": "medium",
+    "pattern": "(?:Access-Control-Allow-Origin|@CrossOrigin|cors\\(\\{).{0,50}(?:\\*|origin:\\s*\\*)",
+    "flags": "gi",
+    "recommendation": "Ограничьте CORS белым списком доверенных доменов",
+    "languages": ["javascript", "typescript", "java", "go", "csharp"]
+  },
+  {
+    "id": "eval",
+    "category": "injection",
+    "message": "Использование eval() - опасная динамическая компиляция",
+    "severity": "critical",
+    "pattern": "\\b(?:eval|Function)\\s*\\([^)]*(?:req|request|params|body|query|input)",
+    "flags": "gi",
+    "recommendation": "Избегайте eval(), используйте безопасные альтернативы",
+    "languages": ["javascript", "typescript", "python"]
+  },
+  {
+    "id": "ldap-injection",
+    "category": "ldap",
+    "message": "Потенциальная LDAP инъекция (A03:2021)",
+    "severity": "critical",
+    "pattern": "(?:ldap_search|ldap_bind|ldap_connect|LdapContext|InitialLdapContext|DirectorySearcher|SearchRequest)\\s*\\([^)]*\\+(?:req|request|params|input|username|password|filter|dn)(?!.*(?:escapeLdapFilter|sanitizeLdap|LdapEncoder))",
+    "flags": "gi",
+    "recommendation": "Используйте экранирование LDAP специальных символов",
+    "languages": ["php", "java", "python", "csharp", "javascript", "typescript"]
+  },
+  {
+  "id": "regex-dos",
+  "category": "injection", 
+  "message": "Потенциальная ReDoS уязвимость в регулярном выражении",
+  "severity": "medium",
+  "pattern": "(?:new\\s+RegExp\\s*\\(|/(?!\\^|\\$))(?![^/]*\\\\.)[^/]*(?:\\(\\w*\\+\\w*\\)\\*|\\w*\\+\\w*\\+\\w*|\\[\\^\\]*\\*\\+|\\|\\w*\\|\\w*\\|)[^/]*/(?:[gimy]+)?",
+  "flags": "gi",
+  "recommendation": "Используйте безопасные альтернативы, ограничьте длину ввода",
+  "languages": ["javascript", "typescript"],
+  "disabled": true
 }
+]

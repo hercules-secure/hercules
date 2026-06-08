@@ -279,3 +279,14 @@
     width: 3px;
     height: 20px;
 }
+
+.tool-icon i,
+.tool-icon .fas,
+.tool-icon .far {
+    font-size: 18px !important;
+    width: 18px;
+    height: 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}

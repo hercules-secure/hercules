@@ -1,0 +1,220 @@
+
+        /* Стили для уведомления о обновлении */
+        .update-notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            padding: 16px 20px;
+            min-width: 300px;
+            max-width: 400px;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+            border-left: 4px solid;
+        }
+        
+        .update-notification.success { border-left-color: #10b981; }
+        .update-notification.error { border-left-color: #ef4444; }
+        .update-notification.warning { border-left-color: #f59e0b; }
+        .update-notification.info { border-left-color: #3b82f6; }
+        
+        .update-notification-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .update-notification-icon {
+            font-size: 24px;
+        }
+        
+        .update-notification-message {
+            flex: 1;
+            font-size: 14px;
+            color: #1e293b;
+        }
+        
+        .update-notification-close {
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 16px;
+        }
+        
+        .update-notification-close:hover {
+            color: #475569;
+        }
+        
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        /* Анимация для кнопки проверки */
+        .checking {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        .checking i {
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Бейдж новой версии */
+        .new-version-badge {
+            background: #10b98120;
+            color: #10b981;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .update-available {
+            background: #fef3c7;
+            border: 1px solid #f59e0b;
+        }
+        
+        .update-btn-small {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 12px;
+            transition: background 0.2s;
+        }
+        
+        .update-btn-small:hover {
+            background: #d97706;
+        }
+
+        /* Модальное окно обновления */
+        .update-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            font-family: 'Ubuntu';
+            font-size: 13px;
+        }
+        .update-modal-content {
+            background: white;
+            border-radius: 12px;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .update-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .update-modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        .update-modal-body {
+            padding: 20px;
+        }
+        .update-version-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            font-family: 'Ubuntu';
+            font-size: 11px;
+        }
+        .current-version-value, .latest-version-value {
+            font-weight: normal;
+            font-family: 'Ubuntu';
+            font-size: 11px;
+        }
+        /* .current-version-value {
+            color: #64748b;
+        }
+        .latest-version-value {
+            color: #f59e0b;
+        } */
+        .update-changelog pre {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            margin-top: 8px;
+            max-height: 200px;
+        }
+        .update-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 16px 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Уведомления */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            z-index: 10001;
+            animation: slideIn 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .notification.success {
+            background: #10b981;
+        }
+        .notification.error {
+            background: #ef4444;
+        }
+        .notification.warning {
+            background: #f59e0b;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }

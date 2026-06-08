@@ -203,7 +203,6 @@
             font-weight: 600;
             color: var(--text-primary);
             padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--primary-color);
             margin-top: 0;
         }
 
@@ -503,61 +502,6 @@
                 flex: 1 1 100%;
             }
         }
-
-        /* Поддержка тёмной темы */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --primary-color: #3b82f6;
-                --primary-hover: #2563eb;
-                --secondary-color: #94a3b8;
-                --bg-color: #0f172a;
-                --card-bg: #1e293b;
-                --text-primary: #f1f5f9;
-                --text-secondary: #cbd5e1;
-                --border-color: #334155;
-            }
-
-            #left, #center, #right, .card, .tool-item {
-                background: var(--card-bg);
-                border-color: var(--border-color);
-            }
-
-            .tool-item:hover {
-                background: #2d3748;
-            }
-
-            .tool-item.active {
-                background: #1e3a8a;
-            }
-
-            #repo {
-                background: #2d3748;
-                color: white;
-                border-color: var(--border-color);
-            }
-
-            .start-button:not(.active) {
-                background: #374151;
-                color: #9ca3af;
-            }
-
-            .participant-item {
-                background: var(--card-bg);
-            }
-
-            .participant-item:hover {
-                background: #2d3748;
-            }
-
-            .join-button {
-                background: #4a5568;
-            }
-
-            .join-button:hover {
-                background: #5a6578;
-            }
-        }
-
         /* Улучшения производительности скролла */
         .card-table,
         .participant-list {
@@ -601,6 +545,7 @@
         .black-icon {
             color: #0f172a !important;
             background: white;
+
         }
         .black-icon.active {
             background: #eff6ff;
@@ -665,13 +610,22 @@
     color: var(--text-primary, #0f172a);
 }
 
-/* Тёмная тема для языков */
-@media (prefers-color-scheme: dark) {
-    .lang-item {
-        background: #1e293b;
-    }
-    
-    .lang-item:hover {
-        background: #334155;
-    }
+.badge-beta-gradient {
+    display: inline-block;
+    padding: 2px 10px;
+    background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6);
+    background-size: 200% 200%;
+    color: white;
+    font-size: 10px;
+    font-weight: 700;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    animation: gradient 3s ease infinite;
+}
+
+@keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
