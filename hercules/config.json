@@ -1,0 +1,60 @@
+{
+  "info": {
+    "versionNumber": "v1.0.2",
+    "licenseType": "Геркулес",
+    "licenseExpiry": "2027-12-31"
+  },
+  "auth": {
+    "authEnabled": false,
+    "loginUsername": "",
+    "loginPassword": "",
+    "sessionTimeout": "30"
+  },
+  "history": {
+    "enabled": true,
+    "retention": 30
+  },
+  "integrations": {
+    "git": {
+      "enabled": false,
+      "tool": "",
+      "secret": "",
+      "branches": "main,develop,security"
+    },
+    "mattermost": {
+      "enabled": false,
+      "webhookUrl": "https://mattermost.example.com/hooks/xxx",
+      "channel": "",
+      "notifyOnSuccess": false,
+      "notifyOnError": false
+    },
+    "email": {
+      "enabled": false,
+      "smtpHost": "smtp.gmail.com",
+      "smtpPort": 587,
+      "from": "noreply@hercules.dev",
+      "to": "admin@example.com",
+      "password": "app-password"
+    },
+    "jira": {
+      "enabled": false,
+      "url": "https://your-domain.atlassian.net",
+      "email": "user@example.com",
+      "token": "",
+      "project": "PROJ",
+      "issueType": "Task",
+      "onCritical": false,
+      "onHigh": false,
+      "onError": false
+    },
+    "yandex": {
+      "enabled": false,
+      "orgId": "",
+      "token": "",
+      "queue": "TEST",
+      "onCritical": false,
+      "onHigh": false,
+      "onError": false
+    }
+  }
+}
