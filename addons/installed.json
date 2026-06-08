@@ -523,14 +523,6 @@
           "name": "JSON"
         }
       ]
-    },
-    "license": {
-      "licenceHash": "E01547CE",
-      "state": "active",
-      "licenseType": "plus",
-      "expiresAt": "2026-06-09T12:25:26.899Z",
-      "activatedAt": "2026-06-08T20:03:40.893Z",
-      "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaWNlbmNlS2V5IjoiNUVBNTk4Q0ItREVDQTAyMDItNjUwODZBRTItRTAxNTQ3Q0UiLCJwcm9kdWN0SWQiOiJibGVuZGVyIiwiZXhwaXJlc0F0IjoiMjAyNi0wNi0wOVQxMjoyNToyNi44OTlaIiwicmVtYWluaW5nRGF5cyI6MSwiaXNzdWVkQXQiOiIyMDI2LTA2LTA4VDIwOjAzOjQwLjk1OFoiLCJpYXQiOjE3ODA5NDkwMjAsImV4cCI6MTc4MTAzNTQyMH0.c8IqW80fwX5Jduw6FkA2jT7kIg7dldqPz1ywqHgSajiopawt8Xe4LwnLtS8eUJwmsj6YZxLGUWxZZ2GyMHeCaUVvcYYx83idcHtSZe6B3Qzh57b_ZFBJTV_TVYPTo0irjj9ooWhGg4-0njrM3k2ze7RVVkxqbBPb89OrV1EjsTN-Q5OO0EGfnQ4F7raXevAyJM_1qxdnHqU_IrA_ztRBt9JGDS34LT579rI5apNkZL1OHy_y_LuGRbXURPUJijdunLNIalULH7iex0KAPsen3uyVm2w3LNpWxQ_FQ7gByjT0ZT0fbZUU1yNgRJ75YXLfskQQ6WMIc5k_LTWrreQUpA"
     }
   }
 ]
