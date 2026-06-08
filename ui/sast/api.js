@@ -9,7 +9,7 @@ export async function fetchArchiveFromUrl(url, branch = null) {
     const payload = { url };
     if (branch) payload.branch = branch;
 
-    const response = await fetch('/api/sast/url', {
+    const response = await fetch('/api/sast/git', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

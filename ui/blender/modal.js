@@ -1,26 +1,7 @@
 // Объединённое модальное окно
 const unifiedModal = document.getElementById('unifiedModal');
 const settingsBtn = document.getElementById('settingsBtn');
-const aboutBtn = document.getElementById('aboutBtn');
 
-// Открыть окно (показывает единое окно)
-if (settingsBtn) {
-    settingsBtn.onclick = () => {
-        unifiedModal.classList.add('active');
-    };
-}
-
-if (aboutBtn) {
-    aboutBtn.onclick = () => {
-        unifiedModal.classList.add('active');
-    };
-}
-
-// Закрытие модального окна
-function closeUnifiedModal() {
-    unifiedModal.classList.remove('active');
-
-}
 
 // Закрывающие элементы
 const closeBtn = document.getElementById('unifiedClose');

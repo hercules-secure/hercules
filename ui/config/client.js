@@ -35,15 +35,10 @@ async function loadSettingsFromServer() {
                 const path = element.getAttribute('data-path');
                 const value = flatConfig[path];
 
-
                 if (value === undefined) return;
                 
                 if (element.type === 'checkbox') {
                     element.checked = value;
-                    if (path === 'auth.authEnabled') {
-                        const passwordFields = document.getElementById('passwordFields');
-                        if (passwordFields) passwordFields.style.display = value ? 'block' : 'none';
-                    }
                 } else if (element.tagName === 'SELECT' || element.tagName === 'INPUT') {
                     element.value = value;
                 } else {
@@ -51,10 +46,57 @@ async function loadSettingsFromServer() {
                 }
             });
             
+            // Автоматически показываем/скрываем блоки по id, которые совпадают с путем
+            for (const [path, value] of Object.entries(flatConfig)) {
+                // Авторизация
+                if (path === 'auth.authEnabled') {
+                    const passwordFields = document.getElementById('passwordFields');
+                    if (passwordFields) passwordFields.style.display = value ? 'block' : 'none';
+                }
+                
+                // История
+                if (path === 'history.enabled') {
+                    const historyRow = document.getElementById('historyStorageRow');
+                    if (historyRow) historyRow.style.display = value ? 'flex' : 'none';
+                }
+                
+                // ========== ИНТЕГРАЦИИ ==========
+                // Git интеграция
+                if (path === 'integrations.git.enabled') {
+                    const gitSettings = document.getElementById('gitIntegrationSettings');
+                    if (gitSettings) gitSettings.style.display = value ? 'block' : 'none';
+                }
+                
+                // Mattermost
+                if (path === 'integrations.mattermost.enabled') {
+                    const mattermostSettings = document.getElementById('mattermostSettings');
+                    if (mattermostSettings) mattermostSettings.style.display = value ? 'block' : 'none';
+                }
+                
+                // Email
+                if (path === 'integrations.email.enabled') {
+                    const emailSettings = document.getElementById('emailSettings');
+                    if (emailSettings) emailSettings.style.display = value ? 'block' : 'none';
+                }
+                
+                // Jira
+                if (path === 'integrations.jira.enabled') {
+                    const jiraSettings = document.getElementById('jiraSettings');
+                    if (jiraSettings) jiraSettings.style.display = value ? 'block' : 'none';
+                }
+                
+                // Yandex Tracker
+                if (path === 'integrations.yandex.enabled') {
+                    const yandexSettings = document.getElementById('yandexSettings');
+                    if (yandexSettings) yandexSettings.style.display = value ? 'block' : 'none';
+                }
+            }
+            
             return config.info;
         }
         return null;
     } catch (error) {
+        
         return null;
     }
 }
@@ -64,12 +106,13 @@ async function loadSettingsFromServer() {
 // Универсальное обновление настроек через PATCH
 async function patchConfig(items) {
     try {
+        
         const response = await fetch('/api/config', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ items })
+            body: JSON.stringify({ items: items })
         });
         
         const data = await response.json();
@@ -82,23 +125,6 @@ async function patchConfig(items) {
     } catch (error) {
         return false;
     }
-}
-
-// Удобные обёртки для обновления
-async function updateAuth(settings) {
-    return await patchConfig([
-        { item: 'auth', ...settings }
-    ]);
-}
-
-async function updateInfo(settings) {
-    return await patchConfig([
-        { item: 'info', ...settings }
-    ]);
-}
-
-async function updateMultiple(updatesArray) {
-    return await patchConfig(updatesArray);
 }
 
 // ==================== АВТОРИЗАЦИЯ ====================
@@ -264,7 +290,7 @@ async function clearHistory() {
 
 // ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
 
-// Получение текущей версии
+// // Получение текущей версии
 async function getCurrentVersion() {
     try {
         const response = await fetch('/api/config');
@@ -279,14 +305,14 @@ async function getCurrentVersion() {
     return 'v1.0.0';
 }
 
+
+
+
 // Экспорт функций
 export {
     // Основные
     loadSettingsFromServer,
     patchConfig,
-    updateAuth,
-    updateInfo,
-    updateMultiple,
     
     // Авторизация
     checkAuthStatus,

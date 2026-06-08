@@ -352,15 +352,15 @@ cmd_update() {
         print_success ".env обновлён: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     else
         cat > "$ENV_FILE" << EOF
-# Hercules Server Configuration
-PORT=$SAVED_PORT
-HOST=$SAVED_HOST
-NODE_ENV=production
-GITHUB_TOKEN=
-RATE_LIMIT_REQUESTS=100
-RATE_LIMIT_WINDOW=15
-MAX_FILE_SIZE=104857600
-LOG_DIR=./logs
+        # Hercules Server Configuration
+        PORT=$SAVED_PORT
+        HOST=$SAVED_HOST
+        NODE_ENV=production
+        GITHUB_TOKEN=
+        RATE_LIMIT_REQUESTS=100
+        RATE_LIMIT_WINDOW=15
+        MAX_FILE_SIZE=104857600
+        LOG_DIR=./logs
 EOF
         print_success ".env создан"
     fi

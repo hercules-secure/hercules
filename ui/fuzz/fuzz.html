@@ -18,44 +18,8 @@
     <link rel="stylesheet" href="../common/main.css">
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     <style>
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-        .page-header .section-title {
-            margin-bottom: 0;
-        }
-        .header-buttons {
-            display: flex;
-            gap: 10px;
-        }
-        .header-btn {
-            background: transparent;
-            border: 1px solid var(--border-color, #e2e8f0);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--text-primary, #0f172a);
-            font-family: 'Ubuntu', sans-serif;
-        }
-        .header-btn:hover {
-            background: var(--primary-color, #2563eb);
-            border-color: var(--primary-color, #2563eb);
-            color: white;
-        }
-        .header-btn i {
-            font-size: 14px;
-        }
+
+       
     </style>
 </head>
 <body>
@@ -83,7 +47,19 @@
                 </div>
                 
                 <div class="tool-divider"></div>
-                <div class="tools-grid" id="toolsGrid">
+                <div class="tools-grid"">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">История</span>
+                                <span class="tool-desc">Журнал сканирований</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="tool-divider"></div>
                     <a href="/config">
                     <div class="tool-item ">
                         <div class="tool-icon">
@@ -101,12 +77,12 @@
 
         <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА -->
         <div id="center">
-            <!-- Заголовок с кнопкой О расширении -->
+
             <div class="page-header">
                 <h2 class="section-title">Выберите источник</h2>
                 <div class="header-buttons">
-                    <button class="header-btn" id="aboutBtn">
-                        <i class="fas fa-info-circle"></i> О расширении
+                    <button class="header-btn" onclick="showToolInfo('fuzz')">
+                        <i class="fas fa-info-circle"></i> Описание инструмента
                     </button>
                 </div>
             </div>
@@ -250,247 +226,32 @@
             <div class="modal-body" id="fuzzModalBody">
             </div>
             <div class="modal-footer">
-                <button class="start-button" onclick="downloadReport()" style="background: #28a745;">
+                <button class="start-button" onclick="downloadReport()" style="background: #28a745; color: white;">
                     <i class="fas fa-download"></i> Скачать отчет
                 </button>
-                <button class="start-button" onclick="closeFuzzModal()" style="background: #6c757d;">
+                <button class="start-button" onclick="closeFuzzModal()" style="background: #6c757d; color: white;">
                     Закрыть
                 </button>
             </div>
         </div>
     </div>
-    <!-- Модальное окно с информацией о расширении -->
-
-<div id="unifiedModal" class="settings-modal">
-    <div class="settings-content">
-        <div class="settings-header">
-            <h3><i class="fas fa-puzzle-piece black-icon" style="background: none;"></i> Описание расширения</h3>
-            <span class="settings-close" id="unifiedClose">&times;</span>
-        </div>
-        
-        <div class="unified-layout">
-            <!-- Левая колонка: возможности -->
-            <div class="unified-left">
-                <div class="settings-section">
-                    <h4>Ключевые возможности</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">
-                        <div class="settings-option">
-                            <i class="fas fa-file-alt" style="width: 28px; color: #85EA2D;"></i>
-                            <span>Swagger 2.0 (JSON/YAML)</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-file-alt" style="width: 28px; color: #6BA539;"></i>
-                            <span>OpenAPI 3.0 / 3.1 (JSON/YAML)</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-bolt" style="width: 28px; color: #F59E0B;"></i>
-                            <span>Интеллектуальный фаззинг</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-chart-line" style="width: 28px; color: #10B981;"></i>
-                            <span>Анализ безопасности API</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-plug" style="width: 28px; color: #3B82F6;"></i>
-                            <span>Автоматическая генерация тестов</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-chart-bar" style="width: 28px; color: #8B5CF6;"></i>
-                            <span>Детальные отчеты</span>
-                        </div>
-                    </div>
+        <div id="unifiedModal" class="settings-modal">
+            <div class="settings-content">
+                <div class="settings-header">
+                    <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+                    <span class="settings-close" onclick="closeToolModal()">&times;</span>
                 </div>
-
-                <!-- Поддерживаемые протоколы API -->
-                <div class="settings-section">
-                    <h4>Поддерживаемые протоколы API</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">
-                        <div class="settings-option">
-                            <i class="fas fa-globe" style="width: 28px; color: #3B82F6;"></i>
-                            <span>REST API (HTTP/1.1, HTTP/2)</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-exchange-alt" style="width: 28px; color: #F59E0B;"></i>
-                            <span>gRPC (HTTP/2, Protobuf)</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-chart-line" style="width: 28px; color: #10B981;"></i>
-                            <span>GraphQL</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-comments" style="width: 28px; color: #EC4899;"></i>
-                            <span>WebSocket</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-code-branch" style="width: 28px; color: #8B5CF6;"></i>
-                            <span>SOAP / XML-RPC</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-database" style="width: 28px; color: #06B6D4;"></i>
-                            <span>ODBC / JDBC</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Поддерживаемые форматы данных -->
-                <div class="settings-section">
-                    <h4>Поддерживаемые форматы данных</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">
-                        <div class="settings-option">
-                            <i class="fab fa-js" style="width: 28px; color: #F7DF1E;"></i>
-                            <span>JSON</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-file-alt" style="width: 28px; color: #6B7280;"></i>
-                            <span>YAML</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-file-code" style="width: 28px; color: #F97316;"></i>
-                            <span>XML</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-binary" style="width: 28px; color: #EF4444;"></i>
-                            <span>Protobuf (Protocol Buffers)</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-chart-pie" style="width: 28px; color: #22C55E;"></i>
-                            <span>MessagePack</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-table" style="width: 28px; color: #06B6D4;"></i>
-                            <span>Avro / Parquet</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Поддерживаемые спецификации -->
-                <div class="settings-section">
-                    <h4>Поддерживаемые спецификации</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">
-                        <div class="settings-option">
-                            <i class="fas fa-file-alt" style="width: 28px; color: #85EA2D;"></i>
-                            <span>OpenAPI / Swagger</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-code" style="width: 28px; color: #F59E0B;"></i>
-                            <span>AsyncAPI</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-project-diagram" style="width: 28px; color: #8B5CF6;"></i>
-                            <span>GraphQL Schema</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-cogs" style="width: 28px; color: #3B82F6;"></i>
-                            <span>gRPC Protobuf</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-file-code" style="width: 28px; color: #6BA539;"></i>
-                            <span>WSDL / XSD (SOAP)</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-cloud" style="width: 28px; color: #06B6D4;"></i>
-                            <span>Postman Collection</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Безопасность API -->
-                <div class="settings-section">
-                    <h4>Безопасность API</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">
-                        <div class="settings-option">
-                            <i class="fas fa-key" style="width: 28px; color: #F59E0B;"></i>
-                            <span>API Key / Bearer Token</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-lock" style="width: 28px; color: #EF4444;"></i>
-                            <span>Basic Auth / Digest Auth</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-fingerprint" style="width: 28px; color: #8B5CF6;"></i>
-                            <span>OAuth 2.0 / OpenID Connect</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-certificate" style="width: 28px; color: #10B981;"></i>
-                            <span>JWT / mTLS</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Уязвимости API -->
-                <div class="settings-section">
-                    <h4>Обнаружение уязвимостей API</h4>
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 16px;">
-                        <div class="settings-option">
-                            <i class="fas fa-database" style="width: 28px; color: #EF4444;"></i>
-                            <span>SQL / NoSQL инъекции</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-code" style="width: 28px; color: #F59E0B;"></i>
-                            <span>Command Injection</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-chart-line" style="width: 28px; color: #06B6D4;"></i>
-                            <span>SSRF / XXE</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-shield-virus" style="width: 28px; color: #8B5CF6;"></i>
-                            <span>Mass Assignment</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-arrow-right" style="width: 28px; color: #EC4899;"></i>
-                            <span>Open Redirect</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-tachometer-alt" style="width: 28px; color: #F97316;"></i>
-                            <span>Rate Limiting Bypass</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="settings-section">
-                    <h4>Поддерживаемые источники</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option"><i class="fab fa-github" style="width: 28px;"></i><span>GitHub</span></div>
-                            <div class="settings-option"><i class="fab fa-gitlab" style="color: #fc6d26; width: 28px;"></i><span>GitLab</span></div>
-                        </div>
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option"><i class="fas fa-file-archive" style="color: #fc6d26; width: 28px;"></i><span>Локальный файл</span></div>
-                            <div class="settings-option"><i class="fas fa-link" style="color: #3B82F6; width: 28px;"></i><span>URL</span></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h4>Форматы отчетов</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div class="settings-option"><i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i><span>HTML</span></div>
-                        <div class="settings-option"><i class="far fa-file-code" style="width: 28px; color: #F7DF1E;"></i><span>JSON</span></div>
-                        <div class="settings-option"><i class="fas fa-file-pdf" style="width: 28px; color: #DC143C;"></i><span>PDF</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Правая колонка: информация о расширении -->
-            <div class="unified-right">
-                <div class="about-info">
-                    <i class="fas fa-bullseye flask-icon"></i>
-                    <h3>FUZZ</h3>
-                    <div class="version">Версия 1.0.0</div>
-                    <div class="description">
-                        Инструмент для фаззинг-тестирования API на основе OpenAPI/Swagger спецификаций.
-                    </div>
-                    <hr class="divider">
+                <div class="unified-layout">
+                    <div class="unified-left"></div>
+                    <div class="unified-right"></div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
 
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script type="text/javascript" src="uploader.js"></script>
     <script type="text/javascript" src="fuzz.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="../common/modal.js"></script>

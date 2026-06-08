@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="utf-8">
     <title>Геркулес | Блендер</title>
+    <meta id="toolId" value="blender">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="../common/modal.css">
-    <link rel="stylesheet" href="../common/sidebar.css">  
-    <link rel="stylesheet" href="progress.css">  
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="stylesheet" href="../common/upgrade.css">
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
+
 </head>
+
 <body>
     <div id="box" class="fade-in">
         <!-- ЛЕВАЯ КОЛОНКА - ИНСТРУМЕНТЫ -->
@@ -19,7 +23,7 @@
             <div class="tools-section">
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
-                        <i class="fas fa-tools black-icon"></i>
+                        <i class="fas fa-tools black-icon" style="color:black"></i>
                         <span>Инструменты</span>
                     </div>
                     <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
@@ -27,7 +31,7 @@
                     </button>
                 </div>
                 <div class="tool-divider"></div>
-                
+
                 <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
@@ -35,486 +39,208 @@
                         Загрузка...
                     </div>
                 </div>
-                
+
                 <div class="tool-divider"></div>
-                <div class="tools-grid" id="toolsGrid">
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">История</span>
+                                <span class="tool-desc">Журнал сканирований</span>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="tool-divider"></div>
                     <a href="/config">
-                    <div class="tool-item ">
-                        <div class="tool-icon">
-                            <i class="fas fa-cogs black-icon"></i>
+                        <div class="tool-item ">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Настройки</span>
+                                <span class="tool-desc">Управление параметрами</span>
+                            </div>
                         </div>
-                        <div class="tool-info">
-                            <span class="tool-name">Настройки</span>
-                            <span class="tool-desc">Управление параметрами</span>
-                        </div>
-                    </div>
-                   </a> 
+                    </a>
                 </div>
             </div>
         </div>
 
-    <div id="center">
-        <!-- Заголовок с кнопками -->
-        <div class="page-header">
-            <h2 class="section-title" id="pageTitle">Выберите источник</h2>
-            <div class="header-buttons">
-                <button class="header-btn" id="aboutBtn">
-                    <i class="fas fa-info-circle"></i> О расширении
+        <div id="center">
+            <!-- Заголовок с кнопками -->
+            <div class="page-header">
+                <h2 class="section-title" id="pageTitle">Выберите источник</h2>
+                <div class="header-buttons">
+                    <button class="header-btn" onclick="showToolInfo('blender')">
+                        <i class="fas fa-info-circle"></i> Описание инструмента
+                    </button>
+                </div>
+            </div>
+
+            <!-- Селектор источника -->
+            <div class="source-selector">
+                <button class="source-btn active" onclick="switchSource('git')">
+                    <i class="fab fa-git-alt"></i>URL
+                </button>
+                <button class="source-btn" onclick="switchSource('archive')">
+                    <i class="fas fa-file-archive"></i> Архив
+                </button>
+                <button class="source-btn" onclick="switchSource('local')">
+                    <i class="fas fa-folder-open"></i> Локальный проект
                 </button>
             </div>
-        </div>
-        
-        <!-- Селектор источника -->
-        <div class="source-selector">
-            <button class="source-btn active" onclick="switchSource('git')">
-                <i class="fab fa-git-alt"></i>URL
-            </button>
-            <button class="source-btn" onclick="switchSource('archive')">
-                <i class="fas fa-file-archive"></i> Архив
-            </button>
-            <button class="source-btn" onclick="switchSource('local')">
-                <i class="fas fa-folder-open"></i> Локальный проект
-            </button>
-        </div>
 
-        <!-- Git источник -->
-        <div id="git-source" class="source-content active">
-            <div class="input-group">
-                <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий (github/gitlab)" aria-label="Ссылка на репозиторий github gitlab">
-                <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
-            </div>
-            <div class="tech-stack">
-                <div class="platforms-row">
-                    <span class="format-badge">
-                        <i class="fab fa-github fa-1x" style="color: #181717;"></i>
-                        <span>GitHub</span>
-                    </span>
-                    <span class="format-badge">
-                        <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
-                        <span>GitLab</span>
-                    </span>
+            <!-- Git источник -->
+            <div id="git-source" class="source-content active">
+                <div class="input-group">
+                    <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий"
+                        aria-label="Ссылка на репозиторий github gitlab">
+                    <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
+                </div>
+                <div class="tech-stack">
+                    <div class="platforms-row">
+                        <span class="format-badge">
+                            <i class="fab fa-github fa-1x" style="color: #181717;"></i>
+                            <span>GitHub</span>
+                        </span>
+                        <span class="format-badge">
+                            <i class="fab fa-gitlab fa-1x" style="color: #FC6D26;"></i>
+                            <span>GitLab</span>
+                        </span>
+                        <span class="format-badge">
+                            <i class="fab fa-bitbucket fa-1x" style="color: blue;"></i>
+                            <span>Bitbucket</span>
+                        </span>
+                        <span class="format-badge">
+                            <i class="fab fa-git-alt fa-1x" style="color: #FF6445;"></i>
+                            <span>Корпоративные репозитории</span>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Архив источник -->
-        <div id="archive-source" class="source-content">
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <i class="fas fa-cloud-upload-alt black-icon"></i>
+            <!-- Архив источник -->
+            <div id="archive-source" class="source-content">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt black-icon"></i>
+                    </div>
+                    <div class="upload-text">
+                        Нажмите для выбора архива<br>
+                        <span style="font-size: 9px">
+                            <div class="icons-row">
+                                <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;"
+                                        title="Загрузить архив"></i></span>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="supported-formats">
+                        <span class="supported-format-badge">ZIP</span>
+                        <span class="supported-format-badge">TAR</span>
+                        <span class="supported-format-badge">GZ</span>
+                        <span class="supported-format-badge">7Z</span>
+                    </div>
+                    <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
                 </div>
-                <div class="upload-text">
-                    Нажмите для выбора архива<br>
-                    <span style="font-size: 9px">
-                        <div class="icons-row">
-                            <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;" title="Загрузить архив"></i></span>
+                <div id="archiveFileInfo" class="file-info"></div>
+                <button class="start-button" id="archive-start-btn" type="button" disabled
+                    style="margin-top: 15px; width: 100%;">Начать анализ архива</button>
+            </div>
+
+            <!-- Локальный источник -->
+            <div id="local-source" class="source-content">
+                <div class="upload-area" id="localUploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt black-icon"></i>
+                    </div>
+                    <div class="upload-text">
+                        Нажмите для выбора локального проекта<br>
+                        <span style="font-size: 9px">
+                            <div class="icons-row">
+                                <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;"
+                                        title="Выбрать локальный проект"></i></span>
+                            </div>
+                        </span>
+                    </div>
+                    <div class="supported-formats">
+                        <span class="supported-format-badge">Любая папка</span>
+                    </div>
+                    <input type="file" id="localFolderInput" webkitdirectory directory style="display: none;">
+                </div>
+                <div id="localFolderInfo" class="file-info"></div>
+                <button class="start-button" id="local-start-btn" type="button" disabled
+                    style="margin-top: 15px; width: 100%;">Начать анализ проекта</button>
+            </div>
+
+            <!-- НОВЫЙ ПРОГРЕСС-БАР КАК ГРАДУСНИК -->
+            <div class="thermometer-progress">
+                <!-- Общий прогресс -->
+                <div class="overall-progress-section">
+                    <div class="overall-progress-header">
+                        <span>Общий прогресс анализа</span>
+                        <span class="overall-percent" id="overallPercent">0%</span>
+                    </div>
+                    <div class="overall-progress-container">
+                        <div class="overall-progress" id="overallProgress" style="width: 0%"></div>
+                    </div>
+
+                    <div class="thermometer-marks" id="thermometerMarks">
+                        <div class="thermometer-mark" data-step="1">
+                            <div class="mark-dot" id="markDot1"></div>
+                            <div class="mark-label" id="markLabel1">Загрузка</div>
+
                         </div>
-                    </span>
-                </div>
-                <div class="supported-formats">
-                    <span class="supported-format-badge">ZIP</span>
-                    <span class="supported-format-badge">TAR</span>
-                    <span class="supported-format-badge">GZ</span>
-                    <span class="supported-format-badge">7Z</span>
-                </div>
-                <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
-            </div>
-            <div id="archiveFileInfo" class="file-info"></div>
-            <button class="start-button" id="archive-start-btn" type="button" disabled style="margin-top: 15px; width: 100%;">Начать анализ архива</button>
-        </div>
+                        <div class="thermometer-mark" data-step="2">
+                            <div class="mark-dot" id="markDot2"></div>
+                            <div class="mark-label" id="markLabel2">Сканирование</div>
 
-        <!-- Локальный источник -->
-        <div id="local-source" class="source-content">
-            <div class="upload-area" id="localUploadArea">
-                <div class="upload-icon">
-                    <i class="fas fa-cloud-upload-alt black-icon"></i>
-                </div>
-                <div class="upload-text">
-                    Нажмите для выбора локального проекта<br>
-                    <span style="font-size: 9px">
-                        <div class="icons-row">
-                            <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;" title="Выбрать локальный проект"></i></span>
                         </div>
-                    </span>
-                </div>
-                <div class="supported-formats">
-                    <span class="supported-format-badge">Любая папка</span>
-                </div>
-                <input type="file" id="localFolderInput" webkitdirectory directory style="display: none;">
-            </div>
-            <div id="localFolderInfo" class="file-info"></div>
-            <button class="start-button" id="local-start-btn" type="button" disabled style="margin-top: 15px; width: 100%;">Начать анализ проекта</button>
-        </div>
+                        <div class="thermometer-mark" data-step="3">
+                            <div class="mark-dot" id="markDot3"></div>
+                            <div class="mark-label" id="markLabel3">Компоненты</div>
 
-        <!-- Карточки задач с прогресс-барами -->
-        <div class="card-table" style="margin-top: 2vh;">
-    <!-- Общий прогресс-бар -->
-    <div class="overall-progress-section">
-        <div class="overall-progress-header">
-            <span>Общий прогресс анализа</span>
-            <span class="overall-percent" id="overallPercent">0%</span>
-        </div>
-        <div class="overall-progress-container">
-            <div class="overall-progress" id="overallProgress" style="width: 0%"></div>
-        </div>
-    </div>
+                        </div>
+                        <div class="thermometer-mark" data-step="4">
+                            <div class="mark-dot" id="markDot4"></div>
+                            <div class="mark-label" id="markLabel4">Анализ кода</div>
 
-    <!-- Горизонтальный список задач -->
-    <div class="tasks-wrapper">
-        <div class="tasks-horizontal" id="tasksContainer">
-            <div class="task-step pending-step" id="task1">
-                <div class="step-icon pending" id="task1-icon">
-                    <i class="fas fa-download"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task1-title">Загрузка</div>
-                    <div class="step-status" id="task1-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task1-progress" style="width: 0%"></div>
+                        </div>
+                        <div class="thermometer-mark" data-step="5">
+                            <div class="mark-dot" id="markDot5"></div>
+                            <div class="mark-label" id="markLabel5">Уязвимости</div>
+
+                        </div>
+                        <div class="thermometer-mark" data-step="7">
+                            <div class="mark-dot" id="markDot7"></div>
+                            <div class="mark-label" id="markLabel7">Генерация отчёта</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="task-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-
-            <div class="task-step pending-step" id="task2">
-                <div class="step-icon pending" id="task2-icon">
-                    <i class="fas fa-search"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task2-title">Сканирование</div>
-                    <div class="step-status" id="task2-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task2-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="task-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-
-            <div class="task-step pending-step" id="task3">
-                <div class="step-icon pending" id="task3-icon">
-                    <i class="fas fa-cubes"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task3-title">Компоненты</div>
-                    <div class="step-status" id="task3-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task3-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="task-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-
-            <div class="task-step pending-step" id="task4">
-                <div class="step-icon pending" id="task4-icon">
-                    <i class="fas fa-code"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task4-title">Анализ кода</div>
-                    <div class="step-status" id="task4-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task4-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="task-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-
-            <div class="task-step pending-step" id="task5">
-                <div class="step-icon pending" id="task5-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task5-title">Уязвимости</div>
-                    <div class="step-status" id="task5-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task5-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="task-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-
-            <div class="task-step pending-step" id="task6">
-                <div class="step-icon pending" id="task6-icon">
-                    <i class="fas fa-plug"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task6-title">API фаззинг</div>
-                    <div class="step-status" id="task6-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task6-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="task-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-
-            <div class="task-step pending-step" id="task7">
-                <div class="step-icon pending" id="task7-icon">
-                    <i class="fas fa-file-alt"></i>
-                </div>
-                <div class="step-content">
-                    <div class="step-title" id="task7-title">Отчёт</div>
-                    <div class="step-status" id="task7-status">Ожидание</div>
-                    <div class="step-progress">
-                        <div class="step-progress-bar" id="task7-progress" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
+            <div id="alertMessage" class="alert-message"></div>
         </div>
     </div>
-</div>
-
-
-
-        
-        <div id="alertMessage" class="alert-message"></div>
-    </div>
-    </div>
-
-
-<!-- Модальное окно -->
-<div id="unifiedModal" class="settings-modal">
-    <div class="settings-content">
-        <div class="settings-header">
-            <h3><i class="fas fa-puzzle-piece black-icon" style="background: none;"></i> Описание расширения</h3>
-            <span class="settings-close" id="unifiedClose">&times;</span>
-        </div>
-        
-        <div class="unified-layout">
-            <!-- Левая колонка: возможности (скроллится) -->
-            <div class="unified-left">
-                <!-- Ключевые возможности -->
-                <div class="settings-section">
-                    <h4>Ключевые возможности</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 160px;">
-                            <div class="settings-option">
-                                <i class="fas fa-file-alt" style="color: #3B82F6; width: 28px;"></i>
-                                <span>Формирование SBOM (CycloneDX)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-shield-alt" style="color: #EF4444; width: 28px;"></i>
-                                <span>Поиск уязвимостей (OSV/NVD)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-key" style="color: #F59E0B; width: 28px;"></i>
-                                <span>Поиск секретов в коде</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 160px;">
-                            <div class="settings-option">
-                                <i class="fas fa-gavel" style="color: #8B5CF6; width: 28px;"></i>
-                                <span>Проверка лицензий</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-plug" style="color: #06B6D4; width: 28px;"></i>
-                                <span>Анализ API эндпоинтов</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-chart-line" style="color: #10B981; width: 28px;"></i>
-                                <span>CI/CD интеграция</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Поддерживаемые языки (SAST) -->
-                <div class="settings-section">
-                    <h4>Поддерживаемые языки</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option"><i class="fab fa-js" style="color: #F7DF1E; width: 28px;"></i><span>JavaScript/TypeScript</span></div>
-                            <div class="settings-option"><i class="fab fa-python" style="color: #3776AB; width: 28px;"></i><span>Python</span></div>
-                            <div class="settings-option"><i class="fab fa-golang" style="color: #00ADD8; width: 28px;"></i><span>Go</span></div>
-                            <div class="settings-option"><i class="fab fa-java" style="color: #007396; width: 28px;"></i><span>Java</span></div>
-                            <div class="settings-option"><i class="fas fa-file-alt" style="color: #6B7280; width: 28px;"></i><span>YAML</span></div>
-                        </div>
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option"><i class="fab fa-php" style="color: #777BB4; width: 28px;"></i><span>PHP</span></div>
-                            <div class="settings-option"><i class="fas fa-code-branch" style="color: #00599C; width: 28px;"></i><span>C/C++</span></div>
-                            <div class="settings-option"><i class="fas fa-cloud" style="color: #7B42BC; width: 28px;"></i><span>Terraform</span></div>
-                            <div class="settings-option"><i class="fab fa-docker" style="color: #2496ED; width: 28px;"></i><span>Dockerfile</span></div>
-                            <div class="settings-option"><i class="fab fa-rust" style="color: #DEA584; width: 28px;"></i><span>Rust</span></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Поддерживаемые экосистемы (SCA) -->
-                <div class="settings-section">
-                    <h4>Поддерживаемые экосистемы</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fab fa-npm" style="color: #CB3837; width: 28px;"></i>
-                                <span>npm (Node.js)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-python" style="color: #3776AB; width: 28px;"></i>
-                                <span>PyPI (Python)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-golang" style="color: #00ADD8; width: 28px;"></i>
-                                <span>Go Modules</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-java" style="color: #007396; width: 28px;"></i>
-                                <span>Maven (Java)</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fab fa-php" style="color: #777BB4; width: 28px;"></i>
-                                <span>Composer (PHP)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-rust" style="color: #DEA584; width: 28px;"></i>
-                                <span>Cargo (Rust)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-gem" style="color: #CC342D; width: 28px;"></i>
-                                <span>RubyGems</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-code-branch" style="color: #00599C; width: 28px;"></i>
-                                <span>C/C++ (CMake/Conan)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Форматы API спецификаций (Fuzzing) -->
-                <div class="settings-section">
-                    <h4>Форматы API спецификаций</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fas fa-file-alt" style="color: #85EA2D; width: 28px;"></i>
-                                <span>Swagger 2.0 (JSON/YAML)</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fas fa-file-alt" style="color: #6BA539; width: 28px;"></i>
-                                <span>OpenAPI 3.0 / 3.1 (JSON/YAML)</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Поддерживаемые источники -->
-                <div class="settings-section">
-                    <h4>Поддерживаемые источники</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fab fa-github" style="width: 28px;"></i>
-                                <span>GitHub</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-gitlab" style="color: #fc6d26; width: 28px;"></i>
-                                <span>GitLab</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-bitbucket" style="color: blue; width: 28px;"></i>
-                                <span>Bitbucket</span>
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 150px;">
-                            <div class="settings-option">
-                                <i class="fas fa-file-archive" style="color: #fc6d26; width: 28px;"></i>
-                                <span>Архив (ZIP/TAR/GZ/7Z)</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fas fa-folder-open" style="color: #8e9016; width: 28px;"></i>
-                                <span>Локальный проект</span>
-                            </div>
-                            <div class="settings-option">
-                                <i class="fab fa-git-alt" style="color: #FF6445; width: 28px;"></i>
-                                <span>Корпоративные репозитории</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Форматы отчетов -->
-                <div class="settings-section">
-                    <h4>Форматы отчетов</h4>
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div class="settings-option">
-                            <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
-                            <span>HTML</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="far fa-file-code" style="width: 28px; color: #F7DF1E;"></i>
-                            <span>JSON</span>
-                        </div>
-                        <div class="settings-option">
-                            <i class="fas fa-file-pdf" style="width: 28px; color: #DC143C;"></i>
-                            <span>PDF</span>
-                        </div>
-                    </div>
-                </div>
+    <div id="resultModal" class="result-modal-overlay">
+        <div class="result-modal-container">
+            <div class="result-modal-header">
+                <h3>Результаты анализа</h3>
+                <button class="result-modal-close" onclick="closeResultModal()">&times;</button>
             </div>
-
-            <!-- Правая колонка: информация о инструменте (не скроллится) -->
-            <div class="unified-right">
-                <div class="about-info">
-                    <i class="fas fa-flask flask-icon"></i>
-                    <h3>Блендер</h3>
-                    <div class="version">Версия 1.0.0</div>
-                    <div class="description">
-                        Универсальный анализатор безопасности кода, объединяющий SCA, SAST и Fuzzing.
-                    </div>
-                    <hr class="divider">
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-    <script type="module" src="utils.js"></script>
-    <script type="module" src="main.js"></script>    
-    <script type="text/javascript" src="modal.js"></script>
-    <script type="text/javascript" src="../common/menu.js"></script>
-    <script type="text/javascript" src="../common/sidebar.js"></script>
-    <script>
-        loadMenu();
-    </script>
-    
-    <!-- Модальное окно для результатов -->
-    <div id="resultModal" class="modal-overlay">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3><i class="fas fa-chart-bar"></i> Результаты анализа</h3>
-                <button class="modal-close" onclick="closeResultModal()">&times;</button>
-            </div>
-            <div class="modal-body">
+            <div class="result-modal-body">
                 <div class="result-tabs">
                     <button class="result-tab active" onclick="showResultTab('summary')">Обзор</button>
                     <button class="result-tab" onclick="showResultTab('dependencies')">Зависимости</button>
-                    <button class="result-tab" onclick="showResultTab('api')">API эндпоинты</button>
                     <button class="result-tab" onclick="showResultTab('code')">Анализ кода</button>
                 </div>
-                <div id="resultContent" class="result-content">
-                    <!-- Содержимое будет подставлено динамически -->
-                </div>
+
+
+                <div id="resultContent" class="result-content"></div>
             </div>
-            <div class="modal-footer">
+            <div class="result-modal-footer">
                 <button class="btn-download" onclick="downloadJSON()">
                     <i class="fas fa-download"></i> Скачать JSON
                 </button>
@@ -524,5 +250,300 @@
             </div>
         </div>
     </div>
+
+<div id="unifiedModal" class="settings-modal">
+    <div class="settings-content">
+        <div class="settings-header">
+            <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+            <span class="settings-close" onclick="closeToolModal()">&times;</span>
+        </div>
+        <div class="unified-layout">
+            <div class="unified-left"></div>
+            <div class="unified-right"></div>
+        </div>
+    </div>
+</div>
+
+    <div id="licenseModal" class="upgrade-modal">
+        <div class="upgrade-modal-overlay"></div>
+        <div class="upgrade-modal-content" style="max-width: 480px;">
+            <div class="upgrade-modal-header">
+                <h3>Активация лицензии</h3>
+                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
+            </div>
+            <div class="upgrade-modal-body">
+
+                <!-- Текущая лицензия -->
+                <div class="license-current"
+                    style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
+                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
+                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
+                    </div>
+                </div>
+
+                <!-- Поле для ввода ключа -->
+                <div class="license-input-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
+                        Лицензионный ключ
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
+                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
+                        <button id="activateLicenseBtn" class="activate-licence-btn">
+                            <i class="fas fa-check"></i> Активировать
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Сообщение об ошибке/успехе -->
+                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                </div>
+
+                <!-- Ссылка на покупку -->
+                <div style="margin-top: 8px; text-align: center;">
+                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
+                    <a href="#" id="buyLicenseLink"
+                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Купить лицензию
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .activate-licence-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            background: white;
+            border: 1px solid black;
+            color: black;
+            font-family: 'Ubuntu';
+            font-size: 11px;
+            cursor: pointer;
+            
+            
+        }
+
+        .license-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 1px black;
+        }
+
+        .license-badge.premium {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        #licenseMessage.success {
+            background: #dcfce7;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        #licenseMessage.error {
+            background: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+    </style>
+
+    <script>
+    function showLicenseModal() {
+        const modal = document.getElementById('licenseModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            const messageDiv = document.getElementById('licenseMessage');
+            if (messageDiv) {
+                messageDiv.style.display = 'none';
+                messageDiv.innerHTML = '';
+            }
+            const input = document.getElementById('licenseKey');
+            if (input) input.value = '';
+        }
+    }
+
+    function closeLicenseModal() {
+        const modal = document.getElementById('licenseModal');
+        if (modal) {
+            modal.style.display = 'none';
+        }
+    }
+
+    // Сохранение JWT токена
+    function saveLicenseToken(token, expiresAt, remainingDays, licenseKey) {
+        if (token) {
+            localStorage.setItem('licenseToken', token);
+            localStorage.setItem('licenseExpiresAt', expiresAt);
+            localStorage.setItem('licenseRemainingDays', remainingDays);
+            localStorage.setItem('licenseKey', licenseKey);
+            console.log('[LICENSE] Token saved, expires:', expiresAt);
+        }
+    }
+
+    // Получение заголовков авторизации
+    function getAuthHeaders() {
+        const token = localStorage.getItem('licenseToken');
+        if (!token) return {};
+        return { 'Authorization': `Bearer ${token}` };
+    }
+
+    async function activateLicense() {
+        const tool = document.getElementById('toolId')?.getAttribute('value');
+        const keyInput = document.getElementById('licenseKey');
+        const key = keyInput?.value.trim();
+        const messageDiv = document.getElementById('licenseMessage');
+        const activateBtn = document.getElementById('activateLicenseBtn');
+
+        if (!key) {
+            if (messageDiv) {
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Введите лицензионный ключ';
+            }
+            return;
+        }
+
+        try {
+            if (activateBtn) {
+                activateBtn.disabled = true;
+                activateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
+            }
+
+            const response = await fetch('/api/license/activate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ licenseKey: key, tool: tool })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                saveLicenseToken(data.token, data.expiresAt, data.remainingDays, key);
+                
+                if (messageDiv) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.className = 'success';
+                    messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Лицензия успешно активирована!';
+                }
+
+                setTimeout(() => {
+                    closeLicenseModal();
+                    location.reload();
+                }, 1500);
+            } else {
+                if (messageDiv) {
+                    messageDiv.style.display = 'block';
+                    messageDiv.className = 'error';
+                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || 'Неверный лицензионный ключ'}`;
+                }
+                if (activateBtn) {
+                    activateBtn.disabled = false;
+                    activateBtn.innerHTML = '<i class="fas fa-check"></i> Активировать';
+                }
+            }
+        } catch (error) {
+            console.error('[LICENSE] Activation error:', error);
+            if (messageDiv) {
+                messageDiv.style.display = 'block';
+                messageDiv.className = 'error';
+                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ошибка сервера. Попробуйте позже.';
+            }
+            if (activateBtn) {
+                activateBtn.disabled = false;
+                activateBtn.innerHTML = '<i class="fas fa-check"></i> Активировать';
+            }
+        }
+    }
+
+    // Функции для обновления прогресса
+    function updateOverallProgress(percent) {
+        const overallProgress = document.getElementById('overallProgress');
+        const overallPercent = document.getElementById('overallPercent');
+        if (overallProgress) {
+            overallProgress.style.width = `${percent}%`;
+        }
+        if (overallPercent) {
+            overallPercent.textContent = `${percent}%`;
+        }
+    }
+
+    function updateThermometerFill(percent) {
+        const fill = document.getElementById('thermometerFill');
+        if (fill) {
+            fill.style.width = `${percent}%`;
+        }
+    }
+
+    function updateStepStatus(step, status) {
+        const dot = document.getElementById(`markDot${step}`);
+        const label = document.getElementById(`markLabel${step}`);
+
+        if (dot) {
+            dot.classList.remove('completed', 'active');
+            if (status === 'completed') {
+                dot.classList.add('completed');
+            } else if (status === 'active') {
+                dot.classList.add('active');
+            }
+        }
+
+        if (label) {
+            label.classList.remove('completed', 'active');
+            if (status === 'completed') {
+                label.classList.add('completed');
+            } else if (status === 'active') {
+                label.classList.add('active');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const activateBtn = document.getElementById('activateLicenseBtn');
+        if (activateBtn) {
+            activateBtn.onclick = activateLicense;
+        }
+
+        const buyLink = document.getElementById('buyLicenseLink');
+        if (buyLink) {
+            buyLink.onclick = (e) => {
+                e.preventDefault();
+                window.open('https://hercules-security.ru', '_blank');
+            };
+        }
+    });
+
+    // Экспортируем функции для других скриптов
+    window.updateOverallProgress = updateOverallProgress;
+    window.updateThermometerFill = updateThermometerFill;
+    window.updateStepStatus = updateStepStatus;
+    window.showLicenseModal = showLicenseModal;
+    window.closeLicenseModal = closeLicenseModal;
+    window.getAuthHeaders = getAuthHeaders;
+</script>
+
+    <script type="module" src="utils.js"></script>
+    <script type="module" src="main.js"></script>
+    <script type="text/javascript" src="modal.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/jvascript" src="../common/upgrade.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script>
+        loadMenu();
+
+        // Обработчик кнопки обновления
+    </script>
 </body>
+
 </html>

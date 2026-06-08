@@ -17,7 +17,9 @@ async function loadMenu() {
         let html = '';
         
         if (data.success && data.extensions && data.extensions.length > 0) {
-            // СОРТИРОВКА ПО order (чем меньше число, тем выше в списке)
+            
+            cacheExtensions(data.extensions);
+
             const sortedExtensions = [...data.extensions].sort((a, b) => {
                 const orderA = a.order ?? 999;  // если order нет, ставим в конец
                 const orderB = b.order ?? 999;
