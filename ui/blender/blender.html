@@ -308,7 +308,7 @@
                 <!-- Ссылка на покупку -->
                 <div style="margin-top: 8px; text-align: center;">
                     <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
-                    <a href="#" id="buyLicenseLink"
+                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
                         style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
                         <i class="fas fa-shopping-cart"></i> Купить лицензию
                     </a>
@@ -318,45 +318,7 @@
         </div>
     </div>
 
-    <style>
-        .activate-licence-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 20px;
-            background: white;
-            border: 1px solid black;
-            color: black;
-            font-family: 'Ubuntu';
-            font-size: 11px;
-            cursor: pointer;
-            
-            
-        }
-
-        .license-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 1px black;
-        }
-
-        .license-badge.premium {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-        #licenseMessage.success {
-            background: #dcfce7;
-            color: #16a34a;
-            border: 1px solid #bbf7d0;
-        }
-
-        #licenseMessage.error {
-            background: #fee2e2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-    </style>
+    
 
     <script>
     function showLicenseModal() {
@@ -514,13 +476,6 @@
             activateBtn.onclick = activateLicense;
         }
 
-        const buyLink = document.getElementById('buyLicenseLink');
-        if (buyLink) {
-            buyLink.onclick = (e) => {
-                e.preventDefault();
-                window.open('https://hercules-security.ru', '_blank');
-            };
-        }
     });
 
     // Экспортируем функции для других скриптов
