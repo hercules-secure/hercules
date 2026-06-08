@@ -397,4 +397,5 @@ if (historyToggle) {
     updateHistoryOptions();
 }
 
+window.closeUpdateModal = closeUpdateModal;
 window.showNotification = showNotification;
