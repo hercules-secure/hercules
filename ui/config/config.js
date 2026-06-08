@@ -317,7 +317,12 @@ function showUpdateModal(currentVer, latestVer, changelog) {
 
     modal.style.display = 'flex';
 }
-
+function closeUpdateModal() {
+    const modal = document.getElementById('updateModal');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
 // Функция проверки обновления
 async function checkForUpdates() {
     const checkBtn = document.getElementById('checkUpdateBtn');
