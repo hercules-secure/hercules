@@ -1,0 +1,681 @@
+[
+  {
+    "id": "sca",
+    "name": "SCA",
+    "version": "1.0.0",
+    "shortDesc": "Композиционный анализ",
+    "description": "Инструмент для анализа зависимостей и формирования SBOM",
+    "icon": "fas fa-sitemap",
+    "url": "/sca",
+    "router": "./addons/sca/router.js",
+    "webhookEndpoint": "/api/sca/git",
+    "ui": "./ui/sca/sca.html",
+    "order": 1,
+    "free": true,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-shield-alt",
+          "iconColor": "#EF4444",
+          "name": "Поиск уязвимостей"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "Анализ версий"
+        },
+        {
+          "icon": "fas fa-file-export",
+          "iconColor": "#06B6D4",
+          "name": "Экспорт SBOM (CycloneDX/SPDX)"
+        }
+      ],
+      "ecosystems": [
+        {
+          "icon": "fab fa-npm",
+          "iconColor": "#CB3837",
+          "name": "npm (Node.js)"
+        },
+        {
+          "icon": "fab fa-yarn",
+          "iconColor": "#2C8EBB",
+          "name": "Yarn"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "PyPI (Python)"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go Modules"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "Composer (PHP)"
+        },
+        {
+          "icon": "fas fa-box",
+          "iconColor": "#6B7280",
+          "name": "NuGet (.NET)"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Maven (Java)"
+        },
+        {
+          "icon": "fab fa-android",
+          "iconColor": "#3DDC84",
+          "name": "Gradle"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fab fa-github",
+          "iconColor": "#000000",
+          "name": "GitHub"
+        },
+        {
+          "icon": "fab fa-gitlab",
+          "iconColor": "#fc6d26",
+          "name": "GitLab"
+        },
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Архив (ZIP/TAR/GZ)"
+        },
+        {
+          "icon": "fas fa-folder-open",
+          "iconColor": "#8e9016",
+          "name": "Локальный проект"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        },
+        {
+          "icon": "fas fa-file-pdf",
+          "iconColor": "#DC143C",
+          "name": "PDF"
+        }
+      ]
+    }
+  },
+  {
+    "id": "sast",
+    "name": "SAST",
+    "version": "1.0.0",
+    "shortDesc": "Анализ исходного кода",
+    "description": "Инструмент для анализа безопасности исходного кода",
+    "icon": "fas fa-code",
+    "url": "/sast",
+    "webhookEndpoint": "/api/sast/git",
+    "router": "./addons/sast/router.js",
+    "ui": "./ui/sast/sast.html",
+    "order": 2,
+    "free": true,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-shield-alt",
+          "iconColor": "#3B82F6",
+          "name": "Поиск уязвимостей и слабостей"
+        },
+        {
+          "icon": "fas fa-key",
+          "iconColor": "#F59E0B",
+          "name": "Поиск секретов"
+        }
+      ],
+      "languages": [
+        {
+          "icon": "fab fa-js",
+          "iconColor": "#F7DF1E",
+          "name": "JavaScript"
+        },
+        {
+          "icon": "fab fa-js",
+          "iconColor": "#3178C6",
+          "name": "TypeScript"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "Python"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "PHP"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Java"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go"
+        },
+        {
+          "icon": "fab fa-docker",
+          "iconColor": "#2496ED",
+          "name": "Dockerfile"
+        },
+        {
+          "icon": "fas fa-cloud",
+          "iconColor": "#7B42BC",
+          "name": "Terraform"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fab fa-github",
+          "iconColor": "#000000",
+          "name": "GitHub"
+        },
+        {
+          "icon": "fab fa-gitlab",
+          "iconColor": "#fc6d26",
+          "name": "GitLab"
+        },
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Архив (ZIP/TAR/GZ)"
+        },
+        {
+          "icon": "fas fa-folder-open",
+          "iconColor": "#8e9016",
+          "name": "Локальный проект"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        },
+        {
+          "icon": "fas fa-file-pdf",
+          "iconColor": "#DC143C",
+          "name": "PDF"
+        }
+      ]
+    }
+  },
+  {
+    "id": "fuzz",
+    "name": "FUZZ",
+    "version": "1.0.0",
+    "shortDesc": "Анализ API",
+    "description": "Инструмент для фаззинг-тестирования API на основе OpenAPI/Swagger спецификаций.",
+    "icon": "fas fa-bullseye",
+    "url": "/fuzz",
+    "router": "./addons/fuzz/router.js",
+    "ui": "./ui/fuzz/fuzz.html",
+    "order": 3,
+    "free": true,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "Анализ безопасности API"
+        },
+        {
+          "icon": "fas fa-plug",
+          "iconColor": "#3B82F6",
+          "name": "Автоматическая генерация тестов"
+        }
+      ],
+      "protocols": [
+        {
+          "icon": "fas fa-globe",
+          "iconColor": "#3B82F6",
+          "name": "REST API (HTTP/1.1, HTTP/2)"
+        },
+        {
+          "icon": "fas fa-exchange-alt",
+          "iconColor": "#F59E0B",
+          "name": "gRPC (HTTP/2, Protobuf)"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "GraphQL"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#8B5CF6",
+          "name": "SOAP / XML-RPC"
+        },
+        {
+          "icon": "fas fa-network-wired",
+          "iconColor": "#22C55E",
+          "name": "JSON-RPC 2.0"
+        }
+      ],
+      "specifications": [
+        {
+          "icon": "fas fa-file-alt",
+          "iconColor": "#85EA2D",
+          "name": "OpenAPI / Swagger"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Локальный файл"
+        },
+        {
+          "icon": "fas fa-link",
+          "iconColor": "#3B82F6",
+          "name": "URL"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        },
+        {
+          "icon": "fas fa-file-pdf",
+          "iconColor": "#DC143C",
+          "name": "PDF"
+        }
+      ]
+    }
+  },
+  {
+    "id": "blender",
+    "name": "Блендер",
+    "version": "1.0.0",
+    "shortDesc": "Комплексный анализ",
+    "description": "Универсальный анализатор безопасности кода, объединяющий композиционный анализ и анализ исходного кода.",
+    "icon": "fas fa-flask",
+    "url": "/blender",
+    "webhookEndpoint": "/api/blender/analyze/git",
+    "router": "./addons/blender/router.js",
+    "ui": "./ui/blender/blender.html",
+    "order": 4,
+    "free": false,
+    "features": {
+      "sca": [
+        {
+          "icon": "fas fa-chart-pie",
+          "iconColor": "#F59E0B",
+          "name": "Статистика зависимостей"
+        },
+        {
+          "icon": "fas fa-gavel",
+          "iconColor": "#8B5CF6",
+          "name": "Проверка лицензий"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#667eea",
+          "name": "Анализ достижимости"
+        },
+        {
+          "icon": "fas fa-plug",
+          "iconColor": "#06B6D4",
+          "name": "CI/CD интеграция"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "Анализ версий"
+        }
+      ],
+      "sast": [
+        {
+          "icon": "fas fa-shield-alt",
+          "iconColor": "#EF4444",
+          "name": "Поиск уязвимостей и слабостей"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#667eea",
+          "name": "Анализ достижимости"
+        },
+        {
+          "icon": "fas fa-diagram-project",
+          "iconColor": "#DC2626",
+          "name": "Анализ потока данных"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#06B6D4",
+          "name": "Call Graph анализ"
+        },
+        {
+          "icon": "fas fa-crosshairs",
+          "iconColor": "#EC4899",
+          "name": "Taint Analysis (загрязнённые данные)"
+        },
+        {
+          "icon": "fas fa-key",
+          "iconColor": "#F59E0B",
+          "name": "Поиск секретов"
+        }
+      ],
+      "languages": [
+        {
+          "icon": "fab fa-js",
+          "iconColor": "#F7DF1E",
+          "name": "JavaScript/TypeScript"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "Python"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Java"
+        },
+        {
+          "icon": "fas fa-file-alt",
+          "iconColor": "#6B7280",
+          "name": "YAML"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "PHP"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#00599C",
+          "name": "C/C++"
+        },
+        {
+          "icon": "fas fa-cloud",
+          "iconColor": "#7B42BC",
+          "name": "Terraform"
+        },
+        {
+          "icon": "fab fa-docker",
+          "iconColor": "#2496ED",
+          "name": "Dockerfile"
+        },
+        {
+          "icon": "fab fa-rust",
+          "iconColor": "#DEA584",
+          "name": "Rust"
+        }
+      ],
+      "ecosystems": [
+        {
+          "icon": "fab fa-npm",
+          "iconColor": "#CB3837",
+          "name": "npm (Node.js)"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "PyPI (Python)"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go Modules"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Maven (Java)"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "Composer (PHP)"
+        },
+        {
+          "icon": "fab fa-rust",
+          "iconColor": "#DEA584",
+          "name": "Cargo (Rust)"
+        },
+        {
+          "icon": "fas fa-gem",
+          "iconColor": "#CC342D",
+          "name": "RubyGems"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#00599C",
+          "name": "C/C++ (CMake/Conan)"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fab fa-github",
+          "iconColor": "#000000",
+          "name": "GitHub"
+        },
+        {
+          "icon": "fab fa-gitlab",
+          "iconColor": "#fc6d26",
+          "name": "GitLab"
+        },
+        {
+          "icon": "fab fa-bitbucket",
+          "iconColor": "#0052CC",
+          "name": "Bitbucket"
+        },
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Архив (ZIP/TAR/GZ)"
+        },
+        {
+          "icon": "fas fa-folder-open",
+          "iconColor": "#8e9016",
+          "name": "Локальный проект"
+        },
+        {
+          "icon": "fab fa-git-alt",
+          "iconColor": "#FF6445",
+          "name": "Корпоративные репозитории"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        }
+      ]
+    }
+  },
+  {
+    "id": "scout",
+    "name": "Скаут",
+    "version": "1.0.0",
+    "shortDesc": "Анализ сайтов и приложений",
+    "description": "Инструмент для динамического тестирования web сайтов и приложений",
+    "icon": "fas fa-binoculars",
+    "url": "/scout",
+    "router": "./addons/scout/router.js",
+    "ui": "./ui/scout/scout.html",
+    "order": 6,
+    "free": false,
+  "features": {
+    "key": [
+      {
+        "icon": "fas fa-binoculars",
+        "iconColor": "#3B82F6",
+        "name": "DNS разведка и OSINT"
+      },
+      {
+        "icon": "fas fa-plug",
+        "iconColor": "#10B981",
+        "name": "Сканирование портов (1-65535)"
+      },
+      {
+        "icon": "fas fa-chart-line",
+        "iconColor": "#8B5CF6",
+        "name": "Определение технологий и CMS"
+      },
+      {
+        "icon": "fas fa-shield-alt",
+        "iconColor": "#EF4444",
+        "name": "Поиск уязвимостей"
+      },
+      {
+        "icon": "fas fa-key",
+        "iconColor": "#F59E0B",
+        "name": "Поиск секретов"
+      },
+      {
+        "icon": "fas fa-lock",
+        "iconColor": "#3B82F6",
+        "name": "Анализ SSL/TLS сертификатов"
+      },
+      {
+        "icon": "fas fa-file-alt",
+        "iconColor": "#6B7280",
+        "name": "Анализ HTTP заголовков"
+      },
+      {
+        "icon": "fas fa-robot",
+        "iconColor": "#10B981",
+        "name": "Анализ robots.txt"
+      },
+      {
+        "icon": "fas fa-check-circle",
+        "iconColor": "#10B981",
+        "name": "Тестирование качества сайта"
+      },
+      {
+        "icon": "fas fa-exclamation-triangle",
+        "iconColor": "#F59E0B",
+        "name": "Поиск ошибок и битых ссылок"
+      },
+      {
+        "icon": "fas fa-tachometer-alt",
+        "iconColor": "#3B82F6",
+        "name": "Анализ производительности"
+      },
+      {
+        "icon": "fas fa-mobile-alt",
+        "iconColor": "#8B5CF6",
+        "name": "Адаптивность (mobile-friendly)"
+      },
+      {
+        "icon": "fas fa-universal-access",
+        "iconColor": "#EC4899",
+        "name": "Доступность (WCAG 2.1)"
+      }
+    ],
+    "quality": [
+      {
+        "icon": "fas fa-check-circle",
+        "iconColor": "#10B981",
+        "name": "Валидация HTML/CSS"
+      },
+      {
+        "icon": "fas fa-exclamation-triangle",
+        "iconColor": "#F59E0B",
+        "name": "Битые ссылки (404)"
+      },
+      {
+        "icon": "fas fa-tachometer-alt",
+        "iconColor": "#3B82F6",
+        "name": "Время загрузки страниц"
+      },
+      {
+        "icon": "fas fa-mobile-alt",
+        "iconColor": "#8B5CF6",
+        "name": "Адаптивная вёрстка"
+      },
+      {
+        "icon": "fas fa-universal-access",
+        "iconColor": "#EC4899",
+        "name": "WCAG 2.1 доступность"
+      },
+      {
+        "icon": "fas fa-chart-line",
+        "iconColor": "#06B6D4",
+        "name": "SEO оптимизация"
+      },
+      {
+        "icon": "fas fa-cookie-bite",
+        "iconColor": "#F59E0B",
+        "name": "Cookie и GDPR проверка"
+      },
+      {
+        "icon": "fas fa-database",
+        "iconColor": "#8B5CF6",
+        "name": "Консоль ошибок браузера"
+      }
+    ],
+    "sources": [
+      {
+        "icon": "fas fa-globe",
+        "iconColor": "#3B82F6",
+        "name": "URL"
+      },
+      {
+        "icon": "fas fa-chart-line",
+        "iconColor": "#10B981",
+        "name": "Мониторинг в реальном времени"
+      }
+    ],
+    "reports": [
+      {
+        "icon": "fab fa-html5",
+        "iconColor": "#E44D26",
+        "name": "HTML"
+      },
+      {
+        "icon": "far fa-file-code",
+        "iconColor": "#F7DF1E",
+        "name": "JSON"
+      },
+      {
+        "icon": "fas fa-chart-bar",
+        "iconColor": "#10B981",
+        "name": "Lighthouse метрики"
+      }
+    ]
+  }
+}
+]
