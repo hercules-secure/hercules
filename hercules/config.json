@@ -1,8 +1,7 @@
 {
   "info": {
-    "versionNumber": "v1.0.4",
-    "licenseType": "Геркулес",
-    "licenseExpiry": "2027-12-31"
+    "versionNumber": "v1.0.5",
+    "licenseType": "Геркулес"
   },
   "auth": {
     "authEnabled": false,
@@ -11,7 +10,7 @@
     "sessionTimeout": "30"
   },
   "history": {
-    "enabled": true,
+    "enabled": false,
     "retention": 30
   },
   "integrations": {

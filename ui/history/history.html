@@ -149,7 +149,7 @@
             }
         }
 
-        // Загрузка истории (GET /api/history)
+
         async function loadHistory() {
             try {
                 const response = await fetch('/api/history');
@@ -189,12 +189,13 @@
             const pageRecords = currentRecords.slice(start, end);
 
             tbody.innerHTML = pageRecords.map(record => {
-                const shortName = getShortName(record.sourceName, record.sourceType);
-                const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : 'Архив';
-                const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 'source-type-archive';
-                const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : '<i class="fas fa-file-archive"></i>';
+
                 
-                return `
+                const shortName = record.sourceType == 'url' ? record.sourceName : getShortName(record.sourceName, record.sourceType);
+                const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : (record.sourceType === 'url' ? 'URL' : 'Архив');
+                const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : (record.sourceType === 'url' ? 'source-type-url' : 'source-type-archive');
+                const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : '<i class="fas fa-file-archive"></i>');
+                                return `
                     <tr>
                         <td><strong>${record.tool?.toUpperCase() || '—'}</strong></td>
                         <td>

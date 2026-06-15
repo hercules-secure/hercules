@@ -629,3 +629,18 @@
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
 }
+
+        .activate-licence-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 20px;
+            background: white;
+            border: 1px solid black;
+            color: black;
+            font-family: 'Ubuntu';
+            font-size: 11px;
+            cursor: pointer;
+            
+            
+        }

@@ -206,3 +206,10 @@
             word-break: break-all;
             max-width: 300px;
         }
+.source-type-url {
+    background: #10b981;
+    color: white;
+}
+.source-type-url i {
+    color: white;
+}

@@ -304,17 +304,55 @@ cmd_update() {
     
     print_info "Будут использованы: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     
+    # 1.5 Сохраняем config.json (если существует)
+    print_info "Сохранение config.json..."
+    
+    CONFIG_FILE="config.json"
+    TEMP_CONFIG="/tmp/hercules_config_backup.json"
+    
+    if [ -f "$CONFIG_FILE" ]; then
+        cp "$CONFIG_FILE" "$TEMP_CONFIG"
+        print_success "config.json сохранён во временный файл"
+    else
+        print_warning "config.json не найден, будет создан при необходимости"
+    fi
+    
     # 2. Останавливаем сервер
     print_info "Остановка сервера..."
     cmd_stop
     sleep 2
     
-    # 3. Git fetch + reset (вместо pull) - только обновления, без локальных изменений
+    # 3. Сохраняем текущую ветку
+    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
+    print_info "Текущая ветка: $CURRENT_BRANCH"
+    
+    # 4. Сохраняем локальные изменения во временном stash (только важные файлы)
+    print_info "Сохранение локальных изменений конфигурации..."
+    
+    # Создаём временную папку для бэкапа
+    BACKUP_DIR="/tmp/hercules_backup_$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$BACKUP_DIR"
+    
+    # Сохраняем важные конфигурационные файлы
+    IMPORTANT_FILES=(
+        "config.json"
+        ".env"
+        "hercules/config.json"
+        "hercules/license.json"
+        "hercules/public.pem"
+    )
+    
+    for file in "${IMPORTANT_FILES[@]}"; do
+        if [ -f "$file" ]; then
+            mkdir -p "$BACKUP_DIR/$(dirname "$file")"
+            cp "$file" "$BACKUP_DIR/$file"
+            print_info "Сохранён: $file"
+        fi
+    done
+    
+    # 5. Git fetch + reset с сохранением важных файлов
     print_info "Выполнение git fetch..."
     
-    CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
-    
-    # Скачиваем изменения
     git fetch origin "$CURRENT_BRANCH"
     
     if [ $? -ne 0 ]; then
@@ -322,7 +360,16 @@ cmd_update() {
         exit 1
     fi
     
-    # Применяем изменения (сбрасываем локальные изменения)
+    # Временно перемещаем важные файлы перед reset
+    print_info "Временное перемещение конфигурационных файлов..."
+    
+    for file in "${IMPORTANT_FILES[@]}"; do
+        if [ -f "$file" ]; then
+            mv "$file" "$BACKUP_DIR/${file}.moved" 2>/dev/null || true
+        fi
+    done
+    
+    # Выполняем reset (теперь важные файлы не будут затронуты)
     print_info "Применение изменений (git reset --hard)..."
     git reset --hard "origin/$CURRENT_BRANCH"
     
@@ -331,18 +378,36 @@ cmd_update() {
         exit 1
     fi
     
-    print_success "Git fetch + reset выполнен успешно"
+    # Возвращаем важные файлы на место
+    print_info "Восстановление конфигурационных файлов..."
     
-    # 4. Обновляем .env файл
+    for file in "${IMPORTANT_FILES[@]}"; do
+        MOVED_FILE="$BACKUP_DIR/${file}.moved"
+        if [ -f "$MOVED_FILE" ]; then
+            mkdir -p "$(dirname "$file")"
+            mv "$MOVED_FILE" "$file"
+            print_info "Восстановлен: $file"
+        elif [ -f "$BACKUP_DIR/$file" ]; then
+            mkdir -p "$(dirname "$file")"
+            cp "$BACKUP_DIR/$file" "$file"
+            print_info "Восстановлен из копии: $file"
+        fi
+    done
+    
+    print_success "Git fetch + reset выполнен успешно, конфигурация сохранена"
+    
+    # 6. Обновляем .env файл с сохранёнными параметрами
     print_info "Восстановление параметров в .env..."
     
     if [ -f "$ENV_FILE" ]; then
+        # Проверяем и обновляем PORT
         if grep -q "^PORT=" "$ENV_FILE"; then
             sed -i "s/^PORT=.*/PORT=$SAVED_PORT/" "$ENV_FILE"
         else
             echo "PORT=$SAVED_PORT" >> "$ENV_FILE"
         fi
         
+        # Проверяем и обновляем HOST
         if grep -q "^HOST=" "$ENV_FILE"; then
             sed -i "s/^HOST=.*/HOST=$SAVED_HOST/" "$ENV_FILE"
         else
@@ -352,35 +417,40 @@ cmd_update() {
         print_success ".env обновлён: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     else
         cat > "$ENV_FILE" << EOF
-        # Hercules Server Configuration
-        PORT=$SAVED_PORT
-        HOST=$SAVED_HOST
-        NODE_ENV=production
-        GITHUB_TOKEN=
-        RATE_LIMIT_REQUESTS=100
-        RATE_LIMIT_WINDOW=15
-        MAX_FILE_SIZE=104857600
-        LOG_DIR=./logs
+# Hercules Server Configuration
+PORT=$SAVED_PORT
+HOST=$SAVED_HOST
+NODE_ENV=production
+GITHUB_TOKEN=
+RATE_LIMIT_REQUESTS=100
+RATE_LIMIT_WINDOW=15
+MAX_FILE_SIZE=104857600
+LOG_DIR=./logs
 EOF
         print_success ".env создан"
     fi
     
-    # 5. Обновляем зависимости
+    # 7. Обновляем зависимости (только если изменился package.json)
     if [ -f "package.json" ]; then
-        if git diff HEAD@{1} --name-only | grep -q "package.json"; then
+        if git diff HEAD@{1} --name-only 2>/dev/null | grep -q "package.json"; then
             print_info "Обновление зависимостей..."
             npm install --production
         else
-            print_info "Зависимости не изменились"
+            print_info "Зависимости не изменились, пропускаем npm install"
         fi
     fi
     
-    # 6. Создаём новую версию
+    # 8. Создаём новую версию
     NEW_VERSION=$(date +%Y%m%d%H%M%S)
     echo $NEW_VERSION > ".current_version"
     print_success "Новая версия: $NEW_VERSION"
     
-    # 7. Запускаем сервер
+    # 9. Очистка временных файлов
+    print_info "Очистка временных файлов..."
+    rm -rf "$BACKUP_DIR" 2>/dev/null || true
+    rm -f "$TEMP_CONFIG" 2>/dev/null || true
+    
+    # 10. Запускаем сервер
     print_info "Запуск сервера..."
     
     export PORT="$SAVED_PORT"
