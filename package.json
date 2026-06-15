@@ -42,6 +42,7 @@
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "path": "^0.12.7",
+    "puppeteer": "^25.1.0",
     "pyright": "^1.1.408",
     "simple-git": "^3.33.0",
     "tar": "^7.5.13",

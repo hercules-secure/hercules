@@ -6,3 +6,5 @@ storage/
 .DS_Store
 *.log
 *.pid
+config.json
+.env
