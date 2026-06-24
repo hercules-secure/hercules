@@ -1,1 +1,915 @@
-const a0_0x255e57=a0_0x4915;(function(_0x4e99cd,_0xa8d725){const _0x1b1d97=a0_0x4915,_0x17f0ae=_0x4e99cd();while(!![]){try{const _0x5cc98f=parseInt(_0x1b1d97(0x3f5,'mHfp'))/0x1+-parseInt(_0x1b1d97(0xdf,'*Cp^'))/0x2*(-parseInt(_0x1b1d97(0xff,'9AvC'))/0x3)+-parseInt(_0x1b1d97(0x32e,'jjVj'))/0x4*(parseInt(_0x1b1d97(0x3ad,'[Qx&'))/0x5)+parseInt(_0x1b1d97(0x3e4,'xx#L'))/0x6*(-parseInt(_0x1b1d97(0x3fe,'jP[W'))/0x7)+-parseInt(_0x1b1d97(0x400,'19a@'))/0x8*(-parseInt(_0x1b1d97(0x48d,'zBPg'))/0x9)+-parseInt(_0x1b1d97(0x477,'Q5xx'))/0xa+parseInt(_0x1b1d97(0x15e,'JWpz'))/0xb*(parseInt(_0x1b1d97(0x322,'zBPg'))/0xc);if(_0x5cc98f===_0xa8d725)break;else _0x17f0ae['push'](_0x17f0ae['shift']());}catch(_0x4942df){_0x17f0ae['push'](_0x17f0ae['shift']());}}}(a0_0x4ea7,0x8aac8));const a0_0x4b0bc7=(function(){const _0xca5bc5=a0_0x4915,_0x3c722d={};_0x3c722d[_0xca5bc5(0x152,'@n5k')]=function(_0x4c916a,_0x14b300){return _0x4c916a!==_0x14b300;},_0x3c722d['kmiHD']=_0xca5bc5(0x352,'jP[W');const _0x516b68=_0x3c722d;let _0xeb2208=!![];return function(_0x3064dc,_0x326640){const _0x11087c=_0xca5bc5;if(_0x516b68[_0x11087c(0x152,'@n5k')](_0x516b68[_0x11087c(0x389,'LW^2')],_0x516b68['kmiHD'])){if(!_0x2a65b4)return _0x5a88f0[_0x11087c(0x271,'f3b$')];return _0x54070b[_0x11087c(0x411,'1%4J')][_0x11087c(0xee,'X*0j')](_0x264d0a=>_0x264d0a[_0x11087c(0x14b,'@eTd')]===_0x5d4c68);}else{const _0x540951=_0xeb2208?function(){if(_0x326640){const _0x1c2291=_0x326640['apply'](_0x3064dc,arguments);return _0x326640=null,_0x1c2291;}}:function(){};return _0xeb2208=![],_0x540951;}};}()),a0_0x3049e3=a0_0x4b0bc7(this,function(){const _0x2dbcd0=a0_0x4915,_0x3a5d2a={};_0x3a5d2a[_0x2dbcd0(0x2b6,'[Qx&')]=_0x2dbcd0(0x256,'X*0j');const _0x598551=_0x3a5d2a;return a0_0x3049e3[_0x2dbcd0(0x248,'xx#L')]()[_0x2dbcd0(0xbb,'Q5xx')](_0x598551[_0x2dbcd0(0x387,'*Cp^')])[_0x2dbcd0(0x452,'@n5k')]()[_0x2dbcd0(0x1a0,'[fPO')](a0_0x3049e3)[_0x2dbcd0(0x316,'*jhV')](_0x598551[_0x2dbcd0(0x1fe,'D(J8')]);});a0_0x3049e3();const a0_0x30ea16=(function(){let _0x2f2160=!![];return function(_0x593bee,_0x3e3edc){const _0x14d36f=_0x2f2160?function(){const _0x332239=a0_0x4915;if(_0x3e3edc){const _0x5edc09=_0x3e3edc[_0x332239(0x39c,'X*0j')](_0x593bee,arguments);return _0x3e3edc=null,_0x5edc09;}}:function(){};return _0x2f2160=![],_0x14d36f;};}());(function(){const _0x464afe=a0_0x4915,_0x2e903a={'rqSKw':_0x464afe(0x181,'uA($'),'xympe':function(_0x13a8a4,_0x5ec9cd){return _0x13a8a4===_0x5ec9cd;},'tGhhK':'PyIUu','NaNse':_0x464afe(0x17e,'3RX%'),'DSrtc':_0x464afe(0x218,'19a@'),'sBthS':function(_0x15c70c,_0x1a37df){return _0x15c70c(_0x1a37df);},'gyLRN':function(_0x36c980,_0x3be24e){return _0x36c980+_0x3be24e;},'JKPxK':_0x464afe(0x109,'ElxI'),'wyoAe':function(_0x5de60d,_0x157648){return _0x5de60d+_0x157648;},'zfJiE':_0x464afe(0x155,'F!fw'),'uBHMF':_0x464afe(0x14e,'ElxI'),'oqgzw':_0x464afe(0xbf,'r8O4'),'IAzaa':function(_0x32cfe2,_0x28c2c5,_0x370552){return _0x32cfe2(_0x28c2c5,_0x370552);}};_0x2e903a[_0x464afe(0xc7,'*Cp^')](a0_0x30ea16,this,function(){const _0x41c9c2=_0x464afe;if(_0x2e903a[_0x41c9c2(0x1a4,'e[pI')](_0x2e903a['tGhhK'],_0x2e903a[_0x41c9c2(0x445,'1n&w')])){const _0x44373e=new RegExp(_0x2e903a[_0x41c9c2(0x24a,'jP[W')]),_0x3d6a9e=new RegExp(_0x2e903a[_0x41c9c2(0xcd,'G2jA')],'i'),_0x449fef=_0x2e903a[_0x41c9c2(0x2af,'a(Fb')](a0_0x2e1393,_0x41c9c2(0xb3,'In3p'));if(!_0x44373e[_0x41c9c2(0x20e,'BERL')](_0x2e903a[_0x41c9c2(0x37b,'3RX%')](_0x449fef,_0x2e903a[_0x41c9c2(0x3ec,'uRjU')]))||!_0x3d6a9e[_0x41c9c2(0x459,'q$6)')](_0x2e903a[_0x41c9c2(0x4a4,'1n&w')](_0x449fef,_0x2e903a[_0x41c9c2(0x1ee,'BERL')])))_0x2e903a[_0x41c9c2(0x3c4,'9AvC')](_0x449fef,'0');else{if(_0x2e903a[_0x41c9c2(0x1ba,'Q5xx')]===_0x2e903a[_0x41c9c2(0x43e,'uRjU')])return _0x2bccc5['toString']()[_0x41c9c2(0x196,'@eTd')](_0x41c9c2(0x1ad,'e[pI'))[_0x41c9c2(0xf4,'BERL')]()['constructor'](_0x455fd5)['search'](_0x2e903a[_0x41c9c2(0x26c,'QCUi')]);else a0_0x2e1393();}}else return![];})();}());const a0_0x1603f8={};a0_0x1603f8[a0_0x255e57(0x114,']SXR')]=a0_0x255e57(0x199,'mHfp'),a0_0x1603f8[a0_0x255e57(0x30b,'LW^2')]='Инъекции\x20(SQL,\x20Command,\x20LDAP,\x20NoSQL)',a0_0x1603f8[a0_0x255e57(0x3ce,'7S1j')]=a0_0x255e57(0x18f,'1%4J'),a0_0x1603f8[a0_0x255e57(0xce,'19a@')]=a0_0x255e57(0x2e4,'BERL'),a0_0x1603f8[a0_0x255e57(0x484,'zBPg')]=a0_0x255e57(0x22b,'e[pI'),a0_0x1603f8[a0_0x255e57(0x212,'3cB[')]=a0_0x255e57(0x4a9,'D(J8'),a0_0x1603f8[a0_0x255e57(0x283,'7S1j')]=a0_0x255e57(0xfe,'7S1j'),a0_0x1603f8['memory']=a0_0x255e57(0x3b0,'r8O4'),a0_0x1603f8[a0_0x255e57(0x37f,'G2jA')]=a0_0x255e57(0x1db,'a(Fb'),a0_0x1603f8[a0_0x255e57(0xc4,'f&&X')]='LDAP\x20безопасность',a0_0x1603f8[a0_0x255e57(0x47f,'JWpz')]='REST\x20API\x20безопасность',a0_0x1603f8[a0_0x255e57(0x340,'IQSg')]=a0_0x255e57(0x3d3,'q$6)'),a0_0x1603f8[a0_0x255e57(0x2aa,'[Qx&')]=a0_0x255e57(0x2bb,'a(Fb'),a0_0x1603f8[a0_0x255e57(0x458,'zBPg')]=a0_0x255e57(0x1a9,'a(Fb'),a0_0x1603f8[a0_0x255e57(0x428,'1%4J')]=a0_0x255e57(0x125,'$AKW');const a0_0x21dc87={};a0_0x21dc87['id']=a0_0x255e57(0x3c5,'IQSg'),a0_0x21dc87[a0_0x255e57(0x23d,'3cB[')]=a0_0x255e57(0xd6,'ElxI'),a0_0x21dc87[a0_0x255e57(0x3fb,'EpSL')]='Обнаружены\x20жестко\x20закодированные\x20учетные\x20данные',a0_0x21dc87[a0_0x255e57(0x13b,'f&&X')]=a0_0x255e57(0x1f8,'tEcW'),a0_0x21dc87[a0_0x255e57(0x430,'19a@')]=a0_0x255e57(0xfc,'QCUi'),a0_0x21dc87[a0_0x255e57(0x3b6,'r8O4')]='gi',a0_0x21dc87[a0_0x255e57(0x3d8,'jP[W')]=a0_0x255e57(0x3eb,'F!fw'),a0_0x21dc87[a0_0x255e57(0x33b,'19a@')]=[a0_0x255e57(0x2cf,'MfL5'),a0_0x255e57(0x17c,'ruK$'),a0_0x255e57(0x2f5,'IQSg'),'java',a0_0x255e57(0x1e1,'3RX%'),a0_0x255e57(0x1c9,'1%4J'),'go',a0_0x255e57(0x128,'*Cp^'),a0_0x255e57(0x258,'IQSg')];const a0_0x41f110={};a0_0x41f110['id']=a0_0x255e57(0x173,'1n&w'),a0_0x41f110[a0_0x255e57(0x3b3,'H^$H')]=a0_0x255e57(0x25f,'IQSg'),a0_0x41f110[a0_0x255e57(0x223,'uRjU')]=a0_0x255e57(0xa2,'K6]C'),a0_0x41f110['severity']=a0_0x255e57(0x312,'F!fw'),a0_0x41f110[a0_0x255e57(0x429,']SXR')]=a0_0x255e57(0x1b5,'K6]C'),a0_0x41f110[a0_0x255e57(0x1b9,'F!fw')]='gi',a0_0x41f110[a0_0x255e57(0x14a,'zBPg')]='Используйте\x20переменные\x20окружения\x20для\x20DATABASE_URL',a0_0x41f110[a0_0x255e57(0x132,'jjVj')]=[a0_0x255e57(0x108,'xx#L')];const a0_0xf5414a={};a0_0xf5414a['id']=a0_0x255e57(0x2c3,'K6]C'),a0_0xf5414a['category']='credentials',a0_0xf5414a['message']=a0_0x255e57(0x214,'1%4J'),a0_0xf5414a['severity']='CRITICAL',a0_0xf5414a['pattern']='(?:AKIA|ASIA)[0-9A-Z]{16}',a0_0xf5414a[a0_0x255e57(0x1b9,'F!fw')]='gi',a0_0xf5414a[a0_0x255e57(0x2d3,'mHfp')]=a0_0x255e57(0x44c,'mHfp'),a0_0xf5414a[a0_0x255e57(0x356,'uRjU')]=[a0_0x255e57(0x244,'X*0j')];const a0_0x548482={};a0_0x548482['id']='jwt-token-exposure',a0_0x548482[a0_0x255e57(0x3f2,'X*0j')]=a0_0x255e57(0x344,'ggkU'),a0_0x548482['message']='Обнаружен\x20JWT\x20токен\x20в\x20коде',a0_0x548482[a0_0x255e57(0x1fa,'a(Fb')]=a0_0x255e57(0x195,'In3p'),a0_0x548482[a0_0x255e57(0x409,'EpSL')]=a0_0x255e57(0x22f,'7S1j'),a0_0x548482[a0_0x255e57(0x160,'uRjU')]='gi',a0_0x548482[a0_0x255e57(0xac,'F!fw')]='Используйте\x20переменные\x20окружения\x20для\x20JWT\x20токенов',a0_0x548482['languages']=[a0_0x255e57(0xa8,'ggkU')];const a0_0x2cb67f={};a0_0x2cb67f['id']=a0_0x255e57(0x118,'@n5k'),a0_0x2cb67f[a0_0x255e57(0x16d,'1%4J')]=a0_0x255e57(0x3b9,'uRjU'),a0_0x2cb67f[a0_0x255e57(0x2a5,'xx#L')]=a0_0x255e57(0x151,'[Qx&'),a0_0x2cb67f[a0_0x255e57(0x259,'[fPO')]='CRITICAL',a0_0x2cb67f[a0_0x255e57(0xa9,'jjVj')]=a0_0x255e57(0x362,'ElxI'),a0_0x2cb67f['flags']='gi',a0_0x2cb67f[a0_0x255e57(0x170,'1%4J')]=a0_0x255e57(0x374,'[fPO'),a0_0x2cb67f[a0_0x255e57(0xcb,'@n5k')]=[a0_0x255e57(0x113,'@n5k'),a0_0x255e57(0x2f8,'H^$H'),a0_0x255e57(0x263,'r8O4'),a0_0x255e57(0x2ce,'1n&w'),a0_0x255e57(0xf9,'mHfp'),'go',a0_0x255e57(0x45b,'K6]C'),'ruby',a0_0x255e57(0x43f,'jP[W')];const a0_0x2b66b3={};a0_0x2b66b3['id']=a0_0x255e57(0x2de,'JWpz'),a0_0x2b66b3[a0_0x255e57(0x437,'f3b$')]=a0_0x255e57(0x3bd,'WKOn'),a0_0x2b66b3['message']='Потенциальная\x20SQL\x20инъекция\x20через\x20конкатенацию\x20строк',a0_0x2b66b3[a0_0x255e57(0x26f,'1%4J')]=a0_0x255e57(0x2d4,'a(Fb'),a0_0x2b66b3[a0_0x255e57(0x3e3,'e[pI')]=a0_0x255e57(0x442,'3RX%'),a0_0x2b66b3[a0_0x255e57(0x418,'jP[W')]='gi',a0_0x2b66b3[a0_0x255e57(0x159,']SXR')]=a0_0x255e57(0x3a2,'e[pI'),a0_0x2b66b3[a0_0x255e57(0x396,'9@(3')]=[a0_0x255e57(0x3bb,'EpSL'),a0_0x255e57(0x153,'QCUi'),'python','java',a0_0x255e57(0xf7,'jP[W'),'go',a0_0x255e57(0x1df,'jP[W'),a0_0x255e57(0x488,'mHfp'),a0_0x255e57(0xb4,'LW^2')];const a0_0x4481aa={};a0_0x4481aa['id']=a0_0x255e57(0x37c,'uRjU'),a0_0x4481aa[a0_0x255e57(0x478,'a(Fb')]=a0_0x255e57(0x313,'F!fw'),a0_0x4481aa['message']=a0_0x255e57(0xd5,'r8O4'),a0_0x4481aa[a0_0x255e57(0x4a1,'7S1j')]=a0_0x255e57(0x432,'$AKW'),a0_0x4481aa[a0_0x255e57(0x1a8,'jP[W')]=a0_0x255e57(0x1d9,'[fPO'),a0_0x4481aa[a0_0x255e57(0x167,'e[pI')]='gi',a0_0x4481aa[a0_0x255e57(0x37d,'Q5xx')]=a0_0x255e57(0xae,'ggkU'),a0_0x4481aa[a0_0x255e57(0x2c1,'F!fw')]=[a0_0x255e57(0x3de,'e[pI'),a0_0x255e57(0x4af,'tEcW'),a0_0x255e57(0x27c,'QCUi'),'java','go'];const a0_0x4d48e4={};a0_0x4d48e4['id']=a0_0x255e57(0x11a,'7S1j'),a0_0x4d48e4[a0_0x255e57(0x384,'JWpz')]='ldap',a0_0x4d48e4['message']=a0_0x255e57(0x1cc,'WKOn'),a0_0x4d48e4[a0_0x255e57(0x133,'WKOn')]='CRITICAL',a0_0x4d48e4[a0_0x255e57(0x3cf,'tEcW')]=a0_0x255e57(0x2a7,'q$6)'),a0_0x4d48e4[a0_0x255e57(0xf8,'f&&X')]='gi',a0_0x4d48e4[a0_0x255e57(0x47e,'uA($')]=a0_0x255e57(0x464,'r8O4'),a0_0x4d48e4[a0_0x255e57(0x135,'zBPg')]=[a0_0x255e57(0x22e,'1n&w'),a0_0x255e57(0x3bf,'mHfp'),a0_0x255e57(0x12c,'3RX%'),a0_0x255e57(0x39a,'D(J8'),a0_0x255e57(0x13f,'ggkU'),a0_0x255e57(0x1b3,'MfL5')];const a0_0x25c4da={};a0_0x25c4da['id']=a0_0x255e57(0x296,'BERL'),a0_0x25c4da[a0_0x255e57(0x120,'[Qx&')]=a0_0x255e57(0x137,'ggkU'),a0_0x25c4da[a0_0x255e57(0x4ac,']SXR')]=a0_0x255e57(0x106,'mHfp'),a0_0x25c4da['severity']=a0_0x255e57(0x462,'19a@'),a0_0x25c4da[a0_0x255e57(0x21f,'@n5k')]=a0_0x255e57(0x1ca,'@n5k'),a0_0x25c4da[a0_0x255e57(0x3b5,'K6]C')]='gi',a0_0x25c4da['recommendation']=a0_0x255e57(0x110,'9AvC'),a0_0x25c4da[a0_0x255e57(0x192,'q$6)')]=[a0_0x255e57(0x42b,'@eTd'),a0_0x255e57(0xb2,'Oil7')];const a0_0x46e6d9={};a0_0x46e6d9['id']='xxe',a0_0x46e6d9['category']=a0_0x255e57(0x2b4,'@eTd'),a0_0x46e6d9[a0_0x255e57(0x165,'QCUi')]=a0_0x255e57(0x19a,'*Cp^'),a0_0x46e6d9[a0_0x255e57(0x220,'jjVj')]='CRITICAL',a0_0x46e6d9['pattern']=a0_0x255e57(0x1f0,'jjVj'),a0_0x46e6d9[a0_0x255e57(0x1e0,'QCUi')]='gi',a0_0x46e6d9[a0_0x255e57(0x1ec,'D(J8')]=a0_0x255e57(0x2e9,'K6]C'),a0_0x46e6d9['languages']=[a0_0x255e57(0x2d2,'BERL'),a0_0x255e57(0x134,'ggkU'),a0_0x255e57(0x2fc,'K6]C'),a0_0x255e57(0x217,'a(Fb'),a0_0x255e57(0x1c6,'Oil7'),a0_0x255e57(0x390,'EpSL')];const a0_0xcbb784={};a0_0xcbb784['id']='regex-dos-js',a0_0xcbb784[a0_0x255e57(0x30e,'ruK$')]=a0_0x255e57(0x49e,'In3p'),a0_0xcbb784[a0_0x255e57(0x310,'1n&w')]=a0_0x255e57(0x121,'EpSL'),a0_0xcbb784[a0_0x255e57(0x28f,'9AvC')]=a0_0x255e57(0x3b7,'tEcW'),a0_0xcbb784[a0_0x255e57(0x1a3,'9AvC')]=a0_0x255e57(0x1a6,'f3b$'),a0_0xcbb784[a0_0x255e57(0x433,'D(J8')]='gi',a0_0xcbb784[a0_0x255e57(0x159,']SXR')]=a0_0x255e57(0x1e9,'zBPg'),a0_0xcbb784[a0_0x255e57(0x192,'q$6)')]=[a0_0x255e57(0x450,'f&&X'),a0_0x255e57(0x1eb,'IQSg')],a0_0xcbb784[a0_0x255e57(0x324,'9@(3')]=a0_0x255e57(0x342,'K6]C');const a0_0x2c35f1={};a0_0x2c35f1['id']=a0_0x255e57(0x1f2,'9AvC'),a0_0x2c35f1[a0_0x255e57(0x122,'D(J8')]=a0_0x255e57(0xb5,'r8O4'),a0_0x2c35f1[a0_0x255e57(0x28d,'f3b$')]=a0_0x255e57(0x279,'7S1j'),a0_0x2c35f1['severity']='MEDIUM',a0_0x2c35f1[a0_0x255e57(0x355,'3RX%')]=a0_0x255e57(0xfb,'a(Fb'),a0_0x2c35f1[a0_0x255e57(0x12f,'LW^2')]='gi',a0_0x2c35f1[a0_0x255e57(0x333,'ElxI')]=a0_0x255e57(0x341,'r8O4'),a0_0x2c35f1[a0_0x255e57(0x29f,'3RX%')]=['go'],a0_0x2c35f1[a0_0x255e57(0x2f9,'*jhV')]='(?:strings\x5c.|fmt\x5c.|strconv\x5c.|bytes\x5c.|encoding/|json\x5c.|yaml\x5c.|regexp\x5c.QuoteMeta|path\x5c.|filepath\x5c.)';const a0_0x2f4553={};a0_0x2f4553['id']=a0_0x255e57(0x45a,'19a@'),a0_0x2f4553[a0_0x255e57(0x202,'xx#L')]=a0_0x255e57(0x49e,'In3p'),a0_0x2f4553[a0_0x255e57(0x3c0,'3cB[')]=a0_0x255e57(0x31e,'@n5k'),a0_0x2f4553['severity']=a0_0x255e57(0x145,'3cB['),a0_0x2f4553[a0_0x255e57(0x207,'*jhV')]=a0_0x255e57(0x417,']SXR'),a0_0x2f4553[a0_0x255e57(0x206,'BERL')]='gi',a0_0x2f4553[a0_0x255e57(0x456,'a(Fb')]=a0_0x255e57(0x2c9,'@n5k'),a0_0x2f4553[a0_0x255e57(0x3ae,'WKOn')]=[a0_0x255e57(0x48c,'xx#L')],a0_0x2f4553['negative_pattern']='re\x5c.escape';const a0_0x1e4ce6={};a0_0x1e4ce6['id']=a0_0x255e57(0x44f,'zBPg'),a0_0x1e4ce6[a0_0x255e57(0xea,'BERL')]=a0_0x255e57(0x123,'uA($'),a0_0x1e4ce6[a0_0x255e57(0x25b,'X*0j')]=a0_0x255e57(0x46f,'uA($'),a0_0x1e4ce6['severity']=a0_0x255e57(0xa5,'r8O4'),a0_0x1e4ce6[a0_0x255e57(0x3cc,'ruK$')]=a0_0x255e57(0xf1,'K6]C'),a0_0x1e4ce6['flags']='gi',a0_0x1e4ce6['recommendation']=a0_0x255e57(0x224,'r8O4'),a0_0x1e4ce6[a0_0x255e57(0x356,'uRjU')]=[a0_0x255e57(0x162,'uA($')];const a0_0x404ea5={};a0_0x404ea5['id']=a0_0x255e57(0x495,'a(Fb'),a0_0x404ea5[a0_0x255e57(0x198,'9@(3')]='injection',a0_0x404ea5[a0_0x255e57(0x408,'*jhV')]=a0_0x255e57(0x2f2,'IQSg'),a0_0x404ea5[a0_0x255e57(0x345,'$AKW')]=a0_0x255e57(0x3b7,'tEcW'),a0_0x404ea5[a0_0x255e57(0x154,'9@(3')]=a0_0x255e57(0x104,'7S1j'),a0_0x404ea5[a0_0x255e57(0x3b6,'r8O4')]='gi',a0_0x404ea5[a0_0x255e57(0x490,'tEcW')]=a0_0x255e57(0x35a,'uRjU'),a0_0x404ea5[a0_0x255e57(0x300,'mHfp')]=[a0_0x255e57(0x3b2,'@n5k')];const a0_0x42ff1a={};a0_0x42ff1a['id']=a0_0x255e57(0x100,'ElxI'),a0_0x42ff1a[a0_0x255e57(0x3b3,'H^$H')]='injection',a0_0x42ff1a[a0_0x255e57(0x16a,'ElxI')]=a0_0x255e57(0x1a1,'QCUi'),a0_0x42ff1a[a0_0x255e57(0x24b,'e[pI')]=a0_0x255e57(0x2fb,'Q5xx'),a0_0x42ff1a[a0_0x255e57(0x3dc,'a(Fb')]=a0_0x255e57(0x446,'r8O4'),a0_0x42ff1a[a0_0x255e57(0xab,'1n&w')]='gi',a0_0x42ff1a[a0_0x255e57(0x1ec,'D(J8')]=a0_0x255e57(0x268,'jjVj'),a0_0x42ff1a[a0_0x255e57(0x135,'zBPg')]=['ruby'];const a0_0x47d0b8={};a0_0x47d0b8['id']=a0_0x255e57(0x1d2,'7S1j'),a0_0x47d0b8['category']=a0_0x255e57(0x32d,'jjVj'),a0_0x47d0b8[a0_0x255e57(0x4ac,']SXR')]=a0_0x255e57(0x285,'mHfp'),a0_0x47d0b8[a0_0x255e57(0x345,'$AKW')]=a0_0x255e57(0x185,'ElxI'),a0_0x47d0b8['pattern']=a0_0x255e57(0x2b5,'jjVj'),a0_0x47d0b8[a0_0x255e57(0x273,'ElxI')]='gi',a0_0x47d0b8['recommendation']=a0_0x255e57(0x1d3,'QCUi'),a0_0x47d0b8[a0_0x255e57(0xcb,'@n5k')]=[a0_0x255e57(0x2fe,'ggkU')];const a0_0x327935={};a0_0x327935['id']=a0_0x255e57(0x39d,'BERL'),a0_0x327935[a0_0x255e57(0x2d7,'q$6)')]=a0_0x255e57(0x3b9,'uRjU'),a0_0x327935[a0_0x255e57(0x392,'[Qx&')]=a0_0x255e57(0x39b,'ggkU'),a0_0x327935[a0_0x255e57(0x197,'mHfp')]=a0_0x255e57(0x131,'MfL5'),a0_0x327935[a0_0x255e57(0x3ab,'Oil7')]=a0_0x255e57(0x28a,'@eTd'),a0_0x327935[a0_0x255e57(0x415,'IQSg')]='gi',a0_0x327935[a0_0x255e57(0x377,'LW^2')]=a0_0x255e57(0x201,'[Qx&'),a0_0x327935[a0_0x255e57(0x19f,'EpSL')]=['rust'];const a0_0x256632={};a0_0x256632['id']=a0_0x255e57(0x124,'In3p'),a0_0x256632[a0_0x255e57(0x2a6,'*Cp^')]=a0_0x255e57(0x2b7,'K6]C'),a0_0x256632['message']=a0_0x255e57(0x2d0,'a(Fb'),a0_0x256632[a0_0x255e57(0x375,'@n5k')]=a0_0x255e57(0x39e,'ruK$'),a0_0x256632[a0_0x255e57(0xef,'MfL5')]=a0_0x255e57(0x359,'WKOn'),a0_0x256632[a0_0x255e57(0x29b,'tEcW')]='gi',a0_0x256632[a0_0x255e57(0x3f9,'Oil7')]=a0_0x255e57(0x2c6,'@eTd'),a0_0x256632[a0_0x255e57(0x192,'q$6)')]=[a0_0x255e57(0x2d1,'QCUi')];const a0_0x226247={};a0_0x226247['id']=a0_0x255e57(0x2f1,'q$6)'),a0_0x226247[a0_0x255e57(0x391,'uRjU')]=a0_0x255e57(0xc0,']SXR'),a0_0x226247[a0_0x255e57(0x1bc,'MfL5')]=a0_0x255e57(0x1c4,'G2jA'),a0_0x226247[a0_0x255e57(0x24b,'e[pI')]=a0_0x255e57(0x436,'*Cp^'),a0_0x226247[a0_0x255e57(0x3c3,'xx#L')]=a0_0x255e57(0x301,'uA($'),a0_0x226247[a0_0x255e57(0x167,'e[pI')]='gi',a0_0x226247[a0_0x255e57(0x333,'ElxI')]=a0_0x255e57(0xe0,'9AvC'),a0_0x226247[a0_0x255e57(0x192,'q$6)')]=[a0_0x255e57(0x20b,'BERL')];const a0_0x486484={};a0_0x486484['id']='ssrf-vulnerability',a0_0x486484['category']=a0_0x255e57(0x27a,'jP[W'),a0_0x486484[a0_0x255e57(0x46b,'*Cp^')]=a0_0x255e57(0x47a,'MfL5'),a0_0x486484['severity']=a0_0x255e57(0x3ff,'r8O4'),a0_0x486484['pattern']=a0_0x255e57(0x2b8,'H^$H'),a0_0x486484['flags']='gi',a0_0x486484[a0_0x255e57(0x461,'IQSg')]=a0_0x255e57(0x1fb,'BERL'),a0_0x486484['languages']=[a0_0x255e57(0x13f,'ggkU'),a0_0x255e57(0x390,'EpSL'),a0_0x255e57(0x4a6,'jjVj'),'java','go',a0_0x255e57(0x3da,'9@(3'),a0_0x255e57(0x20d,'H^$H')];const a0_0x3937eb={};a0_0x3937eb['id']='bola-idor',a0_0x3937eb['category']=a0_0x255e57(0x440,'e[pI'),a0_0x3937eb['message']=a0_0x255e57(0x126,'3cB['),a0_0x3937eb[a0_0x255e57(0x4a8,'tEcW')]=a0_0x255e57(0x407,'jP[W'),a0_0x3937eb[a0_0x255e57(0x207,'*jhV')]=a0_0x255e57(0xe2,']SXR'),a0_0x3937eb[a0_0x255e57(0x29e,'19a@')]='gi',a0_0x3937eb[a0_0x255e57(0x191,'F!fw')]=a0_0x255e57(0x21d,'*Cp^'),a0_0x3937eb[a0_0x255e57(0x13a,'JWpz')]=a0_0x255e57(0x2e3,'1%4J'),a0_0x3937eb[a0_0x255e57(0xd3,'r8O4')]=[a0_0x255e57(0x319,'$AKW'),a0_0x255e57(0x351,'xx#L'),a0_0x255e57(0x1ce,'r8O4'),a0_0x255e57(0x49b,'MfL5'),a0_0x255e57(0x33d,'@eTd'),'go',a0_0x255e57(0x23b,'tEcW'),a0_0x255e57(0x183,'QCUi')];const a0_0x987b7d={};a0_0x987b7d['id']='mass-assignment',a0_0x987b7d[a0_0x255e57(0xda,'G2jA')]=a0_0x255e57(0x163,'1n&w'),a0_0x987b7d[a0_0x255e57(0x46b,'*Cp^')]=a0_0x255e57(0x1ff,'f3b$'),a0_0x987b7d[a0_0x255e57(0x19d,'QCUi')]='HIGH',a0_0x987b7d[a0_0x255e57(0x264,'1n&w')]=a0_0x255e57(0xf5,'3cB['),a0_0x987b7d['flags']='gi',a0_0x987b7d['recommendation']=a0_0x255e57(0x38c,'Q5xx'),a0_0x987b7d['languages']=['javascript',a0_0x255e57(0x188,'3RX%'),a0_0x255e57(0x19c,'e[pI'),a0_0x255e57(0xfd,'WKOn'),a0_0x255e57(0x18d,'ruK$'),'go',a0_0x255e57(0x360,'uA($'),'ruby'];const a0_0x43ee2d={};a0_0x43ee2d['id']=a0_0x255e57(0x36b,'jjVj'),a0_0x43ee2d[a0_0x255e57(0x198,'9@(3')]=a0_0x255e57(0x180,'H^$H'),a0_0x43ee2d[a0_0x255e57(0x239,'jjVj')]=a0_0x255e57(0x21c,'jjVj'),a0_0x43ee2d[a0_0x255e57(0x13b,'f&&X')]=a0_0x255e57(0x1cf,'QCUi'),a0_0x43ee2d[a0_0x255e57(0xef,'MfL5')]=a0_0x255e57(0x492,'q$6)'),a0_0x43ee2d['flags']='gi',a0_0x43ee2d[a0_0x255e57(0x22d,'@eTd')]='(?:@PreAuthorize|@RolesAllowed|@Secured|@AuthenticationPrincipal|@Auth|middleware\x5c([\x27\x22]auth|verifyToken|checkAuth|isAuthenticated|requireAuth)',a0_0x43ee2d[a0_0x255e57(0x333,'ElxI')]=a0_0x255e57(0x205,'G2jA'),a0_0x43ee2d[a0_0x255e57(0x211,'f&&X')]=[a0_0x255e57(0x11b,'K6]C'),a0_0x255e57(0x2ca,'G2jA'),'typescript','python','php','go',a0_0x255e57(0x1a5,'@eTd'),a0_0x255e57(0x23c,']SXR')];const a0_0x2dc97c={};a0_0x2dc97c['id']=a0_0x255e57(0xfa,'K6]C'),a0_0x2dc97c[a0_0x255e57(0x463,'ggkU')]=a0_0x255e57(0x249,'In3p'),a0_0x2dc97c[a0_0x255e57(0x3c0,'3cB[')]=a0_0x255e57(0x3b8,'*jhV'),a0_0x2dc97c[a0_0x255e57(0x235,'BERL')]=a0_0x255e57(0x1f5,'LW^2'),a0_0x2dc97c[a0_0x255e57(0x264,'1n&w')]=a0_0x255e57(0x35d,'a(Fb'),a0_0x2dc97c[a0_0x255e57(0x1e7,'f3b$')]='gi',a0_0x2dc97c['negative_pattern']=a0_0x255e57(0x35b,'3cB['),a0_0x2dc97c[a0_0x255e57(0x37d,'Q5xx')]=a0_0x255e57(0x3aa,'19a@'),a0_0x2dc97c[a0_0x255e57(0x192,'q$6)')]=[a0_0x255e57(0x43d,'tEcW'),a0_0x255e57(0x404,'K6]C'),a0_0x255e57(0x22a,'1n&w'),'python',a0_0x255e57(0x4ad,'Oil7'),'go',a0_0x255e57(0x14d,'H^$H')];const a0_0x5ddf25={};a0_0x5ddf25['id']=a0_0x255e57(0x45d,'[fPO'),a0_0x5ddf25[a0_0x255e57(0x102,'@n5k')]=a0_0x255e57(0xe1,'3RX%'),a0_0x5ddf25['message']='Отсутствует\x20валидация\x20входных\x20данных',a0_0x5ddf25['severity']=a0_0x255e57(0x194,'WKOn'),a0_0x5ddf25[a0_0x255e57(0x401,'q$6)')]='(?:@(?:PostMapping|PutMapping|PatchMapping)|router\x5c.(?:post|put|patch)|app\x5c.(?:post|put|patch))',a0_0x5ddf25[a0_0x255e57(0x143,'MfL5')]='gi',a0_0x5ddf25[a0_0x255e57(0x226,'BERL')]=a0_0x255e57(0xf3,'K6]C'),a0_0x5ddf25[a0_0x255e57(0x142,'QCUi')]=a0_0x255e57(0x3a0,'f3b$'),a0_0x5ddf25[a0_0x255e57(0x31c,'[fPO')]=[a0_0x255e57(0x44a,'MfL5'),a0_0x255e57(0x449,'jP[W'),a0_0x255e57(0x153,'QCUi'),a0_0x255e57(0x21b,'@eTd'),a0_0x255e57(0xd8,'zBPg'),'go',a0_0x255e57(0xc5,'e[pI')];const a0_0x2b995a={};a0_0x2b995a['id']=a0_0x255e57(0x3c8,'9@(3'),a0_0x2b995a['category']=a0_0x255e57(0x434,'F!fw'),a0_0x2b995a[a0_0x255e57(0x270,'D(J8')]='Эндпоинт\x20без\x20ограничения\x20частоты\x20запросов',a0_0x2b995a[a0_0x255e57(0x1f3,'Q5xx')]=a0_0x255e57(0x2fb,'Q5xx'),a0_0x2b995a['pattern']=a0_0x255e57(0x20a,'tEcW'),a0_0x2b995a[a0_0x255e57(0x187,'zBPg')]='gi',a0_0x2b995a[a0_0x255e57(0x315,'JWpz')]=a0_0x255e57(0x306,'jP[W'),a0_0x2b995a[a0_0x255e57(0x3c7,'MfL5')]=a0_0x255e57(0x35c,'3RX%'),a0_0x2b995a[a0_0x255e57(0x33b,'19a@')]=['java',a0_0x255e57(0x4a0,'1%4J'),a0_0x255e57(0x3a7,'19a@'),a0_0x255e57(0x164,'H^$H'),a0_0x255e57(0x280,'ggkU'),'go',a0_0x255e57(0x48b,'$AKW')];const a0_0xbc9e5={};a0_0xbc9e5['id']=a0_0x255e57(0x103,'zBPg'),a0_0xbc9e5[a0_0x255e57(0x225,'F!fw')]=a0_0x255e57(0x10b,'MfL5'),a0_0xbc9e5[a0_0x255e57(0x46b,'*Cp^')]=a0_0x255e57(0x34a,'1n&w'),a0_0xbc9e5['severity']=a0_0x255e57(0x34b,'D(J8'),a0_0xbc9e5[a0_0x255e57(0x24f,'D(J8')]=a0_0x255e57(0xcc,'xx#L'),a0_0xbc9e5[a0_0x255e57(0x497,'[fPO')]='gi',a0_0xbc9e5[a0_0x255e57(0x420,'IQSg')]=a0_0x255e57(0x498,'F!fw'),a0_0xbc9e5[a0_0x255e57(0x159,']SXR')]=a0_0x255e57(0x272,'Oil7'),a0_0xbc9e5[a0_0x255e57(0x27d,'1%4J')]=[a0_0x255e57(0x26d,'JWpz'),a0_0x255e57(0x1ae,'r8O4'),a0_0x255e57(0x3f3,'uA($'),a0_0x255e57(0xc8,'D(J8'),'php','go',a0_0x255e57(0x40c,'F!fw')];const a0_0x4578cd={};a0_0x4578cd['id']=a0_0x255e57(0x251,'F!fw'),a0_0x4578cd[a0_0x255e57(0x2ad,'e[pI')]=a0_0x255e57(0x275,'@n5k'),a0_0x4578cd[a0_0x255e57(0x3fc,'BERL')]=a0_0x255e57(0x245,'WKOn'),a0_0x4578cd[a0_0x255e57(0x25a,'r8O4')]=a0_0x255e57(0x216,'JWpz'),a0_0x4578cd[a0_0x255e57(0x15a,'$AKW')]=a0_0x255e57(0x3bc,'IQSg'),a0_0x4578cd[a0_0x255e57(0x1b9,'F!fw')]='gi',a0_0x4578cd[a0_0x255e57(0x158,'*Cp^')]='Используйте\x20JSON\x20с\x20валидацией\x20схемы',a0_0x4578cd[a0_0x255e57(0x2df,'tEcW')]=[a0_0x255e57(0x263,'r8O4'),a0_0x255e57(0x453,'xx#L'),a0_0x255e57(0x33f,'*Cp^'),a0_0x255e57(0x3c2,'jjVj'),a0_0x255e57(0x403,'zBPg'),'go',a0_0x255e57(0x147,'zBPg')];const a0_0xcf4d32={};a0_0xcf4d32['id']='path-traversal',a0_0xcf4d32[a0_0x255e57(0x17b,'zBPg')]=a0_0x255e57(0x200,'EpSL'),a0_0xcf4d32[a0_0x255e57(0x42d,'mHfp')]=a0_0x255e57(0x28c,'BERL'),a0_0xcf4d32[a0_0x255e57(0x25a,'r8O4')]=a0_0x255e57(0x393,'IQSg'),a0_0xcf4d32['pattern']=a0_0x255e57(0xb8,'9@(3'),a0_0xcf4d32[a0_0x255e57(0xd4,'q$6)')]='gi',a0_0xcf4d32[a0_0x255e57(0x159,']SXR')]='Валидируйте\x20пути,\x20используйте\x20path.resolve',a0_0xcf4d32[a0_0x255e57(0x19f,'EpSL')]=[a0_0x255e57(0x4a5,'WKOn'),'typescript',a0_0x255e57(0x19c,'e[pI'),a0_0x255e57(0x12e,'LW^2'),a0_0x255e57(0x27e,'H^$H'),'go',a0_0x255e57(0x3ee,'xx#L'),a0_0x255e57(0x36a,'f&&X')];const a0_0x569eec={};a0_0x569eec['id']=a0_0x255e57(0x2f4,'F!fw'),a0_0x569eec[a0_0x255e57(0x40a,'tEcW')]=a0_0x255e57(0x130,'3cB['),a0_0x569eec[a0_0x255e57(0x277,'ggkU')]=a0_0x255e57(0x2cd,'LW^2'),a0_0x569eec[a0_0x255e57(0x233,'ElxI')]=a0_0x255e57(0x112,'zBPg'),a0_0x569eec['pattern']=a0_0x255e57(0x11f,']SXR'),a0_0x569eec['flags']='gi',a0_0x569eec[a0_0x255e57(0x37d,'Q5xx')]=a0_0x255e57(0x413,'K6]C'),a0_0x569eec[a0_0x255e57(0x46c,'e[pI')]=[a0_0x255e57(0x11d,'mHfp'),a0_0x255e57(0x2f8,'H^$H'),'python'];const a0_0xecbc={};a0_0xecbc['id']=a0_0x255e57(0x1b6,'F!fw'),a0_0xecbc[a0_0x255e57(0x3fd,'19a@')]=a0_0x255e57(0x2a9,'LW^2'),a0_0xecbc[a0_0x255e57(0x480,'H^$H')]=a0_0x255e57(0x2e0,'3RX%'),a0_0xecbc[a0_0x255e57(0x15d,'[Qx&')]=a0_0x255e57(0x33e,'@n5k'),a0_0xecbc[a0_0x255e57(0x1a8,'jP[W')]=a0_0x255e57(0x150,'@n5k'),a0_0xecbc[a0_0x255e57(0x473,'In3p')]='gi',a0_0xecbc[a0_0x255e57(0x3f9,'Oil7')]=a0_0x255e57(0x47b,'BERL'),a0_0xecbc[a0_0x255e57(0xcb,'@n5k')]=[a0_0x255e57(0x11d,'mHfp'),a0_0x255e57(0x1b3,'MfL5'),a0_0x255e57(0x12c,'3RX%'),'go','java',a0_0x255e57(0x179,'1%4J'),a0_0x255e57(0x20d,'H^$H')];const a0_0x286c39={};a0_0x286c39['id']=a0_0x255e57(0xca,'H^$H'),a0_0x286c39[a0_0x255e57(0x485,'9AvC')]='config',a0_0x286c39[a0_0x255e57(0x239,'jjVj')]=a0_0x255e57(0x12d,'9AvC'),a0_0x286c39[a0_0x255e57(0x1fa,'a(Fb')]=a0_0x255e57(0x33e,'@n5k'),a0_0x286c39[a0_0x255e57(0x332,'JWpz')]=a0_0x255e57(0x2cc,'WKOn'),a0_0x286c39['flags']='gi',a0_0x286c39[a0_0x255e57(0x287,'EpSL')]=a0_0x255e57(0x43b,'jjVj'),a0_0x286c39['languages']=['javascript',a0_0x255e57(0x427,'9AvC'),a0_0x255e57(0xc8,'D(J8'),'java','go',a0_0x255e57(0x171,'G2jA'),a0_0x255e57(0x2c0,'EpSL'),a0_0x255e57(0x278,'F!fw'),a0_0x255e57(0x2b9,'jjVj')];const a0_0x2d0b18={};a0_0x2d0b18['id']='debug-mode-production',a0_0x2d0b18[a0_0x255e57(0x102,'@n5k')]=a0_0x255e57(0x3ea,'$AKW'),a0_0x2d0b18[a0_0x255e57(0x1fd,'IQSg')]=a0_0x255e57(0x129,'F!fw'),a0_0x2d0b18[a0_0x255e57(0x221,'In3p')]=a0_0x255e57(0x184,'[fPO'),a0_0x2d0b18[a0_0x255e57(0x332,'JWpz')]='(?:DEBUG|NODE_ENV|APP_DEBUG|DJANGO_DEBUG|FLASK_DEBUG|ASPNETCORE_ENVIRONMENT)\x5cs*=\x5cs*(?:True|true|1|\x27development\x27|\x27dev\x27|Development)',a0_0x2d0b18[a0_0x255e57(0x473,'In3p')]='gi',a0_0x2d0b18[a0_0x255e57(0x377,'LW^2')]=a0_0x255e57(0x38b,'mHfp'),a0_0x2d0b18[a0_0x255e57(0x3b4,'jP[W')]=[a0_0x255e57(0xbd,'ruK$')];const a0_0x385850={};a0_0x385850['id']=a0_0x255e57(0x2ee,'r8O4'),a0_0x385850[a0_0x255e57(0x17b,'zBPg')]=a0_0x255e57(0xb0,'r8O4'),a0_0x385850['message']='CORS\x20с\x20\x27*\x27\x20разрешает\x20доступ\x20любому\x20домену',a0_0x385850[a0_0x255e57(0x13b,'f&&X')]=a0_0x255e57(0x185,'ElxI'),a0_0x385850[a0_0x255e57(0x2fd,'LW^2')]='(?:Access-Control-Allow-Origin|@CrossOrigin|cors\x5c(\x5c{).{0,50}(?:\x5c*|origin:\x5cs*\x5c*)',a0_0x385850['flags']='gi',a0_0x385850[a0_0x255e57(0x490,'tEcW')]=a0_0x255e57(0x4ae,'jjVj'),a0_0x385850[a0_0x255e57(0x127,'[Qx&')]=[a0_0x255e57(0x450,'f&&X'),'typescript',a0_0x255e57(0x379,'@n5k'),'go','csharp'];const a0_0x33978b={};a0_0x33978b['id']=a0_0x255e57(0x34c,'9AvC'),a0_0x33978b[a0_0x255e57(0xda,'G2jA')]=a0_0x255e57(0xdd,'mHfp'),a0_0x33978b[a0_0x255e57(0x46b,'*Cp^')]=a0_0x255e57(0x260,'r8O4'),a0_0x33978b['severity']=a0_0x255e57(0x402,'ElxI'),a0_0x33978b[a0_0x255e57(0x24f,'D(J8')]='\x5c.env$',a0_0x33978b[a0_0x255e57(0x487,'jjVj')]='gi',a0_0x33978b['recommendation']=a0_0x255e57(0x489,'MfL5'),a0_0x33978b[a0_0x255e57(0x10c,'H^$H')]=[a0_0x255e57(0x215,'9@(3')];const a0_0x32fa5e={};a0_0x32fa5e['id']=a0_0x255e57(0x2a0,'Oil7'),a0_0x32fa5e[a0_0x255e57(0x376,'EpSL')]='memory',a0_0x32fa5e[a0_0x255e57(0x1fd,'IQSg')]=a0_0x255e57(0x416,'e[pI'),a0_0x32fa5e[a0_0x255e57(0x3dd,'9@(3')]=a0_0x255e57(0x3ff,'r8O4'),a0_0x32fa5e[a0_0x255e57(0x1c8,'H^$H')]=a0_0x255e57(0x253,'H^$H'),a0_0x32fa5e[a0_0x255e57(0x12f,'LW^2')]='gi',a0_0x32fa5e[a0_0x255e57(0x29d,'ggkU')]=a0_0x255e57(0xec,'1n&w'),a0_0x32fa5e['languages']=['c',a0_0x255e57(0x45c,'BERL')];const a0_0x295272={};a0_0x295272['id']=a0_0x255e57(0x331,'$AKW'),a0_0x295272[a0_0x255e57(0x157,'WKOn')]=a0_0x255e57(0x3a9,'D(J8'),a0_0x295272[a0_0x255e57(0x223,'uRjU')]=a0_0x255e57(0x26b,'3cB['),a0_0x295272[a0_0x255e57(0x3d4,'3RX%')]=a0_0x255e57(0x4a2,'Q5xx'),a0_0x295272[a0_0x255e57(0x1b0,'BERL')]=a0_0x255e57(0xd9,'mHfp'),a0_0x295272[a0_0x255e57(0x487,'jjVj')]='gi',a0_0x295272[a0_0x255e57(0x2e2,'jjVj')]=a0_0x255e57(0x383,'xx#L'),a0_0x295272[a0_0x255e57(0xeb,'ruK$')]=['c',a0_0x255e57(0xba,'ggkU')];const a0_0x4dbc40={};a0_0x4dbc40['id']='cpp-printf-injection',a0_0x4dbc40[a0_0x255e57(0x474,'QCUi')]='injection',a0_0x4dbc40[a0_0x255e57(0x16a,'ElxI')]=a0_0x255e57(0x3a6,'ruK$'),a0_0x4dbc40[a0_0x255e57(0x21e,'F!fw')]=a0_0x255e57(0x363,'F!fw'),a0_0x4dbc40[a0_0x255e57(0x3ab,'Oil7')]=a0_0x255e57(0x3b1,']SXR'),a0_0x4dbc40[a0_0x255e57(0x1e0,'QCUi')]='gi',a0_0x4dbc40[a0_0x255e57(0x3f9,'Oil7')]=a0_0x255e57(0x219,'ElxI'),a0_0x4dbc40['languages']=['c',a0_0x255e57(0xa3,'Q5xx')];const a0_0x28ace5={};a0_0x28ace5['id']=a0_0x255e57(0x3be,'@eTd'),a0_0x28ace5[a0_0x255e57(0xea,'BERL')]=a0_0x255e57(0x138,'1n&w'),a0_0x28ace5[a0_0x255e57(0x4ac,']SXR')]=a0_0x255e57(0x2c4,'In3p'),a0_0x28ace5[a0_0x255e57(0x1d4,'MfL5')]=a0_0x255e57(0x34b,'D(J8'),a0_0x28ace5[a0_0x255e57(0x3c3,'xx#L')]=a0_0x255e57(0x479,'r8O4'),a0_0x28ace5[a0_0x255e57(0xd4,'q$6)')]='gi',a0_0x28ace5[a0_0x255e57(0x2a8,'7S1j')]=a0_0x255e57(0x3d6,'f&&X'),a0_0x28ace5[a0_0x255e57(0x2f7,'xx#L')]=['c',a0_0x255e57(0x2dd,'D(J8')];const a0_0x6488e9={};a0_0x6488e9['id']=a0_0x255e57(0x1da,'uA($'),a0_0x6488e9[a0_0x255e57(0x16d,'1%4J')]=a0_0x255e57(0x48f,'MfL5'),a0_0x6488e9[a0_0x255e57(0x392,'[Qx&')]='Использование\x20тега\x20\x27latest\x27\x20в\x20Docker\x20образе',a0_0x6488e9[a0_0x255e57(0x423,'Oil7')]='MEDIUM',a0_0x6488e9[a0_0x255e57(0x266,'7S1j')]=a0_0x255e57(0x232,'r8O4'),a0_0x6488e9[a0_0x255e57(0x13c,'3RX%')]=a0_0x255e57(0x2be,'D(J8'),a0_0x6488e9[a0_0x255e57(0x1bf,'In3p')]='Используйте\x20фиксированные\x20версии\x20образов',a0_0x6488e9[a0_0x255e57(0x19f,'EpSL')]=[a0_0x255e57(0x3c6,'mHfp')];const a0_0xfb2419={};a0_0xfb2419['id']=a0_0x255e57(0x101,'ruK$'),a0_0xfb2419[a0_0x255e57(0x14b,'@eTd')]=a0_0x255e57(0x274,'9@(3'),a0_0xfb2419[a0_0x255e57(0xd1,'7S1j')]=a0_0x255e57(0x2e5,'q$6)'),a0_0xfb2419[a0_0x255e57(0x4a8,'tEcW')]=a0_0x255e57(0x231,'xx#L'),a0_0xfb2419[a0_0x255e57(0x26a,'@eTd')]='^(?!.*USER\x5cs+\x5cw+).*FROM',a0_0xfb2419[a0_0x255e57(0x143,'MfL5')]=a0_0x255e57(0x2be,'D(J8'),a0_0xfb2419[a0_0x255e57(0x23e,'r8O4')]=a0_0x255e57(0xb6,'jP[W'),a0_0xfb2419[a0_0x255e57(0x10c,'H^$H')]=[a0_0x255e57(0x2a3,'uRjU')];const a0_0x3d4fbb={};a0_0x3d4fbb['id']=a0_0x255e57(0x469,'ggkU'),a0_0x3d4fbb[a0_0x255e57(0x476,'ElxI')]='iac',a0_0x3d4fbb['message']=a0_0x255e57(0x308,'zBPg'),a0_0x3d4fbb[a0_0x255e57(0x27f,'H^$H')]=a0_0x255e57(0x131,'MfL5'),a0_0x3d4fbb[a0_0x255e57(0xef,'MfL5')]='^EXPOSE\x5cs+[0-9]{1,3}\x5cb',a0_0x3d4fbb[a0_0x255e57(0x433,'D(J8')]=a0_0x255e57(0x2a4,'X*0j'),a0_0x3d4fbb[a0_0x255e57(0x14a,'zBPg')]=a0_0x255e57(0x42a,'WKOn'),a0_0x3d4fbb[a0_0x255e57(0xad,'f3b$')]=[a0_0x255e57(0x261,'f&&X')];const a0_0x300926={};a0_0x300926['id']=a0_0x255e57(0x326,'Oil7'),a0_0x300926[a0_0x255e57(0x485,'9AvC')]=a0_0x255e57(0x227,'IQSg'),a0_0x300926['message']='Секреты\x20передаются\x20в\x20build\x20аргументах',a0_0x300926[a0_0x255e57(0x4a1,'7S1j')]=a0_0x255e57(0x15b,'@eTd'),a0_0x300926['pattern']=a0_0x255e57(0x451,'xx#L'),a0_0x300926[a0_0x255e57(0x273,'ElxI')]='gi',a0_0x300926[a0_0x255e57(0x276,'xx#L')]=a0_0x255e57(0x307,'K6]C'),a0_0x300926[a0_0x255e57(0xf0,'9AvC')]=[a0_0x255e57(0x2ed,'F!fw')];const a0_0xf803f6={};a0_0xf803f6['id']=a0_0x255e57(0x1c0,'tEcW'),a0_0xf803f6[a0_0x255e57(0x102,'@n5k')]='iac',a0_0xf803f6['message']=a0_0x255e57(0x354,'xx#L'),a0_0xf803f6[a0_0x255e57(0x3dd,'9@(3')]='CRITICAL',a0_0xf803f6[a0_0x255e57(0x401,'q$6)')]=a0_0x255e57(0x284,'@eTd'),a0_0xf803f6[a0_0x255e57(0x143,'MfL5')]=a0_0x255e57(0x2d6,'@eTd'),a0_0xf803f6[a0_0x255e57(0x456,'a(Fb')]='Никогда\x20не\x20используйте\x20privileged:\x20true',a0_0xf803f6[a0_0x255e57(0x496,'$AKW')]=[a0_0x255e57(0x1f7,'Oil7'),a0_0x255e57(0x282,'zBPg'),a0_0x255e57(0x286,'$AKW')];const a0_0x469814={};a0_0x469814['id']='k8s-hostpid-enabled',a0_0x469814[a0_0x255e57(0x463,'ggkU')]=a0_0x255e57(0x1c1,'jjVj'),a0_0x469814[a0_0x255e57(0x213,'@eTd')]=a0_0x255e57(0x309,'*jhV'),a0_0x469814['severity']=a0_0x255e57(0x4a2,'Q5xx'),a0_0x469814[a0_0x255e57(0x349,'QCUi')]=a0_0x255e57(0x1dd,'*jhV'),a0_0x469814[a0_0x255e57(0x14f,'H^$H')]=a0_0x255e57(0x29c,'[fPO'),a0_0x469814['recommendation']=a0_0x255e57(0x361,'f&&X'),a0_0x469814[a0_0x255e57(0x33b,'19a@')]=[a0_0x255e57(0x209,'*Cp^'),a0_0x255e57(0x406,'q$6)'),a0_0x255e57(0x364,'3RX%')];const a0_0x5ee2fc={};a0_0x5ee2fc['id']=a0_0x255e57(0x2dc,'@eTd'),a0_0x5ee2fc[a0_0x255e57(0x136,'In3p')]=a0_0x255e57(0x116,'Q5xx'),a0_0x5ee2fc['message']=a0_0x255e57(0xd0,'e[pI'),a0_0x5ee2fc[a0_0x255e57(0x233,'ElxI')]='HIGH',a0_0x5ee2fc[a0_0x255e57(0x49c,'r8O4')]=a0_0x255e57(0x28e,'[Qx&'),a0_0x5ee2fc[a0_0x255e57(0x273,'ElxI')]='gim',a0_0x5ee2fc[a0_0x255e57(0x461,'IQSg')]='Избегайте\x20hostNetwork,\x20используйте\x20ClusterIP',a0_0x5ee2fc[a0_0x255e57(0x29f,'3RX%')]=[a0_0x255e57(0x31f,'f&&X'),a0_0x255e57(0x3a8,'9@(3'),a0_0x255e57(0x262,'jP[W')];const a0_0x21516d={};a0_0x21516d['id']=a0_0x255e57(0x3c1,'jjVj'),a0_0x21516d[a0_0x255e57(0x4b0,'uA($')]=a0_0x255e57(0x1bb,'WKOn'),a0_0x21516d[a0_0x255e57(0x270,'D(J8')]=a0_0x255e57(0x41e,'$AKW'),a0_0x21516d[a0_0x255e57(0x346,'@eTd')]=a0_0x255e57(0x49f,'7S1j'),a0_0x21516d[a0_0x255e57(0x2ba,'Q5xx')]=a0_0x255e57(0x2ab,'X*0j'),a0_0x21516d[a0_0x255e57(0xab,'1n&w')]=a0_0x255e57(0x234,'$AKW'),a0_0x21516d[a0_0x255e57(0x1bf,'In3p')]=a0_0x255e57(0x380,'[fPO'),a0_0x21516d['languages']=[a0_0x255e57(0x3d9,'uA($'),'kubernetes','helm'];const a0_0x594d45={};a0_0x594d45['id']=a0_0x255e57(0x10a,'F!fw'),a0_0x594d45[a0_0x255e57(0x460,'*jhV')]=a0_0x255e57(0x493,'3RX%'),a0_0x594d45[a0_0x255e57(0x46a,'19a@')]=a0_0x255e57(0x365,'jP[W'),a0_0x594d45['severity']=a0_0x255e57(0x3a4,'q$6)'),a0_0x594d45[a0_0x255e57(0x3c3,'xx#L')]='image:\x5cs*[^\x5cs]+:latest',a0_0x594d45[a0_0x255e57(0x34d,'a(Fb')]='gim',a0_0x594d45['recommendation']=a0_0x255e57(0x38e,'9@(3'),a0_0x594d45[a0_0x255e57(0x396,'9@(3')]=[a0_0x255e57(0x269,'[Qx&'),a0_0x255e57(0x20c,'1n&w'),a0_0x255e57(0x2e6,'In3p')];const a0_0x6bd744={};a0_0x6bd744['id']=a0_0x255e57(0x45f,'Q5xx'),a0_0x6bd744[a0_0x255e57(0x23d,'3cB[')]=a0_0x255e57(0x3e7,'tEcW'),a0_0x6bd744['message']=a0_0x255e57(0x18a,'F!fw'),a0_0x6bd744[a0_0x255e57(0x25d,'X*0j')]=a0_0x255e57(0x242,'Oil7'),a0_0x6bd744[a0_0x255e57(0x3e5,'f&&X')]='containers:\x5cs*\x5cn(?:[\x5cs\x5cS]*?)(?=^\x5cs*-\x5cs*name:)(?![\x5cs\x5cS]*?limits:)',a0_0x6bd744[a0_0x255e57(0x499,']SXR')]=a0_0x255e57(0x48e,'Q5xx'),a0_0x6bd744[a0_0x255e57(0x410,'@eTd')]=a0_0x255e57(0x1c3,'H^$H'),a0_0x6bd744[a0_0x255e57(0xe4,'MfL5')]=[a0_0x255e57(0x2f6,'9AvC'),a0_0x255e57(0x44e,'IQSg'),a0_0x255e57(0xcf,'19a@')];const a0_0x45d298={};a0_0x45d298['id']=a0_0x255e57(0x35e,'uA($'),a0_0x45d298[a0_0x255e57(0x136,'In3p')]=a0_0x255e57(0x48f,'MfL5'),a0_0x45d298[a0_0x255e57(0x165,'QCUi')]=a0_0x255e57(0x1f1,'jP[W'),a0_0x45d298[a0_0x255e57(0x4a8,'tEcW')]=a0_0x255e57(0x184,'[fPO'),a0_0x45d298[a0_0x255e57(0x3f1,'*Cp^')]=a0_0x255e57(0x111,'jP[W'),a0_0x45d298[a0_0x255e57(0x415,'IQSg')]=a0_0x255e57(0xb7,'ggkU'),a0_0x45d298[a0_0x255e57(0x158,'*Cp^')]=a0_0x255e57(0x2a1,'9@(3'),a0_0x45d298[a0_0x255e57(0xc2,'7S1j')]=['yaml','kubernetes',a0_0x255e57(0x176,'a(Fb')];const a0_0xb0b928={};a0_0xb0b928['id']='k8s-run-as-non-root-false',a0_0xb0b928[a0_0x255e57(0x460,'*jhV')]=a0_0x255e57(0x30c,'1%4J'),a0_0xb0b928[a0_0x255e57(0x3df,'zBPg')]=a0_0x255e57(0x21a,'@n5k'),a0_0xb0b928[a0_0x255e57(0x24b,'e[pI')]=a0_0x255e57(0x1ea,'f&&X'),a0_0xb0b928[a0_0x255e57(0x430,'19a@')]=a0_0x255e57(0x36f,'G2jA'),a0_0xb0b928['flags']=a0_0x255e57(0xe5,'tEcW'),a0_0xb0b928[a0_0x255e57(0x490,'tEcW')]=a0_0x255e57(0x169,'*jhV'),a0_0xb0b928[a0_0x255e57(0x192,'q$6)')]=['yaml',a0_0x255e57(0xa4,'QCUi'),a0_0x255e57(0x1cb,'IQSg')];const a0_0x5b4c19={};a0_0x5b4c19['id']=a0_0x255e57(0x166,'r8O4'),a0_0x5b4c19[a0_0x255e57(0x202,'xx#L')]='iac',a0_0x5b4c19[a0_0x255e57(0x295,'q$6)')]=a0_0x255e57(0x46e,'EpSL'),a0_0x5b4c19['severity']=a0_0x255e57(0x2b1,'F!fw'),a0_0x5b4c19['pattern']=a0_0x255e57(0x190,'$AKW'),a0_0x5b4c19[a0_0x255e57(0x168,'G2jA')]=a0_0x255e57(0x19e,'ruK$'),a0_0x5b4c19[a0_0x255e57(0x158,'*Cp^')]=a0_0x255e57(0x30f,']SXR'),a0_0x5b4c19[a0_0x255e57(0xcb,'@n5k')]=[a0_0x255e57(0x2fa,'F!fw'),'kubernetes',a0_0x255e57(0x2e1,'Q5xx')];const a0_0x544ca0={};a0_0x544ca0['id']=a0_0x255e57(0x425,'ruK$'),a0_0x544ca0[a0_0x255e57(0x474,'QCUi')]=a0_0x255e57(0x48f,'MfL5'),a0_0x544ca0['message']=a0_0x255e57(0x24e,'BERL'),a0_0x544ca0[a0_0x255e57(0x15d,'[Qx&')]=a0_0x255e57(0x242,'Oil7'),a0_0x544ca0[a0_0x255e57(0x207,'*jhV')]=a0_0x255e57(0x17d,'$AKW'),a0_0x544ca0[a0_0x255e57(0x1e7,'f3b$')]='gim',a0_0x544ca0[a0_0x255e57(0x47e,'uA($')]=a0_0x255e57(0x3e8,'a(Fb'),a0_0x544ca0[a0_0x255e57(0x107,'G2jA')]=[a0_0x255e57(0x32c,'@n5k'),a0_0x255e57(0x2cb,'9AvC'),a0_0x255e57(0x1cb,'IQSg')];const a0_0x3ae35d={};a0_0x3ae35d['id']='k8s-run-as-user-zero',a0_0x3ae35d[a0_0x255e57(0x25e,'K6]C')]=a0_0x255e57(0xe6,'$AKW'),a0_0x3ae35d['message']=a0_0x255e57(0x328,'WKOn'),a0_0x3ae35d[a0_0x255e57(0x25a,'r8O4')]='CRITICAL',a0_0x3ae35d['pattern']=a0_0x255e57(0x236,'LW^2'),a0_0x3ae35d[a0_0x255e57(0x473,'In3p')]='gim',a0_0x3ae35d[a0_0x255e57(0x142,'QCUi')]=a0_0x255e57(0xe9,'IQSg'),a0_0x3ae35d[a0_0x255e57(0x31c,'[fPO')]=[a0_0x255e57(0x2f6,'9AvC'),'kubernetes',a0_0x255e57(0x286,'$AKW')];const a0_0x3e0ce1={};a0_0x3e0ce1['id']=a0_0x255e57(0xc1,'3cB['),a0_0x3e0ce1[a0_0x255e57(0x136,'In3p')]='iac',a0_0x3e0ce1['message']=a0_0x255e57(0x31b,'q$6)'),a0_0x3e0ce1['severity']='HIGH',a0_0x3e0ce1[a0_0x255e57(0x49d,'uRjU')]=a0_0x255e57(0x38f,'xx#L'),a0_0x3e0ce1[a0_0x255e57(0x143,'MfL5')]=a0_0x255e57(0x1b2,'7S1j'),a0_0x3e0ce1['recommendation']=a0_0x255e57(0x281,'@n5k'),a0_0x3e0ce1[a0_0x255e57(0xcb,'@n5k')]=[a0_0x255e57(0x1f7,'Oil7'),a0_0x255e57(0x2b2,'f3b$'),a0_0x255e57(0xf6,'ElxI')];const a0_0x242830={};a0_0x242830['id']=a0_0x255e57(0x12a,'H^$H'),a0_0x242830[a0_0x255e57(0x474,'QCUi')]='iac',a0_0x242830['message']='Использование\x20default\x20service\x20account',a0_0x242830[a0_0x255e57(0x267,'3cB[')]=a0_0x255e57(0x185,'ElxI'),a0_0x242830[a0_0x255e57(0x439,'1%4J')]='serviceAccountName:\x5cs*default',a0_0x242830[a0_0x255e57(0x1ef,'1%4J')]=a0_0x255e57(0x314,'EpSL'),a0_0x242830[a0_0x255e57(0x18b,'[fPO')]=a0_0x255e57(0x2c8,'D(J8'),a0_0x242830[a0_0x255e57(0x356,'uRjU')]=['yaml',a0_0x255e57(0x1af,'@eTd'),a0_0x255e57(0x426,'r8O4')];const a0_0xbe9666={};a0_0xbe9666['id']=a0_0x255e57(0x1d6,'MfL5'),a0_0xbe9666['category']=a0_0x255e57(0x338,'*jhV'),a0_0xbe9666[a0_0x255e57(0x28d,'f3b$')]=a0_0x255e57(0x2a2,'mHfp'),a0_0xbe9666[a0_0x255e57(0x4a8,'tEcW')]='CRITICAL',a0_0xbe9666[a0_0x255e57(0x3f6,'3cB[')]=a0_0x255e57(0x47c,'3RX%'),a0_0xbe9666[a0_0x255e57(0x22c,'uA($')]='gim',a0_0xbe9666[a0_0x255e57(0x159,']SXR')]='Используйте\x20переменные\x20окружения:\x20TF_VAR_*',a0_0xbe9666[a0_0x255e57(0x396,'9@(3')]=['hcl',a0_0x255e57(0x378,'tEcW')];function a0_0x4915(_0x4d367c,_0x199f4c){_0x4d367c=_0x4d367c-0xa2;const _0x7a7f49=a0_0x4ea7();let _0x421303=_0x7a7f49[_0x4d367c];if(a0_0x4915['ywouWk']===undefined){var _0x2ccb63=function(_0x491500){const _0x5aa495='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let _0x308be5='',_0x5437e1='',_0x3e5464=_0x308be5+_0x2ccb63,_0x266187=(''+function(){return 0x0;})['indexOf']('\x0a')!==-0x1;for(let _0x48534a=0x0,_0x3ce793,_0x48b7b7,_0x2bccc5=0x0;_0x48b7b7=_0x491500['charAt'](_0x2bccc5++);~_0x48b7b7&&(_0x3ce793=_0x48534a%0x4?_0x3ce793*0x40+_0x48b7b7:_0x48b7b7,_0x48534a++%0x4)?_0x308be5+=_0x266187||_0x3e5464['charCodeAt'](_0x2bccc5+0xa)-0xa!==0x0?String['fromCharCode'](0xff&_0x3ce793>>(-0x2*_0x48534a&0x6)):_0x48534a:0x0){_0x48b7b7=_0x5aa495['indexOf'](_0x48b7b7);}for(let _0x455fd5=0x0,_0x5494a7=_0x308be5['length'];_0x455fd5<_0x5494a7;_0x455fd5++){_0x5437e1+='%'+('00'+_0x308be5['charCodeAt'](_0x455fd5)['toString'](0x10))['slice'](-0x2);}return decodeURIComponent(_0x5437e1);};const _0x4ea7da=function(_0x1f3a94,_0x1682a1){let _0xd22e9c=[],_0x429f2d=0x0,_0x485a28,_0x165f71='';_0x1f3a94=_0x2ccb63(_0x1f3a94);let _0x18cded;for(_0x18cded=0x0;_0x18cded<0x100;_0x18cded++){_0xd22e9c[_0x18cded]=_0x18cded;}for(_0x18cded=0x0;_0x18cded<0x100;_0x18cded++){_0x429f2d=(_0x429f2d+_0xd22e9c[_0x18cded]+_0x1682a1['charCodeAt'](_0x18cded%_0x1682a1['length']))%0x100,_0x485a28=_0xd22e9c[_0x18cded],_0xd22e9c[_0x18cded]=_0xd22e9c[_0x429f2d],_0xd22e9c[_0x429f2d]=_0x485a28;}_0x18cded=0x0,_0x429f2d=0x0;for(let _0x52499e=0x0;_0x52499e<_0x1f3a94['length'];_0x52499e++){_0x18cded=(_0x18cded+0x1)%0x100,_0x429f2d=(_0x429f2d+_0xd22e9c[_0x18cded])%0x100,_0x485a28=_0xd22e9c[_0x18cded],_0xd22e9c[_0x18cded]=_0xd22e9c[_0x429f2d],_0xd22e9c[_0x429f2d]=_0x485a28,_0x165f71+=String['fromCharCode'](_0x1f3a94['charCodeAt'](_0x52499e)^_0xd22e9c[(_0xd22e9c[_0x18cded]+_0xd22e9c[_0x429f2d])%0x100]);}return _0x165f71;};a0_0x4915['HNcVpO']=_0x4ea7da,a0_0x4915['sUZcDz']={},a0_0x4915['ywouWk']=!![];}const _0x395570=_0x7a7f49[0x0],_0x521bb1=_0x4d367c+_0x395570,_0xd12f4b=a0_0x4915['sUZcDz'][_0x521bb1];if(!_0xd12f4b){if(a0_0x4915['wCOlBN']===undefined){const _0x592dc5=function(_0x451058){this['fYcvXc']=_0x451058,this['MozCWa']=[0x1,0x0,0x0],this['sJLPvK']=function(){return'newState';},this['TefwJp']='\x5cw+\x20*\x5c(\x5c)\x20*{\x5cw+\x20*',this['aTIVIC']='[\x27|\x22].+[\x27|\x22];?\x20*}';};_0x592dc5['prototype']['TdRJpf']=function(){const _0x2ba982=new RegExp(this['TefwJp']+this['aTIVIC']),_0x5485c6=_0x2ba982['test'](this['sJLPvK']['toString']())?--this['MozCWa'][0x1]:--this['MozCWa'][0x0];return this['HgwBGD'](_0x5485c6);},_0x592dc5['prototype']['HgwBGD']=function(_0x1612f9){if(!Boolean(~_0x1612f9))return _0x1612f9;return this['EGaVyb'](this['fYcvXc']);},_0x592dc5['prototype']['EGaVyb']=function(_0x42eb91){for(let _0x368bea=0x0,_0xc343ba=this['MozCWa']['length'];_0x368bea<_0xc343ba;_0x368bea++){this['MozCWa']['push'](Math['round'](Math['random']())),_0xc343ba=this['MozCWa']['length'];}return _0x42eb91(this['MozCWa'][0x0]);},(''+function(){return 0x0;})['indexOf']('\x0a')===-0x1&&new _0x592dc5(a0_0x4915)['TdRJpf'](),a0_0x4915['wCOlBN']=!![];}_0x421303=a0_0x4915['HNcVpO'](_0x421303,_0x199f4c),a0_0x4915['sUZcDz'][_0x521bb1]=_0x421303;}else _0x421303=_0xd12f4b;return _0x421303;}const a0_0x1990d7={};a0_0x1990d7['id']=a0_0x255e57(0x32f,'a(Fb'),a0_0x1990d7[a0_0x255e57(0x465,'[fPO')]=a0_0x255e57(0x412,'BERL'),a0_0x1990d7[a0_0x255e57(0x23a,'Q5xx')]=a0_0x255e57(0x339,'r8O4'),a0_0x1990d7[a0_0x255e57(0x414,'*jhV')]='HIGH',a0_0x1990d7[a0_0x255e57(0x49c,'r8O4')]=a0_0x255e57(0x33c,'ruK$'),a0_0x1990d7[a0_0x255e57(0x1e0,'QCUi')]=a0_0x255e57(0x2ef,'mHfp'),a0_0x1990d7[a0_0x255e57(0x333,'ElxI')]=a0_0x255e57(0x357,'ElxI'),a0_0x1990d7[a0_0x255e57(0x2df,'tEcW')]=[a0_0x255e57(0x419,'Q5xx'),a0_0x255e57(0x15f,'r8O4')];const a0_0x43a385={};a0_0x43a385['id']=a0_0x255e57(0x240,'1%4J'),a0_0x43a385[a0_0x255e57(0x343,'Q5xx')]=a0_0x255e57(0x424,'G2jA'),a0_0x43a385[a0_0x255e57(0x3df,'zBPg')]=a0_0x255e57(0x41d,'uA($'),a0_0x43a385['severity']=a0_0x255e57(0x462,'19a@'),a0_0x43a385[a0_0x255e57(0x430,'19a@')]='resource\x5cs+\x22aws_s3_bucket\x22\x5cs+\x5cw+\x5cs*\x5c{(?![\x5cs\x5cS]*?server_side_encryption_configuration)',a0_0x43a385[a0_0x255e57(0x1ef,'1%4J')]=a0_0x255e57(0x386,'uRjU'),a0_0x43a385[a0_0x255e57(0x461,'IQSg')]=a0_0x255e57(0x47d,'e[pI'),a0_0x43a385[a0_0x255e57(0xd3,'r8O4')]=[a0_0x255e57(0x3e1,'1%4J'),a0_0x255e57(0x139,'[fPO')];const a0_0x2c7cd0={};a0_0x2c7cd0['id']=a0_0x255e57(0x388,'e[pI'),a0_0x2c7cd0[a0_0x255e57(0x32a,'jjVj')]=a0_0x255e57(0x48f,'MfL5'),a0_0x2c7cd0[a0_0x255e57(0x33a,'1%4J')]=a0_0x255e57(0xc3,'uA($'),a0_0x2c7cd0[a0_0x255e57(0x25d,'X*0j')]=a0_0x255e57(0x131,'MfL5'),a0_0x2c7cd0['pattern']=a0_0x255e57(0x40e,'f&&X'),a0_0x2c7cd0[a0_0x255e57(0x487,'jjVj')]=a0_0x255e57(0x1be,'LW^2'),a0_0x2c7cd0[a0_0x255e57(0x42f,'3cB[')]=a0_0x255e57(0x299,'e[pI'),a0_0x2c7cd0[a0_0x255e57(0x10f,'ggkU')]=[a0_0x255e57(0x4aa,'X*0j'),a0_0x255e57(0x3a5,'$AKW')];const a0_0x1ebca1={};a0_0x1ebca1['id']=a0_0x255e57(0x182,'f&&X'),a0_0x1ebca1[a0_0x255e57(0x476,'ElxI')]=a0_0x255e57(0x1bb,'WKOn'),a0_0x1ebca1[a0_0x255e57(0x311,'9AvC')]='Security\x20group\x20с\x20публичным\x20доступом\x20(0.0.0.0/0)',a0_0x1ebca1[a0_0x255e57(0x17a,'ggkU')]=a0_0x255e57(0x38a,'e[pI'),a0_0x1ebca1[a0_0x255e57(0x266,'7S1j')]=a0_0x255e57(0x38d,'ElxI'),a0_0x1ebca1['flags']=a0_0x255e57(0x1be,'LW^2'),a0_0x1ebca1[a0_0x255e57(0x2a8,'7S1j')]=a0_0x255e57(0x398,'uRjU'),a0_0x1ebca1[a0_0x255e57(0xeb,'ruK$')]=[a0_0x255e57(0x1b4,'7S1j'),a0_0x255e57(0x447,'q$6)')];const a0_0x1ca28a={};a0_0x1ca28a['id']=a0_0x255e57(0x24d,'MfL5'),a0_0x1ca28a['category']=a0_0x255e57(0x16e,'1n&w'),a0_0x1ca28a[a0_0x255e57(0x382,'@n5k')]='Security\x20group\x20с\x20публичным\x20доступом\x20к\x20SSH\x20(порт\x2022)',a0_0x1ca28a['severity']=a0_0x255e57(0x3ef,'X*0j'),a0_0x1ca28a['pattern']=a0_0x255e57(0x28b,'K6]C'),a0_0x1ca28a[a0_0x255e57(0x1ef,'1%4J')]=a0_0x255e57(0x486,'a(Fb'),a0_0x1ca28a[a0_0x255e57(0xdc,'e[pI')]=a0_0x255e57(0x41a,'K6]C'),a0_0x1ca28a[a0_0x255e57(0x254,'IQSg')]=[a0_0x255e57(0x3f7,'ruK$'),a0_0x255e57(0x2ec,'uRjU')];const a0_0x1a1a62={};a0_0x1a1a62['id']='tf-iam-wildcard-action',a0_0x1a1a62[a0_0x255e57(0x443,'IQSg')]=a0_0x255e57(0x3e7,'tEcW'),a0_0x1a1a62[a0_0x255e57(0x27b,'f&&X')]=a0_0x255e57(0x12b,'QCUi'),a0_0x1a1a62[a0_0x255e57(0x358,'EpSL')]='CRITICAL',a0_0x1a1a62[a0_0x255e57(0x3f6,'3cB[')]='\x22Action\x22:\x5cs*\x5c[\x22\x5c*\x22\x5c]|\x22Action\x22:\x5cs*\x22\x5c*\x22',a0_0x1a1a62['flags']=a0_0x255e57(0x381,'f3b$'),a0_0x1a1a62[a0_0x255e57(0x142,'QCUi')]=a0_0x255e57(0x40b,'f3b$'),a0_0x1a1a62[a0_0x255e57(0xad,'f3b$')]=['hcl',a0_0x255e57(0x291,'G2jA')];const a0_0x5c50c8={};a0_0x5c50c8['id']=a0_0x255e57(0x222,'*Cp^'),a0_0x5c50c8[a0_0x255e57(0x23d,'3cB[')]=a0_0x255e57(0x1de,'D(J8'),a0_0x5c50c8[a0_0x255e57(0x16a,'ElxI')]=a0_0x255e57(0x3e0,'mHfp'),a0_0x5c50c8[a0_0x255e57(0x346,'@eTd')]=a0_0x255e57(0x353,'9@(3'),a0_0x5c50c8['pattern']=a0_0x255e57(0xde,'F!fw'),a0_0x5c50c8['flags']=a0_0x255e57(0x1b8,'1n&w'),a0_0x5c50c8[a0_0x255e57(0x276,'xx#L')]=a0_0x255e57(0x141,'Q5xx'),a0_0x5c50c8['languages']=[a0_0x255e57(0x395,'*Cp^'),a0_0x255e57(0x491,'X*0j')];const a0_0x3d0a66={};a0_0x3d0a66['id']=a0_0x255e57(0x186,'D(J8'),a0_0x3d0a66['category']=a0_0x255e57(0x424,'G2jA'),a0_0x3d0a66[a0_0x255e57(0xd1,'7S1j')]=a0_0x255e57(0x2ff,'WKOn'),a0_0x3d0a66[a0_0x255e57(0x221,'In3p')]='CRITICAL',a0_0x3d0a66[a0_0x255e57(0x429,']SXR')]=a0_0x255e57(0x265,'@eTd'),a0_0x3d0a66[a0_0x255e57(0x2d8,'mHfp')]=a0_0x255e57(0x18e,'q$6)'),a0_0x3d0a66[a0_0x255e57(0x3cd,'$AKW')]=a0_0x255e57(0x483,'1n&w'),a0_0x3d0a66[a0_0x255e57(0x348,'3cB[')]=[a0_0x255e57(0x1e3,'In3p'),a0_0x255e57(0x139,'[fPO')];const a0_0x1c3cd0={};a0_0x1c3cd0['id']='tf-ec2-public-ip',a0_0x1c3cd0[a0_0x255e57(0x136,'In3p')]=a0_0x255e57(0x4a3,'uRjU'),a0_0x1c3cd0[a0_0x255e57(0x1fd,'IQSg')]=a0_0x255e57(0x303,'uRjU'),a0_0x1c3cd0[a0_0x255e57(0x220,'jjVj')]='HIGH',a0_0x1c3cd0[a0_0x255e57(0x21f,'@n5k')]=a0_0x255e57(0x347,'q$6)'),a0_0x1c3cd0[a0_0x255e57(0x457,'JWpz')]=a0_0x255e57(0x314,'EpSL'),a0_0x1c3cd0['recommendation']=a0_0x255e57(0x49a,'uA($'),a0_0x1c3cd0[a0_0x255e57(0x29f,'3RX%')]=[a0_0x255e57(0x3f0,'IQSg'),'terraform'];const a0_0x12ad2d={};a0_0x12ad2d['id']='tf-iam-access-key',a0_0x12ad2d[a0_0x255e57(0x198,'9@(3')]=a0_0x255e57(0xe7,'a(Fb'),a0_0x12ad2d[a0_0x255e57(0x10d,'r8O4')]=a0_0x255e57(0x468,'*Cp^'),a0_0x12ad2d[a0_0x255e57(0x19d,'QCUi')]='MEDIUM',a0_0x12ad2d[a0_0x255e57(0x334,'ggkU')]=a0_0x255e57(0x335,'ggkU'),a0_0x12ad2d[a0_0x255e57(0x3b5,'K6]C')]=a0_0x255e57(0x292,'MfL5'),a0_0x12ad2d[a0_0x255e57(0x42e,'X*0j')]=a0_0x255e57(0x3ed,'Q5xx'),a0_0x12ad2d[a0_0x255e57(0x127,'[Qx&')]=[a0_0x255e57(0x31d,'*jhV'),a0_0x255e57(0x290,'ElxI')];const a0_0x497618={};a0_0x497618['id']=a0_0x255e57(0x298,'1%4J'),a0_0x497618[a0_0x255e57(0x120,'[Qx&')]=a0_0x255e57(0x19b,'QCUi'),a0_0x497618[a0_0x255e57(0x1d5,'K6]C')]='Привязка\x20политики\x20администратора',a0_0x497618[a0_0x255e57(0x2bd,'uRjU')]='CRITICAL',a0_0x497618[a0_0x255e57(0x297,'zBPg')]='policy_arn\x5cs*=\x5cs*\x22arn:aws:iam::aws:policy/AdministratorAccess\x22',a0_0x497618['flags']='gim',a0_0x497618['recommendation']=a0_0x255e57(0x494,'ruK$'),a0_0x497618[a0_0x255e57(0x105,'@eTd')]=['hcl','terraform'];const a0_0x142f89={};a0_0x142f89['id']=a0_0x255e57(0x43c,'7S1j'),a0_0x142f89[a0_0x255e57(0x327,'3RX%')]=a0_0x255e57(0x210,'mHfp'),a0_0x142f89[a0_0x255e57(0x223,'uRjU')]=a0_0x255e57(0x318,'xx#L'),a0_0x142f89['severity']=a0_0x255e57(0x467,'@n5k'),a0_0x142f89[a0_0x255e57(0x401,'q$6)')]=a0_0x255e57(0x1f4,'e[pI'),a0_0x142f89[a0_0x255e57(0x14f,'H^$H')]=a0_0x255e57(0x2ef,'mHfp'),a0_0x142f89[a0_0x255e57(0x1bf,'In3p')]=a0_0x255e57(0x13d,'q$6)'),a0_0x142f89[a0_0x255e57(0x105,'@eTd')]=[a0_0x255e57(0x454,'[fPO'),a0_0x255e57(0x32b,'9AvC')];function a0_0x4ea7(){const _0xe9e355=['c3RdGYGi','ACkJWOXdW6O','W7zrWOT0nmoFnG','WOfnW4hcOv3cP8katfZcPdK','p2JcPcBdMmoIt8khW53cGW','lMflW4jw','A8kYc3y','0y/qT9oV0ixsNTk40idtM9oTW5FrMDoM0RtqPnkN0OptUngr0Q7qTTcbs9cFWQ3qOnkE0QNqJTkZ0ilrVDc60j/tVngr0R7qUncQ07RqIncYW4NqLngE0BdrNToJ0iG','gmowngdcLhZcVq','WPKQW4qUitv/g8k8','0PJrTDog0lNrPTo80A/qP9g50RVqL0BdV8ooW6ldJmkWkmkEcCkJWP/cVmopvXTG','WPbGcdLZWO3cQMW','WOlcP8k7lfu8qdNdUXtcSHhdTg7cTL5KiNfmW5blmCk2WPywqCkFoYldGGJdUdiybCom','063qITkv0BFrR9cy0k/qVDo20l/tQqPNWP50WQ/sN9cA0RJrOngc05dsNnoz0zBqS9coDngk07RrSYNrInk406/tOTop0AhsVG','W5j5W5tdOv8vW5ldP2CFxSkGWRZcJmoVW7j7WQVcNCoMy8kdzL/cUmoMWQxcSJX9W6FcLHuADq4oW7FcJsBdLbjqWRiTd3ddI8kxmSo4WQlcQmoKW6fysmknufxdHbCxeSkrWP8SW67dTSkSqY7dHHvgW67cG8o2f2JdSfVdLhpdObHpW6H1jSoKW5/dQCo+fxDuW6CmyZ7cLKRdS8o9bZC','0BRsITg10kdsSDc20PhtIH3tP9oT0i7qLDgW0AVrSDgg0BVqTToNWPRtPDoH0PVqO9kr0RpsHmkf05dsLDkd04RrOTcT0jtrQq','rsNcMa9tw8oBF19ZqCkqASkJsMmHoSo8n8kKaCkmAr3cLSkSwSorze/cNCkKkgZdPxVdOfFdG1ldGCoTW78NWQyhWPrpW5qkjmk8bmoAW7DwWRtcIqldPKRcPCkRWO/dSfldMmo+y8ohWQhcU1ddLSouzLRcOI/cRSoLzSoIWOzot8oRW71pASoWW7zqW7H3WReqESk7vahdMmojWQSxWPm1b8ojW5/dObpcLgidWR1vq8kJm1XT','W5yBW7ncW5S6yJHoW7ldOSoOvCkqBxeSW55jWPFcGKCFumofWRRcSa','WQFcPmo+FW','W55qW6GoW5S/','05BrIDgd0OlqSTkC0yVrKDgG0OVcMWuIDmoiB8oMn2lcOCk9iazIW7q','WQGlW4nIjCovoXGZWObreSo7W4ddSSkCW6j4W5WxWQ3cPmk/W4bxfYRcR3XsewtdPCo+fSo2tSodWPi+lufquCo6hqLFWRRdP8k+BSk0W5e4WRCLCmote8omiCkPWPLYugG4DCkdWPhdSs7cJtKFW5abW57dPKX6WRzTbSoKW47dSHPYAdqGWQJdNCo9WQ0IW4HMW4ZcNeTBW6yFtXBcV8oJWRLxWPFcT8o4eW0Sw8kIWP0Br0JcSmoQk2VdLMe9taftWPu','W7lcSSoAna','amoslhK','0y/rSncn0QJqH9gA04ZrU9g70lRqMDgU0yeG0PRsGTcw04ldVCkzcY8cW5BcPmkMha7cUDkG0zZqLmoM0BNqQTod0k/qQnkn','04xtKngG053qT9cM0iBtSTgRWPdqQSk20OJrHDgz0kBtRDgl0ixqIDcv0ihsLnoY06tsTncK0RFsOYNqN9oH0y3qQToN0yq','rmksDL0lFq','EZNcJCk4ia','vSklWR16W4S','WPz7ACotFCos','W4NdN8oJkgJcPmo9zdzTWPNdPSo6kmkKW61E','z8kohe1h','E8kIxNeT','WOqCW408r8ka','ACkJWO5NW6RcOCoRcYTbW4vnh8oqW4xcQx/cLYKgW7a','W5rgW7iyW5m','WPmNWO0','WP9EuCobwG','EmkxWPjdW6GhWRuUnmorW5q','0lxtVTcV0lBtKDoQ0RhtKDcM07FtIb3tG9gQ04xtP9oJ0PVdMTcE0yxsU9oi0lBtTnkE0zhrQToOW6FtU9o80lNtJTks0PS30RlsS9om0QJqQDk40RltS9gV0l7sGnoVW5dsGnkd0ilrN9gB','WQJdV8ooe8otvIZdJq','WObKcJLMWOVcRgW','WPbhW4ZcVutcUmkqquZcQJ9iiui','WRJcJCk4W6/dSZHuWOWX','WRhdU8oofW','06trV9o006drPTgE0zpqKDgS05JtVanUWRddImkXW4dcLCoBW50BhrL/W49wr8odW6WfW4ylW6r2k8oAk8k/W4a','d8oodeBcVW','WPSKW5K4ohLXemkLgmk/xINcOJ0','W71lWPrJBqvhW67dRcCoxhldHq','Amk0rN0XxM7dSdbgW5pdSCoWWR/cP13cTDoUW4vuW5xcVCo+bmkMW5dcHeSChSoMfa8xB8kUAKrU0l/qM8oT0yRrKTkG0QltHnc+W5hdH9kp0ONdKTgI0R3qQ9om077tK9oF0BNsKSkEW6RcRdCvWOC','DmkHWOfvW6K','0i7tVTgs0lJtL9ky0RtsQTgD0OddNvxcKcNdSmoVWOVdQSoadMpdQCoNECkK','W7G6W6K','WRBdV8olbCoawd0','0y3rInoT0BNsKnon0iRsRDku0RxrM8o2W7GtWPtdL8kRfmkvv9g20zdqLCkTBmkQW6nFW7Taf3O','q2XfWRW1W4nXuW','W6bqW6JcRtC','WPiIW4C','W6WoWRvtzW','WOhdIH3dSMzKWONdSIFdImoRuM3dV3aWhfVdQmo9fmoM','WOLpW4BcMM0','WR3dPxFdIq','0jlsUToK0jFtKDcL07/qR9gGWOltSDgw0i/sGTkkW4lsHTge0ixqNTov0zFsSmkl0z7dRXZdMWxcQmk0fmocW4y8W6FdVncv0i7rSnc40RFsRDgN0lJqJq','0PFrR9oi0llqU9cK0jxtG9kX0itrJXvzW78OW43rKchqK9c00z7sMDoAWOxtRDke0RhtT9c80RVrOrFtOnol07VrT9oR0AdtM9gP0BNsUTgjwDcd0QdsMDgM0RG','W6nDWP11aSosnaSJWPjroSoTWOFcS8kWW74IW6uIW7pdHSkwWOatiMNdUNXsrdpcSmk/nSoy','0lVsUTgZ0idqRDg10RNsMTg+0zBqU8k50OxrP9gL04VtTTgp07hrV9gI0kFqQ9cn0j7cNnc4073rG07tG9k30zdqNTgo050','ngxcVIJdNmort8khW5VcNGlcS8oSaSkJW4RcQWxcGby6aKldOYxcGSoIfSo/sZ1S','WPD8dJLYWOFcRhW6iq','WPyQW54SmZTQbW','WORdGg0bWRDyW5O','qCkEDvW','WP7cP8k9W7pdIG','W6eJWPO','t8kAiLLJwmoPWRW0','mfHgW75jDmowjcP+ttKACW','06VrUnoQ0BNrQDgS0z/qSTkn0yJdVncE0B7sJncr04ZsNatsTTgM0lVtKToM05ZrLTcW0ixrQnggW6f1wq','WPdcHwpdU8o5','fmkOt0qjAW','0QFqO9oW04ZrNngi047qUnoR0lVtQ9gG07lcSHxdGuNdQSkaW7htITkq0PlsPTg+0jVqJnkd06xqSSkX0kFdT9gx0iRqTnkn0k/qRnoi0k3rRDcrWQ7rVTgA0PVtUTk305ttQTcm0OG','Bq/cNmkKnW','WQ3cIZRdUNOYx8kOwmkDASoJW4rX','j0FdJGC','WOHrWR/cVZe','0OVrRDk10PFsVTgg0R/qKmkI0BlsU9gA0BZtQDov04JrITgcWPdrJTkJ0kNsGDk70AtqSmoQ05/qJ9o90iptUngI','BSk+rNWRuJdcVJbAW5/dVCo1WQpdV1RdSmodWOmjW5JcOmo+gCkWW4dcHfOBfCoSfbm','063tRDcp0R/rRTcf04JtLngS07NsTX3qVnkM0z7rP9cn0i3tGToy0y/sUTc/07VrHTg50OlsODgvdngI0lpqSDkf04BqHDcf','W55cW6Wd','ceVcR1y','WOHBWRNcRdX0cYa4','0yVqSnoj0BpsQ9gt0iNrPTotW5BrPTgA06ZsL9k+0QG+A2PhtCoOvCoB0Azx0OdsNDk90PdqMncO05BqITgn0O3tHDcw0PZrP9or0j9705lqITgA07prM9gg','bCk/W5ealJjvWP12uG','smkolLTKv8oRWQ0IzW','gSk+sKOjyG','0A/tTDoH0zxrOngP0AdsUnge0jpcTDcD0y3rJDo/0OZrRhZqP9cSu9kI0zhrHDo+05C','WRBdPCkexCoxhCkf','fCkVWQhdJCo5W6BdGSk9d8kP','W5lcLszlW6CpW5xdI0GAk8kU','WRlcPmo9DbOqy2NdTa','WQ0CWRZdMe4','0BxrMncu0B/tKTgE0jhqOTg90RJrSngUW7psHTkB0BxtKTk60jDNvCkBW58SWRKPW58','k8k0WOldMSoMW63dHmkYj8kJWQ4AWQ7cIMlcQSkWxtHulSoGuCoFW5TdaxWYW5a4gSkbWPrqjHWai8owWPCmsx81WRr9W7tcQxvqpqBdIq','WQVdSSoi','W5tdSvL9dmkNWP1G','o1bCW7fjD8kCidO','W6XBFMHk','aGfcjSkE','WOhcRCkoW5tdHXm','077rI9kv0BdrPTok0AhtJnck05hrNnkN0j7sSSks0RRrNDot0A3qKDgB06FsJSk10zVtVDcJgTcd0kFrKDc/0lpsUnoW0O/dVTgx0A3rKDcY0km','WPWLW4aSnYbXeCkH','WPqNWOpdHdCMW43cQe8cqCkqWOdcPSkGWQLOWOxdT8oiDCoOshFcO8ovWOtcHMWNWQpdKX8ipaasWRhdGgxcTwODW603jNFdV8kRhCk7W6FcVCkVWRLDqmknyKNdNXelwSorW4i','WOLKcd1YWOFcRhW6iq','iCoOcgq3u3BcSZzYWPJdVSo0WRhcTLRdQCowWOrjW5ZcK8kJaCk6W4xdJxrgb8o3hXigDmkMz1SNEeVcSuykW7RdSmkxD8k4WOhdGmocWOzYW7vNWPldMmkoWP4ZWRNdN8o6WPeGgSolWQhdVCo9WOyjc8oYt8oVAmo1W5O7j8knx2TGdLBcHSoghx7dM8k4WPygpLndW6ejWQrYouSPWRFcSSojAfXyt8oBFSkqhgBcTSoYW7ldOgT6BmoGWQlcNG1FW4qRhvv4W7tdVmkgmgKlEaldRCkdg8kJWPrggqNdGMpcKx7dVwJcVSkQW7ddUL8PDmowihGxW7CGWR/cS8oRw8k8dXJcO37cJNRcIWeEbIqw','WRFcQ8o5DGWfBwpdQq','D8kvWQzdWQ7dHdL3WPi/','zSkzWQHn','WPCJWP3dKMWDW5S','W5dcGSoJCs3cPSoNyYX0WPtcRmkYj8kWW7TAW43cOG','W4NdJ8oYjq','jwJcPJpdJSoZuW','W7NcLeJdH2e','yCk2qha9x3NcUJCdW5xdOmo+WRtcT0FdOCogWOriW4m','AmkxWR1hW7OqWQeeoCoh','CWnAWOeuEtjAW7bmdqVcQda','uCkAofS7vCoNWRqUycpdTmkOlcZdO8kGAa','AmkZWPzdW6VcHSoWha','WQRdOCkEtSogbW','tSoouCovgCoX','h2/dVtVdVMnA','WO5BWQJcStb/atWXW7VcVuOLWQu','mSoqWR0KWPmn','WRZcICk+W6NdTYXv','xmkSWPeM','WOKPWOpdHa','WQiQWOtdSwi','j1dcUf3cSWNcPbWH0z3qRDke0BdtM9cz0lhrVTgh0RFqGDgu','g8osnNhcG2FcP8kg','073rH9c/0j/rG9kL0PZqP9cj0jVsMCosDKZcM8oBwmofibePkwFdV2vZW593W4RcQmkI0kFcN8k+W6vGWR4vxSkJtxaTwrXpW6OeW7G','063qV9cW0OFqVnks0ydqQ9cxWP7dIbq+C8ozuSkdu9gG04dtPng/0zhrNDkM0BZsS9gS0kjts2CoWQtdKmk+','nuHXW7DiC8kCkJTZ','jvrrW7LrE8kEkY1Rud8BBG','W4rcW60d','qmkijf9Ksq','bmkZWOtdJCo9W6RdHmkT','hxFdLJSEfSkp','umkEoLTKumo6WQa','WP/dJuBdOcyQWO3dVIxdJW','W7uzW60yWRDWhq','rCk5WPmmW68nWQSenSoBWPhqOHNtUTkd0QptU9gg0B/qKnoDtCkVWOflW69e0PVqQ9o5W6hqT9kd067qKnoj0P3rOb0','u8k4da','mSodWRaXWOanW7Ds','WOxdJutdTta7WPe','zJNcUIxdUmorsmkA','WOvPDCogASoqfW','05htKnoW0QpsODgQ0iVdNTgH0iva0lhqTngD0PltRnc30iFrH9k907NqL8oPWQdcKXNdUCkDW7P8WOfNW4tcHs8mW4pcLCk0','WQxcICkP','0BxqODkt0BRrIngu05JrRDcfif3cSNJcP2PRoZxcReFtQDc0077qTTgw0QRtSTg30O/rMTc+W5JcUcHQW7nFW7jtW5zvW5VdNmoSg8kYhSkszmo1cJ3cOq','W7W3WPDmvq','WP9rWQxcUdr1','0QlsUTkI0ylsIngV0BVsTnoM0l7rJCkb053tMTo206ptG9cJ0ABsO9ov04jP0BNsUTgX05/sL9kE04VtLDkom9cD0QxsJaNtQ9ci07tsM9k006JrL9omzDkl0B/sHToV05VrI9k007W','WR8aW7OXhW','0PlqNTk20y7rGngw0jVtGTk9zTgk0iFrN9kv0zVtNDgt0lNqM9cZ0kltQnkL06VcJno70RFtTnc204prPDg5WOdtGDo30BNsMDcD05C','j3ZcOtm','tY3cPCkCbWnLW6O','yCk0xG','W7KHWOjOvSouW6W','BX7cMmkTks9wW58','W4LAW7akW5OSFNXFW7u','W483W5BdR8od','pSolW6SEWQPqWOWxfmoGW54u','WOONWPRdLwGiW5a','b23dPq','W4eMm8kCpW','WRtdOCktrSoFaSkoWO7cLCkKW6tcSXen','DeddQ8oR','WO5Gds9GWOpcUW','WRlcIY7dRgn4xG','eSkNW5uaoJ5vWO0','BGqdWQumiCk/kcn/qGe','jZ9QfCkKlrft','sCkSW4uwgXbc','mgpcNgRdTJRcMG','W4nMWRbtfmoZgsG','W7SpW7ykWQrN','W6bwAw5kWRyNtSkJoa','WOrScJr0WOBdS3qPiCkYWP1QwSofW5DfW5iGhZvYyCk3zgpdIhFdL8kOW7yYW5ZcVSoLD8k0dLJcQuLVCa','k3FcINVdOsBcKsfKhW','fgn7W4j1vCk6cq','WO8qW5i7q8kvqG','WPnKcIHKWPBcSa','WQ/cICk+W7JdTtfjWOC','0OhrOnoe0PFsSDcY0RRrQDoa0BxcQ9gB0BRtOnoF047rH9go0O3qT9otn9kb0RpqLTc00OJtMDch0O8','W5NcImo1hCobuW','04RtU9kI0kprNDc90yBqUCkNn8kFiSk0omo0uuKitepcUcHMWQxcQJfLW4b/y8omaCowjfm9','WODTCSoDESoqgGX+W43cKe8SCmopymoCqaFdO8kUiGf0W6uDW5zDpc9zndFcTmkmWOC2WO3cSMHPF8oZxSkjsIdcQKfmW5/cNLRdTXZcK8oYt1pdMWGVwSktjmo3lNzjWOu/ucPiyM3cGIrymv9VW7/dGCkYWQ/dKY9IWRm','vgj9WRyLW4LXACkDW4ji','zSkaWRubWRddKc9TWPmZpSocWQTH','sCkUdmoRuq','WRBcJZ4','0PlqGncU0lRqIToL0AZrPDoMBmkiWPuDdHpdI9k00kdqITkF0BpsGnoM0RhqNncQ06OD0y/sQToS0lttMTci0khrODof0AtdUDkj05FqTno907JrTTcT0PFqK9gl0k7rIW','WPeqW5CTumkBu8kn','B8k7u3mT','06VsK9ca04drQng50RdcT9cr07JsV9ch0yxsRTgrD1zDW7tdQW','bCkZWQ7cHSkNWRZcISk3fmk9W7qVW6RcTeddTCo8ywbRBCk0a8keW51fghWMW5WNc8kfWOTijGOip8otWPmlugqNWRD9W6lcQwjbjq7cLhLlWQBcNmkCW4KfW65MW5jHfwZcVgtcV2yQW5fRW7vXwsXqfuL3W5i2rmkixMCDW4FdU8kEWQW4W58aW5rwWOPdEmkAtCoRBSkmWP3cRCk0qCk8W5TKWRNcNMlcMSoAWP/dPfddO8oODCkDv17dNCoUz1WFWQFcSf3dMgXoWQ1GWQWktLtcVJBdR8k8n2ddSZOGsCkwoupcIchdKmo+W4JcVmkeWO3dVXZcLayMrCk6','mv1tW7fp','W6DnWPS','0PtqHngF0l/qHnoT0jlrQ9kr0BNdJCkWlYOF05/sSTcG0BFtOTg3W6ZtPDom0jFrNDkF0iJrG9kI0PdqTToDgcKm','0BFrJ9k20BhsOngD0iprQnkU04BqMTcG0PNcIDog0Q3qRDcRoaKzW7bsWO9cbmolWOtcPToO0jtrMCoe0itqVTo4047rRDoT','WPldI1xdSW','W64qWQdrNTkz0BxqUDgxd9kW07RsSrRsTTg40yFqG9kp0i/sITos0jBqOW','WQXrWQ/dVTgL0k7rKDgN0jFcUTo90j3qI9kj07dsRSkt04RcMmoMlIPk0jtsTTgE0zhsU8kzB8oXmmoyssFdHeJdUmkDW5xdIYJdNCo3','W53cKSoPfmogqwhcLSk8cbhdJSkmWPW','z8kYvxuQwwVcUGXEW5FdPSoVWRxcOeC','W6NcUbi5n8k7W4u6y8o+txpdULhdNXFdIabhW59TW5euarVdNmoYW5TgE8oCCCkHgq','rCkqD1mu','WRxdOCkgtmoabSkFWPK','CSk3WOm','bdBdUMldS35hiSoSWPDtCmkbW5/dQ8o0A3z9','daHpla','W77cR0ZdIKevrmkEyhm','wSkUfmoMtvxdH3/cVJhdQCkwhW','b8k3WOBdNmoQW7hdNG','04BsHnkS0k3rLnc90lprJ9k+0ixtJ3dtPTgV04FrOngRr9cq0BVtITc9jCo7W7r3nmkoiYJdHHNcLg0sASouWQ5eoq','FSkeWQapWQ7dNJHQWOCM','WRpcJx/dP8oVyWCbW5pcNXtcHJFdMhjuW6zhCXLyWRFcLCkHW59ffCkwW6Ok','yCkDWQ1FW74fWQi','FHRcJ8kNiY1bW4GWWRfMW6hdJGe','WOGJWO3dJMaxW5VdRha/rSkLWRZcLq','aCkNW5urocnj','xSkqWRKVWPa','WR9SWOlcIHrrjr4','eCk3rKii','W4JcMSoPgCkEtYxcMSk2ca','WOmNWOpdJq','W4OsWR9iESoLW4pcGG','W7WYW7ddGSoRzCkpxa','WPVcSSkyW6tdKq','s8k6fmo6r1xdGa','xvGsCSoDwrrYkCkmvhu','0QBsGTkQ0AlrTTo90Qq30BJqSCox0RRtQDg606NtMDg10PhsHngGknc904prNTgZ0iZqPTko0QpqTDc50AFtUnc707md0k/rS9kK0BNtT9cA','nSolWRa8WPiaWQHkv8ogW54CfqX8DmkoqJabWQajubdcG8kTW7WtzCoByCo1','WQBcICk8W7W','WPO6W40ZiW','nejAW7DozG','WPtdMutdQtO7WPBdRttdJ8oRuM0','WQ/dPCkt','qmkiENhcIwVcSmkksCk8WQi/ucGHtW8JDSk3W5NdNSkJWRSwW5pcLmk3W4dcHmoqW4JdRW0ztYNcUgjrnMq6WPJcTKlcJsFdGa0BWO/cKhChumoFemo/j8kQWOZcMSoFW5LmW5NcMSocWOnlWQBcGayhDrKHWRNdJhBcMmkaE8kyW6vitKddLSo3WPFdKCoeW6u4WPWUWRq3W6tdNmkyrNHoW5tdRbJcPmkMkmkPWODbkSopaCoqq8kMq8kcW6lcNCoIeq1llCkUW7ZdGSk9WP/dGrGzcZPKkSkdnmo0qhldLmoMzCkZqsJdOKdcPGGXW7RcIW','ASk2rNe5x2/cPG','WRDeWPn/rILh','BMBdRSoMW4y','tfize8kictvNm8kLheZcTSooW5DSW6/cPfrUiCkRW5O0WRaLWPyXCSkeWPpdOmk/W6ZcVhpcQ3dcNxpcGSkgWQe1w2WBxIxdM8odW5rACd9Qa8kHDmoeW4RcHSoiWR/cTs7dTKFdOcflW4m1rmkjqCocW6xdNJxdQrO5imkHz8kDiXdcTCoHW7e9WOJcRmonWQ3cJSocW6JdTCkKcJBdMgrtWP0sWPFcPCkHWQnskmkfvwFcKsCzW4zIi8k7WRdcGKFdL2rlW7HSlq','ngFcMMZdSI7cMYDS','fLVcMXpdOSocFmkI','pvbeW7DpDCkjldL+','AWDpWO8','qSo2W4KhdGfsWOa','0jtsUDoH0jlsPncU07dqRTgS06dsHenWW7VdU8oc07JqUncf0jBdGDgv0RpsK0ZcJJVdUKRcN8kKfmoeW4ONW7RdVgzvxHRdPSo9ka','hxb1W6jt','ySkIuheSxNJcQZzD','W6OzW7KoWQ46hmoyj1dcMh/cISod','WP9PD8otFmobcWbsW4O','ffVcLrVdMmkQfCk+W6ZcPd3cGCoenCkIW4xcMYhcRYulp1hdHLRcH8oTAmoeCG1hw8o9p8ofv1ZcGM9YWRKgiHaNWOT4mSoVzKjC','WQ/dTCoRaSotvJBdKW','p2JcPcy','vmoEFwq','wCoqxgFcNCodW7tdKx7dHSky','h3pdGsawcCkeqvrHqCk0zmk9','rMfqWR4H','W78oW78BWR5MfmkAnq3cMW','ngFcM2O','a8kJW4yajxXdWPT1c8oLuaDKW5lcOq','W7HcBhS','WRZcNI0','x8oAy3ZdH8olW6/dOwZdNmktwSoslmoLW4RcSSonWPTABmoNW6u','W7LvWPrR','W6qwWOqHBqfrW7pdOsGDgg/dJHtcGMrZp2mqW7/cISomW4hdKSo9W4u','WOeuW5uTrCkDvCkn','E8kYuxSZxxJcStDpW4ldU8o0WR4','oCkpW6yT','W5T8W4BcNazHWOrX','0BZqRncC0B/tLTcI0AFrNng60RVqHWlsNTkd06VrUDkG04drR9g50y/tQnon0zFsPYlcUG5UWO/dRDkd0QFsUDkh0jBsSDg007NrSDoZ0P/cQDcO0jtrU9g10yVrGTom0Q0','tSoEzg3cJCojW7tdQW','W45sW5xcLWK','WPJdImoXiSoOFbNdUa','0QJrVTob0kJqG9kB0RRtU8kfgeBcKcTHW5muW5xdU8o6WR3cGqVdJ8o0CnkV0QRqGTgg0i/dG9cD0PdrNng10yhsHnoFWPG','W5XYW5hcKGr8W5T4WQiEWQa5W5hdTYddGwNcQmkJWR7dU8kRW5y','hmkJW5iwpdzc','W6qLWOvVuSobW6C','WPNdJv7dPIaOWPJdSIy','ACkZWOnjW7tcGSoHcX1pW55qsSoI','073rH9c/0j/rG9kL0PZqP9cj0AdsMCosDKZcICoqySozlW0iAhRdRLjVW5zHW43cOSoXA8oAWQhcUJpcPrjzWQu','0QlqNDoc0zRsLncj0ltqPDcu043tSTk20BxdNHjMb8oEBSkA0QZrODgB0jhsLnoO06NrJ9gv0B9E0yNdPTg60yZrHnku057sLDgu07lrVTg2WR/qHnct04lqJTgH06/rSDgG070','ACkrc8o4uG','fmk0uKSpFN0','WPjHBa','WRlcIgRdQmoP','ymoQyCo5k8otW5XB','W6DDWPq','W6nvWO1IoSoFkH0','WRWEW4i9n1asW7ldPWKjCw0','dNFdLIOCc8ktvG','oa9qomkEgJvYh8kkgh7dU8oIW7vGW4ddKNnS','uJvRWQHdnngG0itsQ9gT0yFqO8oN0ArM0jtsK9g306ZtUncr04FtMDo+073rRnkU0B7tKTcn0jJqTwWlWO1D','04FsR9gI0QhqUDgt0iZsHncs07lqRCk20OFrH9gF0kJtPDcW0i3rSDcyyDku07/tODoj0kNtJ9kN0le','nSoRmZ7cH2/cOCkwxmk7WRiREt54ffT5nmkIW5VdKCkIWQ0oW53cLCkZW4hcHCo6W4ZdQY8FxttcS3PojxeYWRpcUhBcGt7dGrfrWQhcHIKee8oMgSkPcmoIW4xcN8oSWO0dWPhcOmoXWQ56WOdcIXeRqMngWRFdQYdcKCkRzmkhW4XqggddTSoDWRpdSmoTWRHkW4u7W5jmWRxcLSoNmJrfWQddUh7cI8kOxmoTW4fVnmoIjSkcxmk+q8kEW6tcLCo8kf9hmmk6W7RdLCkSWQZcGWaEfIj4dSomjCoTqMFcImk7qSkjaGhcQb4','06hsKTcb0RhrP9cf0R3sONxdImoNt3xdS2WiqLhdPmo9kmoOB8kQbd3dJ8kEcum7xg3cQSkwiIFdRaFcV8k+wWHwmG','W49gW6maW4qIAxTlW6dcU8oVvCkq','uMHcWQ1/W41ZqW','W5RdTv5RcSkVWOO','WRqnWOldQMG','WODTySoDySophaDgW5/dJWqIAq','sgxdLCkU0RNqRnc20k3tV9kzpDco0PxrPnkpe9gtWRZqO9gn0BVqVTgA0jJtUDoq0iddNTcD0RRtSnct0RpsUDot','W7eDW70','W6NcT0JdILuzrmko','cN/dJW','W53dLSoXoZy','B8klWRznW60s','0jxrMnci057rI9gy0jxqGCk0aXWmWRf+0BqlWOmRW4NcU0BcKSkhW5pcUJi','hgVdVYRdQxHalW','WP9nWQpcVY9I','jxdcPI/dHmoV','WQ9oWQ9yW6uHtCo/iW/cINZcJW','W6HhWPO','AaDA','WR7cJCkPW7ldVZnEWPa4urrGgGW','EbRcNSk6lYzlW5q5','Ad3dKL7cU3FdJGvUh2ZdVI/cLfKzlr7cIGr9W6vGtxO8W7RdNf9eW4i5WPddLbxdOx4gyxTHm1/cISk9W7/dKSojcftcPtjsv8kQe8oWnmo3W4OqF8oWgmoaqSoddCkxWQ3cOaddO8oFW4bhW6TWW7mTwd1WpHPDvKpcTai7fNNcQMxdKfXFW7BcRSoUExekW6BdVvdcUZxdTbFdO8orEZPfWRlcKv/dMmkCW5FdR0iAiCkdWQ5ojSkjWODKWQ/cOmkDemkPjvrjcdZdKY0/w8k6saVcSmoKW7ZdQNiJpCofW5ddM8oCocaxFmkCpYuSfCo6WOxcHc/cU8omnq0mW7RdPfG3aHZdKSkP','aCowiW','0BFrJ9k20BhsOngD0ipqLDkL0RtqKJJsK9kx0R/sOngC0kpqOTcwa9oDe9oh0j/rITkh0P/sTToN0ApqQ9kV0iBqT8ky04hqMToT0A/tMDcF0Am','h3pdHsOdsCkfqemTrCk1EW','WPbFWQxcUsHZaZCM','s8otCw/cMq','WPldHmkNdSosvYNcU8k2erhdLCkEWPVdNSkKWPbIl8oYW7VcIYqMW7HWW6JdLCooWPVcNCk1yfNdS8ovuCkixmk9W5RdPCkZeSo4nSk2bSotW4ZcHxxdISkCr0xdGXhdImoAWOTduW','eCk6WPpdJ8o8','0QxrOTk/0zhsKTcd0lVrLTcw04ptUSkMsSkmkxuIW4vyWPRcPN5m0jVcJmkAWPzAn3qFd8kJtrGo','Cr9nWOywEG','faXxnCkihd4','WOuQW549msz2','WR3cIMhdQSo5DumpW54','hmoNWOaDWRiV','uCk6fSoVuutdNgZcRZe','iSohWRiXWPulW7fs','W4DNWRbe','WPWQW4K','BvJdQCopW6G','WRtcPmoLCHWsDMxdTZm','W4VdG8oKncRcPW','W41cW7qBW4W9yG','WR/cJCk8W7JdOdDpWOC','0A3tPDcA0AhrG9cO0yZqVDgH0zdqVDkebToiW7xrVncy0lBsQ9kR0PZqOTgU0kRtKnkT','zbZcGa','W59pW5hcTZS','gSkZWOhdM8oUW6tdLq','WRBdRmka','0QxsIDoq0AZrUnoX05prM9ch0lhdL8ocWPGBWOlcUDch0P3tVDcE0lrA04hrK9ck0i/qRTki050G0lBqLDo30yxsHTcw0kBrVTos0ihcNncB06NqKDgG0RpqVTg5','WRJcKCk6W7JdOt1jWPCSra','W55cW7qkW44GFMW','0QVrTDgF0lhqG9oLDDcy063rUnox05JqSTcL0iRtLTk00k4v0PTO053tHCos0AtrLToR0iJqVTkP06prImof0iFrKncC0RdrQTkv','W6XEWOC','Amo+D8o5pSosW4TwtsS','ksHNcmk4iW','D8kunW','zSogx2FcGa','W5LXW54','W4VdM8oKkcdcU8o6','WOD9BCoxFa','Fe3dP8oPW74','W4JcNSo+e8oEtINcMCk7hqZdImknWOe','W7mYW6RdGmo5A8kAqmoX','0PNqRDkp04hqODgn04/rIToLv9oK0jxsG9kM0BRtR9c4WQxtP9oH0RttOToU0QfQb9ck0OpsMnga0QRrMDoG0ztqHTgf07S00zZsUngq0ApqKDk70i7rKDoJ073sSDkN06/rUG','cSooe3hcH2VcOCkwsCkG','bWjnj8kecq','WOpdTSosjSoo','WRldVCkatmobdmkzWONcGCkX','WR3cIMldUW','WPbxW5ZcPG','dqnjjmkogJLWlq','0BBqJ9cf0QlqJncV0RNrSgNqT9cr0ANqTnc406RsJ9cE04FtRTkg0BhrVDgr0PltVnoO0zBqMTkNWRtrMngL073qI9cS0R3qRDcV07/rQDoZ043cQ8oQlCk5hbRcQrxcMNaBW5KbWR8','W590W58','c8oeDLHLzCkGW7f4lNZdVmkGoXNdO8kIASkZoIbZyInHW5uwWQ0mhmkuW6n0oX/cL8oTe8oiAXPdW7W8W4RcUa9sW5LNC0KkwmoTvebZt8osme7dOYGEdY/dO8oJWP1BW6lcN0pdUmkImCkxCSk/WRuyuYJcJNCDtSoNWQ1SuCkSW4uSW7e8WOBcVtTBW7DMvh7dJ8kVs8k8W7nkbWTxlG0EF8kqEhPEkt7dNCo2WQ3cU8oKiuitymo7WO8SE2uzW4CvycxcR2K5emoZFmkRDbtdTY/cT33dH8k6WOddPbhcRSon','oSkEy2WUvG','W5TTW4i','W7XlWPz+yWa','WQFdTmkarCol','dMldPq','W5C2W7BdHmo5zSkyvSkIe8oUaJhcR8kmW7OllmoIcCkkCSog','hsf5aSkh','fmkKWOVdMmo7W6W','WPf+WP3cJgWwW5ldRwnZqSk+WRRcJCoJW7PIWOZcQmk5y8kXCeRcVmoOWQpcSIL2','pCodWQOZWPidW6jorW','W64qWQdrNTkz0BxqUDgxd9kW07RsSrRtJng10ypqGTkj0ipsH9ox0A7rKTcr0PZtQDoV0ye','WPLSymoc','WPBdN1JdOcC5','WR7cNCkMW7JdOq','W4abWOX9uG','b8kIu00uDq','WQ7cKCkzW7JdPdTjWPCOsq','W5VdV0O1gmkTWOfQi8oIs3BdQYZdMGldLfS','WRFdU8oweCouxJ/dKCkQ','FtBdQcVdHmoMvmkaW5hcHaFcSCoLdSkiW4xcQrhcMb8Yh0ldPNRcSmoTsSoUsYfVxSoadSo5Fh/cOLH6WOa3cJidWQnpcmoxrM9yW71yWQVcTCoYW6XxgmooymkfWQZcGsVdRGpcT8oNo8kSWQhcN0lcM8ouW77cM8kooZldMeNdS0FcTSoGWRuiAd4DWQ7dQG0Moe5qu8orW4SXuSk3WPbCdLZcLJddSdpdJg/cM8k7WOFcGmksWQeHdCoBebLfcGuJshPhW6hcRmoUW5fxfbpdVGCMB8kHqCo2mSkx','x8kfWPjsW7O','aSk1W5md','gCkJW40i','WQxdG1tcODgT0iJtGnkP0A7tT9k10B7qTToupTcw0itrUTomWRJqSTkZ0ydsI9ggzmkxWOipxYfnA8kXWO8RpmoGsmoTWQTDffX1','pmohWRCNWOyfW6a','nSkFFZxcRx3dUCoCfmkPWQWNuYq/uXqJASoOW6BdKCo7WQ4tW5RcLmktW5BdJCkb','caXnjSkydZD6ma','jM7cIxNdOa','0BVrK9gH0BttKncO0AJqR9g40RxqJ9cs0PZcMCoLjSooWQLJz9gf06xsUTgA0QJrHnoo0iu','W6ngWPXJomoEla0HWPvr','hCoLWOetWQ0','W6GuW64','umkAWQ1yW60bWRCucCorWPS/eq','Emk3WPrdW77cGmo2ha','W7NcOL3dM1C5vmkDDwtdUW','WOFdIvpdRJGKWPRdUthdMSo2vgZdUa','B8kxWRbkW7yf','WPJcQCo4d8oCvJ7cLmk6xKldVCkrW4xdQSknW51kCCk8W4lcQJvLW5juW6/dJSoEWOtcJSkKmr/dGSoha8o1yCoJWOW','WRPXW4iKamkEW4hcGSowp2/cVW','0P3tPTcd06/qH9c00i7sTDcLj9k/047rMDc+0OVrSnct0j7dH8oiWOmkWQXnW5NqU9kJ0i3qH9cL06el0lFtQToV0O3qNnk60lJtTnoy0iGf0RVqKToW06tqIDkY0lFcGSk6W7dcVW','gSosm2ddNg/cO8kw','x8oPW4JdQmoFW6ldHmk8lCkXW7yVW6FcS1ddO8oLqejPCCkGpSkeW5ThhxWYW5a4m8okWPDfka0miSoRW5qdr3mQWPGMW7hcOhrdmdVdJIWTWRZdKSk8W5SSW64PW5ixkJFcPgxcGv4BWOmNW6fLf29ctHXiWO8hvSonDGuLW4FdU8kEWQXmW4TgW5mIWQfPEmoVo8oeBCo+W4tcUmoavmo6W7v2W6lcRtRcR8oDW5RdIL7cTmoho8ktEHZcLmk0e1XcWQxdLeZcLdP9WRvaW6mZtqpcHI/dN8kUAfNcPHmJb8kSzGZcQxVdQSowWORdOSkcWRNcU0FcJvHnqCkBW6VdRCoJESkfcCkBW47cLxeJqSoDWPryidOvWQC','wCkyiCoAya','BqDxWOKmDtbrW6C','WQVcGCkN','WPvFWQG','bhFdGq','WOZdJv3dRq','0j7tP9cn0zFqN9ck0k3tPTcr0jVcLTkT05VtQnoP0jFsO9kA05JqNnkfW6/sS9cVW7xsMDkCbrWuW60fqDgC0lJtTngk0idrSncW0j7sJ9c80zptN8k1W5XXWOtcGCoXW4tcP1ldPgFdJCkzW5ldKNhdRmkvWRC','WRZcJYNdUMvWsCk+','a2/dPYJdRNbtm8oV','0ilrOnk50RdsTTgE0lRrMnoZ06BqQb/cUehcPKCsWRZqRTcX0BBrJDcO0AtdPmkjxmkkuq','W4HqW6uCWPmtFZ9oW6lcU8oVvCkqmYWGW5LyW5NcHeezv8oSWQlcI2O8g0fAWP1McIVcHmk4W7aRWR8LomoSxYVdTHm0WQGPpmkGWQGwWOyaW7pcTSotoCoddSovW4tcTsSLW58','AHBcGmk8kZi','CqDnWPOCzJK','W6BcT1ldIeCxuCksyW','W5PwA3TCWQC7E8o9zmosW5KFdvlcM8oLdvddNsxcRCkLWPfndCkSfcldRmoXvSonzbn2W5vZW77dPmk3jSkDW6PRoSkyEuWMxeFcI8k6iJ7dR03cOfFdV8ohWQhdLSkSW6RcGay+W4HygYycWR7dPdpdUt8VhWH7W7uiWOmfBSo0W7RcRLbBvSkZW7RcLSkkyY9IWP/cRv1QcKq8W5P9WRZdHsTaDCkRWPbxWRtcOSoBW73cJXxcISoJW4tcPIFdSufpW5pcVeX/aJ9a','0jVtITcQ0QlrT9oW0PNrODcr0jRqRffLW7VdVqZcTeb7vJ/dManeW7b+Fv01W5i40BxtHnkfwtJcHt44AKRcPSo7WQNdSCk8C3C','WQiiju9VWRq5tSk3mmkTWRuDdLBcJ8oTfvddNt7cRCk9WPTbcCkRvbhdSCkNECkevGKOW6CRWRZdHCkSnSoqWRL4zColpq9CtGdcO8kpzqpcQNRdTuVdN8keWOFcMmkSW7BdUdS9WPDHqXqc','WQVcGq7dQ3b2vCkG','W5j5W5tdRgiEW5VdRKHWgSoZW6NcMmo4W7nMWP/cQmoOC8kYD0RcPmoSWQVcSIHRWQZdJGKhCYWsW77cMI7cVt5+WQbhjIRcI8ohESoIWRNcU8kVWRDfwCkACftdLqmiaCkmWOG9W67dTmk3vstdIILOW7BcKSo4f3NdHeVdNgNcPZHoWQDyE8orW57cPSonfgTHWQCszdVcNgtdRSo0e0i7iddcSw3dSCogW5bVdWZdSXRcNXf2csOEESoMg3VdQCogt8oBxKKcWPWfWRJcGwyvnJpdGIP6qJqOseZcGSkBeCoUl8kNWOL7WO1wawW+h2rlu8o1pdLBdHtdK2FcLSobnSo7uWTAW5ZcPZ3cI0lcSSobWPxdGSobECkvW7K5WPpdPSojWPOEWQBdHg3cN2JcU0JdJZSGW61DyCocg8oTWORdKZ/cKmoVWOhcVCoSW7tdUSkrESo7qvvWaIXZWP8vFCka','W6HrWPvQ','j1Lc','WPnKymovFa','FmkqWQ4','W7HsBhSuWRG8vmkGjCkdWOrrefdcH8oPtfBdIs3cR8k6','h3pdHsOdfmk9arG/d8kqFSkGtKKGmmoWdSk9emk9sWlcI8k1xCoAFslcPmk7z0tcQgRdSG3dK2ddSCoQW55DW7HBW4GDW4vdcmk7rSoOWRSJW6hcPX7cUwldQ8kLWO/dTIBcKmoVt8kcWO7dPNddLCkltGZcUHBdQSoCzCkSWQyvCSk2W4juACoqWR1CW5qdW4npBSoDdJlcGSoHWQrnWRPQb8oXW6hdKcJcU1KJWPbPhCkCbIK3h8k7WQtdO8k7oqFdNmkDWPnMW4VdVcGQwHCuWPCQW6OrAmookLRdGmouC8klW6LdfxRdUmokW5VcKJJcNmoUAcFdMfNdJKLKlCkZE8ooumkjWQrlt8kisZpcKgKAWO3dJ8o7mwtdRq','k8k0l8oSlCopW51vrYP9dv7dR8oSgSk6xMLgjSoyrNtdP3H7rcddKxewWQdcKcruWOS6lxnAWPRdTCkVW63cPwzNW5bjumkDW7dcKbFdVK/cKCkfW7ldKCkzg8kGWQFdMdRdLSkTzmkdWRNdQuCvhCk8WPdcVL82W4VdTr15W5mDWOpdIKzpA0ldG8o5WOVdTWqvz8o8WQ47WPqXW6FdMSkzCCkbW6NcTSoIW4tcUqpdOsLoW5bCW5/dRSk5gmouW5BdJSoFW7ZdPSoXs8k2W6NdSu7cUgdcMmoqpmo+W61xegtdT8o6W4i3WRjierZcNYhcUXtdHrxdVSooEuFcSmk0sLariWzgFaVcUSkHW4T1l8kncmoydxpcSX3dQK4zW5jTWQ3dTvldPbldJsddJSk+fCovW5BcJmoGz2TqWPf7AIVcUdaTWQmqtuJcKYVcL8kkCd5TrcHanmkagmk7W5aAFYiKW5bjwmk5cCk9y03cHmkPW7hcO8k/W5yjW7blnrTRgSoaW4GlqbTGWPNcNmkJoSo+rdblh8o1scpdRmkbWRJcGu0jWP3cV1rqWQzmjmknWOpdQ8og','WRtcPmoLCG','a8odWRaXW4CUW6XgxCogW54Dhf/rQtxcVv5osToY0ydqTnga0QdtRW','WRJdP2tdUfOpEmkG','W7jrWP5IjCkDpaSZW5rqe8o8W5q','c2hdQItdVMmzjmoZWPLtnCozW5RdOCoQ','WRJdU8ome8ogucRdJq','W7KjW6OdW7TYfSotjblcM3dcImkpWOiyimobESklWQNcSSomWQVdQwtdSq','ECkDW74KWPuhW6j0wCotW4mqeWmHz8kCvKihWQqehHdcVCk+W7qCDSopDSo0WOtcMqymCsKPW7XygwvJmSkaW6pdQCojWRtdOuyOgc58dZqpWRJdNcWyW4uCBCoCWO0RxqlcJIBcQhy9FCo8WRqwqmkmqWyvlezDW5NcGCoRW4FcOKj8cr9bz8kNmCowWP/dLb0tWQddGmkAWQFdGmoEWRj7W5a5W5BcSmk+WR3cVaZcM8kvqcZcJmotWRrvWP7cHd3dVHtdLmooBSkJaCo+WPhdJYPweSogW5VdQ8kGW58peSonb2LvWOm9sCkZquzOW7pdOaFdRbGVk8kDWQfcWPm2W5lcPmkhWOi','EmkeWRGjWQJdNc1MWOq','0jptHTkC0jNsOTcK07/rNDgU067sJngt0BBcMSoUWRhdQYBrVDgH05BrN9kW0PFrKTko0k7tPuRsI9o00lFsG9kyC8oGWRjfuuiZW5xdLry','D8k3WO5bW6ZcJSoJaaO','ngxcVG','W6nCWPHUmW','W5hdG8oUuCoFqJJcKSkScfxdImkpWO7dKCkZW5jIoSo5','CWDnWOTuEd5zW71z','W5VdSun/hSkPWOH8oq','cqHqmSkmctu','W6lcS1ddGG','W5r8W5ZcNHrVWPfTWQm','0PlsL9cd0PhqIDc60ihsTncP0yxsUSovhMxcSZWstCkjW5lcIqRcVuhtGDcY05OyCf7cNhT9W5JcUmozua','jfrrW6noF8kppaPLsIirEmkSWO15WOhdT8oIx2TCWOpcMSkjg3xdISojtwtcTdj1W4jSuCosmSkAW63dVSk+qSk2kMldVqBcN2vh','W5SUW5C/WP9uoCo7','WRhdU8oof8osxcRdNCkPW6a','fmkKWPFdJmoQW63dHmk9gSk8W7C','0y/qHTcd0QpqJ9cM04lqH9g8kKW5b3tcImowuCkAW7hcNTcj0ilrNnkC07RsMDgF0ARsOnow0zj7WPyrwa','W6zpWPq','WOFdMvZdPcy','WRJdTCovg8oautZcMCkWW7RcP1ZcOmo7WQddQKm','WPyQW54SmZTQf8kQdG','pCogWQuKW4OlW6TbuCorW4mAfbe','W6bwAw4','oSoZfhJcUW','zSkzWQHnW6WbWRuejCow','W70QW5FdGSo6B8kptmo2oq','k8k0W5RcL8k1W6BdHSk1f8kSW4iZW6JcSKJdR8o2BJTuDSoImSonW7j4wv1QWP12vCkwWOjvjH4eimocWP8mqwORWQv6W6hcUgjnkWJcHcLRWQtdG8kLWPmGW6eLW44UoZ/dONhcKvGgW58','WOtdHgOxWRfqW43dUa','07ZqU9c80ANqVnkI06BqPDgX0jNtPToc0ySjWRRdKwNdMbbu0jNrIncI0QJqRnc60OtrHDo80PFcOTcTWP/sJnk10kdsKTgB0ApsGncv0l3qVXxrH9gP04prGnk90OlrUTgo0OK','fmk6u0aCDh0e','W5rnW6OkW4O7zxPb','WQpcGwRdPmk3yLGzW4dcNXlcJIVdII9iW7a','06ZqJnkj06dqNDcQ0zprOTct0QlsHGprSSoR0ONsR9ko0RltUnkr0yxqPuRrPDk20z7rKDoi0OBrTW','WRGjWQldOciZW7RdJuzKeToZ0PpsTnk20QBrImol07lsQTcY0OprKDcB063sT9oL06hrTJJcGmo4xDgk0lprQ0hsPnkO0AtsPTg30AltRDguwTc706ptIngYWRhtRnoZ0OVsIDgZ0jBtJG','WOVdHhavWQnEW5JdPhW','W6OZWP59qCow','0PRtJTkR0ytsJWprSTk106trJngm0PVtMSop0OttRnoe0zJqNnkR0Qm','W5ZcQf41d8kTWOL4p8o6vI3dVwtdJbxdIvL+WOeMW64zmH3cMmo2','sSokwmk8pmotW4jlsYe50lao0RRsQTgq0OFrRncS0jRrR9kxaZdcVZOVengZ06dqRw3tI9ki0ydqQTkI0A3rRngabW','gmoonhZcNMa','0PhtQncp0PFrSTgi0ittH9cT0l/sUSov0k3rG9o50iNqK9cq05/tPnoz0z/sHDgC0RlrJmoc0iZqHncS06ZrOngn','WOHdW5NcSW','WOroW47cTvO','WPuXWO/dKN0','tcn9WQCSwq','W5FdM8o+oZdcQmoZCJy','WQ3cOmoLDH0yChu','W4HKW4BcKq5G','W7qDW7amWQn2h8osjW','WRFcHx/dQSo9BLGz','W5fZW5JcNaj6WP9NWR4','C0/dRmoRW65MzhtcPa','wCoAyNRcI8oaW6NdOhi','uMHsWRy/W4fMrmkyW5bzW50YW6y','WOzTD8oxFColdra','dSoBixpcGG','0zJrG9ox0kdsQnce04pqLTc40k7qRCktcCknxtG2g8oweh3dSL9jFJ/cQCkshepdQwZcL8o8f8oJAXT8mLWGACk5WPNdImo0W4e6D8kkehLPWOKkW5vGW6NdNW','W5PKW7hcMbvRWPfNWQio','W5j8W4tcMbjTWOrHWQad','WQDvW47cM0C','0PhqNDk30lZqVDgq0AxtJnok0BnA0i/qO9kw0z3sRDcK0yprODgn0zBdSTkM0PdtRDo404NtT9gn','CCoUDSoZiCorW4TmtdLTgehdOa','zWPyWOKk','0jNqP9cg05drGTgy0AdrT9kT0A/rJelsG9gM0BZrQTkv0iZsNTo90j/tInou07/sHNFtKnck0QJrSTcC0lG','WRCdWQRdQfG3','WPfWeJLY','W6OjW60F','04drI9oM0BxrQDohb9ol0iRsOTcG05BqNDk7WPltHTgv05drRncq0zpsM9oX0QVqQ9kk0kWA0B1h0zpqTDc704dtTTkh06xrM9gU0khqUZRtSDg80yZsVTgd0BJrJngS0kFrGTcJE9cI0zFrTnoe05ttKCkM0RVqIngr0jBsN9kf07BsNToD0jFtM9ks','W6HtwezH','W6OzW70eWRT6hCozmbZcHNFcK8om','D8keWQilWRRdKJH6','WRBcOmo/FKicyw/dTslcJIpdTdJdQq9wbK5fW6D7','W5tdO0v5gCk4','W6LsWRTxeW','W5hdVeX/ga','WRldVmoKbCkly3ddKSkQW4JdO1ZcU8oMWRRdSv7dKLlcHZBdRaOlWRRdMmkEeGitWQOcW61ECCkgySoexSkMemk5kfFdU8kBsrGFW5LeW6JdRr7cImkRWRbaf8kKct9fWOCaW4/cM8oVdqrffrmeW5T4oSoUWRJcPSkMW7v7qmkTkMjGo8oyamkqWQfn','07JsM9gC0yFtQ9g50OFsSDc00lVrTnoV0je505JqUTkt06xsQDkz0BBqVulsR9kH06FrPnoT0k4c0lJsUDgy0PprS8o5047tU9ku06NsO9oJ0R/sTngl0lFtNDclq9gd0QRtQ9cd0iW','WRpdG8oQm8or','D8oYzCo5p8oFW5XlwcW','u8kAoePZs8oG','W5pcLCoTcCoh','W64PWPS','WR3cPmoNDGGEDNu','W7SLWPvZxSolW6FcOmobmhpcTgrU','bCkZWPhdH8oIW67dLCk6h8kXW7aVW6NcVW','WOXFWR/cQJHGcG','v8k3WP86WPtdVGTp','h2pdJg/rGDgA053qN9cn0ltqHCo90lpsKTcf0ltrTncr0RFqPnoK0lFdODc30zptNDkj0ipsIncQ0lVsUTo90BBrLnob0iZsUDcEWPpqIDkD0RtsT1FdQLpsT9cF05JrKxttTngq077sPDgf0O7tG9gv','WPtdGgGxWQrwW4VdUa','eZ5RWRG8W5X6Bq','eaHrm8kmcd9TlG','WPmNW4SUjW','FKtdPmo7','W5DcW7yo','E1tdSSoMW6jGzghcQ8oqDfdcSa','W4FdQvLWbmkM','BSoUzSoVlCoBW4S','d1vqBmkFcZf7lmkxxLVdVSolW4qMW6NdLuKUeCk9WOmwW6f2WPmNaSkYWQtcSCoRW6xcR0K','WPpdGfhdPIy','FCk6WOfbW6O','04hqTnoJ0BJqN9om0jxtJnci0QCYWPXtW6xdS8kelSkiph0mWRxcUmkVsSk8zK9z','W61rWOP0pmoxpq','W7HsFgbuWRGWsCk3lCkzWOOtda','W4b7WPjWzwrYnmkiemk+wW','wmk6fmoRruJdNhW','C0ddPq','zCoZx8kVFLtcHcBdTM3cV8odbxRdVd4/imkKA8ksj8o1W7XXW55JWOxcVsFdNHiQBW1rW4eZW4ZdPcaHp1TDvhZcUCovoCkfyCkrW7/cR8kSwHqZWRe8a1ijmfP3WQb1BrVcMxq0WQpdSXmlW4Lskmkj','sCk+a8oHt0RdI2VcUYtdTmkqhNu','EmkLWOHhW6VcNW','pcb5fCk7','CKddTmoQW659Ax7cRSkjEv3dS0xcRf0pW7L/EsPJba','W5NcLmoZd8ohutNcLmkReWO','0A/sMTcy0jVrGngx0lJrG9gJ0kBqUnoZ0jpdKmkMiKPJWR7cG8onyYPYWOZcUmkjW6ldJ8ojW6FdVSoM0i3tSDcGW7/tHTk80QdrN9c+0PlsQTgb','bxpdJIi','W4lcN3VdPW','W4/cOv3dPLW','wmkOcmoVufC','W4T4W4tcNbnNWOjX','W7SDW6OoWRf4cSoo','g3FdUsRdQhjgp8oSWOi','WPrrWRJcQG1ZedPVW4BcUGKwWQxdR8oIWPNcGmozW5SwuZyIWQi','dSoclNFcHwFcVmkrhCoZWOjMbwCphW','t8ogu2NcNSodW6hdVw3dJa','W4xdTv5SrSkPWP9W','WPulWQHbWOjMjZWeWQJdPmkI','WOfUlmobASobdbTlW4RdGKaQDCotsSoFxIJdTmk5lqnYWRXwW6rjzrzDBa','CCo+D8oL','zCo2v0a','W41XWR1ocmo9','a8k9cLCFAcinjhrPWQjfWPZcRgPhzSoWWO7dKwm3DCkeW70','W74qW78mWQu','hmoomhhcGM3cOCkwtCkT','W6LcWPzRCW','0QtsUDoC0l/tSDgI0i7tHDkC0llqUSkbWPdcISofWRNcIMq4W7VdRCozjs7dRvJdQmosWOVtGTow0O4Z0j/sOnkj0AVtOTce07tsM9oa064','x8oAC2FcH8olW6pdVhVdLmkjvmkqna','ACkoi39B','h2BdUq','j2VcHq','0khsM9gy0RhrOncz0P3rHDoV0ihsUnk2uDcJWRVqITgX0ihsLTcM04NrUnkM063qMa','WO9BWQJcQY97ecSwW7xcP1CVWRpdH8kRW6/cG8ksW7mqqvvWW5ndymoxW6OAWRnGW5Lyd8oWrmkSW5hdMmoRmSoxWQRcLdZcN8kyzmkTp2KaW5bsnmkHtCkoq8oDeLC','W5tcNSo6hCohsJRcKSkadbNdLCkwWORdHmk4','lgpcHNNdPINcKZbY','c2VdQZO','WPpcGmoxwJO8','WPZcRuZdHW','z8kaWRCCWR7dLq','F8kDWQHjW60lWRmu','qmkAofTXvSo8WQa','0k/sV9oR0A7sOTcP07jn0AhsKTkm0z7rSTkpWPBtMSky0yFqI9cu0QhrMnok06a','W5eyWRm8g8o+W4/cGSkffh/cQw5YW54wW5ZcQmomW7pcNGFdGSkTCCkY0QRrU9gm0i3tM9gH0PdrN9ch0yS','ASoQDG','WOxdLutdQtON','CmoUy8o5pSovW5PB','cgFdPa','WO9KedT0WOxcUxa5','tSoqFNVcNSouW7pdSwVdMSkp','0jZsTDgx0QNrSDo60PBqKTct0jtqPngb0AhcRSondmkcqu0c0jNtPncu0kxsRDcH0lhrUDcd06040B/dN9o90yZrMnkJ0AtqM9gp0jptI9kIW6RsSDks0yFqTnkf0jNqNTow0Pm','WPZdOvhdIWi','W7RcT0JdM1Cewa','WO3dLv3dSta','D8kwWR4pWQ/dJq','WRDSWR7dICoPFCkHvSkPeSoUbGhcPCkvW5ibjSoSvmk6zmkFW50iv8kQWRzKWP4zWPfhbhFdPSkeFZ1Iy8ofWRZcISkFWQOYWQ1AW4vHW7y1j8kxarpdJmkJdwSxWOBcIZWvW5VdM0vljWiLW5hcKCk+WOr1pxSVWQhcUCkEbruRqLrVv8kmW79nW7CgWRFdR2P7EqZcL8kMlb0pW6GpDd1lW53cHfTcWPxdQ3NcKmo6sXRcTSk8bea+xSkSWRRcKIZcTuSlftldJMVcLCkxW61SxMCZWR/cUrFcV8kmFSk9i3NdLXBcLSoDpConW6WtW7BcSCokuCoEySkAW4BdHeVdO8oHhMVdLSkyi8ozW78KW4JcKt3cNwdcSCotW69eW7ZcTsveyCkyifm7jmkeW4RdJMiuW7NcIHf6m2rPWQVcO2y1AWv6mCovcmoVgL5ECHfUD1boW6RdJa','C8kZWOXl','j1bgW6jzzmkv','kMtdGZ8tnCkTd3fqFmo90lRtPTcn0ltrSngT04hrMToV0ltsG9ge','WOldPCkyxCor','c8oylMdcKgFcVCkAt8kQW6qsvMCpwfT5nmkjWPRdVSkLWODkWOlcRCk8WO/cU8olWPxcTxrtehpdVJ9Pzf0VWRhdUghcNthdNqfaWRdcHI5HuCoypCkjeSoqWOtcPSoSW5HzW5ZdOCk4W7jsWOVcJ1OstXDoW4BdPfBcO8klh8kfW4vqgfJdPmks','owpcGWJdKq','W53cHbJcR35GW5tcVN7cKSkPgq','dGXvimkEdsj2m8kn','F8kqWRqlWQ/dKY93WPiH','WQ/cJYNdQ2DTvq','WRtcImoJDJ0','nSolWQK','Dr9jWOSkDYvDW6rz','oCobWQG','WQiijwjwWRSYsmk3lSkrWPmteuVcJmo+beBdKctcSmk8WOTwgCkZqqZdUSk/y8kwra0ZW6a2WRBdNCkojmkuWR5ezSkoAY8ZxedcJmktvrhdOZpdLcdcTSk2WQpcOCkJWPhcIGDIWQm','W4JcMSo+gCkEqcpcMCk7fqZdImknWOhcM8kIWPb1l8oXW6S','WPBdKKyyWQu','FuJdQW','W5ZcL8o8g8oa','W7PSWR9brG','WRFcPmoW','BankWP0yCZi','uNHDWRWH','WOvlW4i','WQBcGwJdOmo3Be8oW5tcIGNcGdBdHq','WQFdKmk5WRddOIXsWOG1xavUeaBcGCk0ff5WW6xdKKZcRmkI','W5ldM8oZ','WOxdNe0xWQbAW43dQhSo','0QxtKDcy0kVrN9o4W4/rMTcl05tqKTc90R7qS9kf0zVsKTck0kltRTgYWQ0iobVcMCo3W4HrDSkva8k+wM3cNCo0Bq','uCkbWRqg05JdJ9k00z7rITcq06RqGDgN0RdsInk/oCkykHVdSbC4fncM0Q3qTnk705RrOTks0OxrNDkz0kvz0BRsN9gz0yJqGncB0QltQngT0zy','W4f7WRVcHSoqECoxbSkRAmk0wZtcVmkwW70fy8ocgmkAz8ouW7vCcCk6WPXBWRXnW5zekZJcRCoqixDxfmo1WRJdNSkzWOPVWP5oW71dW6TSmSk9ssFcGmoVv1CVW5/cPeG9WP3dRfmpb1KRW6tcVmkdWQ5lkeilWOddOmkNoZS9hemHCSkdWRz9WRqFWOxdRb5unZpcLSoPben4W4CoeHisWQVcQfDjWPpcINBcJCk7sKVdLCkCxZ56x8klWRxdMXJdVvLdwgdcIKVcU8osW5Drffj2W6ZdTu3dT8kSm8kEiZNdNtVdNSo7fSo1W4qgWOFcR8kGamkJDColW53cUt/dOCoMAXddNCkyi8kVW41sW4/dVJRdIHtcTSkhW6DcW6G','WQZdPCkgsmobdmkzWONcGCkX','WR0VWPRdQxGyWP7tGncQ0AtqH9oXW7ptJnk605pqT9kR07NsRTc407tqPTcw','W4FdSvLSdSk6WOe','sCkUaSo3','W7pcPCkch8oput3dHSkrW4dcGhxcV8oGWRZdSuJdS2pcVrJdVf45WORcGSkMsYP7WPjbW5bopSk0BCoxvmkwaCk+FbRcPmomhbCwW59RWQRcVhldL8kTWPXphCkheHT0WRy7WPtcRSoOqN9WcLXqWPeSjmoIWQFcKCo0W7TUt8k+jMPVbmkEeCkoWRabWQihjmo/WOjPaCokWOjDACoKev9nWP5xpSorhqnZWOuQW43cUYpdUG','yCkYxNK','04htU9or0kBrKTc30lZqVnk80iVtH9gG0PzXW4TMytCc0iJsV9gc0ldtSnkc0B3rJW','ySoOyCo1i8os','ebrtjmkEdsj2m8kn','qmozxmoibCo/W69U','mNFcHhVdOa','W6ZcV1ddM1Ce','i8ohWQmXWP9pW6fer8kFW5qaeX4Jzq','0kdtITgx0QZrSDkc0PZqMTgQ0A050lpqNTk30QprMDkf0AW+cGJdJKrYW60ZqLK1W4jWgCkwW5aCbmkvk30','CGnpWOSlFsnn','W6DsBhXyWRiW','DqauWP0CDYvrW6bEvaVcQxmWsSoFjCobWQ1dWPdcMG','vvOrDSoEwgrwoSkCquRcNa','W6TBCW','bCkakLtdJSorW67dT23dKmkbyCoBkmoHW4hcVSorWOzYiCoMW652WP3cH3qGWQBcM8oTWQX4W7pcJmkbFSoMW7hcRCk2D8ktW6NcSGnCW5FcPCozWP3cSMHBoHHNv8oBW7VdQa8oDfVcNCoAW43dPKNcMmovW7egW6XXWPT3WOzdW5Kqqmk4eLaJgsNdQ8kwjSkzW4JdPXOrW4W','W5LmW6meW4W9ixLoW7xcQSo1tSotngiK','iKhdOXWRrmk1qeaGbmoT','WRNdO8oRe8oxwIRdNCkTW60','WRWPW5jIsSkDvmkagSoBvSouESo4WPJcGXlcKJDZemoWW6G','hSk6ra','jurqW68','zCoNDmo7pW','gmoFma','W6zwCwHmWRqYqSkG','WRZcH2C','DfPYWP82','WO9GedT1WOW','WQZcSmo/DHW','W7K/W6xdGmo/','mfHF','0OdqVDkH0zxtRDgB0y/tTngT0l/tHZ7tJnoG05lrI9c907pqPTk007NcV9kt0OltH9cY0RRrVqPRqg7cUmkDWQpcG0dcK9o40zVqKTcE0jltP9kD0AdtQ9cWWRpqRnc50l/sHnoCc9g10Q/rVnky0B4','WRzAsmoMrSoHocu','FCkUqNeTu2/cTInA','bCk+reOwDMOtnxDXWQjjWP4','WPPgsSoiyq','WQxcIbFdTKC','xCk3aCoPuq','WPpcHCkQbaJcHCogCIrGWPldS8kRgSkqW4fKW43cPZfTcmo8kf0TyCoBWOrUDMNcSbNcQKD+mCoLhmorq8ktqJBdU20UaSkLqCo2W6NdSWjlpmkbp1uBcxrwr8oeW6/cHCkeW5HjWPmuFGfpkeZdHSoEimkMWOdcG8o4pbZdMeNcQM/cK0FcV8kDWR3cP0RcUmo0AxhdTHFcSSo8W67dQ8krWRtdJSo/zSkHC8kLWQFcOCoTvX3cLhqDuYFcOSkozmkaW5zZW5f5uqpcTKG','0yNrS9gZ05xrVTgx0RNrT9ck0l/rPNygDCk2W7zwWRZcSSoqyYWmW5BdU8o1hfVdRmoXr9gPW6y0FSoGAM3dLcJcSCobW77cPaZcJYe8','W7JcS1VdIKPBuSkyyYRdQmkA','W7XlWOfPCGfwW7K','WRtdU2pdNHqkWRZdKGBdQmoDDKBdJ0eEDwtdS8kYsSorCSoJlwBcMmk3iwCCqLxdTCovFq/cPIJcKmkKhLDeb0VcG0m','WQPRW6JcMG','WOtdS1WlWQm','WR/dPCkDrq','WO/cUSkdW4NdMX16WRi','W7S1WPHVhSojW6ZdTmo5iI3cRM5SW5zAW5JdP8o6W6NcJWO','hNpdLcOjdCkvvG','043tNTgM0QFqTTcN0BVsHncs07lqRCk2W6jxltttQTgoencl0jJrUTku07ZsL8kP0zJsTTkN0yJrPDkxw9cM06xrG9cB0yhtTTc50yVtHTgVDTkw0lBsVnce0jRrNncT','fmk3WOBdJCoOW6ZdGSkT','zmkYqwC/v3G','eSkvzgOV','0OprO9of06BsSTc404pqKmkI0B/tI9gz0ixtR9ov0RBrGnc80O3rHnotn8kyWQBqNDgl073tL9cb07BqG9kdb9cu0jZtO9kC0BVqT9g40BptKCo90PJsPDot0k3tJ9c+0Q3qIDkV0ke','WOXYhY9X','07BsNDcV0yNtRTcb073sTnc10yDPWQ07FSkfF8o50PpsPDoQBTgf0zltNnkN0PlrODoT0kOox9kX0kBcHTg8067tHDoW0PRtO9kQ06psV8kP0lBrI9kK0BRrNDc/053sLTg70i7sVnoX05FsGDgS07xcIncq0iRsJncj0z3qSDcb04VqMW','nMJcPIldJmoUt8kx','zINcVmk7gW','mwZcOstdMCoOtCkAW4tcMaa','0i/tQnor0jBsQ9kJ04BrKfLdW4nDqCoGW5pdThJcHcbv0QxrTngx0ihqODkV0ltsVDoA0j/sL9kc0z/sKq','WRNcGJZdUhe','WPiuW5u8r8kasq','W5etWPVdQHRdRCk2y1VcPsnd','W7aHWPTW','W6tdL8oWW53cUMebWQ4ZqXrefbldNmk+fvD4W4pdNLBcHmkXWPeaW6BcMSoXzCk0z8orW4PQc8ofWQ3cSmk1zhybWQS3cSovW6P1CmoRwGeACCo0W4DTWPvLW7ZdMSohi1BcSbDVW6GgW7fqEszCW5e0WQtcJ8o4W7i8o2BdIW','WR7cGJe','CvtdPmoRW798Ag/cR8ox','W4xdPv5S','WQVcIY7dQW','W4z4W7aOoIrHoq','zCkzWR0','WPLPB8ovESodhGXr','WPKPWOddH2qD','ECkaWQuDWRZdMI8','ESkmm8kU0jJqNnoG0yltP2xsTnoh0ldrMDoy0B3rUwxtODcO0R7rUnoB06hqL9kt0B/sIToC0j8','qSkxia','y194WO0BW69czG','dMxdII4jfa','lCoTW71oFxSpW4S8FCo0baLnWPdcLqX4ruLdW49wh8kCWPhcPmk8x199oCo0fq','0PJrTDog0lNrPTo80A/qP9g50RVqL0BdRSoFW6FcGSo5BSkz0lJdSDkY07ttRTcF0y7qHDo30j7rHvtrNDoc053rLnk/0ixsMmocA2DreG7cQtruwCkPW5tcU3ZcQ8oxea','WQNdR8own8osCtFdMSklW7VcOK3dO9om0OJtH9cD0RZqLDoB0A7sHDcFCnowW5hcPvGYsCkt','zmkCWQigWRldKW','W6NdV8odcgxsHnkP0kprUTc604/sVnkvADoG0QZqGCki07NqLDc20yJsTDcS0iJrTJtsHTkI0ylqT9cw0OFrInkc0jVqODgZ05/rVnke','WQf/W4XCy8ouW6FcJ8oqjw/cSNLPW4OsW4ZdImoiW6JcNGBdK8k6lmo7WOPvd1BcJdpdVMWSACoFW7NdGCkZimkpj8okbqXjW7JcGmoOW6dcVMXboCoWW7ugWRdcMmoYW4WEWPJcUmoHxCohjSoHWRdcH8oBW6LRW5jLW4FdPmofW4ZdGMKbW57dIMSdW7zxBSkgW7jnWPZdRSkbW585xZ/cTNZcQ0G4WQ7dKa','W4NcNSoRgCobsJJcJG','WQVdU8omaSoetty','W4JdN8oMotFcOmoGBG','WQFcGx3dQSoOAf4z','W70MW5T1uSolWQ/cUCompwpcVMPYW5rAW4ldRCo6W7lcNXZdLCkX','WPGUW5K6ntn9','0BZqRncC0B/tLTcI0AFrNng60RVqHWldU8kgWPvNWRpdLGzN0y3sMToo0zpsOTgc04VqGDcAW7/tVTkc05VsS9o+0AxcRw/sH9g20OpsLnoo0zhrRTgYz9c10yZtHnkN0PTqFLeK','W5NcMSoPgCoutd7cJG','WRhcIZRdVNz2tCkIDmoaECoIW4nGe3O','ymk2uq','WO7dQLqrWOq','WQVcGCk+W7xdPZWwWP8/raLMgXe','BLJdTSoRW75XF3lcUSoq','WRZdGLBdSZq6WOVdPsddMmo2shhdSZ42qHJdG8o3e8oOiCoHpthdNCkpeKiWD2VcTSouzbRdRGdcV8k+sq5lmuxcHfRdNXTcvMW5rCosACkIW6NdPu8uWP8RWPJdOmoyz0JdLa','W5TpW6eiW5O','ESkaWRepWQNdLdXMWQGIk8oFWRbQASo2','AKNdTG','nmoBWO4pWOzpW79QgCoOWODEqIb8smosBtmXWQrDbZNdJ8kfWQHDm8oGkComW4JcMLOYygGYW54qpYu8BSk4WPhdKSkl','BSkbWP1nW6ShWQacj8oB','hudcLq8','oITXdSkGmIm0gmkyh1JcKSkuW7f5WRddGqbPiSo1WQ1eWQHUWPC+sSkSWRNcNSoRWQBdPq','W7nrWO9Il8ozlb0','WPTxWQy','WQZcIYVdUNb2t8k+','WPbxW4hcK1RcGmkgsLRdSrDszbW','W4JcJSoXgCoa','W7buW7xcSq','W5BdN8oJlYtcRSoX','W6jlWOr/yq9h','WQ/cM8kIW7ZdOc4','bCkJWPddKq','WPKNWPRdHgOvW4ZdUW','fGHalSkaaZvXj8kyrKVcVmox','WQKfWQJdHMy','t8k9tCo9eqRdI2VcVdFdUCkjbxldTcXKjSk+FCkyiW','WPSKWPZdKKe','WO7dJCk3yq','aSkJW5CalZHtWO0','BrpcGa','04ptSnkI0kBrMngp0lVqVnog0BRtITcFW7NrPDkY0ApqLDcN0jRqGnk50ldqSTo60OlrVDgp','0zJrG9ox0kdsQnce04pqLTc40k7qRCkt0ipsOncC0yZrTTc504VqIncTWRfFwwqIW7BdGeS','v2v7WPCL','iwBcGtpdMCoOu8kj','WQBcGxJdU8k3yfOj','gvb8W6vz','WOBdIuBdPcCGWOVdRG','WR1PWOFcNt4','DqauWP0CDYjgW71zae/cOcWPxSoDyCoqWRPnWPNcGmoFW6uKWPfx','04FsR9gI0QhqUDgt0iZtUDcz0OdqPDkU0OiLcxVcPGrGw1KPWORcTSk7W6vSW6tdUILYW7trJ9cS0PRqS9gT0l7dO9c+vTkP0iT206hqV9k70ie','b8k6u1eEAwe','W7azW7ig','W5pcLCoUgCoqvJ7cKSoYgb3dKSkhWP3dN8k3WPn/iCo/W6RcNIyP','WRGoW64aarK','W6VdSKP9h8k7WRnQymokcG','zCk2xhmRuxRcUIa','W5fcW64iW5WUA3bC','jfFdHmoMzwKpWO9/W7K5WQW','W7PwA3TCWQC7','E8kIqwa','xSoAzM3cMmopW7ldQW','fWHvjmkFbYrM','yrRcN8k7lYDb','WPmOWO3dJxGEW5VdSq','FXRcMSkTpcLqW58','W6LwA2PEWRONxG','ASkLv3a7xMNcTJjcW4u','0ydrNDcA0BRdJua1CtxdMDcaaTkt0OZsLng30QRtGngT0BNqVDoG04G','WPfNySozASoqhWboW5S','p1rEW7S','fbrxkCkcaa','AKddSSo6W6HGyW','sSk5WQveWQ3dIcHVWP4XjSosWPTUE8o7s1ZcK8kDW48domoJW6/cM1BdTCoVah3dSe9Y','iCodWRaGWOiqW6S','WOKJWPJdHh8tW4RdUW','0QptU9kV0AlrVTkf0QprLng80yBtGSkHWPGNWRJdVKpdMSkZogLA04fm0ilqJncQ0ORtKDga0l/rOno50yJdPTcq0zVqGnkM0BVsJnct068','WP7dHhmE','zmkeWQiAWRJdJYq','06trUDoE06dqSngk07hcOTgq0j3qJ9o20PxtG9ofWRz0WP/cV8o3DSk7m9cA06xsVSo306tqHTcM07VsIDc90yhqVNZrKToB05JrP9kS0iq','CCo6rSoxoW','sMXhWRG','AmkNqNGN','smk+fSoRue7dMNW','gSk+vfyAFgO','W60MW6JdGSo/','06xtHDkY0jNsJ9gr05NtMnkZ07dcSnoH0yBrN9cY0zlcVdddLg5CW5prHDoK0QttNTkc0AVsT8kQ0jdsQHzoW4FqQDc007lsP9gS','W6zyWPHGlG','sSkAlW','WRtdRCozbCor','j2ZcSsJdHSoSwmkaW4NcLHRcV8oKcq','W5v4W4hcIGbPWPm','W4JcJSo/bq','0y7sNnkg0AhtMTcK0R3qM9cp077sITgd0lrFa3dcVv5osTkg0l/rITgk05RtO9kM0lhrInoZjnkJW4psHTgb0zRrGTg+0iFtN9ca0zVqQthrPDkS07ZsV9kw063sQncB0Ai','jejaW7a','WPHTCSobBSofha','C8oYyCo0i8os','v8k6dSoPv0BdIwdcRa','W4FdUf0','W4tdTvT9gCkHWPTG','W4H1W4i','07JtM9o60yBsNncb0ARsJnkB0QhdRvJcR8oJWQBdSN3dS0lcNZZdNeC3WOhcTmkWwJ9wWPDFW5HcnCoGoCo5yCk3pSkN','W7mjW7WoWQr5hCodmq4','i8odWRaXW4OoW6XgxCog','zmkxWR8yWRtdKs9KWPi2Cmo3WRCLBmoQw0O','0jptHTkC0jNsOTcK07/rNDgU067sJngt0BBcMSoKWOFdVgLTdTkI0klsV9kz0zttS9gs06JqQnkaW6hrHCkw06/rPTk60P/qKng70BdrHTk/0Qr60llrVTkx04BrH9oy0yRrHTgb','WPrBWQFcSW','WPfGhtnSWONcU3SUnmkVWPTRrW','WOTwWOhcKcO','WO3cV8kzWR3dGtTyWOW5rebifGhdICkKcbbpW6hdGGltVToG0QtrGnop04dsRncN05dqT9kD','pmoAW6W8WRJdMI97W41OjmooWRnZASo9suRcMmooWPC9omoyW7NdIvhcK8oYt37cQ2zKWOTOA2xdMCoZq2tcS3LBFxr1WQddVCoBrmoOwCkRuMPUW6fBWOXweNHLF8oLlCk6qIxdRuxdH8omWPrjWRjWcuZcVIxcKCodDYpcKW0FW5VcHKVdNCkDeZtcOwqAWQVcT8kgW7u8j38sc8kPaZ3dMa0DWORdIcjdWR/dUNmDWO16c8klW43dNmkOWOFdKCo+W5SiFMBdU8ksWOOZsCkU','W6XfCgjMWQu6vCkNemkEW4LbpKZdGCk+u27dVtVcKmkcWQ8pv8k8vbRdRCkeAmkjvWm3W70nWQRcK8orjmomW6DQs8kfys8YmdpdUCo9vuZdTd7cUsNdKmkWWOhcNSk5W5ldMGuRWO9RuHfyWR7dPdpcMeKGAsmlWOStWOnyDmo0WQpcTvbEgSohW6hcNSoPyYHnW4BcQIuDhYyMW7q6WO3dRxbZE8kdWRSpW4lcTSoBW73cJ3ZcKW','04dtKncF0QRqV9gz0iptT9cq07ZqPDoD0O4L0z/qPDkq0y7qHbRqKTcc06JtUmo0WQfjW6JdQ2f/WOajC8kTffXYWQjOxW','W7i2W7FdLmoTBCky','WRNdUw1yWR5qW4ZdTuespCkOmwVcIZ3cHCkJWRNcQZWhb8ojW6ZdSxa','W7NcS0RdIKaFqSko','W7rrWOT1pmownXyT','B8kZWPjuW7JcICoRfXq','zG9u','W6eDW7mh','W5pcNvtdOL0','lwFcM23dSI/cKq','WQFcNs4','W6GDW6OFWRnLfG','t8k9tCoVrKRdH2VdSJxdR8kvghJdOM8OmCkIECkyimo2WRbdW5K','06hsKTcb0RhrP9cf0R3sONxdJCoNt3ddV3e5wfBdP8k4dmkTzmkNfYBdK8kpbaXOi3RcT8kniw7dTG','WQFcI2BdQG','WQRcHmkRW7RdOq','sSowFq','W4P4W5hcLGXJWPnMWRqwWQi5W5ldVa','f8kQW4aclG','bmowlNpcHg/cTmkAtG','WQxdTmkabmovcSkFWPm','0idsUTco0i7qQ9ch0RZtODcf0keUW6RcPdWQW7JcP3VcTG49DgiJx8oivmk6bqdcSmoXxJayWRFdVGNdKJ1twCoLnCom','0k3tJDoK0AZsQTcG0OXn0AlsKTo00zprUDko0OZtNnko0lpqG9gLW4hrN8kO0PtrMDkp0zNsLDgF07htVngj0O8','WPeKW4KImsz+f8kJga','AXBcGq','ogZcOttdISoMwa','W6OHWOj5vmojW7dcTW','Ad3dKNldTYNcHaPYcxNdGs3cJfuCjXJcHHX6W7HdshyaW7FdK0H7W70IWPddVaZdPxiRzM54fe7cICkQW7ldPmoHcfBcTJnzqSkQemo0iCoMW4e1tmoLgCoCsCoxumocWOpcVf/dI8ksW6LfW6WfW6zlfha7EbHxveVcUHC/f2dcVxtdGeLkW6hcS8oZA3KaW6ddSutcOYxcQbJdP8otzqCgW7/dKHxdNSkkW5ddPf0hnSklWRrxp8kjWP5YWRBcQmkwtCoKzGugvNFcHgS7rmk1aaFcH8ohW63dV2DFBSkbWPVcHmojisCkySkAodGQamodWPxcMtVcOSoSnbGzW4pdULOSbrhcICkPWRi','i8ohWQC7WOOpW6bfumotW4mAfbe','WO1vW47cOvK','WPxdLx1FWRDpW5y','uIpcN8oIjI9xW5iDWObrWRldVrWxEfmxc8k0jexdNG','W78vW7m','WPBdJutdPdiMWO3dRG','eJXPWO46W5vnFq','hLtdLICO','W5DUW7akW7S','W7FcVSoznCoMBG','W7qMW6BdGSo+zmkyuCoNmW','W602W6FdImoHz8kys8oMiCo/ccVcSW','FCklWRWlWR7dIsnSWPK','WPpcHCkQdIdcRSoXBXKQW5/cVSoTbmkWW61vW4dcUHHPdSoJbfC9AmoKWOrWBKRcPHxcUNbRl8oWmmoazSkKydtdUMmJrCkntSkpW5ZcTIL5DCkewdu7pHfaiCkmW5hcQ8k3WP8aWROxBWnpoI/dLmoYnSo/WQ/dJCoyEs/dIGFdNXJcNdhdI8oPWPhdKJ/dJ8kcAblcPbpdHmo+WQ3cJCkcW7BdOCk1wmk+pmkfWPBdR8oqcbtcVtPlpcJcSCk1b8kzWRqnWRfGErVcTZ19lCoyWOddRY/cOmkRu8oiWOlcHSkpWQCVW4idumkjW7fsu8o8e2T7W7FdPM8','WOldQ109WOi','W6LfzN9nWRO','WP/cRXD5e8kHWObQfSk4cJ/cTgBdMXFdNeP0W58ZW7ekkbZcISoMW59EDSkssmkUqwxcHCo1E8oYW5r4W53dK3BcMmoTfmkJpG3cOCkUtrOKwCorl8kgWQhdIbLlwCkwxqFcHCk7kSkHWPr/be1rzSkHBmkys8o0emoHCSofWQ/cGL7cVCoVhSoWvuhcO1hdQxjjtSoxWPDAqrP0WO3dNmo1W78fWRtcRKtcT8oMomoQvSk7c8kjBCkHW6pdRSkpDmo9fSo+xmkCW6xcI8kjW4ZcKCkjbSoIx8kVW5v1WQvbWP/cGhtcPCoCWQBdJY8NcWGyW5SrmSoIW4JdJctcHJ1JB0rDrIFcOmoJn2ldMmoXWQxcJqW+iCo4W5TJW55mW6GeW78RW7pcPaWxWQT3bKrmBh7cVGfVkfzwrtBcKmoqpGtdJvNcImkfW5PdB3SbW4rSk8o4W5CdWO3cKwpcTSopW50','W4NdJ8oJka','W79pWOn4zrPm','p0BdOw86nmkOd9cb0lxqGToJ0lttO9g70lFrSDcC04lqQW','oLrbW6vDCCkE','WOyUW5WSjJ1SbW','emkYsG','WQ7cPmoNzWOdAG','WPnTdG','W5BcMSoZg8ogqIVcKSkS','W7TpW7VcRsHnWRDe','W6jwBwTAWROXqSk3yCkmWPqpt1ZcMCoPbvddJZZcPCkWWP5w','04BsR9c80RhsQcfzgCodWP8yWOr506P/0j/sT9cx0zRrGngl063tHnkr0O7qNDc20RpsTDgw0jnO0kNrNncT077rTDki','W7NcOK7dHLWr','0iZsPnoP0zdtPToX0B3rGnoo0jdrV8kl0OxqSDcQ05JqM9ct05xtIDkq0ktrQmkF0QZsITgy0PFtNncs0yVsVTgXlCkbzWT4WOFdQY1WWRGeqwyfF8opW6ldKKhcKcdcULywE8kPDCoEEK8inHtdI2hcQxa/','dghdPZZdR2nbnCoOWPLv','0zBtPDcq0jhrI9cI0y3rIhhqQngh07/qK9ol0PNrUTgT0lZcS8kyW4DIkh7cI8o9W5VdTSocW4tdRCo5WQHi','04ptM9kh0yJsMTgZ0A/tT9oG05BtUbNtV9kX073tHTcw040lW44NW5vfnCkCW5BdO9g4FTcf04JqN9kf0jJqM9oS0kpsODc5W7VrVDka0kBrH9o606VrHncU0lZcITcR0OBsHTcE0O0','CCk3WPzhW6RcJmo2daLA','W6hcO17dIKayu8kdDxq','W7BdUSkPCaaFD2pdQYlcPN7cTt7dOf5mcevxW6D6wCoKW6X6oSohzxBcMv3dGcrqlmkdW6idCCovFCkem8k/emofW73dSwipExxcJMuiW6fdWPT8lSkicZvkvSocW5/dJI8kdmkFW5DBy3yIvSozF8klb8kjW5ddOSkjEK3dOCkdW4a5WRHvWRWeWQ4gW7RdICo5W6e1fCkhW5zcxSo+bCoaoJ9nyLqpWRTeWONcIazxsaaXWObFDCodW4lcUYldOcFcQCkLDhFcSqODtCkFWR7cPLNcQCkpWPhdNCk1W7WlcSo5WPigtfTiW4qVCxDkltK6WPdcUSkMvCoVWQKKWRCcouPLjCoM','07RrO9kq06ZqKTkz04lqKDcA07VrTTcz0BSmkuRcNdPVwCkD0k/tH9gN0i3qRDg30zxcSTgB0i3sTnkS0QFsMDc50kVtHTce0OJqQM7sQngX0zFsGngD0RZtJDk00i/tJW','CeddSmoV','AWDpWO8kDYvDW6rz','0yZqRDks0B7qSngDW4hqLDgW0lJqITkF0lxtOng60lRqI9gL04FrKTkq0y/tUDcXtDow077qH9ki0zJqS9k607q','ySoNEq','WRxcJYVdVG','FSkDWR1dW7ipWQidmCodW4ukvSou','lKtdQXSYj8kGyW','W4H9WR5p','C8kmWRS','i2pcNhVdTcFcHIW','ASkuWR9lW6W','b8o5c27cNW','WRJcHYNdT3D9fSkMsmoeCCo5W5L2thNcVandu0mMWOFcSmkXW7T0W6ddRhO2WRSvyq','WR3cHwG','F8oDWQvdWRxdKJL3WPK3pSoCWQT9C8k1s0hcGCkwW4ekoq','fmkRvW','u3XDW7q7W4jPt8kFW4veW5SZ','WQdcICkKW7RdPZ9CWPSV','pmo4a0dcVLVdS9k80BltRToS0BBqMDgZ0jlrTnc/zIBcHSotW4/cTmo6dSojW5hcJmonWOldHSoxWQOibuC+W6fXvgrukmkjW7O','W6DlWPTH','W4NdN8oZmYJcPmoXEsfLWOpdQmk4jW','0k/tPDgr0R7qKngR06ZqSmo/0BRtGnoh0ypqRToB0BJqIMNdTTgF0RNrTSk70PFqMnkx0iRtTToz0A3dLng20lprTTcC0zNsK9gG0OJtG9gM0A7qQfZrH9c10BBtSno+Dnoq0lJsTDkh0RdtOfdrTtttK9gu0B3rITcx0zBqUW','WOZcVq/dMslqPXVtTTcE0OFqPTkP0OFrHngC0kRsLncY0BWA0AZrTnoO07G','0zRqVnov0zZsPTgX04NrOngbtncV0OprSDkN0AJrITgZ0yZsTncc0zFcSDct0A4QpSo8W51mgmk60BlsPToy0lFtK9gp0k3qVDgF0kJqTrRcS8klW47dPCkK0zhqMDku0jNrVngZ06ZqHDkP0i/cVq','WRZcGwFdOG','0j/qPng40Q3qU9gv0jxqHTox0jJqU0ltTTgL0BJqKCknpmofWR1cWPZcMSopWQe4WOXmW4JqH9cF0lLSkCkWyYVcLmktWOtdTa','W5pcMSo+','0PtrTDcL0ltrT9ks0A3rPDoMBnoF057rIDcQ0iltK9k5qDg006lqGDoX06/sS9gN0zddV9cpxSohWPzgW4xqH9gq0jZtJ9gK0PNsJa','WPGbW7uzBW','B8kzWQPjW7GnWRuu','WOeUW5G7ntj3dmkI','W57cLmo+f8owusRcNSkZgq','bWjrmSoagtLZj8kAu1dcTW','A8krWRm','WR3cI0BdICoE','kNxcNdpdVsFcMJaSdxtdLchcLKaekXq','0jBtQDgW0khrO9g20kxtR9gO0AlsI9kI05tdSmkatmorW4dcTGttS9ka0RRrN9oT0PJsL9gP0kZqT8kI0ynb0kpqS9o80yxqJncb0ylqK9oZ0lvi0QltNTk00lptH9oA0O3sJ9ok','qmoAy3VcI8obW6m','W5/cJCo8ea','ECkUrNWXxG','W7pcT1hdGW','owJcVcddNSoGwSklW54','W4pdQv19gmkRWP1WoSoI','WOWqW4yPvSkBuCkrfCoIC8kAuSoUW4dcMq','W4pcMSoWea','W4jRWRnfvsu','W7PFBW','WPjdW5VcPKZcP8kB','W5TUW5RcMbn+','WOZcGCoam9gx0yZrHDgo0RFrUTk7CnoM0jlsTTcz0jJqOncF0i7cOTc80lVsI9kg0iBqV9kB0ly','ymkzWRblW6OdWQaijG','WP9cW6WiWOStFZ8vW53cVmkSgmkql20MWPm','0BFrJ9k20BhsOngD0iprQnkU04BqMTcG0PNcICoSW7DTB0Hpv8o0e8knsbVdISooW6m','WRaiWPHP0AZrQDgz0lZtV9ga0P0k0ihdRDgS04ZsKTcF0RtqN9c70QpsMSojxv0','WQHvWQtcPJO','l8ovj3xcIW','FW4iW5zUD8kpiavJst8aFmkQW5zrWPFcKCoxxcOxW4FcS8kPbeddTmo9eZ7cTdTVW6TTCmojkmkKW6FdRCkNgCkscY3dUahcJ3mAW5KyWR/cOmoZW6CyWOytpCoLW73cJa','0PlrTTcG0lhqGTkz0AlrPnoQ0i7tMmodoa1CWOddQrmvW5iTWQ/cO8kxurVdV9cf0yxsP8o7AmkquqW4WQ4IWRZdMSkEhColWR4womkkFab5yX3cSSk5ia','0OFqVnkM0zdtQncH0y3sITgS0yJdKTgF04FtODkK0yFqUnoXo9oa0OZsP9ks07RsV9c40RBqJTgQ0B3rJDgG0QVsJTog0P9m0OZtUncO0jdrPq/dT9oN0jtsN9cWWRmPmJxcJCk2','WRiAW4vO0jRtJTcs04hqImkY0kBtKngN04NtSDoiqnoDCTcq0kptPnkk0QdqQ9kj0ktqHHZqOTgr0yZrHnoiW6RcN8k2EcaEv1pcJ3HxW7j2ogGh','W4zGWRfd','WOTmW4xcT0RcOCkCqey','uSk6aW','WP7cNmkAW43dVa','dg/dVsRdVh5glW','0ztsL9kW0PJsSTk90OltRnc506xcPdtdO8kWwmojW7DSA1PQWQCAWQpdGeOvCZNdHJ0kWONdNqqUhHq0','D0tdTCo9W6X1Aa','W6FcS0/dNfmruW','W7NcQCoukmo6ya3cUW','W5pcLCo3gCoqvYxcMmkX','WOrSeW','tMHwWRGMW4v1t8kJW4fmW4aPW63dQCor','WPeqW4a6qCkA','WQ7cRuBdGmo9','ff7cGwFdQSoIxSklW57cHe7cNCoUhSog0O7tUncH05ZqT9g60zhqK9k70kRtO8kX0i7cQ34HFw/dIq3cReL0WRnFyCkhjW','WPzFWR3cVW','EXFcHCkKk2amW5iMWQv3WQhcGrra','0AdqSToF0z7sPTca04hrQncXtngv07lrTnou0jlrGncf0yhsUwpqP9or0jxqNTcY0BFsPTkb0idqGq','qCoEFM/cN8ohW6hdT2W','WOOwW40','04tsPno60ypsNng50AdsHnoI05JtSncj0OZcR8kBW6bPW654W4NqLTo/0jxrOToC043tVDg40jZrTSow0jNcKDgT0A7tQDgA0QtrJ9kB0BdtVncKw9o406dqUDgv0y/sN9cL077tVq','WOXPBmoE','WQmIW7ixCCk3zmkMd8ogtCkVzCoiW7FcPdpcUbLQoSkgWR/cV1FcLgCqz0viuf3cUCoNW63cVZOPwIOJW6rPsSoBF3K9u05Eoay','W70VWRPZrmodW7dcJCoeiMi','WQLlWQXCW6uHtmo+lrJcGxBcSW','EmkqWRfHW4O','tCkEk19Iumo4WRWyzg/dRCk1oI3dPa','W5ddL8owecS','WQldQ8ktqSoxhCogWPpcLmkMW6lcVWOqj3NdQd3cHtyaWP8E','c8ownhhcLMhcOCkg','04ttU9kU0zhrMTgi0lNqUDohz9on0AdtPTcs04BqMncq0zlrOngX040O0lVsImoKn2/dGx8WW55tW5eVCYRcSCoTewlcNtpdIh8','BSoTwvZcO8oLW4FdNG','W5JdM8oKoslcPSoMBG','W63cV0JdH0Cug8kwC3pdPSkAbhm','WQldU8ovgG','W5ldLmo6osBcVCo9EcS','WO/cISoAdG7cImoYxa','gxdcJZXisCkrwLjSxmk+jSkYwwy','wwXCWRu','WP9oWRVdSY5MfJeLW6m','ugXfWQ03W55T','W7jrWPPOmmoDpqOKWPHwd8oXW4m','W4H8W4BcJqr8WPG','W6zbW4hdKXnRWOvNWQufWRu1W6hdOwZcHMZdSSkGWO7dOmk+W4JdIYDeuCkNW5qnW45+WRjUhq','W4PlW4OHW54','WOWQW4CL','WOSuW4i','n14d0BdtNDgu0AxrNwpsUblqNDkq0OJsKngX05RtHDgK0BTDWPNcSYm','vSk+e8o9q0ddIW','hCkNW48ckdbaWPf1','mvldUMxdUNjycSoVW5WArmoFWOpcPSoOA3L0r0dcSuhcNKytWPFcNmk8W7fyzmkntMRcKCobEa','zmknWQy','WPpdK8o/pG','W7KOWOy','BSkLqNDZuw3cTG','0BZqRncC0B/tLTcI0AFrNng60RVqHWltO9o70PxrTDkT0RJqKTcm0yJdUnod0k/tKDc904NqGq/dT8oYW7ZcTSkIW68hWQhrT9ko0BtcMnoL0RZqQDcz0BJrV9c90yhsSnkQWOFqSncz0kFrLDgK04BrQnko05/tR8oc05htL9cY0RxrM9kj0lBqJ9kQ','WQiijw1yWQyWeCoNmmk2WQjrof7dHSo2urJcMgpdO8kmWOKxwmoZqepdPmoRjSoxrrW4W68LWRJcG8kffCoEWQPtp8oBmX9ZyLxcQ8oOuLldQsJdIcBdISkmW5dcM8knW43cMIDG','W6XpWOnPzWDqW7K','W5TVW5FcNqrGWOjHWReBWQu','WO9BWR3cUY97ecS','z8kaWQalWQ/dLd56','hL7cMZtdSJVcHZPIbxNdHYVcU1KfirxcNYbhW7HDC2SOW7FdGf1lW6eqWPFcS0NdJx1fE25OeG','WPyNWOddHNGBW5NdP2C','C8oQyCoOkCooW4a','0lFqNnkY0RhsS9cQ0ldrMCoQ0PtrNTg906VqM9kb0iVqPDkK0kBqVDcf0ltrKNRtTDoB0i7dNLddPCkWn8kMWPFcGSoAWOLIzx5OsfdcRToE0z/rGngz0BlsKCo507RsNTkVWQdqVDcS0OBtUTkG0l7tJToK0jW','nmkjBNeYwe4X','W6NcUvldIvSrg8ksFNhcOSkqeNdcPdSKumkc'];a0_0x4ea7=function(){return _0xe9e355;};return a0_0x4ea7();}const a0_0x5e39f3={};a0_0x5e39f3['id']='github-actions-aws-secret-hardcoded',a0_0x5e39f3[a0_0x255e57(0x1fc,']SXR')]='iac',a0_0x5e39f3['message']=a0_0x255e57(0x289,'tEcW'),a0_0x5e39f3['severity']=a0_0x255e57(0x448,'xx#L'),a0_0x5e39f3[a0_0x255e57(0x3f6,'3cB[')]=a0_0x255e57(0x320,'*jhV'),a0_0x5e39f3[a0_0x255e57(0x187,'zBPg')]=a0_0x255e57(0x475,'ElxI'),a0_0x5e39f3[a0_0x255e57(0x37d,'Q5xx')]='Используйте\x20GitHub\x20Secrets',a0_0x5e39f3['languages']=['yaml','github-actions'];const a0_0x3eb4a4={};a0_0x3eb4a4['id']=a0_0x255e57(0x42c,'In3p'),a0_0x3eb4a4[a0_0x255e57(0x463,'ggkU')]=a0_0x255e57(0x4a3,'uRjU'),a0_0x3eb4a4[a0_0x255e57(0x165,'QCUi')]=a0_0x255e57(0x1c7,'3cB['),a0_0x3eb4a4[a0_0x255e57(0x3d4,'3RX%')]=a0_0x255e57(0x2c2,'ggkU'),a0_0x3eb4a4['pattern']='(?:GITHUB_TOKEN|GH_TOKEN|TOKEN)\x5cs*=\x5cs*[\x22\x27](ghp_[A-Za-z0-9]{36}|gho_[A-Za-z0-9]{36}|ghu_[A-Za-z0-9]{36}|ghs_[A-Za-z0-9]{36}|ghr_[A-Za-z0-9]{36})[\x22\x27]',a0_0x3eb4a4[a0_0x255e57(0x1ef,'1%4J')]=a0_0x255e57(0x1e8,'jP[W'),a0_0x3eb4a4[a0_0x255e57(0x14a,'zBPg')]=a0_0x255e57(0x37a,'$AKW'),a0_0x3eb4a4[a0_0x255e57(0x2f7,'xx#L')]=[a0_0x255e57(0x293,'zBPg'),a0_0x255e57(0x41f,'F!fw')];const a0_0x4a4f2c={};a0_0x4a4f2c['id']=a0_0x255e57(0x2da,'BERL'),a0_0x4a4f2c[a0_0x255e57(0x3b3,'H^$H')]=a0_0x255e57(0x371,'3cB['),a0_0x4a4f2c[a0_0x255e57(0x3fc,'BERL')]=a0_0x255e57(0x2e7,'MfL5'),a0_0x4a4f2c[a0_0x255e57(0x235,'BERL')]=a0_0x255e57(0x4a2,'Q5xx'),a0_0x4a4f2c[a0_0x255e57(0x332,'JWpz')]=a0_0x255e57(0x3ba,'3cB['),a0_0x4a4f2c[a0_0x255e57(0x29b,'tEcW')]=a0_0x255e57(0x2ac,'zBPg'),a0_0x4a4f2c[a0_0x255e57(0x276,'xx#L')]=a0_0x255e57(0x40d,'WKOn'),a0_0x4a4f2c[a0_0x255e57(0x27d,'1%4J')]=[a0_0x255e57(0x337,'uRjU'),a0_0x255e57(0x397,'jP[W')];const a0_0x5bdb70={};a0_0x5bdb70['id']=a0_0x255e57(0x405,'EpSL'),a0_0x5bdb70[a0_0x255e57(0x3e2,'7S1j')]=a0_0x255e57(0x210,'mHfp'),a0_0x5bdb70[a0_0x255e57(0x3df,'zBPg')]=a0_0x255e57(0x37e,'IQSg'),a0_0x5bdb70[a0_0x255e57(0x233,'ElxI')]=a0_0x255e57(0x3cb,'QCUi'),a0_0x5bdb70[a0_0x255e57(0x257,'K6]C')]=a0_0x255e57(0xed,'uA($'),a0_0x5bdb70['flags']=a0_0x255e57(0x2a4,'X*0j'),a0_0x5bdb70[a0_0x255e57(0x46d,'G2jA')]='Установите\x20persist-credentials:\x20false',a0_0x5bdb70[a0_0x255e57(0xeb,'ruK$')]=[a0_0x255e57(0x45e,'ElxI'),'github-actions'];const a0_0x53bf87={};a0_0x53bf87['id']='github-actions-run-with-user-input',a0_0x53bf87[a0_0x255e57(0x4b0,'uA($')]=a0_0x255e57(0x210,'mHfp'),a0_0x53bf87[a0_0x255e57(0x2a5,'xx#L')]=a0_0x255e57(0x15c,'a(Fb'),a0_0x53bf87['severity']=a0_0x255e57(0x177,'9AvC'),a0_0x53bf87[a0_0x255e57(0x4a7,'uA($')]='run:\x5cs*[^\x5cn]*\x5c$\x5c{\x5c{[\x5cs]*github\x5c.event\x5c.(?:issue|pull_request|comment)[^}]*\x5c}\x5c}',a0_0x53bf87[a0_0x255e57(0x1e7,'f3b$')]=a0_0x255e57(0x48e,'Q5xx'),a0_0x53bf87[a0_0x255e57(0x16b,'K6]C')]='Экранируйте\x20пользовательский\x20ввод',a0_0x53bf87[a0_0x255e57(0x255,'uA($')]=[a0_0x255e57(0x293,'zBPg'),a0_0x255e57(0x41f,'F!fw')];const a0_0x26a316={};a0_0x26a316['id']=a0_0x255e57(0x3a1,'IQSg'),a0_0x26a316[a0_0x255e57(0x437,'f3b$')]='iac',a0_0x26a316[a0_0x255e57(0x2bc,'jP[W')]=a0_0x255e57(0x175,'D(J8'),a0_0x26a316[a0_0x255e57(0x3db,']SXR')]=a0_0x255e57(0x2d5,'ElxI'),a0_0x26a316[a0_0x255e57(0x2bf,'WKOn')]=a0_0x255e57(0x1f9,'*Cp^'),a0_0x26a316[a0_0x255e57(0x29b,'tEcW')]=a0_0x255e57(0x156,'*Cp^'),a0_0x26a316[a0_0x255e57(0x482,'f&&X')]=a0_0x255e57(0x246,'q$6)'),a0_0x26a316['languages']=[a0_0x255e57(0xe8,'e[pI'),a0_0x255e57(0x229,'tEcW')];const a0_0x21ba5e={};a0_0x21ba5e['id']=a0_0x255e57(0x14c,'WKOn'),a0_0x21ba5e[a0_0x255e57(0x443,'IQSg')]=a0_0x255e57(0x48f,'MfL5'),a0_0x21ba5e['message']='Хардкод\x20секретов\x20в\x20values.yaml',a0_0x21ba5e[a0_0x255e57(0x48a,'ruK$')]=a0_0x255e57(0x216,'JWpz'),a0_0x21ba5e[a0_0x255e57(0x1b0,'BERL')]=a0_0x255e57(0x1c5,'f3b$'),a0_0x21ba5e[a0_0x255e57(0x487,'jjVj')]=a0_0x255e57(0x29c,'[fPO'),a0_0x21ba5e[a0_0x255e57(0x23e,'r8O4')]=a0_0x255e57(0xf2,'QCUi'),a0_0x21ba5e['languages']=[a0_0x255e57(0x35f,'WKOn'),a0_0x255e57(0x10e,'9AvC')];const a0_0x59e85c={};a0_0x59e85c['id']='helm-latest-tag',a0_0x59e85c[a0_0x255e57(0xea,'BERL')]=a0_0x255e57(0x441,'Oil7'),a0_0x59e85c[a0_0x255e57(0x25b,'X*0j')]=a0_0x255e57(0x41b,'ruK$'),a0_0x59e85c[a0_0x255e57(0x346,'@eTd')]=a0_0x255e57(0x252,'uRjU'),a0_0x59e85c[a0_0x255e57(0x3ab,'Oil7')]=a0_0x255e57(0x16f,'1%4J'),a0_0x59e85c[a0_0x255e57(0x487,'jjVj')]=a0_0x255e57(0x486,'a(Fb'),a0_0x59e85c['recommendation']=a0_0x255e57(0x144,'MfL5'),a0_0x59e85c[a0_0x255e57(0x29f,'3RX%')]=[a0_0x255e57(0x330,'JWpz'),a0_0x255e57(0x1a7,'G2jA')];const a0_0x1edcff={};a0_0x1edcff['id']='helm-missing-resources',a0_0x1edcff[a0_0x255e57(0x32a,'jjVj')]=a0_0x255e57(0x2e8,'F!fw'),a0_0x1edcff[a0_0x255e57(0x2f3,'[fPO')]=a0_0x255e57(0x3d5,'EpSL'),a0_0x1edcff['severity']=a0_0x255e57(0x3d0,'@eTd'),a0_0x1edcff['pattern']=a0_0x255e57(0x1ab,'3RX%'),a0_0x1edcff['flags']=a0_0x255e57(0x472,'f&&X'),a0_0x1edcff[a0_0x255e57(0x2b3,'f3b$')]='Всегда\x20устанавливайте\x20resources',a0_0x1edcff[a0_0x255e57(0x2f7,'xx#L')]=['yaml',a0_0x255e57(0x250,'zBPg')];const a0_0x5c17f5={};a0_0x5c17f5['id']='helm-privileged-container',a0_0x5c17f5[a0_0x255e57(0x2eb,'mHfp')]=a0_0x255e57(0x116,'Q5xx'),a0_0x5c17f5[a0_0x255e57(0x311,'9AvC')]=a0_0x255e57(0x366,'BERL'),a0_0x5c17f5[a0_0x255e57(0x24b,'e[pI')]=a0_0x255e57(0x2c2,'ggkU'),a0_0x5c17f5[a0_0x255e57(0x334,'ggkU')]=a0_0x255e57(0xd2,'3RX%'),a0_0x5c17f5['flags']=a0_0x255e57(0x2d6,'@eTd'),a0_0x5c17f5[a0_0x255e57(0xdc,'e[pI')]=a0_0x255e57(0x3e6,'tEcW'),a0_0x5c17f5[a0_0x255e57(0x348,'3cB[')]=[a0_0x255e57(0x435,'3cB['),'helm'];const a0_0x4313b0={};a0_0x4313b0['id']='helm-hostpath-volume',a0_0x4313b0['category']=a0_0x255e57(0x2db,'In3p'),a0_0x4313b0[a0_0x255e57(0x295,'q$6)')]=a0_0x255e57(0x302,'ruK$'),a0_0x4313b0[a0_0x255e57(0x375,'@n5k')]=a0_0x255e57(0x238,'ggkU'),a0_0x4313b0[a0_0x255e57(0x207,'*jhV')]=a0_0x255e57(0x421,'H^$H'),a0_0x4313b0[a0_0x255e57(0x189,'Q5xx')]='gim',a0_0x4313b0['recommendation']=a0_0x255e57(0x115,'jP[W'),a0_0x4313b0[a0_0x255e57(0x10f,'ggkU')]=[a0_0x255e57(0x45e,'ElxI'),'helm'];const a0_0x3da4f5={};a0_0x3da4f5[a0_0x255e57(0x3fa,'1n&w')]=a0_0x255e57(0xbe,'f3b$'),a0_0x3da4f5[a0_0x255e57(0x34f,'ElxI')]=a0_0x255e57(0x3f8,'f&&X'),a0_0x3da4f5[a0_0x255e57(0x204,'xx#L')]=a0_0x255e57(0x148,'*jhV'),a0_0x3da4f5[a0_0x255e57(0x119,'uRjU')]=a0_0x1603f8,a0_0x3da4f5[a0_0x255e57(0xaa,'f&&X')]=[a0_0x21dc87,a0_0x41f110,a0_0xf5414a,a0_0x548482,a0_0x2cb67f,a0_0x2b66b3,a0_0x4481aa,a0_0x4d48e4,a0_0x25c4da,a0_0x46e6d9,a0_0xcbb784,a0_0x2c35f1,a0_0x2f4553,a0_0x1e4ce6,a0_0x404ea5,a0_0x42ff1a,a0_0x47d0b8,a0_0x327935,a0_0x256632,a0_0x226247,a0_0x486484,a0_0x3937eb,a0_0x987b7d,a0_0x43ee2d,a0_0x2dc97c,a0_0x5ddf25,a0_0x2b995a,a0_0xbc9e5,a0_0x4578cd,a0_0xcf4d32,a0_0x569eec,a0_0xecbc,a0_0x286c39,a0_0x2d0b18,a0_0x385850,a0_0x33978b,a0_0x32fa5e,a0_0x295272,a0_0x4dbc40,a0_0x28ace5,a0_0x6488e9,a0_0xfb2419,a0_0x3d4fbb,a0_0x300926,a0_0xf803f6,a0_0x469814,a0_0x5ee2fc,a0_0x21516d,a0_0x594d45,a0_0x6bd744,a0_0x45d298,a0_0xb0b928,a0_0x5b4c19,a0_0x544ca0,a0_0x3ae35d,a0_0x3e0ce1,a0_0x242830,a0_0xbe9666,a0_0x1990d7,a0_0x43a385,a0_0x2c7cd0,a0_0x1ebca1,a0_0x1ca28a,a0_0x1a1a62,a0_0x5c50c8,a0_0x3d0a66,a0_0x1c3cd0,a0_0x12ad2d,a0_0x497618,a0_0x142f89,a0_0x5e39f3,a0_0x3eb4a4,a0_0x4a4f2c,a0_0x5bdb70,a0_0x53bf87,a0_0x26a316,a0_0x21ba5e,a0_0x59e85c,a0_0x1edcff,a0_0x5c17f5,a0_0x4313b0];export const SAST_RULES=a0_0x3da4f5;export function getRulesByCategory(_0xc432e9){const _0x2f6cb0=a0_0x255e57;if(!_0xc432e9)return SAST_RULES['rules'];return SAST_RULES[_0x2f6cb0(0xaa,'f&&X')][_0x2f6cb0(0x36e,'*jhV')](_0x546396=>_0x546396['category']===_0xc432e9);}export function getRulesBySeverity(_0xf09967){const _0xd8e98b=a0_0x255e57;if(!_0xf09967)return SAST_RULES[_0xd8e98b(0x1bd,'JWpz')];return SAST_RULES[_0xd8e98b(0xc6,'tEcW')]['filter'](_0x6e5826=>_0x6e5826[_0xd8e98b(0x25a,'r8O4')]===_0xf09967['toUpperCase']());}export function getRulesByLanguage(_0x44b647){const _0x5f3378=a0_0x255e57,_0x3d4dce={};_0x3d4dce[_0x5f3378(0x1ed,'f&&X')]=function(_0x3b749e,_0x2b59ac){return _0x3b749e+_0x2b59ac;},_0x3d4dce['PdRHO']=_0x5f3378(0x1cd,'QCUi'),_0x3d4dce[_0x5f3378(0x2f0,'In3p')]=function(_0x3c4dc6,_0x42e4b0){return _0x3c4dc6!==_0x42e4b0;},_0x3d4dce[_0x5f3378(0x140,'LW^2')]=_0x5f3378(0xa7,'[fPO'),_0x3d4dce[_0x5f3378(0x372,'f&&X')]=_0x5f3378(0x4ab,'ggkU'),_0x3d4dce[_0x5f3378(0xb1,'@n5k')]=_0x5f3378(0x244,'X*0j');const _0x404743=_0x3d4dce;if(!_0x44b647)return SAST_RULES[_0x5f3378(0x1e6,'WKOn')];const _0x3487ba=_0x44b647[_0x5f3378(0x373,'mHfp')]();return SAST_RULES['rules'][_0x5f3378(0x1d1,'9AvC')](_0x591711=>{const _0x57ebd6=_0x5f3378,_0xb48bed={'Tkoxg':function(_0x33b7e5,_0x4b7c98){const _0x538547=a0_0x4915;return _0x404743[_0x538547(0x2d9,'3RX%')](_0x33b7e5,_0x4b7c98);},'YKhMo':_0x57ebd6(0x161,'1n&w'),'JAGto':_0x404743[_0x57ebd6(0x3f4,'f3b$')]};if(_0x404743['ioMFD'](_0x404743[_0x57ebd6(0x178,'9AvC')],_0x404743[_0x57ebd6(0x203,'X*0j')])){if(!_0x591711['languages'])return!![];if(_0x591711['languages'][_0x57ebd6(0x25c,'3cB[')](_0x404743[_0x57ebd6(0x3d2,'3cB[')]))return!![];return _0x591711[_0x57ebd6(0xcb,'@n5k')][_0x57ebd6(0x29a,'In3p')](_0x5e38aa=>_0x5e38aa[_0x57ebd6(0x455,'[fPO')]()===_0x3487ba);}else(function(){return!![];}[_0x57ebd6(0x350,'LW^2')](ZDVTbK[_0x57ebd6(0x304,'$AKW')](ZDVTbK[_0x57ebd6(0x294,'9AvC')],'gger'))['call'](ZDVTbK[_0x57ebd6(0x44d,'jP[W')]));});}export function getRulesStats(){const _0x2e3e7d=a0_0x255e57,_0x2b1886={};_0x2b1886[_0x2e3e7d(0x329,'[fPO')]=0x0,_0x2b1886['HIGH']=0x0,_0x2b1886[_0x2e3e7d(0xb9,'D(J8')]=0x0,_0x2b1886[_0x2e3e7d(0xa6,'1%4J')]=0x0,_0x2b1886['INFO']=0x0;const _0xfcc473={};_0xfcc473['total']=SAST_RULES[_0x2e3e7d(0x117,'e[pI')][_0x2e3e7d(0x1e5,'EpSL')],_0xfcc473['byCategory']={},_0xfcc473[_0x2e3e7d(0x1dc,'@n5k')]=_0x2b1886;const _0x42d3db=_0xfcc473;for(const _0xcacf05 of SAST_RULES[_0x2e3e7d(0x34e,'G2jA')]){_0x42d3db['byCategory'][_0xcacf05[_0x2e3e7d(0x3f2,'X*0j')]]=(_0x42d3db[_0x2e3e7d(0x3d7,'jP[W')][_0xcacf05[_0x2e3e7d(0x2ad,'e[pI')]]||0x0)+0x1,_0x42d3db[_0x2e3e7d(0x3ac,']SXR')][_0xcacf05[_0x2e3e7d(0x27f,'H^$H')]]!==undefined&&_0x42d3db['bySeverity'][_0xcacf05[_0x2e3e7d(0x243,'19a@')]]++;}return _0x42d3db;}export default SAST_RULES;function a0_0x2e1393(_0x1952c8){const _0x43e524=a0_0x255e57,_0x5a6b90={'qwXjs':_0x43e524(0x1d8,'K6]C'),'JuoAM':function(_0xd98c2,_0x377f6e){return _0xd98c2!==_0x377f6e;},'cVByu':'vWwmP','iOJcR':_0x43e524(0x24c,'$AKW'),'XMZTV':function(_0x228402,_0x3f7f26){return _0x228402+_0x3f7f26;},'vOgnh':function(_0x1d7359,_0x202f96){return _0x1d7359!==_0x202f96;},'ROwnX':function(_0x5cce7f,_0x5f3248){return _0x5cce7f(_0x5f3248);},'ZscVT':_0x43e524(0x438,'tEcW'),'LGEGJ':function(_0x5806dc,_0x2b6a13){return _0x5806dc===_0x2b6a13;},'bCATB':_0x43e524(0x2c5,'9AvC'),'bdGIX':'WAaRD','abrsL':_0x43e524(0x471,'D(J8'),'ljQOz':function(_0x29c161,_0x38a141){return _0x29c161/_0x38a141;},'XeaRN':_0x43e524(0x3ca,'Oil7'),'Gbgaz':function(_0x68f927,_0x443c66){return _0x68f927===_0x443c66;},'ierwz':function(_0x26765b,_0x4fda4a){return _0x26765b%_0x4fda4a;},'kmFLn':function(_0xb630b2,_0x1fcf35){return _0xb630b2+_0x1fcf35;},'whJNw':_0x43e524(0x193,'ruK$'),'RJkvp':_0x43e524(0x41c,'e[pI'),'cFQGS':_0x43e524(0xdb,'9AvC'),'oqcbN':function(_0x49584f,_0x6d9057){return _0x49584f(_0x6d9057);},'aNcZq':function(_0x317a14,_0x58383a){return _0x317a14===_0x58383a;},'TWCFd':'YBICr','RDTlJ':_0x43e524(0x2ea,'*jhV'),'SCFgk':function(_0x278312,_0x37ec91){return _0x278312!==_0x37ec91;},'iMaJW':_0x43e524(0x36c,'9@(3'),'EIDmb':'foPHS','uwaPf':_0x43e524(0x399,'In3p')};function _0x19fa4f(_0xd13f7a){const _0x1a781e=_0x43e524,_0xc26ad7={'RtPPn':function(_0x1ba429,_0x1be22b){const _0x21f98e=a0_0x4915;return _0x5a6b90[_0x21f98e(0x385,'ggkU')](_0x1ba429,_0x1be22b);},'zIMOg':function(_0x21b101,_0x2e639a){const _0x5d1c86=a0_0x4915;return _0x5a6b90[_0x5d1c86(0x466,'ggkU')](_0x21b101,_0x2e639a);},'lFZAn':function(_0x3413ea,_0xf80fab){const _0x2d28bf=a0_0x4915;return _0x5a6b90[_0x2d28bf(0x394,'tEcW')](_0x3413ea,_0xf80fab);},'wFapn':_0x5a6b90[_0x1a781e(0x369,'mHfp')]};if(_0x5a6b90[_0x1a781e(0x422,'IQSg')](typeof _0xd13f7a,_0x5a6b90[_0x1a781e(0xe3,'1%4J')])){if(_0x5a6b90[_0x1a781e(0xd7,'7S1j')](_0x5a6b90[_0x1a781e(0x149,'K6]C')],_0x5a6b90['bdGIX']))return function(_0x10dfb0){}[_0x1a781e(0x2c7,'ruK$')](_0x1a781e(0x31a,'X*0j'))[_0x1a781e(0x26e,'IQSg')](_0x5a6b90[_0x1a781e(0x241,'3cB[')]);else{const _0xe42587={};_0xe42587[_0x1a781e(0x2b0,'uA($')]=_0x5a6b90[_0x1a781e(0x1b7,'[Qx&')];const _0x400a52=_0xe42587;if(!_0x563ce2)return _0x10fbf8[_0x1a781e(0x146,'EpSL')];const _0x2b1a54=_0x362882[_0x1a781e(0x321,'*Cp^')]();return _0x1116bd[_0x1a781e(0x237,'F!fw')][_0x1a781e(0x36e,'*jhV')](_0x5ad83d=>{const _0x3080a0=_0x1a781e;if(!_0x5ad83d['languages'])return!![];if(_0x5ad83d[_0x3080a0(0x1e2,'K6]C')]['includes'](_0x400a52[_0x3080a0(0x1b1,'WKOn')]))return!![];return _0x5ad83d[_0x3080a0(0x3ae,'WKOn')][_0x3080a0(0x3d1,'3cB[')](_0x82eae6=>_0x82eae6[_0x3080a0(0x40f,'JWpz')]()===_0x2b1a54);});}}else _0x5a6b90[_0x1a781e(0x431,'@eTd')](_0x5a6b90[_0x1a781e(0x172,'r8O4')]('',_0x5a6b90[_0x1a781e(0x1ac,'xx#L')](_0xd13f7a,_0xd13f7a))[_0x5a6b90['XeaRN']],0x1)||_0x5a6b90[_0x1a781e(0x305,'3RX%')](_0x5a6b90[_0x1a781e(0x370,'uA($')](_0xd13f7a,0x14),0x0)?function(){const _0x586a80=_0x1a781e;if(_0x5a6b90[_0x586a80(0x18c,'9@(3')](_0x5a6b90[_0x586a80(0x1f6,'[Qx&')],_0x5a6b90[_0x586a80(0x228,'[Qx&')]))return!![];else _0x1bc026[_0x586a80(0x13e,'ggkU')][_0x10a6d9[_0x586a80(0x17b,'zBPg')]]=_0xc26ad7[_0x586a80(0x30d,'tEcW')](_0x5b1f8a[_0x586a80(0x17f,'[fPO')][_0x5c57fc[_0x586a80(0x327,'3RX%')]]||0x0,0x1),_0xc26ad7[_0x586a80(0x317,'In3p')](_0x2e3d6e[_0x586a80(0x11e,'f3b$')][_0x197525['severity']],_0xd989e6)&&_0x40151f['bySeverity'][_0x1776a2[_0x586a80(0x3c9,'G2jA')]]++;}[_0x1a781e(0x174,'F!fw')](_0x5a6b90['kmFLn'](_0x5a6b90[_0x1a781e(0x247,'JWpz')],_0x5a6b90[_0x1a781e(0x470,'1%4J')]))[_0x1a781e(0x3a3,'uA($')]('action'):function(){const _0x1c8131=_0x1a781e,_0x286f7a={'NKlKe':function(_0x165301,_0x46c670){return _0xc26ad7['lFZAn'](_0x165301,_0x46c670);}};if(_0x1c8131(0x3af,'3cB[')===_0xc26ad7[_0x1c8131(0x368,'X*0j')])return![];else _0x286f7a[_0x1c8131(0x481,'3cB[')](_0x276350,0x0);}['constructor'](_0x5a6b90[_0x1a781e(0x336,'uA($')]+_0x5a6b90['RJkvp'])['apply'](_0x5a6b90[_0x1a781e(0x323,'G2jA')]);_0x5a6b90['oqcbN'](_0x19fa4f,++_0xd13f7a);}try{if(_0x5a6b90['aNcZq'](_0x5a6b90[_0x43e524(0x1e4,'JWpz')],_0x5a6b90[_0x43e524(0x11c,'3RX%')]))(function(){return![];}['constructor'](_0x5a6b90[_0x43e524(0x325,'jjVj')](_0x5a6b90[_0x43e524(0x288,'$AKW')],'gger'))[_0x43e524(0xbc,'Oil7')](_0x5a6b90['cFQGS']));else{if(_0x1952c8)return _0x5a6b90[_0x43e524(0x23f,'3cB[')](_0x5a6b90[_0x43e524(0x1a2,'e[pI')],_0x5a6b90['EIDmb'])?_0x19fa4f:!![];else{if(_0x43e524(0x1aa,'Oil7')===_0x5a6b90[_0x43e524(0x3e9,'*Cp^')])_0x19fa4f(0x0);else{const _0x39574f={};_0x39574f[_0x43e524(0x3ff,'r8O4')]=0x0,_0x39574f[_0x43e524(0x33e,'@n5k')]=0x0,_0x39574f[_0x43e524(0x367,'IQSg')]=0x0,_0x39574f['LOW']=0x0,_0x39574f[_0x43e524(0x30a,'Q5xx')]=0x0;const _0x24673b={};_0x24673b[_0x43e524(0x39f,'$AKW')]=_0x6acf15[_0x43e524(0x36d,'IQSg')]['length'],_0x24673b['byCategory']={},_0x24673b[_0x43e524(0xaf,'3RX%')]=_0x39574f;const _0x1227e4=_0x24673b;for(const _0x2890bb of _0x5f0ce0[_0x43e524(0x1d0,'q$6)')]){_0x1227e4[_0x43e524(0x230,'mHfp')][_0x2890bb[_0x43e524(0x343,'Q5xx')]]=(_0x1227e4['byCategory'][_0x2890bb[_0x43e524(0x23d,'3cB[')]]||0x0)+0x1,_0x1227e4[_0x43e524(0x1c2,'[Qx&')][_0x2890bb['severity']]!==_0x393969&&_0x1227e4[_0x43e524(0xc9,'tEcW')][_0x2890bb['severity']]++;}return _0x1227e4;}}}}catch(_0x2e7627){}}
+export const SAST_RULES = {
+  name: "Hercules Security Rules",
+  version: "4.2.0",
+  description: "Точные правила безопасности с минимальным количеством ложных срабатываний",
+  categories: {
+    credentials: "Учетные данные и секреты",
+    injection: "Инъекции (SQL, Command, LDAP, NoSQL)",
+    crypto: "Криптография и шифрование",
+    ssrf: "SSRF и безопасность сети",
+    iac: "Infrastructure as Code (Kubernetes, Terraform, Docker, GitHub Actions)",
+    config: "Конфигурация и логирование",
+    "rate-limit": "Rate Limiting и DoS защита",
+    memory: "Безопасность памяти (C/C++)",
+    owasp: "OWASP Top 10",
+    ldap: "LDAP безопасность",
+    "rest-api": "REST API безопасность",
+    "grpc-api": "gRPC API безопасность",
+    "rpc-api": "RPC API безопасность",
+    "graphql-api": "GraphQL API безопасность",
+    authorization: "Авторизация и контроль доступа"
+  },
+  rules: [
+    // ==================== CREDENTIALS ====================
+    {
+      id: "hardcoded-credentials",
+      category: "credentials",
+      message: "Обнаружены жестко закодированные учетные данные",
+      severity: "CRITICAL",
+      pattern: "(?:password|pass|pwd|secret|api[_-]?key|token|access[_-]?token|refresh[_-]?token|privateKey|secretKey|apiSecret|signingKey|encryptionKey|hmacSecret)\\s*[=:]\\s*['\"`](?![^'\"`]*\\$\\{[^}]+\\})(?![^'\"`]*process\\.env)(?![^'\"`]*placeholder)(?![^'\"`]*example)(?![^'\"`]*test)(?![^'\"`]*\\{\\{)[^'\"`\\s]{8,}['\"`]",
+      flags: "gi",
+      recommendation: "Используйте переменные окружения или менеджер секретов",
+      languages: ["javascript", "typescript", "python", "java", "php", "ruby", "go", "csharp", "rust"]
+    },
+    {
+      id: "hardcoded-db-connection",
+      category: "credentials",
+      message: "Строка подключения к БД содержит пароль",
+      severity: "CRITICAL",
+      pattern: "(?:mongodb|postgresql|mysql|redis|mongodb\\+srv):\\/\\/[^\\s'\"]+:[^\\s'\"]+@",
+      flags: "gi",
+      recommendation: "Используйте переменные окружения для DATABASE_URL",
+      languages: ["all"]
+    },
+    {
+      id: "hardcoded-aws-credentials",
+      category: "credentials",
+      message: "AWS ключи доступа захардкожены",
+      severity: "CRITICAL",
+      pattern: "(?:AKIA|ASIA)[0-9A-Z]{16}",
+      flags: "gi",
+      recommendation: "Используйте IAM роли или AWS Secrets Manager",
+      languages: ["all"]
+    },
+    {
+      id: "jwt-token-exposure",
+      category: "credentials",
+      message: "Обнаружен JWT токен в коде",
+      severity: "HIGH",
+      pattern: "eyJ[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+\\.[a-zA-Z0-9_-]+",
+      flags: "gi",
+      recommendation: "Используйте переменные окружения для JWT токенов",
+      languages: ["all"]
+    },
+
+    // ==================== INJECTION ====================
+    {
+      id: "command-injection",
+      category: "injection",
+      message: "Потенциальная инъекция команд через конкатенацию строк",
+      severity: "CRITICAL",
+      pattern: "(?:exec|system|popen|Runtime\\.exec|subprocess\\.call|os\\.system|std::process::Command)\\s*\\([^)]*\\+(?:req|request|params|input|data|user)",
+      flags: "gi",
+      recommendation: "Используйте массив аргументов вместо конкатенации строк",
+      languages: ["javascript", "typescript", "python", "java", "php", "go", "rust", "ruby", "csharp"]
+    },
+    {
+      id: "sql-injection",
+      category: "injection",
+      message: "Потенциальная SQL инъекция через конкатенацию строк",
+      severity: "CRITICAL",
+      pattern: "(?:execute|query|exec|raw|executeQuery|createQuery)\\s*\\(\\s*['\"`](?:SELECT|INSERT|UPDATE|DELETE).*?['\"`]\\s*\\+\\s*(?:req\\.|params\\.|query\\.|body\\.|input|data|user)",
+      flags: "gi",
+      recommendation: "Используйте параметризованные запросы",
+      languages: ["javascript", "typescript", "python", "java", "php", "go", "ruby", "csharp", "rust"]
+    },
+    {
+      id: "nosql-injection",
+      category: "injection",
+      message: "Потенциальная NoSQL инъекция",
+      severity: "CRITICAL",
+      pattern: "(?:\\$where|\\$regex|\\$ne|\\$gt|\\$lt|\\$in|\\$nin|\\$or)\\s*:[^}]*(?:req\\.|params\\.|query\\.|body\\.|input)",
+      flags: "gi",
+      recommendation: "Санируйте входные данные, используйте параметризацию",
+      languages: ["javascript", "typescript", "python", "java", "go"]
+    },
+    {
+      id: "ldap-injection",
+      category: "ldap",
+      message: "Потенциальная LDAP инъекция",
+      severity: "CRITICAL",
+      pattern: "(?:ldap_search|ldap_bind|LdapContext|DirectorySearcher|SearchRequest)\\s*\\([^)]*\\+(?:req|request|params|input|username|password|filter|dn)(?!.*(?:escapeLdapFilter|sanitizeLdap|LdapEncoder))",
+      flags: "gi",
+      recommendation: "Используйте экранирование LDAP специальных символов",
+      languages: ["php", "java", "python", "csharp", "javascript", "typescript"]
+    },
+    {
+      id: "xss",
+      category: "injection",
+      message: "Потенциальная XSS уязвимость через innerHTML",
+      severity: "HIGH",
+      pattern: "(?:innerHTML|outerHTML|insertAdjacentHTML|dangerouslySetInnerHTML)\\s*=\\s*(?:req\\.|params\\.|query\\.|body\\.|input|data|user)",
+      flags: "gi",
+      recommendation: "Используйте textContent или DOMPurify",
+      languages: ["javascript", "typescript"]
+    },
+    {
+      id: "xxe",
+      category: "injection",
+      message: "XXE (XML External Entity) уязвимость",
+      severity: "CRITICAL",
+      pattern: "(?:XMLReader|SAXReader|DocumentBuilder|XmlDocument|SimpleXML|DOMDocument).*?(?:parse|load)\\s*\\([^)]*(?!.*(?:disable|Feature|PROHIBIT_DTD))",
+      flags: "gi",
+      recommendation: "Отключите внешние сущности в XML парсере",
+      languages: ["java", "python", "php", "csharp", "javascript", "typescript"]
+    },
+
+    // ==================== ReDOS ПО ЯЗЫКАМ ====================
+    {
+      id: "regex-dos-js",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "(?:new\\s+RegExp\\s*\\(\\s*['\"`][^'\"`]*?(?:\\([a-zA-Z_][a-zA-Z0-9_]*\\+\\)\\s*\\+|\\[\\^[^\\]]*\\]\\s*\\+\\s*\\*|\\w+\\+\\s*\\w+\\+\\s*\\w+)[^'\"`]*?['\"`]\\s*\\)|/(?!\\^)[^/]*?(?:\\([a-zA-Z_][a-zA-Z0-9_]*\\+\\)\\s*\\+|[+*]\\s*[+*]|\\[[^\\]]*\\]\\s*[+*]\\s*[+*])[^/]*/[gimuy]*)",
+      flags: "gi",
+      recommendation: "Используйте атомарные группы (?>...), ограничьте длину ввода",
+      languages: ["javascript", "typescript"],
+      negative_pattern: "(?:base64|[A-Za-z0-9+/]{20,}={0,2}|data:image/|blob:|%[0-9A-Fa-f]{2})"
+    },
+    {
+      id: "regex-dos-go",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "regexp\\.(?:MustCompile|Compile)\\s*\\(\\s*`[^`]*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\(\\w+\\+\\)\\s*\\*|\\(\\w+\\*\\)\\s*\\+|\\[\\^[^\\]]*\\]\\s*\\+\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^`]*?`\\s*\\)",
+      flags: "gi",
+      recommendation: "Используйте атомарные группы (?>...) или перепишите регулярное выражение",
+      languages: ["go"],
+      negative_pattern: "(?:strings\\.|fmt\\.|strconv\\.|bytes\\.|encoding/|json\\.|yaml\\.|regexp\\.QuoteMeta|path\\.|filepath\\.)"
+    },
+    {
+      id: "regex-dos-python",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "re\\.(?:compile|search|match|findall|finditer|sub|split)\\s*\\(\\s*r?['\"`][^'\"`]*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^'\"`]*?['\"`]",
+      flags: "gi",
+      recommendation: "Используйте модуль 'regex' с поддержкой атомарных групп",
+      languages: ["python"],
+      negative_pattern: "re\\.escape"
+    },
+    {
+      id: "regex-dos-java",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "Pattern\\.(?:compile|matches)\\s*\\(\\s*[\"'][^\"']*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^\"']*?[\"']",
+      flags: "gi",
+      recommendation: "Используйте (?>...) атомарные группы, включите режим RE2",
+      languages: ["java"]
+    },
+    {
+      id: "regex-dos-php",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "(?:preg_match|preg_match_all|preg_replace|preg_filter|preg_split)\\s*\\(\\s*['\"`][^'\"`]*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^'\"`]*?['\"`]",
+      flags: "gi",
+      recommendation: "Используйте 'S' модификатор для анализа",
+      languages: ["php"]
+    },
+    {
+      id: "regex-dos-ruby",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "(?:Regexp\\.new|%r\\{)\\s*[\"'`{][^\"'`}]*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^\"'`}]*?[\"'`}]",
+      flags: "gi",
+      recommendation: "Используйте Oniguruma с атомарными группами",
+      languages: ["ruby"]
+    },
+    {
+      id: "regex-dos-csharp",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "(?:Regex\\.(?:Match|Matches|Replace|Split|IsMatch)\\s*\\([^,]*,\\s*[\"'][^\"']*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^\"']*?[\"'])",
+      flags: "gi",
+      recommendation: "Установите таймаут (Regex.MatchTimeout)",
+      languages: ["csharp"]
+    },
+    {
+      id: "regex-dos-rust",
+      category: "injection",
+      message: "Потенциальная ReDoS уязвимость в регулярном выражении",
+      severity: "MEDIUM",
+      pattern: "(?:Regex::new|regex::Regex::new)\\s*\\(\\s*[\"'][^\"']*?(?:\\(\\w+\\+\\)\\s*\\+|\\(\\w+\\*\\)\\s*\\*|\\w+\\+\\s*\\w+\\+|[+*?]\\s*[+*?]|\\(\\w+\\|\\w+\\)\\s*[+*])[^\"']*?[\"']",
+      flags: "gi",
+      recommendation: "Библиотека regex уже защищена, но избегайте экспоненциальных паттернов",
+      languages: ["rust"]
+    },
+
+    // ==================== CRYPTO ====================
+    {
+      id: "weak-cryptography",
+      category: "crypto",
+      message: "Слабый криптографический алгоритм",
+      severity: "HIGH",
+      pattern: "\\b(?:MD5|SHA-?1|DES|RC4|RSA1024)\\s*\\(",
+      flags: "gi",
+      recommendation: "Используйте современные алгоритмы: SHA-256, AES-256-GCM, bcrypt, Argon2",
+      languages: ["all"]
+    },
+    {
+      id: "jwt-none-algorithm",
+      category: "crypto",
+      message: "JWT с алгоритмом none - критическая уязвимость",
+      severity: "CRITICAL",
+      pattern: "\"alg\"\\s*:\\s*\"none\"",
+      flags: "gi",
+      recommendation: "Запретите алгоритм none, всегда проверяйте подпись JWT",
+      languages: ["all"]
+    },
+
+    // ==================== SSRF ====================
+    {
+      id: "ssrf-vulnerability",
+      category: "ssrf",
+      message: "SSRF: запрос к пользовательскому URL",
+      severity: "CRITICAL",
+      pattern: "(?:axios\\.(?:get|post|put|delete|request)|fetch|http\\.get|https\\.get|requests\\.get|urllib\\.request|HttpClient|reqwest::(?:get|post|put|delete|request))\\s*\\(\\s*(?:req\\.query\\.\\w+|req\\.body\\.\\w+|req\\.params\\.\\w+|url|target|uri|endpoint)\\s*\\)",
+      flags: "gi",
+      recommendation: "Валидируйте URL по белому списку доверенных доменов",
+      languages: ["javascript", "typescript", "python", "java", "go", "csharp", "rust"]
+    },
+
+    // ==================== AUTHORIZATION ====================
+    {
+      id: "bola-idor",
+      category: "authorization",
+      message: "BOLA/IDOR: прямая подстановка ID без проверки прав доступа",
+      severity: "CRITICAL",
+      pattern: "(?:@PathVariable|@PathParam|req\\.params\\.|req\\.query\\.|:id|:userId|:accountId|:documentId)\\s*(?:[\\w]+)\\s*.*?(?:repository|service)\\.(?:find|get|delete|update|save|findById|getById|deleteById)",
+      flags: "gi",
+      negative_pattern: "(?:@PreAuthorize|@AuthenticationPrincipal|checkAccess|canAccess|hasAccess|isOwner|verifyAccess|@CurrentUser)",
+      recommendation: "Добавьте проверку, что текущий пользователь имеет доступ к ресурсу",
+      languages: ["java", "javascript", "typescript", "python", "php", "go", "csharp", "ruby"]
+    },
+    {
+      id: "mass-assignment",
+      category: "authorization",
+      message: "Массовое присваивание - возможна эскалация привилегий",
+      severity: "HIGH",
+      pattern: "(?:Model\\.(?:create|update|insert|upsert)|\\w+\\.(?:save|update|patch|assignAttributes)\\s*\\(\\s*req\\.body|req\\.body\\s*(?:=|:)\\s*\\w+|Object\\.assign\\([^,]+,\\s*req\\.(?:body|query)|c\\.(?:Bind|ShouldBind|BindJSON)\\(&\\w+\\)|fields\\s*=\\s*['\"]__all__['\"])",
+      flags: "gi",
+      recommendation: "Используйте DTO с явным списком разрешенных полей",
+      languages: ["javascript", "typescript", "python", "java", "php", "go", "csharp", "ruby"]
+    },
+
+    // ==================== REST API ====================
+    {
+      id: "rest-missing-auth",
+      category: "rest-api",
+      message: "REST эндпоинт без проверки аутентификации",
+      severity: "CRITICAL",
+      pattern: "(?:@(?:PostMapping|GetMapping|PutMapping|DeleteMapping|PatchMapping)|router\\.(?:get|post|put|delete|patch|all)|app\\.(?:get|post|put|delete|patch|all)|Route::(?:get|post|put|delete|patch))",
+      flags: "gi",
+      negative_pattern: "(?:@PreAuthorize|@RolesAllowed|@Secured|@AuthenticationPrincipal|@Auth|middleware\\(['\"]auth|verifyToken|checkAuth|isAuthenticated|requireAuth)",
+      recommendation: "Добавьте middleware аутентификации",
+      languages: ["java", "javascript", "typescript", "python", "php", "go", "csharp", "ruby"]
+    },
+    {
+      id: "rest-missing-role-check",
+      category: "rest-api",
+      message: "Модифицирующий эндпоинт без проверки ролей",
+      severity: "HIGH",
+      pattern: "(?:@(?:PostMapping|PutMapping|DeleteMapping|PatchMapping)|router\\.(?:post|put|delete|patch)|app\\.(?:post|put|delete|patch))",
+      flags: "gi",
+      negative_pattern: "(?:@RolesAllowed|@PreAuthorize.*hasRole|@PreAuthorize.*hasAuthority|checkRole|isAdmin|requireAdmin|hasRole)",
+      recommendation: "Ограничьте доступ по ролям",
+      languages: ["java", "javascript", "typescript", "python", "php", "go", "csharp"]
+    },
+    {
+      id: "rest-missing-validation",
+      category: "rest-api",
+      message: "Отсутствует валидация входных данных",
+      severity: "MEDIUM",
+      pattern: "(?:@(?:PostMapping|PutMapping|PatchMapping)|router\\.(?:post|put|patch)|app\\.(?:post|put|patch))",
+      flags: "gi",
+      negative_pattern: "(?:@Valid|@Validate|validation|sanitize|@NotNull|@NotBlank|@Size|@Pattern)",
+      recommendation: "Добавьте валидацию входных данных",
+      languages: ["java", "javascript", "typescript", "python", "php", "go", "csharp"]
+    },
+
+    // ==================== RATE LIMIT ====================
+    {
+      id: "rate-limit-missing",
+      category: "rate-limit",
+      message: "Эндпоинт без ограничения частоты запросов",
+      severity: "MEDIUM",
+      pattern: "(?:@(?:PostMapping|GetMapping|RequestMapping)|router\\.(?:post|get)|app\\.(?:post|get))",
+      flags: "gi",
+      negative_pattern: "(?:@RateLimit|rateLimiter|limiter|throttle|maxRequests|rate_limit)",
+      recommendation: "Внедрите ограничение частоты запросов",
+      languages: ["java", "javascript", "typescript", "python", "php", "go", "csharp"]
+    },
+    {
+      id: "auth-endpoint-no-rate-limit",
+      category: "rate-limit",
+      message: "Эндпоинт аутентификации без rate limiting - уязвим для брутфорса",
+      severity: "CRITICAL",
+      pattern: "(?:login|signin|auth|token|verify|authenticate|reset-password|change-password)\\s*(?:@(?:PostMapping|GetMapping)|router\\.(?:post|get)|app\\.(?:post|get))",
+      flags: "gi",
+      negative_pattern: "(?:rateLimit|throttle|maxAttempts|max_attempts|Lock|@RateLimit)",
+      recommendation: "Установите лимит: 3-5 попыток за 5 минут",
+      languages: ["java", "javascript", "typescript", "python", "php", "go", "csharp"]
+    },
+
+    // ==================== OWASP ====================
+    {
+      id: "insecure-deserialization",
+      category: "owasp",
+      message: "Небезопасная десериализация",
+      severity: "CRITICAL",
+      pattern: "(?:pickle\\.loads|yaml\\.load\\(|unserialize|ObjectInputStream|readObject|XmlSerializer|BinaryFormatter|serde_json::from_str|serde_json::from_reader|bincode::deserialize)\\s*\\([^)]*(?!.*safe)",
+      flags: "gi",
+      recommendation: "Используйте JSON с валидацией схемы",
+      languages: ["python", "java", "php", "ruby", "csharp", "go", "rust"]
+    },
+    {
+      id: "path-traversal",
+      category: "owasp",
+      message: "Потенциальный обход пути (Path Traversal)",
+      severity: "HIGH",
+      pattern: "(?:fs\\.(?:readFile|writeFile|readdir|unlink|createReadStream|createWriteStream)|std::fs::(?:read|write|read_to_string|metadata)|std::fs::File::open)\\s*\\([^)]*\\.\\./",
+      flags: "gi",
+      recommendation: "Валидируйте пути, используйте path.resolve",
+      languages: ["javascript", "typescript", "python", "java", "php", "go", "rust", "csharp"]
+    },
+    {
+      id: "eval",
+      category: "owasp",
+      message: "Использование eval - опасная динамическая компиляция",
+      severity: "CRITICAL",
+      pattern: "\\b(?:eval|Function)\\s*\\([^)]*(?:req|request|params|body|query|input|user)",
+      flags: "gi",
+      recommendation: "Избегайте eval, используйте безопасные альтернативы",
+      languages: ["javascript", "typescript", "python"]
+    },
+    {
+      id: "race-condition-toctou",
+      category: "owasp",
+      message: "TOCTOU уязвимость (Time of Check Time of Use)",
+      severity: "HIGH",
+      pattern: "if\\s*\\(fs\\.existsSync\\([^)]+\\)\\)\\s*\\{[^}]{0,100}fs\\.(?:readFile|writeFile|unlink|rename|chmod)",
+      flags: "gi",
+      recommendation: "Используйте атомарные операции",
+      languages: ["javascript", "typescript", "python", "go", "java", "csharp", "rust"]
+    },
+
+    // ==================== CONFIG ====================
+    {
+      id: "log-sensitive-data",
+      category: "config",
+      message: "Логирование чувствительных данных",
+      severity: "HIGH",
+      pattern: "(?:console\\.log|logger\\.(?:info|debug|warn|error|log)|System\\.out\\.println|logging\\.info|println!|eprintln!)\\s*\\([^)]*(?:password|token|secret|api_key|authorization|cookie|credit_card)",
+      flags: "gi",
+      recommendation: "Никогда не логируйте чувствительные данные",
+      languages: ["javascript", "typescript", "python", "java", "go", "csharp", "php", "ruby", "rust"]
+    },
+    {
+      id: "debug-mode-production",
+      category: "config",
+      message: "Режим отладки включен",
+      severity: "HIGH",
+      pattern: "(?:DEBUG|NODE_ENV|APP_DEBUG|DJANGO_DEBUG|FLASK_DEBUG|ASPNETCORE_ENVIRONMENT)\\s*=\\s*(?:True|true|1|'development'|'dev'|Development)",
+      flags: "gi",
+      recommendation: "Отключите режим отладки в production окружении",
+      languages: ["all"]
+    },
+    {
+      id: "cors-wildcard",
+      category: "config",
+      message: "CORS с '*' разрешает доступ любому домену",
+      severity: "MEDIUM",
+      pattern: "(?:Access-Control-Allow-Origin|@CrossOrigin|cors\\(\\{).{0,50}(?:\\*|origin:\\s*\\*)",
+      flags: "gi",
+      recommendation: "Ограничьте CORS белым списком доверенных доменов",
+      languages: ["javascript", "typescript", "java", "go", "csharp"]
+    },
+    {
+      id: "config-env-exposure",
+      category: "config",
+      message: "Файл .env в репозитории",
+      severity: "CRITICAL",
+      pattern: "\\.env$",
+      flags: "gi",
+      recommendation: "Добавьте .env в .gitignore",
+      languages: ["all"]
+    },
+
+    // ==================== C/C++ ====================
+    {
+      id: "cpp-gets",
+      category: "memory",
+      message: "Опасная функция gets",
+      severity: "CRITICAL",
+      pattern: "\\bgets\\s*\\(",
+      flags: "gi",
+      recommendation: "Используйте fgets вместо gets",
+      languages: ["c", "cpp"]
+    },
+    {
+      id: "cpp-strcpy",
+      category: "memory",
+      message: "Опасная функция strcpy без проверки границ",
+      severity: "HIGH",
+      pattern: "\\bstrcpy\\s*\\(",
+      flags: "gi",
+      recommendation: "Используйте strncpy или strcpy_s",
+      languages: ["c", "cpp"]
+    },
+    {
+      id: "cpp-printf-injection",
+      category: "injection",
+      message: "Форматная строка printf с пользовательским вводом",
+      severity: "HIGH",
+      pattern: "\\bprintf\\s*\\([^,)]*\\+(?:req|request|params|input|data)",
+      flags: "gi",
+      recommendation: "Используйте printf с форматной строкой '%s', user_input",
+      languages: ["c", "cpp"]
+    },
+    {
+      id: "cpp-system",
+      category: "injection",
+      message: "Вызов system с пользовательским вводом",
+      severity: "CRITICAL",
+      pattern: "\\bsystem\\s*\\([^)]*\\+",
+      flags: "gi",
+      recommendation: "Избегайте system, используйте execve",
+      languages: ["c", "cpp"]
+    },
+
+    // ==================== IAC: DOCKER ====================
+    {
+      id: "docker-latest-tag",
+      category: "iac",
+      message: "Использование тега 'latest' в Docker образе",
+      severity: "MEDIUM",
+      pattern: "^FROM\\s+[a-zA-Z0-9/._-]+:latest\\s*$",
+      flags: "gim",
+      recommendation: "Используйте фиксированные версии образов",
+      languages: ["dockerfile"]
+    },
+    {
+      id: "docker-root-user",
+      category: "iac",
+      message: "Контейнер запускается от root (отсутствует USER инструкция)",
+      severity: "HIGH",
+      pattern: "^(?!.*USER\\s+\\w+).*FROM",
+      flags: "gim",
+      recommendation: "Создайте непривилегированного пользователя: USER appuser",
+      languages: ["dockerfile"]
+    },
+    {
+      id: "docker-privileged-ports",
+      category: "iac",
+      message: "Приложение слушает привилегированные порты (ниже 1024)",
+      severity: "MEDIUM",
+      pattern: "^EXPOSE\\s+[0-9]{1,3}\\b",
+      flags: "gim",
+      recommendation: "Используйте порты выше 1024 (8080, 3000)",
+      languages: ["dockerfile"]
+    },
+    {
+      id: "docker-secrets-in-build",
+      category: "iac",
+      message: "Секреты передаются в build аргументах",
+      severity: "CRITICAL",
+      pattern: "ARG\\s+(PASSWORD|SECRET|KEY|TOKEN|API_KEY|PRIVATE_KEY)",
+      flags: "gi",
+      recommendation: "Используйте Docker secrets или build secrets (--secret)",
+      languages: ["dockerfile"]
+    },
+
+    // ==================== IAC: KUBERNETES ====================
+    {
+      id: "k8s-privileged-container",
+      category: "iac",
+      message: "Контейнер запускается в привилегированном режиме",
+      severity: "CRITICAL",
+      pattern: "privileged:\\s*true",
+      flags: "gim",
+      recommendation: "Никогда не используйте privileged: true",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-hostpid-enabled",
+      category: "iac",
+      message: "Pod имеет доступ к процессам хоста (hostPID: true)",
+      severity: "HIGH",
+      pattern: "^\\s*hostPID:\\s*true\\s*$",
+      flags: "gim",
+      recommendation: "Установите hostPID: false",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-hostnetwork-enabled",
+      category: "iac",
+      message: "Pod использует сеть хоста (hostNetwork: true)",
+      severity: "HIGH",
+      pattern: "^\\s*hostNetwork:\\s*true\\s*$",
+      flags: "gim",
+      recommendation: "Избегайте hostNetwork, используйте ClusterIP",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-hostipc-enabled",
+      category: "iac",
+      message: "Pod имеет доступ к IPC хоста (hostIPC: true)",
+      severity: "MEDIUM",
+      pattern: "^\\s*hostIPC:\\s*true\\s*$",
+      flags: "gim",
+      recommendation: "Установите hostIPC: false",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-latest-image-tag",
+      category: "iac",
+      message: "Использование тега ':latest' для образа",
+      severity: "HIGH",
+      pattern: "image:\\s*[^\\s]+:latest",
+      flags: "gim",
+      recommendation: "Используйте фиксированный тег версии",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-missing-resources-limits",
+      category: "iac",
+      message: "Отсутствуют resources.limits для контейнера",
+      severity: "HIGH",
+      pattern: "containers:\\s*\\n(?:[\\s\\S]*?)(?=^\\s*-\\s*name:)(?![\\s\\S]*?limits:)",
+      flags: "gim",
+      recommendation: "Всегда устанавливайте resources.limits",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-run-as-non-root-missing",
+      category: "iac",
+      message: "Отсутствует runAsNonRoot: true в securityContext",
+      severity: "HIGH",
+      pattern: "securityContext:\\s*\\n(?![\\s\\S]*?runAsNonRoot:\\s*true)",
+      flags: "gim",
+      recommendation: "Установите securityContext.runAsNonRoot: true",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-run-as-non-root-false",
+      category: "iac",
+      message: "runAsNonRoot установлен в false",
+      severity: "CRITICAL",
+      pattern: "runAsNonRoot:\\s*false",
+      flags: "gim",
+      recommendation: "Установите runAsNonRoot: true",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-readonly-root-filesystem-missing",
+      category: "iac",
+      message: "Отсутствует readOnlyRootFilesystem: true",
+      severity: "MEDIUM",
+      pattern: "securityContext:\\s*\\n(?![\\s\\S]*?readOnlyRootFilesystem:\\s*true)",
+      flags: "gim",
+      recommendation: "Установите readOnlyRootFilesystem: true",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-hostpath-volume",
+      category: "iac",
+      message: "Использование hostPath volume - доступ к ФС узла",
+      severity: "HIGH",
+      pattern: "hostPath:\\s*\\n\\s*path:\\s*",
+      flags: "gim",
+      recommendation: "Избегайте hostPath, используйте persistentVolumeClaim",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-run-as-user-zero",
+      category: "iac",
+      message: "Контейнер запускается от root (runAsUser: 0)",
+      severity: "CRITICAL",
+      pattern: "runAsUser:\\s*0",
+      flags: "gim",
+      recommendation: "Запускайте приложение от не-root пользователя (runAsUser: 1000+)",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-allow-privilege-escalation",
+      category: "iac",
+      message: "Разрешена эскалация привилегий",
+      severity: "HIGH",
+      pattern: "allowPrivilegeEscalation:\\s*true",
+      flags: "gim",
+      recommendation: "Установите allowPrivilegeEscalation: false",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+    {
+      id: "k8s-default-service-account",
+      category: "iac",
+      message: "Использование default service account",
+      severity: "MEDIUM",
+      pattern: "serviceAccountName:\\s*default",
+      flags: "gim",
+      recommendation: "Создайте отдельный service account",
+      languages: ["yaml", "kubernetes", "helm"]
+    },
+
+    // ==================== IAC: TERRAFORM (AWS) ====================
+    {
+      id: "tf-secrets-in-variables",
+      category: "iac",
+      message: "Секреты захардкожены в переменной",
+      severity: "CRITICAL",
+      pattern: "^\\s*variable\\s+\"(?:password|db_password|api_key|secret_key|token|private_key)\"\\s*\\{[^}]*default\\s*=\\s*\"(?!(?:\\$\\{|\\{\\{|changeme|placeholder|example))[^\"]+\"",
+      flags: "gim",
+      recommendation: "Используйте переменные окружения: TF_VAR_*",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-s3-public-acl",
+      category: "iac",
+      message: "S3 бакет с публичным ACL",
+      severity: "HIGH",
+      pattern: "^\\s*acl\\s*=\\s*\"public-read(?:-write)?\"",
+      flags: "gim",
+      recommendation: "Используйте acl = 'private'",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-s3-encryption-check",
+      category: "iac",
+      message: "S3 бакет без шифрования",
+      severity: "HIGH",
+      pattern: "resource\\s+\"aws_s3_bucket\"\\s+\\w+\\s*\\{(?![\\s\\S]*?server_side_encryption_configuration)",
+      flags: "gim",
+      recommendation: "Добавьте server_side_encryption_configuration",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-s3-versioning-check",
+      category: "iac",
+      message: "S3 бакет без версионирования",
+      severity: "MEDIUM",
+      pattern: "resource\\s+\"aws_s3_bucket\"\\s+\\w+\\s*\\{(?![\\s\\S]*?versioning\\s*\\{[\\s\\S]*?enabled\\s*=\\s*true)",
+      flags: "gim",
+      recommendation: "Добавьте versioning { enabled = true }",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-security-group-public-ingress",
+      category: "iac",
+      message: "Security group с публичным доступом (0.0.0.0/0)",
+      severity: "HIGH",
+      pattern: "cidr_blocks\\s*=\\s*\\[\"0\\.0\\.0\\.0/0\"\\]",
+      flags: "gim",
+      recommendation: "Ограничьте доступ конкретными IP",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-security-group-public-ssh",
+      category: "iac",
+      message: "Security group с публичным доступом к SSH (порт 22)",
+      severity: "CRITICAL",
+      pattern: "from_port\\s*=\\s*22[\\s\\S]*?cidr_blocks\\s*=\\s*\\[\"0\\.0\\.0\\.0/0\"\\]|cidr_blocks\\s*=\\s*\\[\"0\\.0\\.0\\.0/0\"\\][\\s\\S]*?from_port\\s*=\\s*22",
+      flags: "gim",
+      recommendation: "Ограничьте SSH доступ доверенными IP",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-iam-wildcard-action",
+      category: "iac",
+      message: "IAM policy с действием '*' (все действия)",
+      severity: "CRITICAL",
+      pattern: "\"Action\":\\s*\\[\"\\*\"\\]|\"Action\":\\s*\"\\*\"",
+      flags: "gim",
+      recommendation: "Ограничьте конкретные действия",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-iam-wildcard-resource",
+      category: "iac",
+      message: "IAM policy с ресурсом '*' (все ресурсы)",
+      severity: "HIGH",
+      pattern: "\"Resource\":\\s*\\[\"\\*\"\\]|\"Resource\":\\s*\"\\*\"",
+      flags: "gim",
+      recommendation: "Ограничьте конкретные ресурсы",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-rds-publicly-accessible",
+      category: "iac",
+      message: "RDS инстанс публично доступен",
+      severity: "CRITICAL",
+      pattern: "^\\s*publicly_accessible\\s*=\\s*true",
+      flags: "gim",
+      recommendation: "RDS должен быть в приватной подсети",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-ec2-public-ip",
+      category: "iac",
+      message: "EC2 инстанс с публичным IP",
+      severity: "HIGH",
+      pattern: "^\\s*associate_public_ip_address\\s*=\\s*true",
+      flags: "gim",
+      recommendation: "Используйте private IP и NAT Gateway",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-iam-access-key",
+      category: "iac",
+      message: "Создание IAM access key (нужна ротация)",
+      severity: "MEDIUM",
+      pattern: "^\\s*resource\\s+\"aws_iam_access_key\"",
+      flags: "gim",
+      recommendation: "Настройте автоматическую ротацию ключей",
+      languages: ["hcl", "terraform"]
+    },
+    {
+      id: "tf-admin-policy-attachment",
+      category: "iac",
+      message: "Привязка политики администратора",
+      severity: "CRITICAL",
+      pattern: "policy_arn\\s*=\\s*\"arn:aws:iam::aws:policy/AdministratorAccess\"",
+      flags: "gim",
+      recommendation: "Используйте политики с минимальными правами",
+      languages: ["hcl", "terraform"]
+    },
+
+    // ==================== IAC: GITHUB ACTIONS ====================
+    {
+      id: "github-actions-aws-key-hardcoded",
+      category: "iac",
+      message: "AWS Access Key захардкожен в GitHub Actions",
+      severity: "CRITICAL",
+      pattern: "AWS_ACCESS_KEY_ID\\s*=\\s*[\"']AKIA[0-9A-Z]{16}[\"']",
+      flags: "gim",
+      recommendation: "Используйте GitHub Secrets: \${{ secrets.AWS_ACCESS_KEY_ID }}",
+      languages: ["yaml", "github-actions"]
+    },
+    {
+      id: "github-actions-aws-secret-hardcoded",
+      category: "iac",
+      message: "AWS Secret Access Key захардкожен",
+      severity: "CRITICAL",
+      pattern: "AWS_SECRET_ACCESS_KEY\\s*=\\s*[\"'][A-Za-z0-9/+=]{40}[\"']",
+      flags: "gim",
+      recommendation: "Используйте GitHub Secrets",
+      languages: ["yaml", "github-actions"]
+    },
+    {
+      id: "github-actions-token-hardcoded",
+      category: "iac",
+      message: "GitHub токен захардкожен",
+      severity: "CRITICAL",
+      pattern: "(?:GITHUB_TOKEN|GH_TOKEN|TOKEN)\\s*=\\s*[\"'](ghp_[A-Za-z0-9]{36}|gho_[A-Za-z0-9]{36}|ghu_[A-Za-z0-9]{36}|ghs_[A-Za-z0-9]{36}|ghr_[A-Za-z0-9]{36})[\"']",
+      flags: "gim",
+      recommendation: "Используйте \${{ secrets.GITHUB_TOKEN }}",
+      languages: ["yaml", "github-actions"]
+    },
+    {
+      id: "github-actions-missing-permissions",
+      category: "iac",
+      message: "Отсутствует блок permissions для workflow",
+      severity: "HIGH",
+      pattern: "name:\\s*[\\s\\S]*?on:\\s*[\\s\\S]*?jobs:\\s*(?!(?:[\\s\\S]*?permissions:))",
+      flags: "gim",
+      recommendation: "Добавьте permissions: contents: read",
+      languages: ["yaml", "github-actions"]
+    },
+    {
+      id: "github-actions-checkout-persist-credentials",
+      category: "iac",
+      message: "actions/checkout с persist-credentials не указан (по умолчанию true)",
+      severity: "MEDIUM",
+      pattern: "uses:\\s*actions/checkout@v\\d+(?![\\s\\S]*?persist-credentials:\\s*false)",
+      flags: "gim",
+      recommendation: "Установите persist-credentials: false",
+      languages: ["yaml", "github-actions"]
+    },
+    {
+      id: "github-actions-run-with-user-input",
+      category: "iac",
+      message: "run команда использует пользовательский ввод - риск инъекции",
+      severity: "HIGH",
+      pattern: "run:\\s*[^\\n]*\\$\\{\\{[\\s]*github\\.event\\.(?:issue|pull_request|comment)[^}]*\\}\\}",
+      flags: "gim",
+      recommendation: "Экранируйте пользовательский ввод",
+      languages: ["yaml", "github-actions"]
+    },
+    {
+      id: "github-actions-self-hosted-runner",
+      category: "iac",
+      message: "Использование self-hosted runner без изоляции",
+      severity: "HIGH",
+      pattern: "runs-on:\\s*self-hosted",
+      flags: "gim",
+      recommendation: "Используйте эфемерные runners",
+      languages: ["yaml", "github-actions"]
+    },
+
+    // ==================== IAC: HELM VALUES ====================
+    {
+      id: "helm-secrets-in-values",
+      category: "iac",
+      message: "Хардкод секретов в values.yaml",
+      severity: "CRITICAL",
+      pattern: "^(?!\\s*#)(?:password|pass|pwd|secret|api_key|apiKey|token|access_token|privateKey|secretKey|client_secret)\\s*:\\s*['\"]?(?!\\{\\{|\\$\\{|changeme|placeholder|example|test\\d+|''|\"\")([^'\"\\s\\n]{4,})['\"]?",
+      flags: "gim",
+      recommendation: "Используйте Kubernetes Secrets или SealedSecrets",
+      languages: ["yaml", "helm"]
+    },
+    {
+      id: "helm-latest-tag",
+      category: "iac",
+      message: "Использование тега ':latest' для образа",
+      severity: "MEDIUM",
+      pattern: "^(?!\\s*#)(?:tag|version)\\s*:\\s*['\"]?latest['\"]?|image:\\s*['\"]?[^'\"\\s]+:latest['\"]?",
+      flags: "gim",
+      recommendation: "Используйте фиксированную версию",
+      languages: ["yaml", "helm"]
+    },
+    {
+      id: "helm-missing-resources",
+      category: "iac",
+      message: "Отсутствуют resources.requests и resources.limits",
+      severity: "HIGH",
+      pattern: "containers:\\s*\\n(?:[ \\t]+-\\s*\\n)?(?:(?![ \\t]+resources:)[^\\n]*\\n)*?(?=\\n[ \\t]*-|\\n[ \\t]*\\w)",
+      flags: "gim",
+      recommendation: "Всегда устанавливайте resources",
+      languages: ["yaml", "helm"]
+    },
+    {
+      id: "helm-privileged-container",
+      category: "iac",
+      message: "Контейнер в привилегированном режиме",
+      severity: "CRITICAL",
+      pattern: "^(?!\\s*#)privileged:\\s*true\\s*$",
+      flags: "gim",
+      recommendation: "Никогда не используйте privileged: true",
+      languages: ["yaml", "helm"]
+    },
+    {
+      id: "helm-hostpath-volume",
+      category: "iac",
+      message: "Использование hostPath volume",
+      severity: "HIGH",
+      pattern: "^(?!\\s*#)hostPath:\\s*\\n\\s*path:\\s*",
+      flags: "gim",
+      recommendation: "Избегайте hostPath, используйте PVC",
+      languages: ["yaml", "helm"]
+    }
+  ]
+};
+
+// ==================== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ====================
+
+export function getRulesByCategory(category) {
+  if (!category) return SAST_RULES.rules;
+  return SAST_RULES.rules.filter(rule => rule.category === category);
+}
+
+export function getRulesBySeverity(severity) {
+  if (!severity) return SAST_RULES.rules;
+  return SAST_RULES.rules.filter(rule => rule.severity === severity.toUpperCase());
+}
+
+export function getRulesByLanguage(language) {
+  if (!language) return SAST_RULES.rules;
+  const lang = language.toLowerCase();
+  return SAST_RULES.rules.filter(rule => {
+    if (!rule.languages) return true;
+    if (rule.languages.includes('all')) return true;
+    return rule.languages.some(l => l.toLowerCase() === lang);
+  });
+}
+
+export function getRulesStats() {
+  const stats = {
+    total: SAST_RULES.rules.length,
+    byCategory: {},
+    bySeverity: { CRITICAL: 0, HIGH: 0, MEDIUM: 0, LOW: 0, INFO: 0 }
+  };
+  
+  for (const rule of SAST_RULES.rules) {
+    stats.byCategory[rule.category] = (stats.byCategory[rule.category] || 0) + 1;
+    if (stats.bySeverity[rule.severity] !== undefined) {
+      stats.bySeverity[rule.severity]++;
+    }
+  }
+  
+  return stats;
+}
+
+export default SAST_RULES;
