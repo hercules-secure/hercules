@@ -224,94 +224,142 @@
   },
   {
     "id": "fuzz",
-    "name": "FUZZ",
+    "name": "Баба Яга",
     "version": "1.0.0",
-    "shortDesc": "Анализ API",
-    "description": "Инструмент для фаззинг-тестирования API на основе OpenAPI/Swagger спецификаций.",
-    "icon": "fas fa-bullseye",
+    "shortDesc": "Динамика и фаззинг",
+    "description": "Инструмент для динамического фаззинг-тестирования приложений, сайтов и API.",
+    "icon": "fas fa-radiation",
     "url": "/fuzz",
     "router": "./addons/fuzz/router.js",
     "ui": "./ui/fuzz/fuzz.html",
     "order": 3,
-    "free": true,
-    "features": {
-      "key": [
-        {
-          "icon": "fas fa-chart-line",
-          "iconColor": "#10B981",
-          "name": "Анализ безопасности API"
-        },
-        {
-          "icon": "fas fa-plug",
-          "iconColor": "#3B82F6",
-          "name": "Автоматическая генерация тестов"
-        }
-      ],
-      "protocols": [
-        {
-          "icon": "fas fa-globe",
-          "iconColor": "#3B82F6",
-          "name": "REST API (HTTP/1.1, HTTP/2)"
-        },
-        {
-          "icon": "fas fa-exchange-alt",
-          "iconColor": "#F59E0B",
-          "name": "gRPC (HTTP/2, Protobuf)"
-        },
-        {
-          "icon": "fas fa-chart-line",
-          "iconColor": "#10B981",
-          "name": "GraphQL"
-        },
-        {
-          "icon": "fas fa-code-branch",
-          "iconColor": "#8B5CF6",
-          "name": "SOAP / XML-RPC"
-        },
-        {
-          "icon": "fas fa-network-wired",
-          "iconColor": "#22C55E",
-          "name": "JSON-RPC 2.0"
-        }
-      ],
-      "specifications": [
-        {
-          "icon": "fas fa-file-alt",
-          "iconColor": "#85EA2D",
-          "name": "OpenAPI / Swagger"
-        }
-      ],
-      "sources": [
-        {
-          "icon": "fas fa-file-archive",
-          "iconColor": "#fc6d26",
-          "name": "Локальный файл"
-        },
-        {
-          "icon": "fas fa-link",
-          "iconColor": "#3B82F6",
-          "name": "URL"
-        }
-      ],
-      "reports": [
-        {
-          "icon": "fab fa-html5",
-          "iconColor": "#E44D26",
-          "name": "HTML"
-        },
-        {
-          "icon": "far fa-file-code",
-          "iconColor": "#F7DF1E",
-          "name": "JSON"
-        },
-        {
-          "icon": "fas fa-file-pdf",
-          "iconColor": "#DC143C",
-          "name": "PDF"
-        }
-      ]
-    }
-  },
+    "free": false,
+  "features": {
+    "key": [
+      {
+        "icon": "fas fa-chart-line",
+        "iconColor": "#10B981",
+        "name": "Анализ безопасности API"
+      },
+      {
+        "icon": "fas fa-plug",
+        "iconColor": "#3B82F6",
+        "name": "Автоматическая генерация тестов"
+      }
+    ],
+    "protocols": [
+      {
+        "icon": "fas fa-globe",
+        "iconColor": "#3B82F6",
+        "name": "REST API (HTTP/1.1, HTTP/2)"
+      },
+      {
+        "icon": "fas fa-exchange-alt",
+        "iconColor": "#F59E0B",
+        "name": "gRPC (HTTP/2, Protobuf)"
+      },
+      {
+        "icon": "fas fa-chart-line",
+        "iconColor": "#10B981",
+        "name": "GraphQL"
+      },
+      {
+        "icon": "fas fa-code-branch",
+        "iconColor": "#8B5CF6",
+        "name": "SOAP / XML-RPC"
+      },
+      {
+        "icon": "fas fa-network-wired",
+        "iconColor": "#22C55E",
+        "name": "JSON-RPC 2.0"
+      },
+      {
+        "icon": "fas fa-bolt",
+        "iconColor": "#F59E0B",
+        "name": "WebSocket"
+      }
+    ],
+    "specifications": [
+      {
+        "icon": "fas fa-file-alt",
+        "iconColor": "#85EA2D",
+        "name": "OpenAPI / Swagger"
+      },
+      {
+        "icon": "fas fa-project-diagram",
+        "iconColor": "#E10098",
+        "name": "GraphQL Schema"
+      },
+      {
+        "icon": "fas fa-code-branch",
+        "iconColor": "#8B5CF6",
+        "name": "SOAP / WSDL"
+      },
+      {
+        "icon": "fas fa-file-code",
+        "iconColor": "#F7DF1E",
+        "name": "gRPC / Protobuf"
+      },
+      {
+        "icon": "fas fa-network-wired",
+        "iconColor": "#22C55E",
+        "name": "AsyncAPI"
+      },
+      {
+        "icon": "fas fa-bolt",
+        "iconColor": "#F59E0B",
+        "name": "WebSocket"
+      },
+      {
+        "icon": "fas fa-exchange-alt",
+        "iconColor": "#F59E0B",
+        "name": "JSON-RPC 2.0"
+      }
+    ],
+    "sources": [
+      {
+        "icon": "fas fa-file-archive",
+        "iconColor": "#fc6d26",
+        "name": "Локальный файл"
+      },
+      {
+        "icon": "fas fa-link",
+        "iconColor": "#3B82F6",
+        "name": "URL"
+      }
+    ],
+    "modes": [
+      {
+        "icon": "fas fa-house",
+        "iconColor": "black",
+        "name": "Домовой",
+        "badge": "белый",
+        "badgeColor": "#d4edda",
+        "badgeTextColor": "#155724"
+      },
+      {
+        "icon": "fas fa-radiation",
+        "iconColor": "black",
+        "name": "Метла",
+        "badge": "черный",
+        "badgeColor": "#f8d7da",
+        "badgeTextColor": "#721c24"
+      }
+    ],
+    "reports": [
+      {
+        "icon": "fab fa-html5",
+        "iconColor": "#E44D26",
+        "name": "HTML"
+      },
+      {
+        "icon": "far fa-file-code",
+        "iconColor": "#F7DF1E",
+        "name": "JSON"
+      }
+    ]
+  }
+},
   {
     "id": "blender",
     "name": "Блендер",

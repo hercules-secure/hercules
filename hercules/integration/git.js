@@ -294,7 +294,7 @@ async function sendLicenseErrorNotification(tool, error) {
         
         if (mattermostConfig?.enabled && mattermostConfig?.webhookUrl) {
             const message = {
-                text: `❌ **Ошибка лицензии**\n\n` +
+                text: `**Ошибка лицензии**\n\n` +
                        `**Инструмент:** ${tool.toUpperCase()}\n` +
                        `**Ошибка:** ${error}\n` +
                        `**Время:** ${new Date().toLocaleString()}\n\n` +

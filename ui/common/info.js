@@ -121,7 +121,27 @@ function renderLeftPanel(tool) {
             </div>
         `;
     }
-    
+     // Режимы работы
+    if (tool.features?.modes?.length > 0) {
+        html += `
+            <div class="settings-section">
+                <h4> Режимы работы</h4>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                    ${tool.features.modes.map(m => `
+                        <div class="settings-option" style="flex: 1; min-width: 160px;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="${m.icon}" style="color: ${m.iconColor}; width: 24px; font-size: 16px;"></i>
+                                <span>${m.name}</span>
+                                <span style="font-size: 10px; padding: 1px 8px; border-radius: 12px; background: ${m.badgeColor}; color: ${m.badgeTextColor}; font-weight: 600; margin-left: auto;">
+                                    ${m.badge}
+                                </span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+    }
     if (tool.features?.sca?.length > 0) {
         html += `
             <div class="settings-section">
@@ -184,14 +204,7 @@ function renderLeftPanel(tool) {
         html += `
             <div class="settings-section">
                 <h4> Поддерживаемые спецификации</h4>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    ${tool.features.specifications.map(s => `
-                        <div class="settings-option">
-                            <i class="${s.icon}" style="color: ${s.iconColor}; width: 28px;"></i>
-                            <span>${s.name}</span>
-                        </div>
-                    `).join('')}
-                </div>
+                ${renderGrid(tool.features.specifications)}
             </div>
         `;
     }

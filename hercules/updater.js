@@ -25,6 +25,7 @@ const PACKAGE_PATH = path.join(process.cwd(), 'package.json');
 const IMPORTANT_FILES = [
     'config.json',
     'hercules/config.json',
+    'hercules/history/history.json',
     'hercules/license.json',
     'hercules/public.pem',
     'hercules/private.pem',

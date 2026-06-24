@@ -1,4 +1,4 @@
-// StructureMutator.js - РАСШИРЕННАЯ ВЕРСИЯ
+
 export default class StructureMutator {
     // ========== СУЩЕСТВУЮЩИЕ МЕТОДЫ ==========
     
