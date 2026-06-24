@@ -16,10 +16,450 @@
     <link rel="stylesheet" href="../common/sidebar.css">  
     <link rel="stylesheet" href="../common/modal.css">
     <link rel="stylesheet" href="../common/main.css">
+    <link rel="stylesheet" href="../common/upgrade.css">    
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     <style>
+/* ============================================================
+   FUZZ-INPUT-GROUP - уникальный класс для поля + кнопки
+============================================================ */
+.fuzz-input-group {
+    display: flex !important;
+    gap: 10px !important;
+    align-items: stretch !important;
+    margin-bottom: 16px !important;
+    width: 100% !important;
+}
 
-       
+.fuzz-input-group .fuzz-input-wrapper {
+    flex: 1 !important;
+    min-width: 0 !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: stretch !important;
+}
+
+.fuzz-input-group .fuzz-input-wrapper input {
+    width: 100% !important;
+    padding: 10px 14px !important;
+    border: 1px solid var(--border, #e9ecef) !important;
+    border-radius: 8px !important;
+    font-family: 'Ubuntu', sans-serif !important;
+    font-size: 14px !important;
+    background: var(--bg-primary, white) !important;
+    color: var(--text-primary, #1a1a2e) !important;
+    transition: border-color 0.2s !important;
+    box-sizing: border-box !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    line-height: 24px !important;
+    margin: 0 !important;
+    display: block !important;
+}
+
+.fuzz-input-group .fuzz-input-wrapper input:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
+}
+
+.fuzz-input-group .fuzz-input-wrapper input::placeholder {
+    color: var(--text-muted, #adb5bd) !important;
+    line-height: 24px !important;
+}
+
+/* КНОПКА - строго на одном уровне с полем */
+.fuzz-input-group .fuzz-start-btn {
+    flex-shrink: 0 !important;
+    white-space: nowrap !important;
+    padding: 0 20px !important;
+    height: 44px !important;
+    min-height: 44px !important;
+    max-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-family: 'Ubuntu', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    background: #e2e8f0 !important;
+    color: #94a3b8 !important;
+    min-width: 160px !important;
+    margin: 0 !important;
+    margin-top: 0 !important;
+    box-sizing: border-box !important;
+    line-height: 1 !important;
+}
+
+.fuzz-input-group .fuzz-start-btn.active {
+    background: var(--primary-color, #667eea) !important;
+    color: white !important;
+    cursor: pointer !important;
+}
+
+.fuzz-input-group .fuzz-start-btn.active:hover {
+    background: var(--primary-hover, #5a6fd6) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--shadow-md) !important;
+}
+
+.fuzz-input-group .fuzz-start-btn:disabled {
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+   /* ============================================================
+   ПРОГРЕСС - ГРАДУСНИК
+============================================================ */
+.progress-thermometer {
+    background: white;
+    border-radius: 12px;
+    padding: 20px 24px 16px 24px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    border: 1px solid var(--border, #e9ecef);
+}
+
+.thermometer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.thermometer-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary, #6c757d);
+}
+
+.thermometer-percent {
+    font-size: 18px;
+    font-weight: 700;
+    color: black;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Alef';
+}
+
+.thermometer-track {
+    position: relative;
+    height: 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.thermometer-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    width: 0%;
+}
+
+.thermometer-glow {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+    border-radius: 4px;
+}
+
+.thermometer-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+}
+
+.thermometer-step {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #e9ecef;
+    border: 2px solid white;
+    box-shadow: 0 0 0 1px #e9ecef;
+    transition: all 0.4s ease;
+    flex-shrink: 0;
+    z-index: 1;
+}
+
+.step-dot.active {
+    background: #667eea;
+    box-shadow: 0 0 0 1px #667eea, 0 0 12px rgba(102, 126, 234, 0.3);
+    transform: scale(1.15);
+}
+
+.step-dot.completed {
+    background: #10b981;
+    box-shadow: 0 0 0 1px #10b981;
+}
+
+.step-label {
+    font-size: 10px;
+    color: var(--text-muted, #adb5bd);
+    font-weight: 500;
+    text-align: center;
+    flex: 1;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.step-label.active {
+    color: var(--text-primary, #1a1a2e);
+    font-weight: 600;
+}
+
+.step-label.completed {
+    color: #10b981;
+}
+
+/* Для мобильных */
+@media (max-width: 600px) {
+    .progress-thermometer {
+        padding: 16px;
+    }
+    .step-label {
+        font-size: 8px;
+    }
+    .step-dot {
+        width: 8px;
+        height: 8px;
+    }
+    .thermometer-percent {
+        font-size: 15px;
+    }
+}
+        /* ============================================================
+           РЕЖИМЫ - ДОМОВОЙ / МЕТЛА
+        ============================================================ */
+        .mode-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--bg-secondary, #f1f3f5);
+            border-radius: 12px;
+            padding: 4px;
+            border: 1px solid var(--border, #e9ecef);
+        }
+
+        .mode-btn-mode {
+            flex: 1;
+            padding: 10px 18px;
+            border: none;
+            border-radius: 9px;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: transparent;
+            color: var(--text-secondary, #6c757d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mode-btn-mode i {
+            font-size: 16px;
+        }
+
+        .mode-btn-mode:hover {
+            color: var(--text-primary, #1a1a2e);
+            background: rgba(255,255,255,0.4);
+        }
+
+        .mode-btn-mode.active {
+            background: white;
+            color: var(--text-primary, #1a1a2e);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border, #e9ecef);
+        }
+
+        .mode-btn-mode .mode-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        .mode-btn-mode .mode-badge.domovoy {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .mode-btn-mode .mode-badge.metla {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .mode-btn-mode .mode-description {
+            font-size: 12px;
+            color: var(--text-muted, #6c757d);
+            font-weight: 400;
+        }
+
+/* ============================================================
+   INPUT GROUP - ОДИНАКОВАЯ ВЫСОТА
+============================================================ */
+.input-group {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;  /* ← вместо center, растягиваем по высоте */
+    margin-bottom: 16px;
+    width: 100%;
+}
+
+.input-group .input-wrapper {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+}
+
+.input-group .input-wrapper input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--border, #e9ecef);
+    border-radius: 8px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    background: var(--bg-primary, white);
+    color: var(--text-primary, #1a1a2e);
+    transition: border-color 0.2s;
+    box-sizing: border-box;
+    height: 44px;  /* ← фиксированная высота */
+}
+
+.input-group .start-button {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 0 20px;
+    height: 44px;  /* ← ТА ЖЕ ВЫСОТА */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: #e2e8f0;
+    color: #94a3b8;
+    min-width: 160px;
+    margin: 0;  /* ← убрать все отступы */
+}
+        /* Скрываем/показываем поля в зависимости от режима */
+        .mode-domovoy .metla-input-field {
+            display: none !important;
+        }
+
+        .mode-metla .domovoy-input-field {
+            display: none !important;
+        }
+
+        /* ============================================================
+           СКРЫТИЕ/ПОКАЗ ЭЛЕМЕНТОВ
+        ============================================================ */
+        .domovoy-only {
+            display: block;
+        }
+
+        .mode-metla .domovoy-only {
+            display: none;
+        }
+
+        .mode-metla .upload-area,
+        .mode-metla .spec-preview {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .mode-domovoy .upload-area,
+        .mode-domovoy .spec-preview {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ============================================================
+           ПРОГРЕСС ДЛЯ МЕТЛЫ
+        ============================================================ */
+        .metla-progress {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .mode-metla .card-table {
+            display: none;
+        }
+
+        .mode-metla .metla-progress {
+            display: block;
+        }
+
+        .mode-domovoy .card-table {
+            display: block;
+        }
+
+        .mode-domovoy .metla-progress {
+            display: none;
+        }
+
+        /* Подсказки */
+        .mode-hint {
+            font-size: 12px;
+            color: var(--text-muted, #6c757d);
+            margin-top: 6px;
+            margin-bottom: 16px;
+        }
+
+        .mode-metla .domovoy-hint {
+            display: none;
+        }
+
+        .mode-domovoy .metla-hint {
+            display: none;
+        }
+
+        @media (max-width: 600px) {
+            .mode-btn-mode {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+            .mode-btn-mode i {
+                font-size: 14px;
+            }
+            .mode-btn-mode .mode-badge {
+                font-size: 8px;
+                padding: 1px 6px;
+            }
+            .mode-btn-mode .mode-description {
+                display: none;
+            }
+            .input-group {
+                flex-wrap: wrap;
+            }
+            .input-group .input-wrapper {
+                flex: 1 1 100%;
+            }
+
+        }
     </style>
 </head>
 <body>
@@ -38,7 +478,6 @@
                 </div>
                 <div class="tool-divider"></div>
                 
-                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
@@ -47,7 +486,7 @@
                 </div>
                 
                 <div class="tool-divider"></div>
-                <div class="tools-grid"">
+                <div class="tools-grid">
                     <a href="/history">
                         <div class="tool-item">
                             <div class="tool-icon">
@@ -61,16 +500,16 @@
                     </a>
                     <div class="tool-divider"></div>
                     <a href="/config">
-                    <div class="tool-item ">
-                        <div class="tool-icon">
-                            <i class="fas fa-cogs black-icon"></i>
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Настройки</span>
+                                <span class="tool-desc">Управление параметрами</span>
+                            </div>
                         </div>
-                        <div class="tool-info">
-                            <span class="tool-name">Настройки</span>
-                            <span class="tool-desc">Управление параметрами</span>
-                        </div>
-                    </div>
-                   </a> 
+                    </a> 
                 </div>
             </div>
         </div>
@@ -86,135 +525,115 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Поле для ввода ссылки -->
-            <div class="input-group">
-                <input type="text" id="specUrl" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI) и нажмите Enter" aria-label="Ссылка на спецификацию">
-                <button class="start-button" id="start-btn" type="button" disabled>Начать анализ</button>
+            <div class="mode-selector" id="modeSelector">
+                <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy">
+                    Домовой
+                </button>
+                <button class="mode-btn-mode" data-mode="metla" id="modeMetla">Метла<span class="badge-beta-gradient">Beta</span></button>
             </div>
 
-            <!-- Блок загрузки архива -->
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">
-                    <i class="fas fa-cloud-upload-alt black-icon"></i>
-                </div>
-                <div class="upload-text">
-                    Нажмите для выбора файла спецификации<br>
-                    <span style="font-size: 9px">
-                        <div class="icons-row">
-                            <span class="format-badge"><i class="fas fa-file-code" style="color:orange; font-size:15px"></i> JSON</span>
-                            <span class="format-badge"><i class="fas fa-file-alt" style="color:rgb(47, 49, 47); font-size:15px"></i> YAML</span>
-                            <span class="format-badge"><i class="fas fa-file" style="color:rgb(12, 120, 102); font-size:15px"></i> YML</span>
-                        </div>
-                    </span>
-                </div>
-                <div class="upload-hint">
-                    Поддерживаются Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
-                </div>
-                <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
-            </div>
-
-            <!-- Информация о выбранном файле -->
-            <div class="file-info" id="fileInfo">
-                <div class="file-details">
-                    <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
-                    <span class="file-name" id="fileName"></span>
-                    <span class="file-size" id="fileSize"></span>
-                    <span class="remove-file" onclick="removeFile()">
-                        <i class="fas fa-times"></i>
-                    </span>
-                </div>
-            </div>
-
-            <!-- Базовый URL для API -->
-            <div style="margin-top: 20px;">
-                <label style="font-size: 14px; margin-bottom: 8px; display: block; color: var(--text-primary);">
-                    <i class="fas fa-server"></i> Базовый URL API
-                </label>
-                <input type="text" id="baseUrl" class="base-url-input" placeholder="Пример: https://api.example.com/v1/api">
-            </div>
-
-            <!-- Предпросмотр спецификации -->
-            <div class="spec-preview" id="specPreview">
-                <div class="spec-info">
-                    <div class="spec-info-item">
-                        <i class="fas fa-tag"></i>
-                        <span id="specTitle">Название</span>
-                    </div>
-                    <div class="spec-info-item">
-                        <i class="fas fa-code-branch"></i>
-                        <span id="specVersion">Версия</span>
-                    </div>
-                    <div class="spec-info-item">
-                        <i class="fas fa-cube"></i>
-                        <span id="specFormat">Формат</span>
-                    </div>
-                </div>
-                <div class="spec-endpoints" id="specEndpoints"></div>
-            </div>
-
-            <!-- Карточки прогресса -->
-            <div class="card-table">
-                <div class="card-section">
-                    <h2 class="section-title" style="margin-top: 2vh;">Подготовка</h2>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="task-id">1.1</span>
-                            <span class="task-status pending">В ожидании</span>
-                        </div>
-                        <div class="card-body">
-                            <h4>Загрузка и парсинг спецификации</h4>
-                            <div class="progress-container">
-                                <div class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="fuzz-input-group">
+                <div class="fuzz-input-wrapper">
+                    <input type="text" id="specUrl" class="domovoy-input-field" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)">
                 </div>
                 
-                <div class="card-section">
-                    <h3 class="section-title">Анализ интерфейсов</h3>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="task-id">2.1</span>
-                            <span class="task-status pending">В ожидании</span>
-                        </div>
-                        <div class="card-body">
-                            <h4>Генерация тестовых случаев</h4>
-                            <div class="progress-container">
-                                <div class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
+                <button class="fuzz-start-btn" id="start-btn" type="button" disabled onclick="startFuzzing()">
+                    <i class="fas fa-play" style="margin-right: 6px;"></i>Начать анализ
+                </button>
+            </div>
+
+            <div class="domovoy-only">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt black-icon"></i>
                     </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="task-id">2.2</span>
-                            <span class="task-status pending">В ожидании</span>
-                        </div>
-                        <div class="card-body">
-                            <h4>Выполнение фаззинг тестов</h4>
-                            <div class="progress-container">
-                                <div class="progress" style="width: 0%"></div>
+                    <div class="upload-text">
+                        Нажмите для выбора файла спецификации<br>
+                        <span style="font-size: 9px">
+                            <div class="icons-row">
+                                <span class="format-badge"><i class="fas fa-file-code" style="color:orange; font-size:15px"></i> JSON</span>
+                                <span class="format-badge"><i class="fas fa-file-alt" style="color:rgb(47, 49, 47); font-size:15px"></i> YAML</span>
+                                <span class="format-badge"><i class="fas fa-file" style="color:rgb(12, 120, 102); font-size:15px"></i> YML</span>
                             </div>
-                        </div>
+                        </span>
                     </div>
-                    
-                    <div class="card">
-                        <div class="card-header">
-                            <span class="task-id">2.3</span>
-                            <span class="task-status pending">В ожидании</span>
-                        </div>
-                        <div class="card-body">
-                            <h4>Анализ результатов</h4>
-                            <div class="progress-container">
-                                <div class="progress" style="width: 0%"></div>
-                            </div>
-                        </div>
+                    <div class="upload-hint">
+                        Поддерживаются Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
+                    </div>
+                    <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
+                </div>
+
+                <!-- Информация о выбранном файле -->
+                <div class="file-info" id="fileInfo">
+                    <div class="file-details">
+                        <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
+                        <span class="file-name" id="fileName"></span>
+                        <span class="file-size" id="fileSize"></span>
+                        <span class="remove-file" onclick="removeFile()">
+                            <i class="fas fa-times"></i>
+                        </span>
                     </div>
                 </div>
+
+                <!-- Предпросмотр спецификации -->
+                <div class="spec-preview" id="specPreview">
+                    <div class="spec-info">
+                        <div class="spec-info-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="specTitle">Название</span>
+                        </div>
+                        <div class="spec-info-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span id="specVersion">Версия</span>
+                        </div>
+                        <div class="spec-info-item">
+                            <i class="fas fa-cube"></i>
+                            <span id="specFormat">Формат</span>
+                        </div>
+                    </div>
+                    <div class="spec-endpoints" id="specEndpoints"></div>
+                </div>
             </div>
+
+<div class="progress-thermometer" id="progressThermometer">
+    <div class="thermometer-header">
+        <span class="thermometer-title" id="thermometerTitle">Общий прогресс анализа</span>
+        <span class="thermometer-percent" id="thermometerPercent">0%</span>
+    </div>
+    <div class="thermometer-track">
+        <div class="thermometer-fill" id="thermometerFill" style="width: 0%;">
+            <div class="thermometer-glow"></div>
+        </div>
+    </div>
+    <div class="thermometer-steps" id="thermometerSteps">
+        <!-- Этапы для Домового -->
+        <div class="thermometer-step domovoy-steps">
+            <span class="step-dot" data-step="0"></span>
+            <span class="step-label">Загрузка</span>
+            <span class="step-dot" data-step="25"></span>
+            <span class="step-label">Генерация</span>
+            <span class="step-dot" data-step="50"></span>
+            <span class="step-label">Фаззинг</span>
+            <span class="step-dot" data-step="75"></span>
+            <span class="step-label">Анализ</span>
+            <span class="step-dot" data-step="100"></span>
+            <span class="step-label">Отчет</span>
+        </div>
+        <!-- Этапы для Метлы -->
+        <div class="thermometer-step metla-steps" style="display: none;">
+            <span class="step-dot" data-step="0"></span>
+            <span class="step-label">Поиск целей</span>
+            <span class="step-dot" data-step="25"></span>
+            <span class="step-label">Анализ</span>
+            <span class="step-dot" data-step="50"></span>
+            <span class="step-label">Генерация тестов</span>
+            <span class="step-dot" data-step="75"></span>
+            <span class="step-label">Фаззинг</span>
+            <span class="step-dot" data-step="100"></span>
+            <span class="step-label">Отчет</span>
+        </div>
+    </div>
+</div>
         </div>
     </div>
     <div id="fuzzModal" class="modal-overlay">
@@ -226,11 +645,8 @@
             <div class="modal-body" id="fuzzModalBody">
             </div>
             <div class="modal-footer">
-                <button class="start-button" onclick="downloadReport()" style="background: #28a745; color: white;">
+                <button class="start-button active" onclick="downloadReport()" style="background: #28a745; color: white;font-size: 11px;" id="downloadReport">
                     <i class="fas fa-download"></i> Скачать отчет
-                </button>
-                <button class="start-button" onclick="closeFuzzModal()" style="background: #6c757d; color: white;">
-                    Закрыть
                 </button>
             </div>
         </div>
@@ -247,10 +663,64 @@
                 </div>
             </div>
         </div>
+    <div id="licenseModal" class="upgrade-modal">
+        <div class="upgrade-modal-overlay"></div>
+        <div class="upgrade-modal-content" style="max-width: 480px;">
+            <div class="upgrade-modal-header">
+                <h3>Активация лицензии</h3>
+                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
+            </div>
+            <div class="upgrade-modal-body">
 
+                <!-- Текущая лицензия -->
+                <div class="license-current"
+                    style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
+                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
+                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
+                    </div>
+                </div>
+
+                <!-- Поле для ввода ключа -->
+                <div class="license-input-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
+                        Лицензионный ключ
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
+                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
+                        <button id="activateLicenseBtn" class="activate-licence-btn">
+                            <i class="fas fa-check"></i> Активировать
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Сообщение об ошибке/успехе -->
+                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                </div>
+
+                <!-- Ссылка на покупку -->
+                <div style="margin-top: 8px; text-align: center;">
+                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
+                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
+                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div> 
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
-    <script type="text/javascript" src="uploader.js"></script>
-    <script type="text/javascript" src="fuzz.js"></script>
+    <script type="text/javascript" src="utils.js"></script>
+    <script type="text/javascript" src="modal.js"></script>
+    <script type="text/javascript" src="client.js"></script>
+    <script type="text/javascript" src="../common/licence.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
@@ -258,6 +728,51 @@
     <script>
         loadMenu();
 
+        // ============================================================
+        // ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const modeDomovoy = document.getElementById('modeDomovoy');
+            const modeMetla = document.getElementById('modeMetla');
+            const center = document.getElementById('center');
+            const specUrlInput = document.getElementById('specUrl');
+            const metlaTargetUrl = document.getElementById('metlaTargetUrl');
+
+            function setMode(mode) {
+                modeDomovoy.classList.remove('active');
+                modeMetla.classList.remove('active');
+                center.classList.remove('mode-domovoy', 'mode-metla');
+
+                if (mode === 'domovoy') {
+                    modeDomovoy.classList.add('active');
+                    center.classList.add('mode-domovoy');
+                    specUrlInput.setAttribute('placeholder', 'Вставьте ссылку на спецификацию') 
+                    if (typeof validateStartButton === 'function') {
+                        validateStartButton();
+                    }
+                } else {
+                    modeMetla.classList.add('active');
+                    center.classList.add('mode-metla');
+                    // Скрываем поле для Домового, показываем для Метлы
+                    specUrlInput.setAttribute('placeholder', 'Вставьте ссылку на источник')
+                    //validateMetlaInput();
+                    if (typeof resetMetlaProgress === 'function') {
+                        resetMetlaProgress();
+                    }
+                }
+            }
+
+            modeDomovoy.addEventListener('click', function() {
+                setMode('domovoy');
+            });
+
+            modeMetla.addEventListener('click', function() {
+                setMode('metla');
+            });
+
+            // По умолчанию Домовой активен
+            setMode('domovoy');
+        });
     </script>
 </body>
 </html>

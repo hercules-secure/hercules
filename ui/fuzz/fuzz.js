@@ -1,9 +1,8 @@
-
-
 // ==================== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ====================
 let currentSpec = null;
 let currentReport = null;
 let selectedFile = null;
+let currentSpecSource = null; // 'file' или 'url'
 let globalRowCounter = 0;
 let authToken = localStorage.getItem('apiAuthToken') || null;
 let showTokenModalCallback = null;
@@ -69,6 +68,9 @@ function showValidationMessage(message, type) {
 
 // ==================== ЗАГРУЗКА СПЕЦИФИКАЦИИ ====================
 
+/**
+ * Загрузка спецификации по URL через сервер (обход CORS)
+ */
 async function fetchSpecFromUrl() {
     const specUrlInput = document.getElementById('specUrl');
     const url = specUrlInput ? specUrlInput.value.trim() : '';
@@ -78,67 +80,133 @@ async function fetchSpecFromUrl() {
         return;
     }
     
-    const fetchBtn = document.getElementById('fetch-spec-btn');
-    const originalText = fetchBtn?.textContent;
-    if (fetchBtn) {
-        fetchBtn.disabled = true;
-        fetchBtn.textContent = '⏳ Загрузка...';
+    // Проверка валидности URL
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        showValidationMessage('Введите корректный URL (http:// или https://)', 'invalid');
+        return;
     }
     
+    // Блокируем поле ввода на время загрузки
+    if (specUrlInput) specUrlInput.disabled = true;
+    
     try {
-        showValidationMessage('Загрузка спецификации...', 'valid');
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        const content = await response.text();
+        showValidationMessage('Загрузка спецификации с сервера...', 'valid');
         
-        let fileName = url.split('/').pop() || 'spec.yaml';
-        let fileType = fileName.endsWith('.yaml') || fileName.endsWith('.yml') ? 'application/yaml' : 'application/json';
+        // Отправляем URL на сервер для загрузки (обходим CORS)
+        const response = await fetch('/api/fuzz/link', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: url })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.message || `HTTP ${response.status}`);
+        }
+        
+        const data = await response.json();
+        const content = data.content;
+        const fileName = data.filename || url.split('/').pop() || 'spec.yaml';
+        
+        // Создаем файл из полученного содержимого
+        let fileType = fileName.endsWith('.yaml') || fileName.endsWith('.yml') 
+            ? 'application/yaml' 
+            : 'application/json';
         const blob = new Blob([content], { type: fileType });
         const file = new File([blob], fileName, { type: fileType });
         
-        await handleFile(file);
-        showValidationMessage('Спецификация успешно загружена', 'valid');
+        // Обрабатываем файл с указанием источника 'url'
+        await handleFile(file, 'url');
+        
+        showValidationMessage(`✅ Спецификация загружена: ${fileName}`, 'valid');
+        
+        // Переключаемся на режим загрузки (показываем файл)
         switchMode('upload');
         
+        // ПРИНУДИТЕЛЬНО АКТИВИРУЕМ КНОПКУ
+        forceEnableStartButton();
+        
     } catch (error) {
-        showValidationMessage(`Ошибка загрузки: ${error.message}`, 'invalid');
+        console.error('Error fetching spec:', error);
+        showValidationMessage(`❌ Ошибка: ${error.message}`, 'invalid');
     } finally {
-        if (fetchBtn) {
-            fetchBtn.disabled = false;
-            fetchBtn.textContent = originalText || 'Загрузить';
-        }
+        // Разблокируем поле ввода
+        if (specUrlInput) specUrlInput.disabled = false;
     }
 }
 
-function switchMode(mode) {
-    const uploadMode = document.getElementById('upload-mode');
-    const urlMode = document.getElementById('url-mode');
-    const uploadBtn = document.getElementById('mode-upload');
-    const urlBtn = document.getElementById('mode-url');
+/**
+ * ПРИНУДИТЕЛЬНАЯ АКТИВАЦИЯ КНОПКИ (обход всех проверок)
+ */
+function forceEnableStartButton() {
+    const startBtn = document.getElementById('start-btn');
+    if (startBtn) {
+        startBtn.disabled = false;
+        startBtn.classList.add('active');
+        console.log('[forceEnable] Кнопка принудительно активирована');
+    }
     
-    if (uploadMode) uploadMode.style.display = mode === 'upload' ? 'block' : 'none';
-    if (urlMode) urlMode.style.display = mode === 'url' ? 'block' : 'none';
-    if (uploadBtn) uploadBtn.classList.toggle('active', mode === 'upload');
-    if (urlBtn) urlBtn.classList.toggle('active', mode === 'url');
-    
-    validateStartButton();
+    // Скрываем подсказку
+    const hint = document.getElementById('start-btn-hint');
+    if (hint) {
+        hint.style.display = 'none';
+    }
 }
 
-async function handleFile(file) {
+/**
+ * Переключение между режимами загрузки (файл / URL)
+ */
+// function switchMode(mode) {
+//     const uploadMode = document.getElementById('upload-mode');
+//     const urlMode = document.getElementById('url-mode');
+//     const uploadBtn = document.getElementById('mode-upload');
+//     const urlBtn = document.getElementById('mode-url');
+    
+//     if (uploadMode) uploadMode.style.display = mode === 'upload' ? 'block' : 'none';
+//     if (urlMode) urlMode.style.display = mode === 'url' ? 'block' : 'none';
+//     if (uploadBtn) uploadBtn.classList.toggle('active', mode === 'upload');
+//     if (urlBtn) urlBtn.classList.toggle('active', mode === 'url');
+    
+//     // Проверяем кнопку при переключении
+//     validateStartButton();
+// }
+
+/**
+ * Обработка загруженного файла
+ * @param {File} file - файл спецификации
+ * @param {string} source - источник: 'file' или 'url'
+ */
+async function handleFile(file, source = 'file') {
     if (!file) return;
+    
     selectedFile = file;
+    currentSpecSource = source;
     
     const fileInfo = document.getElementById('fileInfo');
     const fileName = document.getElementById('fileName');
     const fileSize = document.getElementById('fileSize');
+    const sourceLabel = document.getElementById('fileSourceLabel');
     
     if (fileName) fileName.textContent = file.name;
     if (fileSize) fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
-    if (fileInfo) fileInfo.classList.add('active');
+    
+    if (fileInfo) {
+        fileInfo.classList.add('active');
+        // Показываем источник загрузки
+        if (sourceLabel) {
+            sourceLabel.textContent = source === 'url' ? '🌐 Загружено по ссылке' : '📁 Локальный файл';
+            sourceLabel.style.color = source === 'url' ? '#3b82f6' : '#10b981';
+        }
+    }
     
     await parseSpecification(file);
 }
 
+/**
+ * Парсинг спецификации
+ */
 async function parseSpecification(file) {
     try {
         const text = await file.text();
@@ -152,10 +220,12 @@ async function parseSpecification(file) {
         
         currentSpec = spec;
         
+        // Определяем формат
         let format = 'Unknown';
         if (spec.swagger === '2.0') format = 'Swagger 2.0';
         else if (spec.openapi?.startsWith('3.')) format = 'OpenAPI 3.x';
         
+        // Обновляем информацию о спецификации
         const specTitle = document.getElementById('specTitle');
         const specVersion = document.getElementById('specVersion');
         const specFormat = document.getElementById('specFormat');
@@ -164,6 +234,7 @@ async function parseSpecification(file) {
         if (specVersion) specVersion.textContent = spec.info?.version || '?';
         if (specFormat) specFormat.textContent = format;
         
+        // Отображаем эндпоинты
         const endpointsContainer = document.getElementById('specEndpoints');
         if (endpointsContainer) {
             endpointsContainer.innerHTML = '';
@@ -174,28 +245,43 @@ async function parseSpecification(file) {
                     if (['get', 'post', 'put', 'delete', 'patch'].includes(method)) {
                         const div = document.createElement('div');
                         div.className = 'endpoint-item';
-                        div.innerHTML = `<span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span><span style="color: var(--text-secondary);">${escapeHtml(path)}</span>`;
+                        div.innerHTML = `
+                            <span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span>
+                            <span style="color: var(--text-secondary);">${escapeHtml(path)}</span>
+                        `;
                         endpointsContainer.appendChild(div);
                         count++;
                     }
                 }
             }
-            if (count === 0) endpointsContainer.innerHTML = '<div class="endpoint-item">Эндпоинты не найдены</div>';
+            if (count === 0) {
+                endpointsContainer.innerHTML = '<div class="endpoint-item">Эндпоинты не найдены</div>';
+            }
         }
         
+        // Показываем превью
         const specPreview = document.getElementById('specPreview');
         if (specPreview) specPreview.classList.add('active');
         
+        // Обновляем базовый URL из спецификации
         updateBaseUrlFromSpec(spec);
+        
+        // Проверяем кнопку после парсинга
         validateStartButton();
         
     } catch (error) {
+        console.error('Parse error:', error);
         showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
         currentSpec = null;
         selectedFile = null;
+        currentSpecSource = null;
+        validateStartButton();
     }
 }
 
+/**
+ * Обновление базового URL из спецификации
+ */
 function updateBaseUrlFromSpec(spec) {
     const baseUrlInput = document.getElementById('baseUrl');
     if (!baseUrlInput) return;
@@ -216,34 +302,79 @@ function updateBaseUrlFromSpec(spec) {
     validateStartButton();
 }
 
+/**
+ * Проверка, нужна ли авторизация
+ */
 function requiresAuth(spec) {
     if (spec.security && spec.security.length > 0) return true;
     if (spec.components?.securitySchemes && Object.keys(spec.components.securitySchemes).length > 0) return true;
     return false;
 }
 
+/**
+ * Валидация кнопки "Начать анализ"
+ */
 function validateStartButton() {
     const startBtn = document.getElementById('start-btn');
     const baseUrlInput = document.getElementById('baseUrl');
+    
     if (!startBtn) return;
     
     const baseUrl = baseUrlInput?.value.trim() || '';
     const hasSpec = currentSpec !== null;
     const hasBaseUrl = baseUrl.length > 0;
     
-    startBtn.disabled = !(hasSpec && hasBaseUrl);
-    startBtn.classList.toggle('active', hasSpec && hasBaseUrl);
+    // Кнопка активна только если есть спецификация И базовый URL
+    const isActive = hasSpec && hasBaseUrl;
+    
+    startBtn.disabled = !isActive;
+    startBtn.classList.toggle('active', isActive);
+    
+    // Показываем подсказку, почему кнопка неактивна
+    const hint = document.getElementById('start-btn-hint');
+    if (hint) {
+        if (!hasSpec) {
+            hint.textContent = '⚠️ Загрузите спецификацию';
+            hint.style.display = 'block';
+        } else if (!hasBaseUrl) {
+            hint.textContent = '⚠️ Укажите базовый URL';
+            hint.style.display = 'block';
+        } else {
+            hint.style.display = 'none';
+        }
+    }
+    
+    console.log('[validateStartButton] Состояние:', {
+        hasSpec,
+        hasBaseUrl,
+        baseUrl,
+        isActive,
+        startBtnDisabled: startBtn.disabled
+    });
 }
 
+/**
+ * Удаление загруженного файла
+ */
 function removeFile() {
     selectedFile = null;
     currentSpec = null;
+    currentSpecSource = null;
+    
     const fileInfo = document.getElementById('fileInfo');
     const specPreview = document.getElementById('specPreview');
     const fileInput = document.getElementById('fileInput');
+    const specUrlInput = document.getElementById('specUrl');
+    
     if (fileInfo) fileInfo.classList.remove('active');
     if (specPreview) specPreview.classList.remove('active');
     if (fileInput) fileInput.value = '';
+    if (specUrlInput) specUrlInput.value = '';
+    
+    // Сбрасываем индикатор источника
+    const sourceLabel = document.getElementById('fileSourceLabel');
+    if (sourceLabel) sourceLabel.textContent = '';
+    
     validateStartButton();
 }
 
@@ -563,8 +694,6 @@ function toggleReplaySection(sectionName) {
 // ==================== REPLAY TEST ====================
 
 async function replayTest(testData) {
-
-    
     // Удаляем старую модалку если есть
     const existingModal = document.getElementById('replayModal');
     if (existingModal) {
@@ -645,7 +774,6 @@ async function replayTest(testData) {
 // ==================== SEND REPLAY REQUEST ====================
 
 async function sendReplayRequest() {
-    
     const methodSelect = document.getElementById('replayMethod');
     const urlInput = document.getElementById('replayUrl');
     const headersTextarea = document.getElementById('replayHeaders');
@@ -1175,7 +1303,7 @@ document.addEventListener('DOMContentLoaded', function() {
             uploadArea.classList.remove('dragover');
             const file = e.dataTransfer.files[0];
             if (file && (file.name.endsWith('.json') || file.name.endsWith('.yaml') || file.name.endsWith('.yml'))) {
-                handleFile(file);
+                handleFile(file, 'file');
             } else {
                 showValidationMessage('Поддерживаются только JSON/YAML файлы', 'invalid');
             }
@@ -1184,21 +1312,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (fileInput) {
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files?.[0]) handleFile(e.target.files[0]);
+            if (e.target.files?.[0]) handleFile(e.target.files[0], 'file');
         });
     }
     
-    // URL режим
-    const fetchSpecBtn = document.getElementById('fetch-spec-btn');
-    if (fetchSpecBtn) {
-        fetchSpecBtn.addEventListener('click', fetchSpecFromUrl);
-    }
-    
+    // ============================================
+    // ✅ АКТИВАЦИЯ КНОПКИ ПРИ ЗАПОЛНЕНИИ ПОЛЯ URL
+    // ============================================
     const specUrlInput = document.getElementById('specUrl');
+    const startBtn = document.getElementById('start-btn');
+    const baseUrlInput = document.getElementById('baseUrl');
+    
     if (specUrlInput) {
-        specUrlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') fetchSpecFromUrl();
+        // Функция проверки и активации
+        function checkAndActivate() {
+            const url = specUrlInput.value.trim();
+            const hasUrl = url.length > 0;
+            
+            if (hasUrl) {
+                // Если URL введен - активируем кнопку
+                startBtn.disabled = false;
+                startBtn.classList.add('active');
+                showValidationMessage('✅ Ссылка введена, загружаем...', 'valid');
+                
+                // Автоматически загружаем спецификацию
+                fetchSpecFromUrl();
+            } else {
+                // Если поле пустое - деактивируем
+                startBtn.disabled = true;
+                startBtn.classList.remove('active');
+                currentSpec = null;
+                selectedFile = null;
+                currentSpecSource = null;
+                
+                // Скрываем информацию о файле
+                const fileInfo = document.getElementById('fileInfo');
+                if (fileInfo) fileInfo.classList.remove('active');
+                
+                const specPreview = document.getElementById('specPreview');
+                if (specPreview) specPreview.classList.remove('active');
+            }
+        }
+        
+        // Событие при вводе (срабатывает при каждом изменении)
+        specUrlInput.addEventListener('input', checkAndActivate);
+        
+        // Событие при вставке
+        specUrlInput.addEventListener('paste', function() {
+            setTimeout(checkAndActivate, 50);
         });
+        
+        // Событие при потере фокуса
+        specUrlInput.addEventListener('blur', checkAndActivate);
     }
     
     // Кнопки переключения режимов
@@ -1208,12 +1373,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (modeUrl) modeUrl.addEventListener('click', () => switchMode('url'));
     
     // Кнопка старта
-    const startBtn = document.getElementById('start-btn');
     if (startBtn) startBtn.addEventListener('click', startFuzzing);
     
     // Кнопка удаления файла
     const removeFileBtn = document.getElementById('remove-file-btn');
     if (removeFileBtn) removeFileBtn.addEventListener('click', removeFile);
+    
+    // Обработчик для поля базового URL
+    if (baseUrlInput) {
+        baseUrlInput.addEventListener('input', validateStartButton);
+        baseUrlInput.addEventListener('change', validateStartButton);
+    }
     
     // Закрытие модалок по клику вне
     window.addEventListener('click', (e) => {
@@ -1250,8 +1420,8 @@ window.closeTokenModal = closeTokenModal;
 window.clearAuthToken = clearAuthToken;
 window.downloadReport = downloadReport;
 window.removeFile = removeFile;
-window.switchMode = switchMode;
+//window.switchMode = switchMode;
 window.fetchSpecFromUrl = fetchSpecFromUrl;
 window.startFuzzing = startFuzzing;
 window.closeFuzzModal = closeFuzzModal;
-window.replayTest = replayTest;
+window.forceEnableStartButton = forceEnableStartButton;
