@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html data-page="construction" data-version="1.0.0" lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Геркулес | Палитра</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="palette.css">
+    <link rel="stylesheet" href="../common/main.css">
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="stylesheet" href="../common/sidebar.css">  
+    <link rel="stylesheet" href="../common/upgrade.css">
+    <link rel="icon" type="image/x-icon" href="../rocket.ico">
+    <style>
+        /* ПАНЕЛЬ ЭЛЕМЕНТОВ НАД ХОЛСТОМ */
+        .palette-elements-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            width: 100%;
+            flex-wrap: wrap;
+            margin: 8px 0 12px 0;
+        }
+
+        .palette-elements-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .palette-elements-divider {
+            width: 1px;
+            height: 24px;
+            background: #818181;
+            flex-shrink: 0;
+        }
+
+        .elements-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: black;
+            font-family: 'Ubuntu', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .elements-label i {
+            font-size: 12px;
+            color: black;
+        }
+
+        /* Элементы в панели над холстом - те же стили, что и были */
+        .palette-elements-bar .element-library-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            font-family: 'Ubuntu', sans-serif;
+            cursor: grab;
+            /* border: 1px solid #e5e7eb; */
+            background: #ffffff;
+            color: #1a1a2e;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .palette-elements-bar .element-library-item:hover {
+            background: #f8f9fa;
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        .palette-elements-bar .element-library-item:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .palette-elements-bar .element-library-item .lib-icon {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .palette-elements-bar .element-library-item:hover .lib-icon {
+            color: #3B82F6;
+        }
+
+        .palette-elements-bar .element-library-item.gate:hover {
+            border-color: #8B5CF6;
+            color: #8B5CF6;
+        }
+
+        .palette-elements-bar .element-library-item.gate:hover .lib-icon {
+            color: #8B5CF6;
+        }
+    </style>
+</head>
+<body>
+    <div id="box" class="fade-in">
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title" id="toolsTitle">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Инструменты</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Загрузка...
+                    </div>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-info">
+                                <span class="tool-name">История</span>
+                                <span class="tool-desc">Журнал сканирований</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Настройки</span>
+                                <span class="tool-desc">Управление параметрами</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="center">
+            <div class="page-header">
+                <h2 class="section-title" id="pageTitle">Моделирование и визуализация</h2>
+                <div class="header-buttons">
+                    <button class="header-btn" onclick="showToolInfo('palette')">
+                        <i class="fas fa-info-circle"></i> Описание инструмента
+                    </button>
+                </div>
+            </div>
+
+            <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+            <div class="palette-topbar">
+                <div class="palette-topbar-left">
+                    <button class="source-btn active" data-source="empty">
+                        <i class="fas fa-plus-circle"></i> Новая
+                    </button>
+                    <button class="source-btn" data-source="json">
+                        <i class="fas fa-file-code"></i> JSON
+                    </button>
+                    <button class="source-btn" data-source="template">
+                        <i class="fas fa-copy"></i> Шаблон
+                    </button>
+                </div>
+                <div class="palette-topbar-right">
+                    <button class="action-btn success" id="playBtn">
+                        <i class="fas fa-play"></i> Запустить
+                    </button>
+                    <button class="action-btn" id="exportModelBtn">
+                        <i class="fas fa-download"></i> Экспорт
+                    </button>
+                    <button class="action-btn primary" id="importModelBtn">
+                        <i class="fas fa-upload"></i> Импорт
+                    </button>
+                    <button class="action-btn danger" id="clearCanvasBtn">
+                        <i class="fas fa-trash"></i> Очистить
+                    </button>
+                </div>
+
+                <!-- КОНТЕЙНЕРЫ ИСТОЧНИКОВ -->
+                <div id="empty-source" class="source-content-palette active">
+                    <div class="hint"><i class="fas fa-info-circle"></i> Пустой холст</div>
+                </div>
+
+                <div id="json-source" class="source-content-palette">
+                    <div class="input-group">
+                        <input type="file" id="jsonFileInput" accept=".json">
+                        <button class="start-btn" id="loadJsonBtn">
+                            <i class="fas fa-upload"></i> Загрузить
+                        </button>
+                    </div>
+                </div>
+
+                <div id="template-source" class="source-content-palette">
+                    <div class="input-group">
+                        <select id="templateSelect">
+                            <option value="">Выберите шаблон...</option>
+                            <option value="web-app">Веб-приложение</option>
+                            <option value="api">API сервис</option>
+                            <option value="database">База данных</option>
+                            <option value="microservices">Микросервисы</option>
+                            <option value="cloud">Облачная инфраструктура</option>
+                        </select>
+                        <button class="start-btn" id="loadTemplateBtn">
+                            <i class="fas fa-download"></i> Загрузить
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ЭЛЕМЕНТЫ НАД ХОЛСТОМ (ПЕРЕНЕСЕНЫ ИЗ ПРАВОЙ ПАНЕЛИ) -->
+            <div class="palette-elements-bar">
+                <div class="palette-elements-group">
+                    <div class="palette-elements-group">
+                    <span class="elements-label"><i class="fas fa-play-circle"></i> События:</span>
+                    <div class="element-library-item event" draggable="true" data-type="event-start">
+                        <span class="lib-icon"><i class="fas fa-play-circle"></i></span>
+                        Старт
+                    </div>
+                    <div class="element-library-item event" draggable="true" data-type="event-end">
+                        <span class="lib-icon"><i class="fas fa-stop-circle"></i></span>
+                        Финиш
+                    </div>
+                    <div class="element-library-item event" draggable="true" data-type="event-pause">
+                        <span class="lib-icon"><i class="fas fa-pause-circle"></i></span>
+                        Пауза
+                    </div>
+                    <div class="element-library-item event" draggable="true" data-type="event-timeout">
+                        <span class="lib-icon"><i class="fas fa-clock"></i></span>
+                        Таймаут
+                    </div>
+                <div class="palette-elements-divider"></div>
+                </div>
+                    <span class="elements-label" style="margin-left: 5px;"><i class="fas fa-cubes"></i> Элементы:</span>
+                    <div class="element-library-item" draggable="true" data-type="asset">
+                        <span class="lib-icon"><i class="fas fa-puzzle-piece"></i></span>
+                        Компонент
+                    </div>
+                    <div class="element-library-item" draggable="true" data-type="threat">
+                        <span class="lib-icon"><i class="fas fa-skull"></i></span>
+                        Угроза
+                    </div>
+                    <div class="element-library-item" draggable="true" data-type="data">
+                        <span class="lib-icon"><i class="fas fa-file-alt"></i></span>
+                        Данные
+                    </div>
+                    <div class="element-library-item" draggable="true" data-type="actor">
+                        <span class="lib-icon"><i class="fas fa-user"></i></span>
+                        Субъект
+                    </div>
+                </div>
+                <div class="palette-elements-divider"></div>
+                <div class="palette-elements-group">
+                    <span class="elements-label"><i class="fas fa-code-fork"></i>Шлюзы:</span>
+                    <div class="element-library-item gate" draggable="true" data-type="gate-and">
+                        <span class="lib-icon"><i class="fas fa-code-branch"></i></span>
+                        AND
+                    </div>
+                    <div class="element-library-item gate" draggable="true" data-type="gate-or">
+                        <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
+                        OR
+                    </div>
+                    <div class="element-library-item gate" draggable="true" data-type="gate-if">
+                        <span class="lib-icon"><i class="fas fa-question-circle"></i></span>
+                        IF
+                    </div>
+                </div>
+            </div>
+
+            <div class="palette-container">
+
+                <!-- ЛЕВАЯ ПАНЕЛЬ: КАНВАС -->
+                <div class="palette-canvas-wrapper">
+                    <div class="palette-canvas" id="paletteCanvas">
+                        <div class="palette-canvas-grid"></div>
+                        <div class="palette-empty" id="paletteEmpty">
+                            <i class="fas fa-palette"></i>
+                            <h3>Начните моделирование</h3>
+                            <p>Перетащите элементы из библиотеки на холст</p>
+                        </div>
+                        <div id="canvasElements"></div>
+                        <div id="canvasConnections"></div>
+                        <div id="dragLine"></div>
+                    </div>
+                </div>
+
+                <!-- ПРАВАЯ ПАНЕЛЬ: ТОЛЬКО ИНСТРУМЕНТЫ -->
+                <div class="palette-tools">
+                    <div class="palette-tool-card">
+                        <div class="card-title">
+                            <i class="fas fa-code-branch"></i> Инструменты
+                        </div>
+                        <div class="flow-tools-list">
+                            <div class="flow-tool-item" draggable="true" data-tool="sca">
+                                <div class="tool-icon"><i class="fas fa-sitemap"></i></div>
+                                <div class="tool-info">
+                                    <div class="tool-name">Матрешка</div>
+                                    <div class="tool-desc">Композиционный анализ</div>
+                                </div>
+                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
+                            </div>
+                            <div class="flow-tool-item" draggable="true" data-tool="scout">
+                                <div class="tool-icon"><i class="fas fa-binoculars"></i></div>
+                                <div class="tool-info">
+                                    <div class="tool-name">Скаут</div>
+                                    <div class="tool-desc">Разведка и анализ</div>
+                                </div>
+                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
+                            </div>
+                            <div class="flow-tool-item" draggable="true" data-tool="echo">
+                                <div class="tool-icon"><i class="fas fa-satellite-dish"></i></div>
+                                <div class="tool-info">
+                                    <div class="tool-name">Эхолот</div>
+                                    <div class="tool-desc">Сетевое сканирование</div>
+                                </div>
+                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
+                            </div>
+                            <div class="flow-tool-item" draggable="true" data-tool="blender">
+                                <div class="tool-icon"><i class="fas fa-flask"></i></div>
+                                <div class="tool-info">
+                                    <div class="tool-name">Блендер</div>
+                                    <div class="tool-desc">Анализ кода</div>
+                                </div>
+                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
+                            </div>
+                            <div class="flow-tool-item" draggable="true" data-tool="fuzz">
+                                <div class="tool-icon"><i class="fas fa-radiation"></i></div>
+                                <div class="tool-info">
+                                    <div class="tool-name">Баба Яга</div>
+                                    <div class="tool-desc">Динамика и фаззинг</div>
+                                </div>
+                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
+                            </div>
+                            <div class="hint">
+                                <i class="fas fa-info-circle"></i> Перетащите на холст для построения flow
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА ВЫБОРА ТИПА СВЯЗИ -->
+    <div id="connectionTypeModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-link"></i> Выберите тип связи</h3>
+            <p style="font-size: 13px; color: #6c757d; margin-bottom: 20px;">Определите, как будут взаимодействовать элементы</p>
+            
+            <div class="connection-type-option" onclick="selectConnectionType('control')">
+                <div class="option-icon control"><i class="fas fa-arrow-right"></i></div>
+                <div class="option-info">
+                    <div class="option-name">Управление</div>
+                    <div class="option-desc">Передача управления следующему элементу</div>
+                </div>
+            </div>
+            
+            <div class="connection-type-option" onclick="selectConnectionType('data')">
+                <div class="option-icon data"><i class="fas fa-database"></i></div>
+                <div class="option-info">
+                    <div class="option-name">Поток данных</div>
+                    <div class="option-desc">Передача данных с возможностью описания структуры</div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="cancelConnectionType()">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА СТРУКТУРЫ ДАННЫХ -->
+    <div class="data-structure-modal" id="dataStructureModal">
+        <div class="data-structure-modal-content">
+            <h3><i class="fas fa-database"></i> Структура данных</h3>
+            <p class="subtitle">Определите поля и типы данных, которые передаются по этому потоку</p>
+            
+            <div id="dataFieldsContainer">
+                <div class="field-row">
+                    <input type="text" placeholder="Имя поля" value="id">
+                    <select>
+                        <option value="string">string</option>
+                        <option value="number" selected>number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="array">array</option>
+                        <option value="object">object</option>
+                        <option value="date">date</option>
+                    </select>
+                    <button class="remove-field" onclick="removeField(this)"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="field-row">
+                    <input type="text" placeholder="Имя поля" value="name">
+                    <select>
+                        <option value="string" selected>string</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="array">array</option>
+                        <option value="object">object</option>
+                        <option value="date">date</option>
+                    </select>
+                    <button class="remove-field" onclick="removeField(this)"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="field-row">
+                    <input type="text" placeholder="Имя поля" value="email">
+                    <select>
+                        <option value="string" selected>string</option>
+                        <option value="number">number</option>
+                        <option value="boolean">boolean</option>
+                        <option value="array">array</option>
+                        <option value="object">object</option>
+                        <option value="date">date</option>
+                    </select>
+                    <button class="remove-field" onclick="removeField(this)"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            
+            <button class="add-field-btn" onclick="addField()"><i class="fas fa-plus"></i> Добавить поле</button>
+            
+            <div style="margin-top: 12px;">
+                <label style="font-size: 12px; color: #6c757d;">Предпросмотр структуры:</label>
+                <div class="data-structure-preview" id="dataStructurePreview">{
+    "id": 123,
+    "name": "Иван",
+    "email": "ivan@example.com"
+}</div>
+            </div>
+            
+            <div class="data-structure-modal-footer">
+                <button class="btn-cancel" onclick="closeDataStructureModal()">Отмена</button>
+                <button class="btn-save" onclick="saveDataStructure()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА СВОЙСТВ ЭЛЕМЕНТА -->
+    <div id="elementPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                    <i class="fas fa-cog" style="color: #3B82F6;"></i> <span class="modal-title">Свойства элемента</span>
+                </h3>
+                <button onclick="window.closeElementPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+            </div>
+            <div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Тип</label>
+                    <select id="propType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif; background: white;">
+                        <option value="event-start">Событие - Старт</option>
+                        <option value="event-end">Событие - Финиш</option>
+                        <option value="event-pause">Событие - Пауза</option>
+                        <option value="event-timeout">Событие - Таймаут</option>
+                        <option value="tool">Инструмент</option>
+                        <option value="asset">Компонент</option>
+                        <option value="threat">Угроза</option>
+                        <option value="data">Данные</option>
+                        <option value="actor">Субъект</option>
+                        <option value="network">Сеть</option>
+                        <option value="gate-and">Шлюз</option>
+                        <option value="gate-or">Шлюз</option>
+                        <option value="gate-if">Шлюз</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Название</label>
+                    <input id="propName" type="text" placeholder="Например: Nginx" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif;">
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Цвет</label>
+                    <input id="propColor" type="color" value="#3B82F6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">
+                </div>
+                <div id="dynamicFieldsContainer"></div>
+                <div id="eventPropsContainer" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                    <i class="fas fa-clock"></i> Свойства события
+                </h4>
+                <div id="eventPropsFields"></div>
+            </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
+            <button onclick="window.closeElementPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Отмена</button>
+            <button onclick="window.saveElementProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Сохранить</button>
+        </div>
+    </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА СВОЙСТВ СВЯЗИ -->
+    <div id="connectionPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                    <i class="fas fa-link" style="color: #8B5CF6;"></i> Свойства связи
+                </h3>
+                <button onclick="window.closeConnectionPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+            </div>
+            <div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Тип связи</label>
+                    <select id="connPropType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif; background: white;">
+                        <option value="control">Управление</option>
+                        <option value="data">Поток данных</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Цвет</label>
+                    <input type="color" id="connPropColor" value="#8B5CF6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Метка</label>
+                    <input type="text" id="connPropLabel" placeholder="Метка на линии" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif;">
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
+                <button onclick="window.closeConnectionPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Отмена</button>
+                <button onclick="window.saveConnectionProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛКА УСЛОВИЙ -->
+    <div id="conditionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100001; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                    <i class="fas fa-code-branch" style="color: #8B5CF6;"></i> Выберите условие
+                </h3>
+                <button onclick="closeConditionModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+            </div>
+            <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px; font-family: 'Ubuntu', sans-serif;">
+                При каком условии передавать управление дальше?
+            </p>
+            <div id="conditionList"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
+                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Отмена</button>
+                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #8B5CF6; color: white;">Пропустить условие</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="unifiedModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+                <span class="settings-close" onclick="closeToolModal()">&times;</span>
+            </div>
+            <div class="unified-layout">
+                <div class="unified-left"></div>
+                <div class="unified-right"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="licenseModal" class="upgrade-modal">
+        <div class="upgrade-modal-overlay"></div>
+        <div class="upgrade-modal-content" style="max-width: 480px;">
+            <div class="upgrade-modal-header">
+                <h3>Активация лицензии</h3>
+                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
+            </div>
+            <div class="upgrade-modal-body">
+                <div class="license-current" style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
+                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
+                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
+                    </div>
+                </div>
+                <div class="license-input-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">Лицензионный ключ</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
+                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
+                        <button id="activateLicenseBtn" class="activate-licence-btn">
+                            <i class="fas fa-check"></i> Активировать
+                        </button>
+                    </div>
+                </div>
+                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;"></div>
+                <div style="margin-top: 8px; text-align: center;">
+                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
+                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
+                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="palette.js"></script>
+    <script src="utils/contextMenu.js"></script>
+    <script src="utils/actions.js"></script>    
+    <script src="../common/licence.js"></script>
+    <script src="../common/menu.js"></script>
+    <script src="../common/sidebar.js"></script>
+    <script src="../common/info.js"></script>
+    <script> loadMenu(); </script>
+</body>
+</html>

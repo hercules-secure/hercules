@@ -20,7 +20,7 @@
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     <style>
 /* ============================================================
-   FUZZ-INPUT-GROUP - уникальный класс для поля + кнопки
+   FUZZ INPUT GROUP
 ============================================================ */
 .fuzz-input-group {
     display: flex !important;
@@ -68,7 +68,6 @@
     line-height: 24px !important;
 }
 
-/* КНОПКА - строго на одном уровне с полем */
 .fuzz-input-group .fuzz-start-btn {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
@@ -90,7 +89,6 @@
     color: #94a3b8 !important;
     min-width: 160px !important;
     margin: 0 !important;
-    margin-top: 0 !important;
     box-sizing: border-box !important;
     line-height: 1 !important;
 }
@@ -111,13 +109,641 @@
     opacity: 0.5 !important;
     cursor: not-allowed !important;
 }
-   /* ============================================================
-   ПРОГРЕСС - ГРАДУСНИК
+
+/* ============================================================
+   МЕТЛА - СПИСОК ЦЕЛЕЙ
+============================================================ */
+.metla-targets-area {
+    border: 1px dashed black;
+    border-radius: 12px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    background: var(--bg-secondary, #f8f9fa);
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+}
+
+.metla-targets-area.has-targets {
+    border-color: black;
+    background: #f8f9ff;
+}
+
+.metla-targets-area .metla-empty {
+    color: var(--text-muted, #6c757d);
+    text-align: center;
+    padding: 20px 0;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.metla-targets-area .metla-empty i {
+    font-size: 32px;
+    margin-bottom: 8px;
+    opacity: 0.5;
+    display: block;
+}
+
+.metla-targets-area .metla-empty .metla-hint {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   ЗАГОЛОВКИ ТАБЛИЦЫ МЕТЛЫ
+============================================================ */
+.metla-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 12px 4px 12px;
+    border-bottom: 2px solid var(--border, #e9ecef);
+    margin-bottom: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary, #6c757d);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.metla-header-cell {
+    flex-shrink: 0;
+    text-align: center;
+}
+
+.metla-header-cell:first-child {
+    width: 36px;
+    flex-shrink: 0;
+}
+
+.metla-header-cell:nth-child(2) {
+    min-width: 75px;
+    flex-shrink: 0;
+}
+
+.metla-header-cell:nth-child(3) {
+    flex: 1;
+    text-align: left;
+}
+
+.metla-header-cell:nth-child(4) {
+    min-width: 80px;
+    flex-shrink: 0;
+}
+
+.metla-header-cell:last-child {
+    width: 30px;
+    flex-shrink: 0;
+}
+
+#metlaTargetsList {
+    width: 100%;
+}
+
+.metla-item {
+    border-bottom: 1px solid var(--border, #e9ecef);
+    background: white;
+}
+
+.metla-item:last-child {
+    border-bottom: none;
+}
+
+.metla-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.15s;
+    user-select: none;
+}
+
+.metla-row:hover {
+    background: var(--bg-secondary, #f8f9fa);
+}
+
+.metla-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: #667eea;
+}
+
+.metla-method {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    min-width: 44px;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+    text-align: center;
+}
+
+.metla-path {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary, #1a1a2e);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.metla-badge {
+    font-family: 'Ubuntu';
+    font-size: 9px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 12px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    text-align: left;
+}
+
+.metla-badge.auth {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.metla-badge.public {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.metla-icon {
+    color: var(--text-muted, #adb5bd);
+    font-size: 11px;
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+}
+
+.metla-row:hover .metla-icon {
+    color: var(--text-secondary, #6c757d);
+}
+
+/* Статистика */
+.metla-stats {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    margin-top: 8px;
+    background: var(--bg-secondary, #f8f9fa);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--text-secondary, #6c757d);
+    flex-wrap: wrap;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.metla-stats .stat-item {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    color: var(--text-secondary, #6c757d);
+}
+
+.metla-stats .stat-item strong {
+    font-family: 'Alef', sans-serif;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a2e);
+}
+
+.metla-stats .stat-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--border, #e9ecef);
+}
+
+/* ============================================================
+   МОДАЛЬНОЕ ОКНО ДЛЯ ДЕТАЛЕЙ (Swagger/Postman стиль)
+============================================================ */
+
+.metla-detail-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+}
+
+.metla-detail-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    animation: metlaFadeIn 0.2s ease;
+}
+
+.metla-detail-content {
+    position: relative;
+    max-width: 820px;
+    width: 92%;
+    max-height: 85vh;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    animation: metlaSlideUp 0.25s ease;
+    overflow: hidden;
+}
+
+/* ХЕДЕР */
+.metla-detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border, #e9ecef);
+    flex-shrink: 0;
+    background: var(--bg-secondary, #f8f9fa);
+}
+
+.metla-detail-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    overflow: hidden;
+    flex: 1;
+}
+
+.metla-detail-method {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 4px 14px;
+    border-radius: 4px;
+    flex-shrink: 0;
+}
+
+.metla-detail-path {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #1a1a2e);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.metla-detail-auth-badge {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 2px 12px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+.metla-detail-auth-badge.public {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.metla-detail-auth-badge.auth {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.metla-detail-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.metla-detail-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border, #e9ecef);
+    border-radius: 6px;
+    background: white;
+    color: var(--text-secondary, #6c757d);
+    cursor: pointer;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.metla-detail-btn:hover {
+    background: var(--bg-secondary, #f1f3f5);
+    border-color: #667eea;
+    color: var(--text-primary, #1a1a2e);
+}
+
+.metla-detail-btn.primary {
+    background: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.metla-detail-btn.primary:hover {
+    background: #5a6fd6;
+    border-color: #5a6fd6;
+}
+
+.metla-detail-btn.small {
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+.metla-detail-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 18px;
+    color: var(--text-muted, #adb5bd);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.metla-detail-close:hover {
+    background: var(--bg-secondary, #f1f3f5);
+    color: var(--text-primary, #1a1a2e);
+}
+
+/* ТАБЫ */
+.metla-detail-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 8px 20px 0 20px;
+    border-bottom: 1px solid var(--border, #e9ecef);
+    flex-shrink: 0;
+    background: white;
+}
+
+.metla-detail-tab {
+    padding: 8px 16px;
+    border: none;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--text-secondary, #6c757d);
+    cursor: pointer;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.metla-detail-tab:hover {
+    color: var(--text-primary, #1a1a2e);
+}
+
+.metla-detail-tab.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+}
+
+.metla-detail-tab i {
+    font-size: 13px;
+}
+
+/* ТЕЛО */
+.metla-detail-body {
+    padding: 16px 20px;
+    overflow-y: auto;
+    flex: 1;
+    background: white;
+}
+
+.metla-detail-panel {
+    animation: metlaFadeIn 0.2s ease;
+}
+
+/* Информация */
+.metla-detail-info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.metla-detail-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.metla-detail-info-item .label {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary, #6c757d);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.metla-detail-info-item .value {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary, #1a1a2e);
+    word-break: break-all;
+}
+
+/* Код */
+.metla-detail-code-block {
+    background: #1a1a2e;
+    color: #e9ecef;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-height: 300px;
+    overflow-y: auto;
+    margin: 0;
+}
+
+.metla-detail-empty {
+    color: #6c757d;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+}
+
+/* ФУТЕР */
+.metla-detail-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-top: 1px solid var(--border, #e9ecef);
+    flex-shrink: 0;
+    background: var(--bg-secondary, #f8f9fa);
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.metla-detail-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.metla-detail-footer-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.metla-detail-export-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.metla-detail-analysis-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.metla-detail-analysis-label {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    color: var(--text-secondary, #6c757d);
+    font-weight: 500;
+}
+
+.metla-detail-analysis-select {
+    padding: 4px 10px;
+    border: 1px solid var(--border, #e9ecef);
+    border-radius: 6px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 12px;
+    background: white;
+    color: var(--text-primary, #1a1a2e);
+    cursor: pointer;
+    outline: none;
+}
+
+.metla-detail-analysis-select:focus {
+    border-color: #667eea;
+}
+
+/* Адаптив */
+@media (max-width: 768px) {
+    .metla-detail-content {
+        width: 95%;
+        max-height: 92vh;
+        border-radius: 8px;
+    }
+    
+    .metla-detail-header {
+        padding: 10px 14px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .metla-detail-title {
+        flex-wrap: wrap;
+    }
+    
+    .metla-detail-method {
+        font-size: 12px;
+        padding: 2px 10px;
+    }
+    
+    .metla-detail-path {
+        font-size: 12px;
+    }
+    
+    .metla-detail-body {
+        padding: 12px 14px;
+    }
+    
+    .metla-detail-info {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .metla-detail-tabs {
+        padding: 6px 14px 0 14px;
+        overflow-x: auto;
+    }
+    
+    .metla-detail-tab {
+        padding: 6px 12px;
+        font-size: 11px;
+        white-space: nowrap;
+    }
+    
+    .metla-detail-tab i {
+        font-size: 11px;
+    }
+    
+    .metla-detail-code-block {
+        font-size: 10px;
+        padding: 10px 12px;
+        max-height: 200px;
+    }
+    
+    .metla-detail-footer {
+        padding: 8px 14px;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+    }
+    
+    .metla-detail-footer-left,
+    .metla-detail-footer-right {
+        justify-content: center;
+    }
+    
+    .metla-detail-analysis-group {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .metla-detail-btn {
+        font-size: 10px;
+        padding: 4px 10px;
+    }
+    
+    .metla-detail-btn.small {
+        font-size: 10px;
+        padding: 3px 8px;
+    }
+}
+/* ============================================================
+   ПРОГРЕСС
 ============================================================ */
 .progress-thermometer {
     background: white;
     border-radius: 12px;
     padding: 20px 24px 16px 24px;
+    margin-top: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     border: 1px solid var(--border, #e9ecef);
@@ -176,13 +802,23 @@
     display: flex;
     justify-content: space-between;
     position: relative;
+    width: 100%;
 }
 
 .thermometer-step {
     display: flex;
     justify-content: space-between;
     width: 100%;
+    align-items: flex-start;
+    position: relative;
+}
+
+.step-item {
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    flex: 1;
+    gap: 4px;
 }
 
 .step-dot {
@@ -213,9 +849,11 @@
     color: var(--text-muted, #adb5bd);
     font-weight: 500;
     text-align: center;
-    flex: 1;
     transition: color 0.3s ease;
     white-space: nowrap;
+    max-width: 70px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .step-label.active {
@@ -227,13 +865,13 @@
     color: #10b981;
 }
 
-/* Для мобильных */
 @media (max-width: 600px) {
     .progress-thermometer {
         padding: 16px;
     }
     .step-label {
         font-size: 8px;
+        max-width: 50px;
     }
     .step-dot {
         width: 8px;
@@ -243,224 +881,239 @@
         font-size: 15px;
     }
 }
-        /* ============================================================
-           РЕЖИМЫ - ДОМОВОЙ / МЕТЛА
-        ============================================================ */
-        .mode-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-            background: var(--bg-secondary, #f1f3f5);
-            border-radius: 12px;
-            padding: 4px;
-            border: 1px solid var(--border, #e9ecef);
-        }
-
-        .mode-btn-mode {
-            flex: 1;
-            padding: 10px 18px;
-            border: none;
-            border-radius: 9px;
-            font-family: 'Ubuntu', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            background: transparent;
-            color: var(--text-secondary, #6c757d);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .mode-btn-mode i {
-            font-size: 16px;
-        }
-
-        .mode-btn-mode:hover {
-            color: var(--text-primary, #1a1a2e);
-            background: rgba(255,255,255,0.4);
-        }
-
-        .mode-btn-mode.active {
-            background: white;
-            color: var(--text-primary, #1a1a2e);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid var(--border, #e9ecef);
-        }
-
-        .mode-btn-mode .mode-badge {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: 20px;
-            font-weight: 600;
-            margin-left: 4px;
-        }
-
-        .mode-btn-mode .mode-badge.domovoy {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .mode-btn-mode .mode-badge.metla {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .mode-btn-mode .mode-description {
-            font-size: 12px;
-            color: var(--text-muted, #6c757d);
-            font-weight: 400;
-        }
 
 /* ============================================================
-   INPUT GROUP - ОДИНАКОВАЯ ВЫСОТА
+   РЕЖИМЫ
 ============================================================ */
-.input-group {
+.mode-selector {
     display: flex;
-    gap: 10px;
-    align-items: stretch;  /* ← вместо center, растягиваем по высоте */
-    margin-bottom: 16px;
-    width: 100%;
-}
-
-.input-group .input-wrapper {
-    flex: 1;
-    min-width: 0;
-    position: relative;
-}
-
-.input-group .input-wrapper input {
-    width: 100%;
-    padding: 10px 14px;
+    gap: 8px;
+    margin-bottom: 20px;
+    background: var(--bg-secondary, #f1f3f5);
+    border-radius: 12px;
+    padding: 4px;
     border: 1px solid var(--border, #e9ecef);
-    border-radius: 8px;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 14px;
-    background: var(--bg-primary, white);
-    color: var(--text-primary, #1a1a2e);
-    transition: border-color 0.2s;
-    box-sizing: border-box;
-    height: 44px;  /* ← фиксированная высота */
 }
 
-.input-group .start-button {
-    flex-shrink: 0;
-    white-space: nowrap;
-    padding: 0 20px;
-    height: 44px;  /* ← ТА ЖЕ ВЫСОТА */
+.mode-btn-mode {
+    flex: 1;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 9px;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    background: transparent;
+    color: var(--text-secondary, #6c757d);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Ubuntu', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: #e2e8f0;
-    color: #94a3b8;
-    min-width: 160px;
-    margin: 0;  /* ← убрать все отступы */
+    gap: 8px;
 }
-        /* Скрываем/показываем поля в зависимости от режима */
-        .mode-domovoy .metla-input-field {
-            display: none !important;
-        }
 
-        .mode-metla .domovoy-input-field {
-            display: none !important;
-        }
+.mode-btn-mode i {
+    font-size: 16px;
+}
 
-        /* ============================================================
-           СКРЫТИЕ/ПОКАЗ ЭЛЕМЕНТОВ
-        ============================================================ */
-        .domovoy-only {
-            display: block;
-        }
+.mode-btn-mode:hover {
+    color: var(--text-primary, #1a1a2e);
+    background: rgba(255,255,255,0.4);
+}
 
-        .mode-metla .domovoy-only {
-            display: none;
-        }
+.mode-btn-mode.active {
+    background: white;
+    color: var(--text-primary, #1a1a2e);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
 
-        .mode-metla .upload-area,
-        .mode-metla .spec-preview {
-            opacity: 0.4;
-            pointer-events: none;
-        }
+.mode-btn-mode .badge-beta-gradient {
+    font-size: 9px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin-left: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
 
-        .mode-domovoy .upload-area,
-        .mode-domovoy .spec-preview {
-            opacity: 1;
-            pointer-events: auto;
-        }
+@media (max-width: 600px) {
+    .mode-btn-mode {
+        font-size: 12px;
+        padding: 8px 12px;
+    }
+    .mode-btn-mode i {
+        font-size: 14px;
+    }
+    .mode-btn-mode .badge-beta-gradient {
+        font-size: 7px;
+        padding: 1px 6px;
+    }
+}
 
-        /* ============================================================
-           ПРОГРЕСС ДЛЯ МЕТЛЫ
-        ============================================================ */
-        .metla-progress {
-            display: none;
-            margin-top: 20px;
-        }
+/* Скрытие/показ */
+.mode-domovoy .metla-targets-area {
+    display: none !important;
+}
 
-        .mode-metla .card-table {
-            display: none;
-        }
+.mode-metla .domovoy-only {
+    display: none !important;
+}
 
-        .mode-metla .metla-progress {
-            display: block;
-        }
+.mode-metla .metla-targets-area {
+    display: flex !important;
+}
 
-        .mode-domovoy .card-table {
-            display: block;
-        }
+/* ============================================================
+   ДОМОВОЙ
+============================================================ */
+.domovoy-only .upload-area {
+    border: 2px dashed var(--border, #e9ecef);
+    border-radius: 12px;
+    padding: 32px 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--bg-secondary, #f8f9fa);
+}
 
-        .mode-domovoy .metla-progress {
-            display: none;
-        }
+.domovoy-only .upload-area:hover {
+    border-color: #667eea;
+    background: #f8f9ff;
+}
 
-        /* Подсказки */
-        .mode-hint {
-            font-size: 12px;
-            color: var(--text-muted, #6c757d);
-            margin-top: 6px;
-            margin-bottom: 16px;
-        }
+.domovoy-only .upload-area.dragover {
+    border-color: #667eea;
+    background: #eef0ff;
+}
 
-        .mode-metla .domovoy-hint {
-            display: none;
-        }
+.domovoy-only .upload-icon i {
+    font-size: 48px;
+    color: #667eea;
+    opacity: 0.6;
+}
 
-        .mode-domovoy .metla-hint {
-            display: none;
-        }
+.domovoy-only .upload-text {
+    font-size: 14px;
+    color: var(--text-secondary, #6c757d);
+    margin-top: 8px;
+}
 
-        @media (max-width: 600px) {
-            .mode-btn-mode {
-                font-size: 12px;
-                padding: 8px 12px;
-            }
-            .mode-btn-mode i {
-                font-size: 14px;
-            }
-            .mode-btn-mode .mode-badge {
-                font-size: 8px;
-                padding: 1px 6px;
-            }
-            .mode-btn-mode .mode-description {
-                display: none;
-            }
-            .input-group {
-                flex-wrap: wrap;
-            }
-            .input-group .input-wrapper {
-                flex: 1 1 100%;
-            }
+.domovoy-only .upload-hint {
+    font-size: 12px;
+    color: var(--text-muted, #adb5bd);
+    margin-top: 6px;
+}
 
-        }
-    </style>
+.domovoy-only .file-info {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    margin-top: 12px;
+    background: var(--bg-secondary, #f8f9fa);
+    border-radius: 8px;
+    border: 1px solid var(--border, #e9ecef);
+}
+
+.domovoy-only .file-info .file-details {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.domovoy-only .file-info .file-name {
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--text-primary, #1a1a2e);
+}
+
+.domovoy-only .file-info .file-size {
+    font-size: 12px;
+    color: var(--text-muted, #adb5bd);
+}
+
+.domovoy-only .file-info .remove-file {
+    cursor: pointer;
+    color: var(--text-muted, #adb5bd);
+    transition: color 0.2s;
+}
+
+.domovoy-only .file-info .remove-file:hover {
+    color: #dc3545;
+}
+
+.domovoy-only .spec-preview {
+    display: none;
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-secondary, #f8f9fa);
+    border-radius: 8px;
+    border: 1px solid var(--border, #e9ecef);
+}
+
+.domovoy-only .spec-preview.active {
+    display: block;
+}
+
+.domovoy-only .spec-info {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.domovoy-only .spec-info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-secondary, #6c757d);
+}
+
+.domovoy-only .spec-info-item i {
+    color: #667eea;
+    width: 16px;
+}
+
+.domovoy-only .spec-endpoints {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.domovoy-only .spec-endpoints .endpoint-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid var(--border, #e9ecef);
+    font-size: 12px;
+    font-family: monospace;
+}
+
+.domovoy-only .spec-endpoints .method-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 9px;
+    font-weight: 700;
+    color: white;
+}
+
+.domovoy-only .spec-endpoints .method-GET { background: #61affe; }
+.domovoy-only .spec-endpoints .method-POST { background: #49cc90; }
+.domovoy-only .spec-endpoints .method-PUT { background: #fca130; }
+.domovoy-only .spec-endpoints .method-DELETE { background: #f93e3e; }
+.domovoy-only .spec-endpoints .method-PATCH { background: #50e3c2; color: #333; }
+.domovoy-only .spec-endpoints .method-HEAD { background: #9012fe; }
+.domovoy-only .spec-endpoints .method-OPTIONS { background: #0d5aa7; }
+</style>
 </head>
 <body>
     <div id="box" class="fade-in">
@@ -525,23 +1178,27 @@
                     </button>
                 </div>
             </div>
+            
             <div class="mode-selector" id="modeSelector">
                 <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy">
                     Домовой
                 </button>
-                <button class="mode-btn-mode" data-mode="metla" id="modeMetla">Метла<span class="badge-beta-gradient">Beta</span></button>
+                <button class="mode-btn-mode" data-mode="metla" id="modeMetla">
+                    Метла <span class="badge-beta-gradient">Beta</span>
+                </button>
             </div>
 
+            <!-- Поле ввода URL -->
             <div class="fuzz-input-group">
                 <div class="fuzz-input-wrapper">
-                    <input type="text" id="specUrl" class="domovoy-input-field" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)">
+                    <input type="text" id="specUrl" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)">
                 </div>
-                
-                <button class="fuzz-start-btn" id="start-btn" type="button" disabled onclick="startFuzzing()">
+                <button class="fuzz-start-btn" id="start-btn" type="button" disabled>
                     <i class="fas fa-play" style="margin-right: 6px;"></i>Начать анализ
                 </button>
             </div>
 
+            <!-- Блок ДОМОВОЙ -->
             <div class="domovoy-only">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">
@@ -563,7 +1220,6 @@
                     <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
                 </div>
 
-                <!-- Информация о выбранном файле -->
                 <div class="file-info" id="fileInfo">
                     <div class="file-details">
                         <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
@@ -575,7 +1231,6 @@
                     </div>
                 </div>
 
-                <!-- Предпросмотр спецификации -->
                 <div class="spec-preview" id="specPreview">
                     <div class="spec-info">
                         <div class="spec-info-item">
@@ -595,74 +1250,242 @@
                 </div>
             </div>
 
-<div class="progress-thermometer" id="progressThermometer">
-    <div class="thermometer-header">
-        <span class="thermometer-title" id="thermometerTitle">Общий прогресс анализа</span>
-        <span class="thermometer-percent" id="thermometerPercent">0%</span>
-    </div>
-    <div class="thermometer-track">
-        <div class="thermometer-fill" id="thermometerFill" style="width: 0%;">
-            <div class="thermometer-glow"></div>
+            <!-- Блок МЕТЛА с заголовками -->
+            
+
+            <!-- Прогресс -->
+            <div class="progress-thermometer" id="progressThermometer">
+                <div class="thermometer-header">
+                    <span class="thermometer-title" id="thermometerTitle">Общий прогресс анализа</span>
+                    <span class="thermometer-percent" id="thermometerPercent">0%</span>
+                </div>
+                <div class="thermometer-track">
+                    <div class="thermometer-fill" id="thermometerFill" style="width: 0%;">
+                        <div class="thermometer-glow"></div>
+                    </div>
+                </div>
+                <div class="thermometer-steps" id="thermometerSteps">
+                    <div class="thermometer-step domovoy-steps">
+                        <div class="step-item">
+                            <span class="step-dot" data-step="0"></span>
+                            <span class="step-label">Загрузка</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="25"></span>
+                            <span class="step-label">Генерация</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="50"></span>
+                            <span class="step-label">Фаззинг</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="75"></span>
+                            <span class="step-label">Анализ</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="100"></span>
+                            <span class="step-label">Отчет</span>
+                        </div>
+                    </div>
+                    <div class="thermometer-step metla-steps" style="display: none;">
+                        <div class="step-item">
+                            <span class="step-dot" data-step="0"></span>
+                            <span class="step-label">Поиск целей</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="25"></span>
+                            <span class="step-label">Анализ</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="50"></span>
+                            <span class="step-label">Генерация</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="75"></span>
+                            <span class="step-label">Фаззинг</span>
+                        </div>
+                        <div class="step-item">
+                            <span class="step-dot" data-step="100"></span>
+                            <span class="step-label">Отчет</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="metla-targets-area" id="metlaTargetsArea">
+                <div class="metla-empty" id="metlaEmpty">
+                    <div style="font-weight: 500; margin-bottom: 4px;">Цели для фаззинга</div>
+                    <div class="metla-hint">Найденные эндпоинты появятся здесь после сканирования</div>
+                </div>
+                
+                <!-- ЗАГОЛОВКИ ТАБЛИЦЫ -->
+                <div class="metla-header" id="metlaHeader" style="display: none;">
+                    <div class="metla-header-cell">Метод</div>
+                    <div class="metla-header-cell">Путь</div>
+                    <!-- <div class="metla-header-cell">Доступ</div> -->
+                    <!-- <div class="metla-header-cell"></div> -->
+                </div>
+                
+                <div class="metla-targets-list" id="metlaTargetsList" style="display: none;"></div>
+                <div class="metla-stats" id="metlaStats" style="display: none;"></div>
+            </div>
         </div>
     </div>
-    <div class="thermometer-steps" id="thermometerSteps">
-        <!-- Этапы для Домового -->
-        <div class="thermometer-step domovoy-steps">
-            <span class="step-dot" data-step="0"></span>
-            <span class="step-label">Загрузка</span>
-            <span class="step-dot" data-step="25"></span>
-            <span class="step-label">Генерация</span>
-            <span class="step-dot" data-step="50"></span>
-            <span class="step-label">Фаззинг</span>
-            <span class="step-dot" data-step="75"></span>
-            <span class="step-label">Анализ</span>
-            <span class="step-dot" data-step="100"></span>
-            <span class="step-label">Отчет</span>
+
+    <!-- Модальное окно для деталей Метлы -->
+    <di<!-- Модальное окно для деталей Метлы в стиле Swagger/Postman -->
+<div id="metlaDetailModal" class="metla-detail-modal">
+    <div class="metla-detail-overlay" onclick="closeMetlaDetail()"></div>
+    <div class="metla-detail-content">
+        <!-- ХЕДЕР как в Swagger -->
+        <div class="metla-detail-header">
+            <div class="metla-detail-title">
+                <span class="metla-detail-method" id="metla-detail-method">GET</span>
+                <span class="metla-detail-path" id="metla-detail-path">/path</span>
+                <span class="metla-detail-auth-badge" id="metla-detail-auth-badge">Public</span>
+            </div>
+            <div class="metla-detail-actions">
+                <button class="metla-detail-btn" onclick="copyMetlaRequest()" title="Скопировать запрос">
+                    <i class="fas fa-copy"></i>
+                </button>
+                <button class="metla-detail-close" onclick="closeMetlaDetail()">✕</button>
+            </div>
         </div>
-        <!-- Этапы для Метлы -->
-        <div class="thermometer-step metla-steps" style="display: none;">
-            <span class="step-dot" data-step="0"></span>
-            <span class="step-label">Поиск целей</span>
-            <span class="step-dot" data-step="25"></span>
-            <span class="step-label">Анализ</span>
-            <span class="step-dot" data-step="50"></span>
-            <span class="step-label">Генерация тестов</span>
-            <span class="step-dot" data-step="75"></span>
-            <span class="step-label">Фаззинг</span>
-            <span class="step-dot" data-step="100"></span>
-            <span class="step-label">Отчет</span>
+
+        <!-- ТАБЫ как в Postman -->
+        <div class="metla-detail-tabs">
+            <button class="metla-detail-tab active" data-tab="details" onclick="switchMetlaTab('details')">
+                <i class="fas fa-info-circle"></i> Детали
+            </button>
+            <button class="metla-detail-tab" data-tab="headers" onclick="switchMetlaTab('headers')">
+                <i class="fas fa-heading"></i> Заголовки
+            </button>
+            <button class="metla-detail-tab" data-tab="body" onclick="switchMetlaTab('body')">
+                <i class="fas fa-code"></i> Тело
+            </button>
+            <button class="metla-detail-tab" data-tab="schema" onclick="switchMetlaTab('schema')">
+                <i class="fas fa-cube"></i> Схема
+            </button>
+        </div>
+
+        <!-- ТЕЛО с вкладками -->
+        <div class="metla-detail-body" id="metla-detail-body">
+            <!-- Вкладка: Детали -->
+            <div class="metla-detail-panel active" id="panel-details">
+                <div class="metla-detail-info">
+                    <div class="metla-detail-info-item">
+                        <span class="label">URL</span>
+                        <span class="value" id="metla-detail-url">-</span>
+                    </div>
+                    <div class="metla-detail-info-item">
+                        <span class="label">Auth</span>
+                        <span class="value" id="metla-detail-auth">-</span>
+                    </div>
+                    <div class="metla-detail-info-item">
+                        <span class="label">Content-Type</span>
+                        <span class="value" id="metla-detail-content-type">-</span>
+                    </div>
+                    <div class="metla-detail-info-item">
+                        <span class="label">Server</span>
+                        <span class="value" id="metla-detail-server">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Вкладка: Заголовки -->
+            <div class="metla-detail-panel" id="panel-headers" style="display: none;">
+                <div class="metla-detail-code-block" id="metla-detail-headers-content">
+                    <span class="metla-detail-empty">Нет заголовков</span>
+                </div>
+            </div>
+
+            <!-- Вкладка: Тело -->
+            <div class="metla-detail-panel" id="panel-body" style="display: none;">
+                <div class="metla-detail-code-block" id="metla-detail-body-content">
+                    <span class="metla-detail-empty">Нет тела запроса</span>
+                </div>
+            </div>
+
+            <!-- Вкладка: Схема -->
+            <div class="metla-detail-panel" id="panel-schema" style="display: none;">
+                <div class="metla-detail-code-block" id="metla-detail-schema-content">
+                    <span class="metla-detail-empty">Нет схемы</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ФУТЕР с кнопками как в Postman -->
+        <div class="metla-detail-footer">
+            <div class="metla-detail-footer-left">
+                <!-- Кнопки экспорта -->
+                <div class="metla-detail-export-group">
+                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('curl')">
+                        <i class="fas fa-terminal"></i> cURL
+                    </button>
+                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('postman')">
+                        <i class="fas fa-bolt"></i> Postman
+                    </button>
+                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('fetch')">
+                        <i class="fab fa-js"></i> Fetch
+                    </button>
+                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('python')">
+                        <i class="fab fa-python"></i> Python
+                    </button>
+                </div>
+            </div>
+            
+            <div class="metla-detail-footer-right">
+                <!-- Типы анализа -->
+                <div class="metla-detail-analysis-group">
+                    <span class="metla-detail-analysis-label">Анализ:</span>
+                    <select class="metla-detail-analysis-select" id="metlaAnalysisType">
+                        <option value="xss">XSS</option>
+                        <option value="sql">SQL Injection</option>
+                        <option value="headers">Заголовки</option>
+                        <option value="bruteforce">Брутфорс</option>
+                        <option value="full">Полный</option>
+                    </select>
+                    <button class="metla-detail-btn primary small" onclick="runMetlaAnalysis()">
+                        <i class="fas fa-play"></i> Запустить
+                    </button>
+                    <button class="metla-detail-btn small" onclick="saveMetlaRequest()">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
-        </div>
-    </div>
+
+    <!-- Модальные окна -->
     <div id="fuzzModal" class="modal-overlay">
         <div class="modal-container">
             <div class="modal-header">
-                <h3> Результаты анализа</h3>
+                <h3>Результаты анализа</h3>
                 <span class="modal-close" onclick="closeFuzzModal()">&times;</span>
             </div>
-            <div class="modal-body" id="fuzzModalBody">
-            </div>
+            <div class="modal-body" id="fuzzModalBody"></div>
             <div class="modal-footer">
-                <button class="start-button active" onclick="downloadReport()" style="background: #28a745; color: white;font-size: 11px;" id="downloadReport">
+                <button class="start-button active" onclick="downloadReport()" style="background: #28a745; color: white; font-size: 11px;" id="downloadReport">
                     <i class="fas fa-download"></i> Скачать отчет
                 </button>
             </div>
         </div>
     </div>
-        <div id="unifiedModal" class="settings-modal">
-            <div class="settings-content">
-                <div class="settings-header">
-                    <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
-                    <span class="settings-close" onclick="closeToolModal()">&times;</span>
-                </div>
-                <div class="unified-layout">
-                    <div class="unified-left"></div>
-                    <div class="unified-right"></div>
-                </div>
+
+    <div id="unifiedModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+                <span class="settings-close" onclick="closeToolModal()">&times;</span>
+            </div>
+            <div class="unified-layout">
+                <div class="unified-left"></div>
+                <div class="unified-right"></div>
             </div>
         </div>
+    </div>
+
     <div id="licenseModal" class="upgrade-modal">
         <div class="upgrade-modal-overlay"></div>
         <div class="upgrade-modal-content" style="max-width: 480px;">
@@ -671,12 +1494,8 @@
                 <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
             </div>
             <div class="upgrade-modal-body">
-
-                <!-- Текущая лицензия -->
-                <div class="license-current"
-                    style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div class="license-current" style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                         <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
                         <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
                     </div>
@@ -685,37 +1504,28 @@
                         <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
                     </div>
                 </div>
-
-                <!-- Поле для ввода ключа -->
                 <div class="license-input-group" style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
                         Лицензионный ключ
                     </label>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
-                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
+                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
                         <button id="activateLicenseBtn" class="activate-licence-btn">
                             <i class="fas fa-check"></i> Активировать
                         </button>
                     </div>
                 </div>
-
-                <!-- Сообщение об ошибке/успехе -->
-                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
-                </div>
-
-                <!-- Ссылка на покупку -->
+                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;"></div>
                 <div style="margin-top: 8px; text-align: center;">
                     <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
-                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
-                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
+                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank" style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
                         <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
                     </a>
                 </div>
-
             </div>
         </div>
-    </div> 
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="modal.js"></script>
@@ -736,7 +1546,6 @@
             const modeMetla = document.getElementById('modeMetla');
             const center = document.getElementById('center');
             const specUrlInput = document.getElementById('specUrl');
-            const metlaTargetUrl = document.getElementById('metlaTargetUrl');
 
             function setMode(mode) {
                 modeDomovoy.classList.remove('active');
@@ -746,18 +1555,16 @@
                 if (mode === 'domovoy') {
                     modeDomovoy.classList.add('active');
                     center.classList.add('mode-domovoy');
-                    specUrlInput.setAttribute('placeholder', 'Вставьте ссылку на спецификацию') 
+                    specUrlInput.placeholder = 'Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)';
                     if (typeof validateStartButton === 'function') {
                         validateStartButton();
                     }
                 } else {
                     modeMetla.classList.add('active');
                     center.classList.add('mode-metla');
-                    // Скрываем поле для Домового, показываем для Метлы
-                    specUrlInput.setAttribute('placeholder', 'Вставьте ссылку на источник')
-                    //validateMetlaInput();
-                    if (typeof resetMetlaProgress === 'function') {
-                        resetMetlaProgress();
+                    specUrlInput.placeholder = 'Вставьте URL для сканирования (Метла)';
+                    if (typeof validateStartButton === 'function') {
+                        validateStartButton();
                     }
                 }
             }
@@ -770,9 +1577,10 @@
                 setMode('metla');
             });
 
-            // По умолчанию Домовой активен
             setMode('domovoy');
         });
+
+        
     </script>
 </body>
 </html>

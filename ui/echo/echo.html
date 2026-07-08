@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html data-page="construction" data-version="1.0.0" lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Геркулес | Эхолот</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../common/main.css">
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="stylesheet" href="../common/sidebar.css">  
+    <link rel="stylesheet" href="../common/upgrade.css">
+    <link rel="stylesheet" href="echo.css">
+    <link rel="stylesheet" href="modal.css">    
+    <link rel="icon" type="image/x-icon" href="../rocket.ico">
+    
+</head>
+<body>
+    <div id="box" class="fade-in">
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title" id="toolsTitle">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Инструменты</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Загрузка...
+                    </div>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-info">
+                                <span class="tool-name">История</span>
+                                <span class="tool-desc">Журнал сканирований</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Настройки</span>
+                                <span class="tool-desc">Управление параметрами</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div id="center">
+            <div class="page-header">
+                <h2 class="section-title" id="pageTitle">Выберите источник</h2>
+                <div class="header-buttons">
+                    <button class="header-btn" onclick="showToolInfo('echo')">
+                        <i class="fas fa-info-circle"></i> Описание инструмента
+                    </button>
+                </div>
+            </div>
+
+            <div class="echolot-tab-nav">
+                <button class="echolot-tab-btn active" data-tab="dashboard">Сканер</button>
+                <button class="echolot-tab-btn" data-tab="topology">Топология</button>
+                <button class="echolot-tab-btn" data-tab="devices">Устройства</button>
+                <button class="echolot-tab-btn" data-tab="ports">Порты</button>
+            </div>
+
+            <!-- Панель Сканер -->
+            <div id="dashboard-panel" class="panel-content" style="display: block;">
+                <div class="source-selector">
+                    <button class="source-btn active" data-scan-type="single">
+                        <i class="fas fa-microchip"></i> Один хост
+                    </button>
+                    <button class="source-btn" data-scan-type="network">
+                        <i class="fas fa-network-wired"></i> Сеть
+                    </button>
+                    <button class="source-btn" data-scan-type="range">
+                        <i class="fas fa-chart-line"></i> Диапазон
+                    </button>
+                </div>
+                <div id="single-source" class="source-content active">
+                    <div class="input-group">
+                        <input type="text" id="singleTarget" placeholder="192.168.1.1">
+                        <button class="echolot-start-button" id="startSingleScanBtn">Начать анализ</button>
+                    </div>
+                </div>
+                <div id="network-source" class="source-content">
+                    <div class="input-group">
+                        <input type="text" id="networkTarget" placeholder="192.168.1.0/24">
+                        <button class="echolot-start-button" id="startScanBtn">Начать анализ</button>
+                    </div>
+                </div>
+                <div id="range-source" class="source-content">
+                    <div class="input-group">
+                        <input type="text" id="rangeStart" placeholder="Начальный IP">
+                        <input type="text" id="rangeEnd" placeholder="Конечный IP">
+                        <button class="echolot-start-button" id="startRangeScanBtn">Начать анализ</button>
+                    </div>
+                </div>
+
+                <!-- ПРОГРЕСС-БАР -->
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-title">
+                        <i class="fas fa-chart-line"></i> Общий прогресс анализа
+                    </div>
+                    
+                    <!-- Этапы -->
+                    <div class="progress-steps" id="progressSteps">
+                        <div class="progress-step idle" data-step="0">
+                            <div class="step-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <div class="step-label">Загрузка</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="progress-step idle" data-step="1">
+                            <div class="step-icon"><i class="fas fa-search"></i></div>
+                            <div class="step-label">Сканирование</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="progress-step idle" data-step="2">
+                            <div class="step-icon"><i class="fas fa-cubes"></i></div>
+                            <div class="step-label">Компоненты</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="progress-step idle" data-step="3">
+                            <div class="step-icon"><i class="fas fa-code"></i></div>
+                            <div class="step-label">Анализ кода</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="progress-step idle" data-step="4">
+                            <div class="step-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="step-label">Уязвимости</div>
+                            <div class="step-line"></div>
+                        </div>
+                        <div class="progress-step idle" data-step="5">
+                            <div class="step-icon"><i class="fas fa-file-alt"></i></div>
+                            <div class="step-label">Генерация отчёта</div>
+                            <div class="step-line"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Полоса прогресса -->
+                    <div class="progress-bar-wrapper">
+                        <div class="progress-bar-fill" id="progressFill"></div>
+                    </div>
+                    
+                    <div class="progress-percent" id="progressPercent">0%</div>
+                    <div class="progress-status-text" id="progressStatus">Ожидание начала сканирования</div>
+                </div>
+
+                <div class="scanner-content"></div>
+            </div>
+
+            <!-- Топология -->
+            <div id="topology-panel" class="panel-content" style="display: none;">
+                <div id="topologyContainer" class="topology-container">
+                    <div class="echolot-log-entry info">Карта сети будет построена после сканирования</div>
+                </div>
+            </div>
+
+            <!-- Устройства -->
+            <div id="devices-panel" class="panel-content" style="display: none;">
+                <div class="card-table">
+                    <div class="card-section">
+                        <div class="page-header" style="margin-bottom: 16px;">
+                            <h3 class="section-title">Все устройства</h3>
+                            <button class="header-btn" id="exportDevicesBtn">
+                                <i class="fas fa-download"></i> Экспорт
+                            </button>
+                        </div>
+                        <div id="allDevicesList">
+                            <div class="echolot-log-entry info">Нет данных</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Порты -->
+            <div id="ports-panel" class="panel-content" style="display: none;">
+                <div class="card-table">
+                    <div class="card-section">
+                        <div class="page-header" style="margin-bottom: 16px;">
+                            <h3 class="section-title">Порты и сервисы</h3>
+                        </div>
+                        <div id="portsList" class="ports-table">
+                            <div class="ports-header">
+                                <div class="ports-col">IP</div>
+                                <div class="ports-col">Порт</div>
+                                <div class="ports-col">Сервис</div>
+                                <div class="ports-col">Версия</div>
+                                <div class="ports-col">Уязвимости</div>
+                                <div class="ports-col">Эксплойт</div>
+                                <div class="ports-col">Атака</div>
+                            </div>
+                            <div class="ports-body" id="portsTableBody">
+                                <div class="echolot-log-entry info">Нет данных</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Остальные модальные окна -->
+    <div id="unifiedModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+                <span class="settings-close" onclick="closeToolModal()">&times;</span>
+            </div>
+            <div class="unified-layout">
+                <div class="unified-left"></div>
+                <div class="unified-right"></div>
+            </div>
+        </div>
+    </div>
+    <!-- МОДАЛЬНОЕ ОКНО ДЛЯ ОТЧЁТА ЭХОЛОТА -->
+<div class="echo-report-modal" id="echoReportModal">
+    <div class="echo-report-modal-content">
+        <div class="echo-report-modal-header">
+            <div>
+                <h2>Результаты анализа</h2>
+            </div>
+            <button class="echo-report-modal-close" onclick="closeEchoModal()">&times;</button>
+        </div>
+        <div class="echo-report-modal-body" id="echoModalBody">
+            <div class="echo-loading">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+                <span>Загрузка отчёта...</span>
+            </div>
+        </div>
+        <div class="echo-report-modal-footer">
+            <button class="echo-btn echo-btn-download-html" id="echoDownloadHtml" style="background: #6f42c1; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-family: Ubuntu; font-size: 13px;">
+                <i class="fab fa-html5"></i> Скачать HTML
+            </button>
+            <button class="echo-btn echo-btn-download-json" id="echoDownloadJson" style="background: #10b981; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-family: Ubuntu; font-size: 13px;">
+                <i class="fas fa-download"></i> Скачать JSON
+            </button>
+        </div>
+    </div>
+</div>
+    <div id="licenseModal" class="upgrade-modal">
+        <div class="upgrade-modal-overlay"></div>
+        <div class="upgrade-modal-content" style="max-width: 480px;">
+            <div class="upgrade-modal-header">
+                <h3>Активация лицензии</h3>
+                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
+            </div>
+            <div class="upgrade-modal-body">
+                <div class="license-current"
+                    style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
+                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
+                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
+                    </div>
+                </div>
+                <div class="license-input-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
+                        Лицензионный ключ
+                    </label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
+                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
+                        <button id="activateLicenseBtn" class="activate-licence-btn">
+                            <i class="fas fa-check"></i> Активировать
+                        </button>
+                    </div>
+                </div>
+                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
+                </div>
+                <div style="margin-top: 8px; text-align: center;">
+                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
+                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
+                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
+                        <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   <script>
+    // ========================================
+    // ГЛОБАЛЬНЫЕ ДАННЫЕ
+    // ========================================
+    var scanData = {
+        devices: [],
+        ports: [],
+        wifiNetworks: [],
+        lastScan: null,
+        currentReportId: null,
+        currentReportUrl: null
+    };
+
+    var isScanning = false;
+
+    // ========================================
+    // ПОРТЫ И ИХ ОПИСАНИЯ
+    // ========================================
+    var portKnowledgeBase = {
+        21: { service: "FTP", description: "File Transfer Protocol", vulnerabilities: ["Анонимный доступ", "FTP Bounce"], exploits: [{ name: "vsftpd 2.3.4 Backdoor", cve: "CVE-2011-2523", danger: "critical" }], recommendation: "Используйте SFTP" },
+        22: { service: "SSH", description: "Secure Shell", vulnerabilities: ["Слабые ключи", "Прямой перебор"], exploits: [{ name: "LibSSH Auth Bypass", cve: "CVE-2018-10933", danger: "critical" }], recommendation: "Используйте ключи, отключите root логин" },
+        23: { service: "Telnet", description: "Telnet (незашифрованный)", vulnerabilities: ["Передача паролей в открытом виде"], exploits: [{ name: "Cisco Telnet DoS", cve: "CVE-2022-20678", danger: "high" }], recommendation: "ЗАКРОЙТЕ порт! Используйте SSH" },
+        25: { service: "SMTP", description: "Simple Mail Transfer Protocol", vulnerabilities: ["Open Relay", "User Enumeration"], exploits: [{ name: "Sendmail", cve: "CVE-2003-0161", danger: "critical" }], recommendation: "Закройте open relay" },
+        80: { service: "HTTP", description: "Web Server", vulnerabilities: ["Инъекции", "XSS"], exploits: [{ name: "Apache Struts2", cve: "CVE-2017-5638", danger: "critical" }], recommendation: "Используйте HTTPS" },
+        443: { service: "HTTPS", description: "Secure Web Server", vulnerabilities: ["SSL/TLS уязвимости", "Heartbleed"], exploits: [{ name: "OpenSSL Heartbleed", cve: "CVE-2014-0160", danger: "critical" }], recommendation: "Используйте TLS 1.3" },
+        3306: { service: "MySQL", description: "MySQL Database", vulnerabilities: ["Слабые пароли"], exploits: [{ name: "MySQL UDF Exploit", danger: "high" }], recommendation: "Используйте сильные пароли" },
+        5432: { service: "PostgreSQL", description: "PostgreSQL Database", vulnerabilities: ["Слабые пароли"], exploits: [{ name: "PostgreSQL COPY", cve: "CVE-2019-10164", danger: "high" }], recommendation: "Ограничьте доступ" },
+        6379: { service: "Redis", description: "Redis Cache", vulnerabilities: ["Открытый доступ"], exploits: [{ name: "Redis RCE", cve: "CVE-2022-0543", danger: "critical" }], recommendation: "Установите пароль" },
+        8080: { service: "HTTP-Proxy", description: "HTTP Proxy / Tomcat", vulnerabilities: ["Open Proxy", "Default credentials"], exploits: [{ name: "Jenkins RCE", cve: "CVE-2024-23897", danger: "critical" }], recommendation: "Смените default пароли" },
+        8443: { service: "HTTPS-Alt", description: "Alternative HTTPS", vulnerabilities: ["SSL/TLS уязвимости"], exploits: [{ name: "VMware vCenter", cve: "CVE-2021-21972", danger: "critical" }], recommendation: "Обновляйте" }
+    };
+
+    function getPortInfo(port) {
+        return portKnowledgeBase[port] || {
+            service: "Unknown",
+            description: "Неизвестный сервис",
+            vulnerabilities: ["Требуется анализ"],
+            exploits: [],
+            recommendation: "Проведите дополнительное исследование"
+        };
+    }
+
+    function getDangerLevel(danger) {
+        switch(danger) {
+            case 'critical': return 'CRITICAL';
+            case 'high': return 'HIGH';
+            case 'medium': return 'MEDIUM';
+            default: return 'LOW';
+        }
+    }
+
+    function showPortDetails(port, service, ip, banner) {
+        var portInfo = getPortInfo(port);
+        var exploitsHtml = '';
+        if (portInfo.exploits && portInfo.exploits.length > 0) {
+            exploitsHtml = portInfo.exploits.map(function(e) {
+                return '• ' + e.name + (e.cve ? ' (' + e.cve + ')' : '') + ' - ' + getDangerLevel(e.danger);
+            }).join('\n');
+        }
+        
+        alert('Детальный анализ порта ' + port + '\n\nIP: ' + ip + '\nСервис: ' + (service || portInfo.service) + '\nОписание: ' + portInfo.description + '\nВерсия: ' + (banner || 'не определен') + '\n\nУязвимости:\n' + portInfo.vulnerabilities.map(function(v) { return '  • ' + v; }).join('\n') + '\n\nЭксплойты:\n' + (exploitsHtml || '  • Нет известных публичных эксплойтов') + '\n\nРекомендации:\n' + portInfo.recommendation);
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        var div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // ========================================
+    // ПРОГРЕСС-БАР
+    // ========================================
+    function resetProgress() {
+        var steps = document.querySelectorAll('.progress-step');
+        steps.forEach(function(step) {
+            step.className = 'progress-step idle';
+        });
+        document.getElementById('progressFill').className = 'progress-bar-fill';
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('progressPercent').textContent = '0%';
+        document.getElementById('progressStatus').textContent = 'Ожидание начала сканирования';
+    }
+
+    function updateProgress(percent, status, stepIndex) {
+        var fill = document.getElementById('progressFill');
+        fill.style.width = Math.min(percent, 100) + '%';
+        document.getElementById('progressPercent').textContent = Math.min(percent, 100) + '%';
+        if (status) {
+            document.getElementById('progressStatus').textContent = status;
+        }
+        
+        var steps = document.querySelectorAll('.progress-step');
+        steps.forEach(function(step, index) {
+            if (index < stepIndex) {
+                step.className = 'progress-step completed';
+            } else if (index === stepIndex) {
+                step.className = 'progress-step active';
+            } else {
+                step.className = 'progress-step idle';
+            }
+        });
+        
+        if (percent >= 100) {
+            steps.forEach(function(step) {
+                step.className = 'progress-step completed';
+            });
+            fill.classList.add('complete');
+            document.getElementById('progressStatus').textContent = 'Сканирование завершено';
+        }
+    }
+
+    function showProgress() {
+        resetProgress();
+        var steps = document.querySelectorAll('.progress-step');
+        steps.forEach(function(step, index) {
+            if (index === 0) {
+                step.className = 'progress-step active';
+            } else {
+                step.className = 'progress-step idle';
+            }
+        });
+        document.getElementById('progressFill').style.width = '0%';
+        document.getElementById('progressPercent').textContent = '0%';
+        document.getElementById('progressStatus').textContent = 'Подготовка к сканированию...';
+    }
+
+    function showErrorProgress(errorMsg) {
+        var fill = document.getElementById('progressFill');
+        fill.style.width = '100%';
+        fill.className = 'progress-bar-fill error';
+        document.getElementById('progressPercent').textContent = '100%';
+        document.getElementById('progressStatus').textContent = 'Ошибка: ' + (errorMsg || 'Неизвестная ошибка');
+        
+        var steps = document.querySelectorAll('.progress-step');
+        steps.forEach(function(step) {
+            step.className = 'progress-step error';
+        });
+    }
+
+    function hideProgress() {
+        updateProgress(100, 'Сканирование завершено', 6);
+    }
+
+    // ========================================
+    // ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА ЭХОЛОТА
+    // ========================================
+    function openEchoModal(reportId) {
+        var modal = document.getElementById('echoReportModal');
+        if (modal) {
+            if (scanData) {
+                scanData.currentReportId = reportId;
+                scanData.currentReportUrl = '/api/echo/history/' + reportId;
+            }
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Загружаем отчёт через iframe
+            var body = document.getElementById('echoModalBody');
+            if (body) {
+                body.innerHTML = '<iframe src="/api/echo/history/' + reportId + '" style="width:100%;height:100%;min-height:70vh;border:none;"></iframe>';
+            }
+        }
+    }
+
+    function closeEchoModal() {
+        var modal = document.getElementById('echoReportModal');
+        if (modal) {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+    // ========================================
+    // СКАЧИВАНИЕ ОТЧЁТА
+    // ========================================
+    function downloadEchoReportHTML(reportId) {
+        if (!reportId) {
+            alert('ID отчёта не указан');
+            return;
+        }
+        var url = '/api/echo/history/' + reportId;
+        window.open(url, '_blank');
+    }
+
+    async function downloadEchoReportJSON(reportId) {
+        if (!reportId) {
+            alert('ID отчёта не указан');
+            return;
+        }
+        
+        try {
+            var response = await fetch('/api/echo/history/' + reportId, {
+                headers: { 'Accept': 'application/json' }
+            });
+            
+            if (!response.ok) {
+                throw new Error('Ошибка загрузки отчёта');
+            }
+            
+            var data = await response.json();
+            var json = JSON.stringify(data, null, 2);
+            var blob = new Blob([json], { type: 'application/json' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'echo-report-' + reportId + '.json';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+        } catch (error) {
+            alert('Ошибка скачивания: ' + error.message);
+        }
+    }
+
+    // ========================================
+    // ФУНКЦИИ UI
+    // ========================================
+    function switchPanel(panelId) {
+        document.querySelectorAll('.panel-content').forEach(function(p) { p.style.display = 'none'; });
+        document.getElementById(panelId + '-panel').style.display = 'block';
+        document.querySelectorAll('.echolot-tab-btn').forEach(function(btn) { btn.classList.remove('active'); });
+        document.querySelector('.echolot-tab-btn[data-tab="' + panelId + '"]').classList.add('active');
+    }
+
+    function updateUI() {
+        var allDev = document.getElementById('allDevicesList');
+        if (scanData.devices.length === 0) {
+            allDev.innerHTML = '<div class="echolot-log-entry info">Нет данных</div>';
+        } else {
+            allDev.innerHTML = scanData.devices.map(function(d) {
+                return '<div class="echolot-device-item" onclick="alert(\'IP: ' + d.ip + '\\nMAC: ' + d.mac + '\\nХост: ' + d.hostname + '\\nПорты: ' + d.ports.join(', ') + '\')"><div><span class="echolot-device-status status-online"></span>' + d.ip + '<small> ' + d.mac + '</small></div><div>' + d.hostname + '</div><div>' + d.ports.length + ' портов</div></div>';
+            }).join('');
+        }
+
+        var portsBody = document.getElementById('portsTableBody');
+        if (scanData.ports.length === 0) {
+            portsBody.innerHTML = '<div class="echolot-log-entry info">Нет данных</div>';
+        } else {
+            portsBody.innerHTML = scanData.ports.map(function(p) {
+                var portInfo = getPortInfo(p.port);
+                var topExploit = portInfo.exploits && portInfo.exploits.length > 0 ? portInfo.exploits[0] : null;
+                var vulnTags = portInfo.vulnerabilities.slice(0, 2);
+                
+                return '<div class="ports-row"><div class="ports-col ip" data-label="IP">' + p.ip + '</div><div class="ports-col port" data-label="Порт"><span class="echolot-port-badge">' + p.port + '</span></div><div class="ports-col service" data-label="Сервис" style="cursor: pointer;" onclick="showPortDetails(' + p.port + ', \'' + p.service + '\', \'' + p.ip + '\', \'' + escapeHtml(p.banner || '') + '\')"><strong>' + (p.service || portInfo.service) + '</strong><br><small style="font-size: 10px; color: #64748b;">' + portInfo.description + '</small></div><div class="ports-col banner" data-label="Версия"><small>' + (p.banner ? p.banner.substring(0, 40) : '-') + '</small></div><div class="ports-col vulns" data-label="Уязвимости">' + vulnTags.map(function(v) { return '<span class="vuln-tag">' + v + '</span>'; }).join('') + (portInfo.vulnerabilities.length > 2 ? '<span style="font-size: 10px;">+' + (portInfo.vulnerabilities.length - 2) + '</span>' : '') + (!vulnTags.length ? '<span style="color: #10b981;">Нет</span>' : '') + '</div><div class="ports-col exploit" data-label="Эксплойт">' + (topExploit ? '<span class="' + (topExploit.danger === 'critical' ? 'exploit-critical' : 'exploit-high') + '">' + topExploit.name + '</span><br><small>' + (topExploit.cve || '') + '</small>' : '<span style="color: #10b981;">Нет известных</span>') + '</div><div class="ports-col attack" data-label="Атака"><button class="attack-btn" onclick="executeAttack(' + p.port + ', \'' + p.ip + '\', \'' + (p.service || portInfo.service) + '\')" title="Запустить атаку"><i class="fas fa-play"></i></button></div></div>';
+            }).join('');
+        }
+
+        var topo = document.getElementById('topologyContainer');
+        if (scanData.devices.length === 0) {
+            topo.innerHTML = '<div class="echolot-log-entry info">Выполните сканирование для отображения топологии</div>';
+        } else {
+            topo.innerHTML = '<div class="topology-container"><div><i class="fas fa-globe"></i></div><div style="margin: 20px 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px;">' + scanData.devices.map(function(d) { return '<div class="topology-node" onclick="alert(\'' + d.ip + '\')"><i class="fas fa-laptop"></i><div><small>' + d.ip + '</small></div><div><small>' + d.ports.length + ' портов</small></div></div>'; }).join('') + '</div><div><i class="fas fa-arrow-down"></i> Интернет</div></div>';
+        }
+    }
+
+    function exportDevices() {
+        var data = JSON.stringify({ devices: scanData.devices, ports: scanData.ports, timestamp: new Date().toISOString() }, null, 2);
+        var blob = new Blob([data], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = 'echolot_scan_' + Date.now() + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    function executeAttack(port, ip, service) {
+        if (typeof window.runAttack === 'function') {
+            window.runAttack(port, ip, service);
+        } else {
+            alert('Атака на ' + ip + ':' + port + ' (' + service + ') — клиент не загружен');
+        }
+    }
+
+    // ========================================
+    // ИНИЦИАЛИЗАЦИЯ
+    // ========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        resetProgress();
+        
+        // Кнопки сканирования
+        var startScanBtn = document.getElementById('startScanBtn');
+        if (startScanBtn) {
+            startScanBtn.addEventListener('click', function() {
+                var target = document.getElementById('networkTarget').value;
+                if (target && typeof window.startScan === 'function') window.startScan(target);
+            });
+        }
+        
+        var startSingleScanBtn = document.getElementById('startSingleScanBtn');
+        if (startSingleScanBtn) {
+            startSingleScanBtn.addEventListener('click', function() {
+                var target = document.getElementById('singleTarget').value;
+                if (target && typeof window.startScan === 'function') window.startScan(target);
+            });
+        }
+        
+        var startRangeScanBtn = document.getElementById('startRangeScanBtn');
+        if (startRangeScanBtn) {
+            startRangeScanBtn.addEventListener('click', function() {
+                var start = document.getElementById('rangeStart').value;
+                var end = document.getElementById('rangeEnd').value;
+                if (start && end && typeof window.startScan === 'function') window.startScan(start + '-' + end);
+            });
+        }
+        
+        // Экспорт
+        var exportBtn = document.getElementById('exportDevicesBtn');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', function() { exportDevices(); });
+        }
+        
+        // Кнопки скачивания отчёта
+        var downloadHtmlBtn = document.getElementById('echoDownloadHtml');
+        if (downloadHtmlBtn) {
+            downloadHtmlBtn.addEventListener('click', function() {
+                if (scanData && scanData.currentReportId) {
+                    downloadEchoReportHTML(scanData.currentReportId);
+                } else {
+                    alert('Отчёт не найден');
+                }
+            });
+        }
+        
+        var downloadJsonBtn = document.getElementById('echoDownloadJson');
+        if (downloadJsonBtn) {
+            downloadJsonBtn.addEventListener('click', function() {
+                if (scanData && scanData.currentReportId) {
+                    downloadEchoReportJSON(scanData.currentReportId);
+                } else {
+                    alert('Отчёт не найден');
+                }
+            });
+        }
+        
+        // Переключение типа сканирования
+        document.querySelectorAll('[data-scan-type]').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('[data-scan-type]').forEach(function(b) { b.classList.remove('active'); });
+                btn.classList.add('active');
+                var type = btn.getAttribute('data-scan-type');
+                document.querySelectorAll('.source-content').forEach(function(c) { c.classList.remove('active'); });
+                document.getElementById(type + '-source').classList.add('active');
+            });
+        });
+        
+        // Переключение табов
+        document.querySelectorAll('.echolot-tab-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() { switchPanel(btn.getAttribute('data-tab')); });
+        });
+        
+        // Активация кнопок при вводе
+        var networkInput = document.getElementById('networkTarget');
+        var networkBtn = document.getElementById('startScanBtn');
+        if (networkInput && networkBtn) {
+            networkInput.addEventListener('input', function() {
+                if (networkInput.value.trim() !== '') {
+                    networkBtn.disabled = false;
+                    networkBtn.classList.add('active');
+                } else {
+                    networkBtn.disabled = true;
+                    networkBtn.classList.remove('active');
+                }
+            });
+        }
+        
+        var singleInput = document.getElementById('singleTarget');
+        var singleBtn = document.getElementById('startSingleScanBtn');
+        if (singleInput && singleBtn) {
+            singleInput.addEventListener('input', function() {
+                if (singleInput.value.trim() !== '') {
+                    singleBtn.disabled = false;
+                    singleBtn.classList.add('active');
+                } else {
+                    singleBtn.disabled = true;
+                    singleBtn.classList.remove('active');
+                }
+            });
+        }
+        
+        var rangeStart = document.getElementById('rangeStart');
+        var rangeEnd = document.getElementById('rangeEnd');
+        var rangeBtn = document.getElementById('startRangeScanBtn');
+        if (rangeStart && rangeEnd && rangeBtn) {
+            var checkRange = function() {
+                if (rangeStart.value.trim() !== '' && rangeEnd.value.trim() !== '') {
+                    rangeBtn.disabled = false;
+                    rangeBtn.classList.add('active');
+                } else {
+                    rangeBtn.disabled = true;
+                    rangeBtn.classList.remove('active');
+                }
+            };
+            rangeStart.addEventListener('input', checkRange);
+            rangeEnd.addEventListener('input', checkRange);
+        }
+    });
+
+    // Экспорт функций в глобальный объект
+    window.scanData = scanData;
+    window.updateUI = updateUI;
+    window.showProgress = showProgress;
+    window.updateProgress = updateProgress;
+    window.hideProgress = hideProgress;
+    window.showErrorProgress = showErrorProgress;
+    window.resetProgress = resetProgress;
+    window.executeAttack = executeAttack;
+    window.exportDevices = exportDevices;
+    window.switchPanel = switchPanel;
+    window.openEchoModal = openEchoModal;
+    window.closeEchoModal = closeEchoModal;
+    window.downloadEchoReportHTML = downloadEchoReportHTML;
+    window.downloadEchoReportJSON = downloadEchoReportJSON;
+</script>
+    <script src="modal.js"></script>
+    <script src="client.js"></script>
+    <script type="text/javascript" src="../common/licence.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script> loadMenu(); </script>
+</body>
+</html>

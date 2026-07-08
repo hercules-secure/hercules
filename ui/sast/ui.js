@@ -138,9 +138,6 @@ export function showResultsModal(results, onClose) {
                 <button id="downloadHtmlBtn" class="btn-html" style="background: #6f42c1; color: white; border: none; font-family: Ubuntu; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500;">
                     <i class="fab fa-html5"></i> Скачать HTML
                 </button>
-                <button id="downloadPdfBtn" class="btn-pdf" style="background: #dc3545; color: white; border: none; font-family: Ubuntu; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500;">
-                    <i class="fas fa-file-pdf"></i> Скачать PDF
-                </button>
                 <button id="downloadReportBtn" class="btn-download" style="background: #10b981; color: white; border: none; font-family: Ubuntu; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500;">
                     <i class="fas fa-download"></i> Скачать JSON
                 </button>

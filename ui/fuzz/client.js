@@ -148,6 +148,8 @@ function displaySpecInfo(data) {
 function checkFuzzStatus() {
     if (!fuzzTaskId) return;
     
+    const mode = document.querySelector('.mode-btn-mode.active').getAttribute('data-mode') === 'metla' ? 1 : 0;
+
     fetch('/api/fuzz/status/' + fuzzTaskId, {
         method: 'GET',
         headers: {
@@ -166,6 +168,8 @@ function checkFuzzStatus() {
             currentSpec = data.report?.spec;
             specLoaded = true;
             
+
+            
             resetStartButton();
             resetAllProgress();
             resetThermometer(); 
@@ -180,9 +184,8 @@ function checkFuzzStatus() {
                     filename: 'spec'
                 });
             }
-            
-            displayResults(data.report);
-            fuzzTaskId = null;
+             mode === 0 ? displayResults(data.report) : renderMetlaTargets(data)
+             fuzzTaskId = null; 
             
         } else if (data && data.status === 'error') {
             clearInterval(statusCheckInterval);
@@ -199,12 +202,6 @@ function checkFuzzStatus() {
     });
 }
 
-// ============================================================
-// ГЛАВНАЯ ФУНКЦИЯ - ЗАПУСК ФАЗЗИНГА
-// ============================================================
-// ============================================================
-// ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ ДЛЯ ЗАГОЛОВКОВ
-// ============================================================
 function getAuthHeaders() {
     const token = localStorage.getItem('licenseToken');
     if (token) {
@@ -252,7 +249,7 @@ async function startFuzzing() {
             
             switchThermometerMode('metla');
             startProgressEmulator();
-            
+
             const response = await fetch('/api/fuzz', {
                 method: 'POST',
                 headers: { 
@@ -266,7 +263,7 @@ async function startFuzzing() {
             });
             
             // ===== ПРОВЕРКА НА ЛИЦЕНЗИЮ =====
-            if (response.status === 401) {
+            if (response.status === 403) {
                 if (typeof window.showLicenseModal === 'function') {
                     window.showLicenseModal('fuzz');
                 }
@@ -276,29 +273,6 @@ async function startFuzzing() {
                 return;
             }
             
-            if (response.status === 403) {
-                let data;
-                try {
-                    data = await response.json();
-                } catch (e) {}
-                
-                if (data && data.needRenew) {
-                    if (typeof window.showLicenseModal === 'function') {
-                        window.showLicenseModal('fuzz');
-                    }
-                    showValidationMessage('Срок действия лицензии истёк', 'error');
-                } else if (data && data.needReauth) {
-                    if (typeof window.showLicenseModal === 'function') {
-                        window.showLicenseModal('fuzz');
-                    }
-                    showValidationMessage('Токен истёк, требуется повторная активация', 'error');
-                } else {
-                    showErrorModal('Ошибка', data?.message || 'Ошибка доступа');
-                }
-                stopProgressEmulator();
-                resetAllState();
-                return;
-            }
             
             let data;
             try {
@@ -326,9 +300,9 @@ async function startFuzzing() {
                 if (statusCheckInterval) {
                     clearInterval(statusCheckInterval);
                 }
-                statusCheckInterval = setInterval(checkFuzzStatus, 2000);
+                statusCheckInterval = setInterval(checkFuzzStatus, 5000);
                 
-                setTimeout(checkFuzzStatus, 1000);
+                setTimeout(checkFuzzStatus, 5000);
                 return;
             }
             
@@ -380,7 +354,7 @@ async function startFuzzing() {
         } else {
             throw new Error('Нет источника спецификации');
         }
-        
+        console.log(mode)
         const response = await fetch('/api/fuzz', {
             method: 'POST',
             headers: getAuthHeaders(),  // ← добавляем токен

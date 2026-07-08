@@ -213,3 +213,12 @@
 .source-type-url i {
     color: white;
 }
+
+.source-type-network {
+    background: #6a1b9a;
+    color: white;
+}
+
+.source-type-network i {
+    color: white;
+}

@@ -1,5 +1,19 @@
 import { runSASTAnalysis } from '../sast/api.js'
 
+
+function getAuthHeaders() {
+    const token = localStorage.getItem('licenseToken');
+    if (token) {
+            return { 'Authorization': `Bearer ${token}` };
+     }
+    return {};
+}
+
+const headers = {
+      'Content-Type': 'application/json',
+       ...getAuthHeaders()
+};
+
 window.historyReplay = async function(id) {
     const btnHistoryReplay = document.getElementById(id); 
     if (!btnHistoryReplay) {
@@ -8,7 +22,7 @@ window.historyReplay = async function(id) {
     }
     
     const type = btnHistoryReplay.getAttribute('data-type');
-    const source = btnHistoryReplay.getAttribute('data-source');
+    const source = btnHistoryReplay.getAttribute('data-url');
     const tool = btnHistoryReplay.getAttribute('data-tool');
     
     const icon = btnHistoryReplay.querySelector('i');
@@ -20,7 +34,8 @@ window.historyReplay = async function(id) {
     try {
         let response;
         let result;
-        
+    
+  
         // Определяем тип источника и соответствующий эндпоинт
         switch(type) {
             case 'archive':
@@ -31,18 +46,21 @@ window.historyReplay = async function(id) {
                 break;
                 
             case 'repository':
+                console.log(source)
                 response = await fetch(`/api/${tool}/git`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify({ url: source })
                 });
+
+                console.log(response)
                 break;
                 
             case 'url':
                 // Только для Скаута
-                response = await fetch(`/api/${tool}/analyze`, {
+                response = await fetch(`/api/${tool}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify({ url: source })
                 });
                 break;
@@ -57,8 +75,8 @@ window.historyReplay = async function(id) {
         switch(tool) {
             case "sast": 
                 const report = await runSASTAnalysis(result.archive.id);
-                viewDetails(tool, report.metadata.archiveId);
-                loadHistory();
+                //viewDetails(tool, report.metadata.archiveId);
+                //loadHistory();
                 break;
                 
             case "scout":
@@ -79,27 +97,27 @@ window.historyReplay = async function(id) {
                     console.error('Ошибка запуска анализа Скаута:', result.error);
                     addEvent(`Ошибка запуска: ${result.error}`, 'error');
                 }
-                loadHistory();
+                //loadHistory();
                 break;
                 
-            case "sca":
-                viewDetails(tool, result);
-                loadHistory();
-                break;
+            // case "sca":
+            //     viewDetails(tool, result);
+            //     loadHistory();
+            //     break;
                 
-            case "blender":
-                viewDetails(tool, result);
-                loadHistory();
-                break;
+            // case "blender":
+            //     viewDetails(tool, result);
+            //     loadHistory();
+            //     break;
         }
         
         async function waitForScoutResult(taskId, maxAttempts = 60, interval = 2000) {
             for (let i = 0; i < maxAttempts; i++) {
-                const statusRes = await fetch(`/api/scout/status/${taskId}`);
+                const statusRes = await fetch(`/api/scout/status/${taskId}`, { headers: headers });
                 const status = await statusRes.json();
                 
                 if (status.completed) {
-                    const resultRes = await fetch(`/api/scout/result/${taskId}`);
+                    const resultRes = await fetch(`/api/scout/status/${taskId}`, { headers: headers } );
                     return await resultRes.json();
                 }
                 

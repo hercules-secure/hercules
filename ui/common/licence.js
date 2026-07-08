@@ -27,7 +27,6 @@
             localStorage.setItem('licenseExpiresAt', expiresAt);
             localStorage.setItem('licenseRemainingDays', remainingDays);
             localStorage.setItem('licenseKey', licenseKey);
-            console.log('[LICENSE] Token saved, expires:', expiresAt);
         }
     }
 
@@ -93,7 +92,7 @@
                 }
             }
         } catch (error) {
-            console.error('[LICENSE] Activation error:', error);
+
             if (messageDiv) {
                 messageDiv.style.display = 'block';
                 messageDiv.className = 'error';

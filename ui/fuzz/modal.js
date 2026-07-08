@@ -2,10 +2,7 @@
 
 function renderVulnerabilitiesTable(vulnerabilities) {
     if (!vulnerabilities || vulnerabilities.length === 0) return '';
-    
-    // ============================================================
-    // ЦВЕТА HTTP МЕТОДОВ (как в Swagger)
-    // ============================================================
+
     const methodColors = {
         GET: { bg: '#61affe', color: 'white' },
         POST: { bg: '#49cc90', color: 'white' },
@@ -222,4 +219,491 @@ function displayResults(report) {
     `;
     
     openFuzzModal();
+}
+
+        function renderMetlaTargets(reportData) {
+            const area = document.getElementById('metlaTargetsArea');
+            const empty = document.getElementById('metlaEmpty');
+            const header = document.getElementById('metlaHeader');
+            const list = document.getElementById('metlaTargetsList');
+            const stats = document.getElementById('metlaStats');
+
+            if (!reportData || !reportData.report || !Array.isArray(reportData.report) || reportData.report.length === 0) {
+                empty.style.display = 'block';
+                header.style.display = 'none';
+                list.style.display = 'none';
+                stats.style.display = 'none';
+                area.classList.remove('has-targets');
+                return;
+            }
+
+            const targets = reportData.report;
+            empty.style.display = 'none';
+            header.style.display = 'flex';
+            list.style.display = 'block';
+            area.classList.add('has-targets');
+
+            // Статистика
+            const total = targets.length;
+            const auth = targets.filter(t => t.isAuth === true).length;
+            const nonAuth = targets.filter(t => t.isAuth === false).length;
+            const methods = {};
+            targets.forEach(t => {
+                const m = (t.method || 'GET').toUpperCase();
+                methods[m] = (methods[m] || 0) + 1;
+            });
+/*
+                <div class="stat-divider"></div>
+                // <div class="stat-item"><strong>${auth}</strong></div>
+                // <div class="stat-item"><strong>${nonAuth}</strong></div>
+                // ${Object.entries(methods).map(([method, count]) => `
+                //     <div class="stat-item">${method} <strong>${count}</strong></div>
+                // `).join('')}
+
+
+*/
+            stats.innerHTML = `
+                <div class="stat-item">Всего <strong>${total}</strong></div>
+            `;
+            stats.style.display = 'flex';
+
+            const methodColors = {
+                GET: '#61affe',
+                POST: '#49cc90',
+                PUT: '#fca130',
+                DELETE: '#f93e3e',
+                PATCH: '#50e3c2',
+                HEAD: '#9012fe',
+                OPTIONS: '#0d5aa7',
+                default: '#6c757d'
+            };
+
+            let html = '';
+            targets.forEach((target, index) => {
+                const method = (target.method || 'GET').toUpperCase();
+                const color = methodColors[method] || methodColors.default;
+                const isAuth = target.isAuth === true;
+                const path = target.path || '/';
+
+                html += `
+                    <div class="metla-item" data-index="${index}">
+                        <div class="metla-row" onclick="openMetlaDetail(${index})">
+                            <span class="metla-method" style="color: ${color}">${method}</span>
+                            <span class="metla-path">${path} <span class="metla-badge ${isAuth ? 'auth' : 'public'}">${isAuth ? 'Auth' : 'Public'}</span></span>
+                            
+                        </div>
+                    </div>
+                `;
+            });
+
+            list.innerHTML = html;
+            window._metlaTargetsData = reportData;
+        }
+
+        function openMetlaDetail(index) {
+            const targets = window._metlaTargetsData?.report || [];
+            const target = targets[index];
+            if (!target) return;
+
+            const method = (target.method || 'GET').toUpperCase();
+            const methodColors = {
+                GET: '#61affe',
+                POST: '#49cc90',
+                PUT: '#fca130',
+                DELETE: '#f93e3e',
+                PATCH: '#50e3c2',
+                HEAD: '#9012fe',
+                OPTIONS: '#0d5aa7',
+                default: '#6c757d'
+            };
+
+            const hasBody = target.body !== null && target.body !== undefined;
+            const hasHeaders = target.headers && Object.keys(target.headers).length > 0;
+
+            document.getElementById('metla-detail-method').textContent = method;
+            document.getElementById('metla-detail-method').style.color = methodColors[method] || methodColors.default;
+            document.getElementById('metla-detail-path').textContent = target.path || '/';
+            document.getElementById('metla-detail-url').textContent = target.url || '-';
+            document.getElementById('metla-detail-auth').textContent = target.isAuth ? 'Требуется' : 'Публичный';
+            document.getElementById('metla-detail-auth').style.color = target.isAuth ? '#dc2626' : '#16a34a';
+
+            // Заголовки
+            const headersSection = document.getElementById('metla-detail-headers');
+            const headersContent = document.getElementById('metla-detail-headers-content');
+            if (hasHeaders) {
+                headersSection.style.display = 'block';
+                headersContent.textContent = Object.entries(target.headers)
+                    .map(([k, v]) => `${k}: ${v}`)
+                    .join('\n');
+            } else {
+                headersSection.style.display = 'none';
+            }
+
+            // Тело
+            const bodySection = document.getElementById('metla-detail-body-section');
+            const bodyContent = document.getElementById('metla-detail-body-content');
+            if (hasBody) {
+                bodySection.style.display = 'block';
+                bodyContent.textContent = target.body;
+            } else {
+                bodySection.style.display = 'none';
+            }
+
+            // Схема
+            const schemaSection = document.getElementById('metla-detail-schema');
+            const schemaContent = document.getElementById('metla-detail-schema-content');
+            if (target.bodySchema) {
+                schemaSection.style.display = 'block';
+                schemaContent.textContent = JSON.stringify(target.bodySchema, null, 2);
+            } else {
+                schemaSection.style.display = 'none';
+            }
+
+            document.getElementById('metlaDetailModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMetlaDetail() {
+            document.getElementById('metlaDetailModal').style.display = 'none';
+            document.body.style.overflow = '';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeMetlaDetail();
+            }
+        });
+
+        function getSelectedMetlaTargets() {
+            const checkboxes = document.querySelectorAll('.metla-checkbox:checked');
+            return Array.from(checkboxes).map(cb => parseInt(cb.dataset.index));
+        }
+
+        function clearMetlaTargets() {
+            const area = document.getElementById('metlaTargetsArea');
+            const empty = document.getElementById('metlaEmpty');
+            const header = document.getElementById('metlaHeader');
+            const list = document.getElementById('metlaTargetsList');
+            const stats = document.getElementById('metlaStats');
+            
+            empty.style.display = 'block';
+            header.style.display = 'none';
+            list.style.display = 'none';
+            list.innerHTML = '';
+            stats.style.display = 'none';
+            area.classList.remove('has-targets');
+        }
+
+        // ============================================================
+// ФУНКЦИИ ДЛЯ МОДАЛЬНОГО ОКНА МЕТЛЫ (Swagger/Postman стиль)
+// ============================================================
+
+let currentMetlaTarget = null;
+
+function openMetlaDetail(index) {
+    const targets = window._metlaTargetsData?.report || [];
+    const target = targets[index];
+    if (!target) return;
+
+    currentMetlaTarget = target;
+
+    const method = (target.method || 'GET').toUpperCase();
+    const methodColors = {
+        GET: '#61affe',
+        POST: '#49cc90',
+        PUT: '#fca130',
+        DELETE: '#f93e3e',
+        PATCH: '#50e3c2',
+        HEAD: '#9012fe',
+        OPTIONS: '#0d5aa7',
+        default: '#6c757d'
+    };
+
+    const isAuth = target.isAuth === true;
+    const hasBody = target.body !== null && target.body !== undefined;
+    const hasHeaders = target.headers && Object.keys(target.headers).length > 0;
+
+    // Заполняем хедер
+    const methodEl = document.getElementById('metla-detail-method');
+    methodEl.textContent = method;
+    methodEl.style.color = methodColors[method] || methodColors.default;
+    methodEl.style.background = (methodColors[method] || methodColors.default) + '20';
+    
+    document.getElementById('metla-detail-path').textContent = target.path || '/';
+    
+    const authBadge = document.getElementById('metla-detail-auth-badge');
+    authBadge.textContent = isAuth ? 'Auth' : 'Public';
+    authBadge.className = 'metla-detail-auth-badge ' + (isAuth ? 'auth' : 'public');
+
+    // Заполняем детали
+    document.getElementById('metla-detail-url').textContent = target.url || '-';
+    document.getElementById('metla-detail-auth').textContent = isAuth ? 'Требуется' : 'Публичный';
+    document.getElementById('metla-detail-auth').style.color = isAuth ? '#dc2626' : '#16a34a';
+    document.getElementById('metla-detail-content-type').textContent = target.contentType || '-';
+    document.getElementById('metla-detail-server').textContent = target.server || '-';
+
+    // Заголовки
+    const headersContent = document.getElementById('metla-detail-headers-content');
+    if (hasHeaders) {
+        headersContent.innerHTML = Object.entries(target.headers)
+            .map(([k, v]) => `<span style="color: #61affe;">${k}</span>: ${v}`)
+            .join('\n');
+    } else {
+        headersContent.innerHTML = '<span class="metla-detail-empty">Нет заголовков</span>';
+    }
+
+    // Тело
+    const bodyContent = document.getElementById('metla-detail-body-content');
+    if (hasBody) {
+        bodyContent.textContent = target.body;
+    } else {
+        bodyContent.innerHTML = '<span class="metla-detail-empty">Нет тела запроса</span>';
+    }
+
+    // Схема
+    const schemaContent = document.getElementById('metla-detail-schema-content');
+    if (target.bodySchema) {
+        schemaContent.textContent = JSON.stringify(target.bodySchema, null, 2);
+    } else {
+        schemaContent.innerHTML = '<span class="metla-detail-empty">Нет схемы</span>';
+    }
+
+    // Показываем первую вкладку
+    switchMetlaTab('details');
+
+    document.getElementById('metlaDetailModal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function switchMetlaTab(tabId) {
+    // Скрываем все панели
+    document.querySelectorAll('.metla-detail-panel').forEach(panel => {
+        panel.style.display = 'none';
+        panel.classList.remove('active');
+    });
+
+    // Показываем выбранную
+    const panel = document.getElementById('panel-' + tabId);
+    if (panel) {
+        panel.style.display = 'block';
+        panel.classList.add('active');
+    }
+
+    // Обновляем табы
+    document.querySelectorAll('.metla-detail-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.tab === tabId) {
+            tab.classList.add('active');
+        }
+    });
+}
+
+function closeMetlaDetail() {
+    document.getElementById('metlaDetailModal').style.display = 'none';
+    document.body.style.overflow = '';
+    currentMetlaTarget = null;
+}
+
+function copyMetlaRequest() {
+    if (!currentMetlaTarget) return;
+    
+    const method = (currentMetlaTarget.method || 'GET').toUpperCase();
+    const url = currentMetlaTarget.url || '';
+    const body = currentMetlaTarget.body || '';
+    
+    let request = `${method} ${url}\n`;
+    if (currentMetlaTarget.headers) {
+        Object.entries(currentMetlaTarget.headers).forEach(([k, v]) => {
+            request += `${k}: ${v}\n`;
+        });
+    }
+    if (body) {
+        request += '\n' + body;
+    }
+    
+    navigator.clipboard.writeText(request).then(() => {
+        showToast('Скопировано', 'Запрос скопирован в буфер обмена', 'success');
+    }).catch(() => {
+        // Fallback
+        const textarea = document.createElement('textarea');
+        textarea.value = request;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Скопировано', 'Запрос скопирован в буфер обмена', 'success');
+    });
+}
+
+function exportMetlaRequest(format) {
+    if (!currentMetlaTarget) return;
+    
+    const method = (currentMetlaTarget.method || 'GET').toUpperCase();
+    const url = currentMetlaTarget.url || '';
+    const headers = currentMetlaTarget.headers || {};
+    const body = currentMetlaTarget.body || '';
+    
+    let output = '';
+    
+    switch(format) {
+        case 'curl':
+            output = `curl -X ${method} "${url}"`;
+            Object.entries(headers).forEach(([k, v]) => {
+                output += ` \\\n  -H "${k}: ${v}"`;
+            });
+            if (body) {
+                output += ` \\\n  -d '${body}'`;
+            }
+            break;
+            
+        case 'postman':
+            output = JSON.stringify({
+                method: method,
+                header: Object.entries(headers).map(([k, v]) => ({ key: k, value: v })),
+                body: body ? { mode: 'raw', raw: body } : undefined,
+                url: url
+            }, null, 2);
+            break;
+            
+        case 'fetch':
+            const headersStr = Object.entries(headers).map(([k, v]) => `    "${k}": "${v}"`).join(',\n');
+            output = `fetch("${url}", {\n  method: "${method}",\n  headers: {\n${headersStr}\n  }${body ? `,\n  body: \`${body}\`` : ''}\n});`;
+            break;
+            
+        case 'python':
+            output = `import requests\n\nresponse = requests.${method.toLowerCase()}("${url}"`;
+            if (Object.keys(headers).length > 0) {
+                output += `,\n    headers=${JSON.stringify(headers, null, 2)}`;
+            }
+            if (body) {
+                output += `,\n    data="${body}"`;
+            }
+            output += '\n)';
+            break;
+    }
+    
+    // Копируем в буфер
+    navigator.clipboard.writeText(output).then(() => {
+        showToast('Экспортировано', `Экспорт в ${format.toUpperCase()} выполнен`, 'success');
+    }).catch(() => {
+        const textarea = document.createElement('textarea');
+        textarea.value = output;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('Экспортировано', `Экспорт в ${format.toUpperCase()} выполнен`, 'success');
+    });
+}
+
+function saveMetlaRequest() {
+    if (!currentMetlaTarget) return;
+    
+    // Сохраняем в localStorage
+    const saved = JSON.parse(localStorage.getItem('metlaSavedRequests') || '[]');
+    saved.push({
+        ...currentMetlaTarget,
+        savedAt: new Date().toISOString()
+    });
+    localStorage.setItem('metlaSavedRequests', JSON.stringify(saved));
+    
+    showToast('Сохранено', 'Запрос сохранен в избранное', 'success');
+}
+
+function runMetlaAnalysis() {
+    if (!currentMetlaTarget) return;
+    
+    const type = document.getElementById('metlaAnalysisType').value;
+    const typeLabels = {
+        xss: 'XSS',
+        sql: 'SQL Injection',
+        headers: 'Заголовки',
+        bruteforce: 'Брутфорс',
+        full: 'Полный'
+    };
+    
+    showToast('Запуск анализа', `Запущен ${typeLabels[type]} анализ для ${currentMetlaTarget.path}`, 'info');
+    
+    // Здесь можно вызвать API для запуска анализа
+    console.log('Запуск анализа:', {
+        target: currentMetlaTarget,
+        type: type
+    });
+}
+
+// Закрытие по Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeMetlaDetail();
+    }
+});
+
+// Toast уведомление
+function showToast(title, message, type = 'info') {
+    let container = document.getElementById('metlaToastContainer');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'metlaToastContainer';
+        container.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-width: 360px;
+        `;
+        document.body.appendChild(container);
+    }
+    
+    const colors = {
+        info: { bg: '#667eea', icon: 'fa-info-circle' },
+        success: { bg: '#28a745', icon: 'fa-check-circle' },
+        warning: { bg: '#fca130', icon: 'fa-exclamation-triangle' },
+        error: { bg: '#dc3545', icon: 'fa-times-circle' }
+    };
+    
+    const color = colors[type] || colors.info;
+    
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        background: white;
+        border-left: 4px solid ${color.bg};
+        border-radius: 8px;
+        padding: 12px 16px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideInRight 0.3s ease;
+    `;
+    
+    toast.innerHTML = `
+        <div style="font-size: 18px; color: ${color.bg}; flex-shrink: 0;">
+            <i class="fas ${color.icon}"></i>
+        </div>
+        <div style="flex: 1; min-width: 0;">
+            <div style="font-weight: 600; font-size: 13px; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">${title}</div>
+            <div style="font-size: 12px; color: #6c757d; font-family: 'Ubuntu', sans-serif;">${message}</div>
+        </div>
+        <button onclick="this.parentElement.remove()" style="border: none; background: none; cursor: pointer; color: #adb5bd; font-size: 14px; flex-shrink: 0;">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
+    
+    container.appendChild(toast);
+    
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(20px)';
+            toast.style.transition = 'all 0.3s ease';
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
 }

@@ -87,7 +87,6 @@
                     <span class="format-badge"><i class="fas fa-chart-line"></i> Анализ заголовков</span>
                     <span class="format-badge"><i class="fas fa-cogs"></i> Определение технологий</span>
                     <span class="format-badge"><i class="fas fa-search"></i> DNS разведка</span>
-                    <span class="format-badge"><i class="fas fa-plug"></i> Сканирование портов</span>
                 </div>
             </div>
 
@@ -381,13 +380,13 @@
             headers['Authorization'] = `Bearer ${token}`;
         }
         
-        const response = await fetch('/api/scout/analyze', {
+        const response = await fetch('/api/scout', {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({ url: targetUrl })
         });
         
-        if (response.status === 401) {
+        if (response.status === 403) {
             addEvent('Требуется активация лицензии', 'warning');
             if (typeof window.showLicenseModal === 'function') {
                 window.showLicenseModal();
