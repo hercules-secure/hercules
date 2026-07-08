@@ -192,9 +192,20 @@
 
                 
                 const shortName = record.sourceType == 'url' ? record.sourceName : getShortName(record.sourceName, record.sourceType);
-                const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : (record.sourceType === 'url' ? 'URL' : 'Архив');
-                const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : (record.sourceType === 'url' ? 'source-type-url' : 'source-type-archive');
-                const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : '<i class="fas fa-file-archive"></i>');
+                        const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : 
+                        (record.sourceType === 'url' ? 'URL' : 
+                        (record.sourceType === 'network' ? 'Сеть' : 
+                        (record.sourceType === 'archive' ? 'Архив' : 'Неизвестно')));
+
+                        const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 
+                         (record.sourceType === 'url' ? 'source-type-url' : 
+                         (record.sourceType === 'network' ? 'source-type-network' : 
+                         (record.sourceType === 'archive' ? 'source-type-archive' : 'source-type-unknown')));
+
+                        const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : 
+                        (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : 
+                        (record.sourceType === 'network' ? '<i class="fas fa-server"></i>' : 
+                        (record.sourceType === 'archive' ? '<i class="fas fa-file-archive"></i>' : '<i class="fas fa-question-circle"></i>')));
                                 return `
                     <tr>
                         <td><strong>${record.tool?.toUpperCase() || '—'}</strong></td>
@@ -217,8 +228,8 @@
                             <button class="action-btn" onclick="viewDetails('${record.tool}', '${record.reportId}')" title="Посмотреть отчет">
                                 <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
                             </button>
-                           ${record.sourceType === 'repository' ? `
-                            <button id="history-replay" data-tool="${record.tool}" data-url="${record.sourceName}" data-branch="${record.branch || 'main'}" 
+                           ${record.sourceType === 'repository' || 'url' ? `
+                            <button id="history-replay" data-type="${record.sourceType}" data-tool="${record.tool}" data-url="${record.sourceName}" data-branch="${record.branch}" 
                                  onclick="historyReplay(this.id)"
                                  style="background: white; border: none; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; color: black; transition: all 0.2s;">
                                 <i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>

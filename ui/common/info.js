@@ -121,6 +121,38 @@ function renderLeftPanel(tool) {
             </div>
         `;
     }
+        // Поддерживаемые источники
+    if (tool.features?.sources?.length > 0) {
+        html += `
+            <div class="settings-section">
+                <h4> Поддерживаемые источники</h4>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    ${renderColumns(tool.features.sources, 2)}
+                </div>
+            </div>
+        `;
+    }
+    if (tool.features?.analysis?.length > 0) {
+        html += `
+            <div class="settings-section">
+                <h4>Моделирование</h4>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    ${renderColumns(tool.features.analysis, 2)}
+                </div>
+            </div>
+        `;
+    }
+    
+    if (tool.features?.elements?.length > 0) {
+        html += `
+            <div class="settings-section">
+                <h4>Элементы</h4>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    ${renderColumns(tool.features.elements, 2)}
+                </div>
+            </div>
+        `;
+    }
      // Режимы работы
     if (tool.features?.modes?.length > 0) {
         html += `
@@ -208,18 +240,26 @@ function renderLeftPanel(tool) {
             </div>
         `;
     }
-    
-    // Поддерживаемые источники
-    if (tool.features?.sources?.length > 0) {
+        // анализ сети
+    if (tool.features?.network?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Поддерживаемые источники</h4>
-                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                    ${renderColumns(tool.features.sources, 2)}
-                </div>
+                <h4>Анализ сети</h4>
+                ${renderGrid(tool.features.network)}
             </div>
         `;
     }
+
+        // поиск уязвимостей
+        if (tool.features?.vulnerabilities?.length > 0) {
+        html += `
+            <div class="settings-section">
+                <h4>Поиск уязвимостей</h4>
+                ${renderGrid(tool.features.vulnerabilities)}
+            </div>
+        `;
+    }
+
     
     // Форматы отчетов
     if (tool.features?.reports?.length > 0) {

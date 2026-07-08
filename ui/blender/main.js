@@ -181,13 +181,13 @@ document.addEventListener('DOMContentLoaded', () => {
             ...getAuthHeaders()
         };
         
-        const response = await fetch(`${API_BASE_URL}/analyze/git`, {
+        const response = await fetch(`${API_BASE_URL}/git`, {
             method: 'POST',
             headers: headers,
             body: JSON.stringify({ url, branch })
         });
         
-        if (response.status === 401) {
+        if (response.status === 403) {
             if (typeof window.showLicenseModal === 'function') {
                 window.showLicenseModal();
             }
@@ -218,10 +218,10 @@ document.addEventListener('DOMContentLoaded', () => {
             body: formData
         });
         
-        if (response.status === 401) {
-            if (typeof window.showLicenseModal === 'function') {
-                window.showLicenseModal();
-            }
+        if (response.status === 403) {
+            //if (typeof window.showLicenseModal === 'function') {
+                showLicenseModal();
+            //}
             throw new Error('Требуется активация лицензии');
         }
         

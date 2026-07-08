@@ -1,10 +1,3 @@
-// ==================== utils.js ====================
-// ВСЕ вспомогательные функции (и DOM, и чистые)
-
-// ============================================================
-// УВЕДОМЛЕНИЯ
-// ============================================================
-
 function showToolNotification(message, type = 'success', duration = 3000) {
     const colors = {
         success: '#10b981',
@@ -290,32 +283,21 @@ function updateThermometer(mode, taskId) {
     if (fill) fill.style.width = currentPercent + '%';
     if (percent) percent.textContent = currentPercent + '%';
     
-    // Обновляем точки
-    dots.forEach((dot, index) => {
-        const stepPercent = Math.floor((index / (dots.length - 1)) * 100);
-        const nearestStep = steps.reduce((prev, curr) => {
-            return Math.abs(curr.percent - stepPercent) < Math.abs(prev.percent - stepPercent) ? curr : prev;
-        });
+    // Обновляем точки и подписи (они теперь в парах)
+    const stepItems = document.querySelectorAll('.step-item');
+    stepItems.forEach((item, index) => {
+        const dot = item.querySelector('.step-dot');
+        const label = item.querySelector('.step-label');
+        const stepPercent = Math.floor((index / (stepItems.length - 1)) * 100);
         
         dot.classList.remove('active', 'completed');
-        if (nearestStep.percent < currentPercent) {
-            dot.classList.add('completed');
-        } else if (nearestStep.percent === currentPercent) {
-            dot.classList.add('active');
-        }
-    });
-    
-    // Обновляем подписи
-    labels.forEach((label, index) => {
-        const stepPercent = Math.floor((index / (labels.length - 1)) * 100);
-        const nearestStep = steps.reduce((prev, curr) => {
-            return Math.abs(curr.percent - stepPercent) < Math.abs(prev.percent - stepPercent) ? curr : prev;
-        });
-        
         label.classList.remove('active', 'completed');
-        if (nearestStep.percent < currentPercent) {
+        
+        if (stepPercent < currentPercent) {
+            dot.classList.add('completed');
             label.classList.add('completed');
-        } else if (nearestStep.percent === currentPercent) {
+        } else if (stepPercent === currentPercent) {
+            dot.classList.add('active');
             label.classList.add('active');
         }
     });

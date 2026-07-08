@@ -1,0 +1,1503 @@
+/* ============================================================
+   ПАЛИТРА - БАЗОВЫЕ СТИЛИ
+   ============================================================ */
+
+.palette-container {
+    display: flex;
+    gap: 20px;
+    height: calc(100vh - 160px);
+    min-height: 500px;
+}
+
+/* ============================================================
+   ЛЕВАЯ ПАНЕЛЬ - КАНВАС
+   ============================================================ */
+
+.palette-canvas-wrapper {
+    flex: 1;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    position: relative;
+}
+
+.palette-canvas {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    position: relative;
+    cursor: crosshair;
+}
+
+.palette-canvas-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0,0,0,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+}
+
+/* ============================================================
+   ЭЛЕМЕНТЫ НА КАНВАСЕ
+   ============================================================ */
+
+.canvas-element {
+    position: absolute;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: move;
+    user-select: none;
+    border: 2px solid transparent;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    min-width: 50px;
+    text-align: center;
+    z-index: 1;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.canvas-element:hover {
+    border-color: #3B82F6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+    z-index: 2;
+}
+
+.canvas-element.selected {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+    z-index: 3;
+}
+
+.canvas-element .element-icon {
+    margin-right: 4px;
+    font-size: 12px;
+}
+
+.canvas-element .element-actions {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    display: none;
+    gap: 3px;
+}
+
+.canvas-element:hover .element-actions,
+.canvas-element.selected .element-actions {
+    display: flex;
+}
+
+.canvas-element .element-actions button {
+    width: 16px;
+    height: 16px;
+    border: none;
+    border-radius: 50%;
+    background: #EF4444;
+    color: white;
+    font-size: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.canvas-element .element-actions button:hover {
+    transform: scale(1.1);
+}
+
+.canvas-element.type-asset {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #93c5fd;
+}
+
+.canvas-element.type-threat {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}
+
+.canvas-element.type-control {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #6ee7b7;
+}
+
+.canvas-element.type-data {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fcd34d;
+}
+
+.canvas-element.type-actor {
+    background: #e0e7ff;
+    color: #3730a3;
+    border-color: #a5b4fc;
+}
+
+.canvas-element.type-network {
+    background: #fce4ec;
+    color: #880e4f;
+    border-color: #f48fb1;
+}
+
+.canvas-element.type-tool {
+    background: #f3e8ff;
+    color: #6b21a5;
+    border-color: #d8b4fe;
+}
+
+.canvas-element.type-gate {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #6ee7b7;
+}
+
+.canvas-element.type-gate-or {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fcd34d;
+}
+
+.canvas-element.type-gate-if {
+    background: #ede9fe;
+    color: #5b21b6;
+    border-color: #c4b5fd;
+}
+
+/* ============================================================
+   ВЕРХНЯЯ ПАНЕЛЬ
+   ============================================================ */
+
+.palette-topbar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+
+.palette-topbar-left {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.palette-topbar-right {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: auto;
+}
+
+.source-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #6c757d;
+    white-space: nowrap;
+}
+
+.source-btn:hover {
+    border-color: #3B82F6;
+    color: #1a1a2e;
+}
+
+.source-btn.active {
+    border-color: #3B82F6;
+    background: #eff6ff;
+    color: #3B82F6;
+}
+
+.source-btn i {
+    font-size: 12px;
+}
+
+.action-btn {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    background: white;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #1a1a2e;
+    white-space: nowrap;
+}
+
+.action-btn:hover {
+    background: #f8f9fa;
+    border-color: #3B82F6;
+}
+
+.action-btn.primary {
+    background: #3B82F6;
+    color: white;
+    border-color: #3B82F6;
+}
+
+.action-btn.primary:hover {
+    background: #2563eb;
+}
+
+.action-btn.success {
+    background: #10B981;
+    color: white;
+    border-color: #10B981;
+}
+
+.action-btn.success:hover {
+    background: #059669;
+}
+
+.action-btn.danger {
+    color: #EF4444;
+    border-color: #fca5a5;
+}
+
+.action-btn.danger:hover {
+    background: #fee2e2;
+}
+
+.action-btn i {
+    font-size: 12px;
+}
+
+.source-content-palette {
+    display: none;
+    margin-top: 6px;
+    padding: 8px 12px;
+    background: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    width: 100%;
+}
+
+.source-content-palette.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+.source-content-palette .input-group {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.source-content-palette .input-group input,
+.source-content-palette .input-group select {
+    flex: 1;
+    padding: 4px 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: 'Ubuntu', sans-serif;
+    background: white;
+    transition: border-color 0.2s;
+    min-width: 120px;
+}
+
+.source-content-palette .input-group input:focus,
+.source-content-palette .input-group select:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.source-content-palette .input-group .start-btn {
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: none;
+    background: #e5e7eb;
+    color: #9ca3af;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: not-allowed;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.source-content-palette .input-group .start-btn.active {
+    background: #3B82F6;
+    color: white;
+    cursor: pointer;
+}
+
+.source-content-palette .input-group .start-btn.active:hover {
+    background: #2563eb;
+}
+
+.source-content-palette .input-group .start-btn i {
+    margin-right: 4px;
+}
+
+.source-content-palette .hint {
+    font-size: 11px;
+    color: #6c757d;
+}
+
+/* ============================================================
+   ПРАВАЯ ПАНЕЛЬ - ИНСТРУМЕНТЫ
+   ============================================================ */
+
+.palette-tools {
+    width: 240px;
+    min-width: 240px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    background: transparent;
+    overflow: visible;
+}
+
+.palette-tool-card {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    overflow: visible;
+    flex-shrink: 0;
+}
+
+.palette-tool-card .card-title {
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a2e;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.palette-tool-card .card-title i {
+    font-size: 14px;
+    color: #1a1a2e;
+}
+
+/* ============================================================
+   ИНСТРУМЕНТЫ
+   ============================================================ */
+
+.flow-tools-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+    overflow: visible;
+    max-height: none;
+}
+
+.flow-tool-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    cursor: grab;
+    transition: all 0.15s;
+    font-size: 11px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.flow-tool-item:hover {
+    background: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.flow-tool-item:active {
+    cursor: grabbing;
+}
+
+.flow-tool-item .tool-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #495057;
+    flex-shrink: 0;
+}
+
+.flow-tool-item .tool-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.flow-tool-item .tool-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: #1a1a2e;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.flow-tool-item .tool-desc {
+    font-size: 11px;
+    color: #868e96;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.flow-tool-item .tool-drag {
+    color: #adb5bd;
+    font-size: 12px;
+    cursor: grab;
+}
+
+.flow-tools-list .hint {
+    font-size: 10px;
+    color: #adb5bd;
+    text-align: center;
+    border-top: 1px dashed #e5e7eb;
+    padding-top: 6px;
+    margin-top: 4px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+/* ============================================================
+   ЭЛЕМЕНТЫ
+   ============================================================ */
+
+.element-library {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+    overflow: visible;
+    max-height: none;
+}
+
+.element-library-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    /* background: #ffffff;
+    border: 1px solid #e5e7eb; */
+    cursor: grab;
+    transition: all 0.15s;
+    font-size: 12px;
+    font-family: 'Ubuntu', sans-serif;
+    color: #1a1a2e;
+}
+
+.element-library-item:hover {
+    background: #f8f9fa;
+    border-color: #ced4da;
+}
+
+.element-library-item:active {
+    cursor: grabbing;
+}
+
+.element-library-item .lib-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: #495057;
+    flex-shrink: 0;
+}
+
+.element-library-item .lib-icon i {
+    color: #495057;
+}
+
+/* ============================================================
+   ПУСТОЕ СОСТОЯНИЕ
+   ============================================================ */
+
+.palette-empty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.palette-empty i {
+    font-size: 40px;
+    margin-bottom: 12px;
+    display: block;
+    color: #d1d5db;
+}
+
+.palette-empty h3 {
+    font-size: 16px;
+    font-weight: 500;
+    color: #6c757d;
+    margin-bottom: 6px;
+}
+
+.palette-empty p {
+    font-size: 12px;
+}
+
+/* ============================================================
+   ПОРТЫ ДЛЯ СОЕДИНЕНИЙ
+   ============================================================ */
+
+.canvas-element .element-port {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+    z-index: 10;
+}
+
+.canvas-element .element-port.right {
+    right: -6px;
+    background: #3B82F6;
+    border-color: #3B82F6;
+}
+
+.canvas-element .element-port.right:hover {
+    transform: translateY(-50%) scale(1.3);
+    background: #2563EB;
+}
+
+.canvas-element .element-port.right.active {
+    transform: translateY(-50%) scale(1.4);
+    background: #EF4444;
+    border-color: #EF4444;
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
+.canvas-element .element-port.left {
+    left: -6px;
+    background: #d1d5db;
+    border-color: #9ca3af;
+    cursor: default;
+}
+
+/* ============================================================
+   СЛОИ КАНВАСА
+   ============================================================ */
+
+#canvasElements {
+    position: relative;
+    z-index: 10;
+}
+
+#canvasConnections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+}
+
+#canvasConnections svg {
+    pointer-events: none;
+}
+
+#canvasConnections svg g {
+    pointer-events: all;
+}
+
+#canvasConnections svg text {
+    pointer-events: none;
+}
+
+/* ============================================================
+   МОДАЛКИ
+   ============================================================ */
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.active {
+    display: flex !important;
+}
+
+#connectionTypeModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5) !important;
+    backdrop-filter: blur(4px);
+    z-index: 100000;
+    align-items: center;
+    justify-content: center;
+}
+
+#connectionTypeModal.active {
+    display: flex !important;
+}
+
+#connectionTypeModal .modal-content {
+    background: white !important;
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    animation: alertScaleIn 0.3s ease;
+}
+
+#connectionPropsModal .modal-content {
+    max-width: 420px;
+}
+
+#connDataStructureGroup {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+#connectionPropsModal .form-group {
+    margin-bottom: 14px;
+}
+
+#connectionPropsModal .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: #6b7280;
+    margin-bottom: 4px;
+    font-family: 'Ubuntu', sans-serif;
+}
+
+#connectionPropsModal .form-group select,
+#connectionPropsModal .form-group input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Ubuntu', sans-serif;
+    background: white;
+}
+
+#connectionPropsModal .form-group input[type="color"] {
+    height: 40px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+#connectionPropsModal .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+#connectionPropsModal.active {
+    display: flex !important;
+}
+
+/* Модалка свойств элемента */
+.element-props-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    z-index: 100002;
+    justify-content: center;
+    align-items: center;
+}
+
+.element-props-modal.active {
+    display: flex;
+}
+
+.element-props-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+    animation: alertScaleIn 0.3s ease;
+}
+
+.element-props-modal-content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.element-props-modal-content h3 i {
+    color: #3B82F6;
+}
+
+.element-props-modal-content .prop-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.element-props-modal-content .prop-row label {
+    font-size: 13px;
+    color: #6c757d;
+    width: 80px;
+    flex-shrink: 0;
+    font-weight: 500;
+}
+
+.element-props-modal-content .prop-row input,
+.element-props-modal-content .prop-row select {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Ubuntu', sans-serif;
+    background: white;
+    transition: border-color 0.2s;
+}
+
+.element-props-modal-content .prop-row input:focus,
+.element-props-modal-content .prop-row select:focus {
+    outline: none;
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.element-props-modal-content .prop-row input[type="color"] {
+    width: 40px;
+    padding: 2px;
+    height: 40px;
+    cursor: pointer;
+}
+
+.element-props-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.element-props-modal-footer .btn-cancel {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    background: #f1f3f5;
+    color: #6c757d;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.element-props-modal-footer .btn-cancel:hover {
+    background: #e5e7eb;
+}
+
+.element-props-modal-footer .btn-save {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: none;
+    background: #3B82F6;
+    color: white;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.element-props-modal-footer .btn-save:hover {
+    background: #2563eb;
+}
+
+/* ============================================================
+   АНИМАЦИИ
+   ============================================================ */
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes alertScaleIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* ============================================================
+   АДАПТИВ
+   ============================================================ */
+
+@media (max-width: 1024px) {
+    .palette-container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .palette-canvas-wrapper {
+        height: 500px;
+    }
+
+    .palette-tools {
+        width: 100%;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .palette-tools .palette-tool-card {
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .palette-topbar-right {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .palette-tools {
+        flex-direction: column;
+    }
+
+    .palette-tools .palette-tool-card {
+        min-width: auto;
+    }
+
+    .source-btn, .action-btn {
+        font-size: 10px;
+        padding: 4px 8px;
+    }
+
+    .source-content-palette .input-group {
+        flex-direction: column;
+    }
+
+    .source-content-palette .input-group input,
+    .source-content-palette .input-group select {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .source-content-palette .input-group .start-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .palette-topbar {
+        flex-direction: column;
+    }
+
+    .palette-topbar-right {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+        /* ============================================================
+           КОННЕКТОРЫ НАД ХОЛСТОМ
+           ============================================================ */
+        .connector-toolbar {
+            display: flex;
+            gap: 6px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e5e7eb;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .connector-toolbar .connector-label {
+            font-size: 11px;
+            font-weight: 500;
+            color: #6c757d;
+            margin-right: 8px;
+        }
+
+        .connector-toolbar .connector-btn {
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: 1px solid #e5e7eb;
+            background: white;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #6c757d;
+        }
+
+        .connector-toolbar .connector-btn:hover {
+            border-color: #3B82F6;
+            color: #1a1a2e;
+            background: #f8faff;
+        }
+
+        .connector-toolbar .connector-btn.active {
+            border-color: #3B82F6;
+            background: #eff6ff;
+            color: #3B82F6;
+        }
+
+        .connector-toolbar .connector-btn .connector-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .connector-toolbar .connector-btn .connector-dot.control { background: #8B5CF6; }
+        .connector-toolbar .connector-btn .connector-dot.data { background: #10B981; }
+
+        .connector-toolbar .connector-cancel {
+            padding: 4px 10px;
+            border-radius: 4px;
+            border: none;
+            background: transparent;
+            color: #9ca3af;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+            display: none;
+        }
+
+        .connector-toolbar .connector-cancel.show {
+            display: inline-block;
+        }
+
+        .connector-toolbar .connector-cancel:hover {
+            color: #EF4444;
+        }
+
+        .connector-toolbar .connector-status {
+            font-size: 11px;
+            color: #6c757d;
+            margin-left: auto;
+        }
+
+        /* Режим соединения на канвасе */
+        .palette-canvas.connector-mode {
+            cursor: crosshair;
+        }
+
+        .palette-canvas.connector-mode .canvas-element:hover {
+            border-color: #10B981 !important;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3) !important;
+        }
+
+        .palette-canvas.connector-mode .canvas-element.selected {
+            border-color: #10B981 !important;
+        }
+
+        /* Соединения SVG */
+        #canvasConnections svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .connection-label {
+            font-size: 10px;
+            font-weight: 600;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        /* ============================================================
+           МОДАЛКА ДЛЯ ВЫБОРА ТИПА СВЯЗИ
+           ============================================================ */
+        .connection-type-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .connection-type-modal.active {
+            display: flex;
+        }
+
+        .connection-type-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 32px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            animation: alertScaleIn 0.3s ease;
+        }
+
+        .connection-type-modal-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .connection-type-modal-content .subtitle {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .connection-type-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+
+        .connection-type-option:hover {
+            border-color: #3B82F6;
+            background: #f8faff;
+            transform: translateX(4px);
+        }
+
+        .connection-type-option .option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .connection-type-option .option-icon.control { background: #8B5CF6; }
+        .connection-type-option .option-icon.data { background: #10B981; }
+
+        .connection-type-option .option-info {
+            flex: 1;
+        }
+
+        .connection-type-option .option-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: #1a1a2e;
+        }
+
+        .connection-type-option .option-desc {
+            font-size: 12px;
+            color: #6c757d;
+        }
+
+        .connection-type-option .option-arrow {
+            color: #d1d5db;
+            font-size: 16px;
+        }
+
+        .connection-type-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .connection-type-modal-footer button {
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .connection-type-modal-footer .btn-cancel {
+            background: #f1f3f5;
+            color: #6c757d;
+        }
+
+        .connection-type-modal-footer .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        /* ============================================================
+           МОДАЛКА ДЛЯ СТРУКТУРЫ ДАННЫХ
+           ============================================================ */
+        .data-structure-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 100001;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .data-structure-modal.active {
+            display: flex;
+        }
+
+        .data-structure-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 28px 32px;
+            max-width: 560px;
+            width: 90%;
+            max-height: 80vh;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            animation: alertScaleIn 0.3s ease;
+        }
+
+        .data-structure-modal-content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1a2e;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .data-structure-modal-content h3 i {
+            color: #10B981;
+        }
+
+        .data-structure-modal-content .subtitle {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 16px;
+        }
+
+        .data-structure-modal-content .field-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+            align-items: center;
+        }
+
+        .data-structure-modal-content .field-row input {
+            flex: 1;
+            padding: 6px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Ubuntu', sans-serif;
+        }
+
+        .data-structure-modal-content .field-row select {
+            padding: 6px 10px;
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Ubuntu', sans-serif;
+            background: white;
+        }
+
+        .data-structure-modal-content .field-row .remove-field {
+            color: #EF4444;
+            cursor: pointer;
+            padding: 4px 8px;
+            border: none;
+            background: none;
+        }
+
+        .data-structure-modal-content .add-field-btn {
+            padding: 4px 12px;
+            border: 1px dashed #e5e7eb;
+            border-radius: 4px;
+            background: none;
+            color: #6c757d;
+            cursor: pointer;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .data-structure-modal-content .add-field-btn:hover {
+            border-color: #10B981;
+            color: #10B981;
+        }
+
+        .data-structure-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .data-structure-modal-footer button {
+            padding: 8px 20px;
+            border-radius: 6px;
+            border: none;
+            font-family: 'Ubuntu', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .data-structure-modal-footer .btn-cancel {
+            background: #f1f3f5;
+            color: #6c757d;
+        }
+
+        .data-structure-modal-footer .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .data-structure-modal-footer .btn-save {
+            background: #10B981;
+            color: white;
+        }
+
+        .data-structure-modal-footer .btn-save:hover {
+            background: #059669;
+        }
+
+        .data-structure-preview {
+            background: #f8f9fa;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            color: #1a1a2e;
+            margin-top: 10px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        /* ============================================================
+           ПОРТЫ ДЛЯ СОЕДИНЕНИЙ
+           ============================================================ */
+        .canvas-element .element-port {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #d1d5db;
+            border: 2px solid white;
+            cursor: crosshair;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .canvas-element .element-port:hover {
+            transform: scale(1.3);
+            background: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+
+        .canvas-element .element-port.right {
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .canvas-element .element-port.left {
+            left: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .canvas-element .element-port.right:hover {
+            transform: translateY(-50%) scale(1.3);
+        }
+
+        .canvas-element .element-port.left:hover {
+            transform: translateY(-50%) scale(1.3);
+        }
+
+        .canvas-element .element-port.active {
+            background: #10B981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.3);
+            animation: pulse-port 1s ease-in-out infinite;
+        }
+
+        @keyframes pulse-port {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-50%) scale(1.2); }
+        }
+
+        .canvas-element .element-port.right.active {
+            transform: translateY(-50%) scale(1);
+        }
+
+        .canvas-element .element-port.right.active:hover {
+            transform: translateY(-50%) scale(1.3);
+        }
+
+        /* ============================================================
+           КНОПКА СВОЙСТВ НА ЭЛЕМЕНТЕ
+           ============================================================ */
+        .canvas-element .element-actions .props-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 50%;
+            background: #3B82F6;
+            color: white;
+            font-size: 9px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+            margin-right: 2px;
+        }
+
+        .canvas-element .element-actions .props-btn:hover {
+            transform: scale(1.1);
+            background: #2563eb;
+        }
+
+        .canvas-element .element-actions {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            display: none;
+            gap: 3px;
+            align-items: center;
+        }
+
+        .canvas-element:hover .element-actions,
+        .canvas-element.selected .element-actions {
+            display: flex;
+        }
+
+        .canvas-element .element-actions .delete-btn {
+            width: 20px;
+            height: 20px;
+            border: none;
+            border-radius: 50%;
+            background: #EF4444;
+            color: white;
+            font-size: 9px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .canvas-element .element-actions .delete-btn:hover {
+            transform: scale(1.1);
+        }
+
+        /* ============================================================
+           ЛИНИЯ ПРИ ПРОТЯГИВАНИИ
+           ============================================================ */
+        .drag-line {
+            position: absolute;
+            pointer-events: none;
+            z-index: 20;
+        }
+
+        .drag-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .drag-line .line {
+            stroke: #3B82F6;
+            stroke-width: 2;
+            stroke-dasharray: 6,4;
+            fill: none;
+        }
+
+        .drag-line .dot {
+            fill: #3B82F6;
+        }
+
+        /* Скрываем пустое состояние по умолчанию */
+        .palette-empty.hidden {
+            display: none;
+        }

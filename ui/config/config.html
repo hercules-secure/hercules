@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="../common/sidebar.css">
     <link rel="stylesheet" href="../common/upgrade.css">
     <link rel="stylesheet" href="config.css">
-    <link rel="stylesheet" href="css/update.css">
+    <link rel="stylesheet" href="update.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
 
     <style>
@@ -70,6 +70,84 @@
             padding-left: 16px;
             border-left: 2px solid #e2e8f0;
         }
+
+        /* ===== ПРОГРЕСС-БАР ===== */
+
+.update-progress {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: #f7f7f7;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+}
+
+.update-progress-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.update-progress-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.update-progress-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111111;
+}
+
+.update-progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: #e5e5e5;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.update-progress-bar-fill {
+    height: 100%;
+    background: #111111;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.update-progress-percent {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    margin-top: 6px;
+}
+
+.update-progress-detail {
+    font-size: 12px;
+    color: #888888;
+    text-align: center;
+    margin-top: 6px;
+    font-style: italic;
+    min-height: 18px;
+}
+
+/* Анимация для иконки загрузки */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.update-progress-icon.spin {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+/* Блок изменений скрыт во время обновления */
+.update-changelog.hidden {
+    display: none;
+}
     </style>
 </head>
 
@@ -769,32 +847,50 @@
 
     <!-- Модальное окно обновления -->
     <div id="updateModal" class="update-modal" style="display: none;">
-        <div class="update-modal-content">
-            <div class="update-modal-header">
-                <h3>Доступно обновление</h3>
-                <button class="update-modal-close" onclick="closeUpdateModal()">&times;</button>
+    <div class="update-modal-content">
+        <div class="update-modal-header">
+            <h3 id="modalTitle">Доступно обновление</h3>
+            <button class="update-modal-close" onclick="closeUpdateModal()">✕</button>
+        </div>
+
+        <div class="update-modal-body">
+            <!-- Информация о версиях -->
+            <div class="update-version-info">
+                <span class="current-version-label">Текущая версия:</span>
+                <span class="current-version-value" id="modalCurrentVersion">v3.2.0</span>
+                <i class="fas fa-arrow-right"></i>
+                <span class="latest-version-label">Новая версия:</span>
+                <span class="latest-version-value" id="modalLatestVersion">v3.2.1</span>
+                <span class="update-version-badge">Новая</span>
             </div>
-            <div class="update-modal-body">
-                <div class="update-version-info">
-                    <span class="current-version-label">Текущая версия:</span>
-                    <span class="current-version-value" id="modalCurrentVersion"></span>
-                    <i class="fas fa-arrow-right"></i>
-                    <span class="latest-version-label">Новая версия:</span>
-                    <span class="latest-version-value" id="modalLatestVersion"></span>
-                </div>
-                <div class="update-changelog">
-                    <strong>Что нового:</strong>
-                    <pre id="modalChangelog"></pre>
-                </div>
+
+            <!-- Список изменений -->
+            <div class="update-changelog" id="changelogBlock">
+                <strong>Что нового:</strong>
+                <pre id="modalChangelog"></pre>
             </div>
-            <div class="update-modal-footer">
-                <button class="btn-secondary" onclick="closeUpdateModal()">Отмена</button>
-                <button class="btn-primary" id="updateNowBtn">
-                    <i class="fas fa-download"></i> Обновить сейчас
-                </button>
+
+            <!-- ===== ПРОГРЕСС-БАР ===== -->
+            <div class="update-progress" id="progressBlock" style="display: none;">
+                <div class="update-progress-status">
+                    <span class="update-progress-text" id="progressText">Подготовка к обновлению...</span>
+                </div>
+                <div class="update-progress-bar-track">
+                    <div class="update-progress-bar-fill" id="progressBar" style="width: 0%;"></div>
+                </div>
+                <div class="update-progress-percent" id="progressPercent">0%</div>
+                <div class="update-progress-detail" id="progressDetail">—</div>
             </div>
         </div>
+
+        <div class="update-modal-footer" id="modalFooter">
+            <button class="btn-secondary" onclick="closeUpdateModal()" id="cancelBtn">Отмена</button>
+            <button class="btn-primary" id="updateNowBtn">
+                <i class="fas fa-download"></i> Обновить сейчас
+            </button>
+        </div>
     </div>
+</div>
 
 </body>
 

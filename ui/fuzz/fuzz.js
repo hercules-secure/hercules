@@ -129,7 +129,7 @@ async function fetchSpecFromUrl() {
         forceEnableStartButton();
         
     } catch (error) {
-        console.error('Error fetching spec:', error);
+
         showValidationMessage(`❌ Ошибка: ${error.message}`, 'invalid');
     } finally {
         // Разблокируем поле ввода
@@ -145,7 +145,7 @@ function forceEnableStartButton() {
     if (startBtn) {
         startBtn.disabled = false;
         startBtn.classList.add('active');
-        console.log('[forceEnable] Кнопка принудительно активирована');
+
     }
     
     // Скрываем подсказку
@@ -270,7 +270,7 @@ async function parseSpecification(file) {
         validateStartButton();
         
     } catch (error) {
-        console.error('Parse error:', error);
+
         showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
         currentSpec = null;
         selectedFile = null;
@@ -343,14 +343,7 @@ function validateStartButton() {
             hint.style.display = 'none';
         }
     }
-    
-    console.log('[validateStartButton] Состояние:', {
-        hasSpec,
-        hasBaseUrl,
-        baseUrl,
-        isActive,
-        startBtnDisabled: startBtn.disabled
-    });
+
 }
 
 /**
@@ -856,7 +849,7 @@ async function sendReplayRequest() {
         showToolNotification(`${method} ${response.status} ${response.statusText} (${duration}ms)`, statusColor);
         
     } catch (error) {
-        console.error('Fetch error:', error);
+
         if (responseContent) {
             responseContent.innerHTML = `
                 <div class="replay-error">
@@ -1219,7 +1212,7 @@ async function startFuzzing() {
                     });
                     
                 } catch (error) {
-                    console.error('Fuzzing error:', error);
+
                     updateTaskStatus('2.3', 'error');
                     startBtn.textContent = 'Ошибка';
                     showValidationMessage(`Ошибка: ${error.message}`, 'invalid');

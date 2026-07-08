@@ -1115,17 +1115,17 @@ class SCAPopupReporter {
                 border-collapse: collapse;
                 min-width: 500px;
                 font-family: 'Ubuntu';
-                font-size: 14px;
+                font-size: 12px;
             }
             .sca-vuln-table th {
                 background: #f8f9fa;
-                padding: 14px;
+                padding: 13px;
                 text-align: left;
                 font-weight: 600;
                 border-bottom: 2px solid #dee2e6;
             }
             .sca-vuln-table td {
-                padding: 12px;
+                padding: 11px;
                 border-bottom: 1px solid #dee2e6;
             }
             .sca-severity-CRITICAL { color: #dc3545; font-weight: bold; }
@@ -1195,9 +1195,6 @@ class SCAPopupReporter {
             <div class="sca-popup-footer">
                 <button id="downloadHtmlBtn" class="sca-btn sca-btn-html">
                     <i class="fab fa-html5"></i> Скачать HTML
-                </button>
-                <button id="downloadPdfBtn" class="sca-btn sca-btn-pdf">
-                    <i class="fas fa-file-pdf"></i> Скачать PDF
                 </button>
                 <button id="downloadJsonBtn" class="sca-btn sca-btn-json">
                     <i class="fas fa-download"></i> Скачать JSON
@@ -1318,47 +1315,6 @@ downloadHTML() {
         this.showNotification('Ошибка при скачивании HTML', 'error');
     }
 }
-    /**
-     * Скачать PDF отчет
-     */
-    downloadPDF() {
-        try {
-            this.showNotification('Подготовка PDF отчета...', 'info');
-            
-            const iframe = document.createElement('iframe');
-            iframe.style.position = 'fixed';
-            iframe.style.top = '-9999px';
-            iframe.style.left = '-9999px';
-            iframe.style.width = '800px';
-            iframe.style.height = '600px';
-            document.body.appendChild(iframe);
-            
-            const htmlContent = this.generatePDFHTML();
-            
-            iframe.contentDocument.open();
-            iframe.contentDocument.write(htmlContent);
-            iframe.contentDocument.close();
-            
-            setTimeout(() => {
-                try {
-                    iframe.contentWindow.print();
-                    this.showNotification('PDF отчет готов к сохранению', 'success');
-                    
-                    setTimeout(() => {
-                        document.body.removeChild(iframe);
-                    }, 1000);
-                } catch (err) {
-                    alert('Print error:', err);
-                    this.showNotification('Ошибка при генерации PDF', 'error');
-                    document.body.removeChild(iframe);
-                }
-            }, 500);
-            
-        } catch (error) {
-            alert('PDF generation error:', error);
-            this.showNotification('Ошибка при генерации PDF: ' + error.message, 'error');
-        }
-    }
 
     /**
      * Генерация полноценного HTML отчета
@@ -1911,10 +1867,6 @@ downloadHTML() {
             downloadHtmlBtn.addEventListener('click', () => this.downloadHTML());
         }
         
-        const downloadPdfBtn = overlay.querySelector('#downloadPdfBtn');
-        if (downloadPdfBtn) {
-            downloadPdfBtn.addEventListener('click', () => this.downloadPDF());
-        }
     }
 }
 
