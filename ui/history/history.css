@@ -222,3 +222,12 @@
 .source-type-network i {
     color: white;
 }
+
+.source-type-workflow {
+    background: #e6043c;
+    color: white;
+}
+
+.source-type-workflow i {
+    color: white;
+}

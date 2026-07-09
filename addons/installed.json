@@ -839,11 +839,6 @@
         "icon": "fas fa-layer-group",
         "iconColor": "#10B981",
         "name": "Наслоение и группировка"
-      },
-      {
-        "icon": "fas fa-undo-alt",
-        "iconColor": "#F59E0B",
-        "name": "История изменений (Undo/Redo)"
       }
     ],
     "elements": [
@@ -856,11 +851,6 @@
         "icon": "fas fa-skull",
         "iconColor": "#EF4444",
         "name": "Угрозы (атаки, уязвимости)"
-      },
-      {
-        "icon": "fas fa-shield-alt",
-        "iconColor": "#10B981",
-        "name": "Контроли (WAF, фаерволы)"
       },
       {
         "icon": "fas fa-file-alt",
@@ -897,8 +887,35 @@
       {
         "icon": "fas fa-download",
         "iconColor": "#F59E0B",
-        "name": "Экспорт модели в SVG/PNG"
+        "name": "Экспорт модели в JSON"
       }
+    ],
+    "visual": [
+    {
+        "icon": "fas fa-sitemap",
+        "iconColor": "#8B5CF6",
+        "name": "Граф вызовов"
+    },
+    {
+        "icon": "fas fa-arrows-left-right",
+        "iconColor": "#10B981",
+        "name": "Потоки данных"
+    },
+    {
+        "icon": "fas fa-cubes",
+        "iconColor": "#3B82F6",
+        "name": "Компоненты"
+    },
+    {
+        "icon": "fas fa-layer-group",
+        "iconColor": "#8B5CF6",
+        "name": "Классы"
+    },
+    {
+        "icon": "fas fa-project-diagram",
+        "iconColor": "#F59E0B",
+        "name": "Зависимости"
+    }
     ],
     "sources": [
       {

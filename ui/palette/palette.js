@@ -4,122 +4,6 @@
 
 var emptyState = null
 
-function showCustomAlert(title, message, type = 'info', confirmText = 'OK', onConfirm = null) {
-    const colors = {
-        info: { border: '#3B82F6', bg: '#eff6ff', icon: 'fa-info-circle', iconColor: '#3B82F6' },
-        success: { border: '#10B981', bg: '#ecfdf5', icon: 'fa-check-circle', iconColor: '#10B981' },
-        warning: { border: '#F59E0B', bg: '#fffbeb', icon: 'fa-exclamation-triangle', iconColor: '#F59E0B' },
-        error: { border: '#EF4444', bg: '#fef2f2', icon: 'fa-times-circle', iconColor: '#EF4444' }
-    };
-
-    const color = colors[type] || colors.info;
-
-    const oldAlert = document.querySelector('.custom-alert-overlay');
-    if (oldAlert) oldAlert.remove();
-
-    const overlay = document.createElement('div');
-    overlay.className = 'custom-alert-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 99999;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: alertFadeIn 0.3s ease;
-    `;
-
-    const modal = document.createElement('div');
-    modal.className = 'custom-alert-modal';
-    modal.style.cssText = `
-        background: white;
-        border-radius: 16px;
-        padding: 32px 36px;
-        max-width: 440px;
-        width: 90%;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-        animation: alertScaleIn 0.3s ease;
-    `;
-
-    modal.innerHTML = `
-        <div style="text-align: center; margin-bottom: 20px;">
-            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
-                <i class="fas ${color.icon}" style="font-size: 28px; color: ${color.iconColor};"></i>
-                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Ubuntu', sans-serif;">${title}</h3>
-            </div>
-            <p style="font-size: 14px; color: #4b5563; margin: 0; line-height: 1.6; font-family: 'Ubuntu', sans-serif;">${message}</p>
-        </div>
-        <div style="display: flex; justify-content: center;">
-            <button class="alert-confirm-btn" style="
-                padding: 10px 32px;
-                border: none;
-                border-radius: 8px;
-                background: ${color.border};
-                color: white;
-                font-family: 'Ubuntu', sans-serif;
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-                min-width: 120px;
-            ">${confirmText}</button>
-        </div>
-    `;
-
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    if (!document.querySelector('#alert-styles')) {
-        const style = document.createElement('style');
-        style.id = 'alert-styles';
-        style.textContent = `
-            @keyframes alertFadeIn {
-                from { opacity: 0; }
-                to { opacity: 1; }
-            }
-            @keyframes alertScaleIn {
-                from { opacity: 0; transform: scale(0.95) translateY(10px); }
-                to { opacity: 1; transform: scale(1) translateY(0); }
-            }
-            .custom-alert-overlay .alert-confirm-btn:hover {
-                transform: scale(1.02);
-                opacity: 0.9;
-            }
-            .custom-alert-overlay .alert-confirm-btn:active {
-                transform: scale(0.98);
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            overlay.remove();
-            if (onConfirm) onConfirm();
-        }
-    });
-
-    const escHandler = function(e) {
-        if (e.key === 'Escape') {
-            overlay.remove();
-            document.removeEventListener('keydown', escHandler);
-            if (onConfirm) onConfirm();
-        }
-    };
-    document.addEventListener('keydown', escHandler);
-
-    const confirmBtn = modal.querySelector('.alert-confirm-btn');
-    confirmBtn.addEventListener('click', function() {
-        overlay.remove();
-        document.removeEventListener('keydown', escHandler);
-        if (onConfirm) onConfirm();
-    });
-}
 
 // ============================================================
 // ГЛОБАЛЬНЫЕ ДАННЫЕ
@@ -215,9 +99,7 @@ const elementFieldsConfig = {
         label: 'Компонент',
         fields: [
             { id: 'propVersion', label: 'Версия', type: 'text', placeholder: '1.24.0' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание компонента...' },
-            { id: 'propUrl', label: 'URL', type: 'text', placeholder: 'https://example.com' },
-            { id: 'propEnvironment', label: 'Окружение', type: 'select', options: ['production', 'staging', 'development', 'test'] }
+            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание компонента...' }
         ]
     },
     threat: {
@@ -398,6 +280,85 @@ window.openElementPropsModal = function(id) {
     
     // Проверяем, является ли элемент событием
     var isEvent = el.type && el.type.startsWith('event-');
+
+    // В openElementPropsModal, после проверки isEvent, добавьте:
+
+// UML Класс
+if (el.type === 'uml-class') {
+    var modalTitle = document.querySelector('#elementPropsModal .modal-title');
+    if (modalTitle) {
+        modalTitle.textContent = 'Свойства класса: ' + el.name;
+    }
+    
+    // var header = document.createElement('div');
+    // header.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;';
+    // header.innerHTML = `
+    //     <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Ubuntu, sans-serif;">
+    //         <i class="fas fa-cube"></i> Поля и методы класса
+    //     </h4>
+    // `;
+    // dynamicContainer.appendChild(header);
+    
+    // // Поля
+    // var fieldsWrapper = document.createElement('div');
+    // fieldsWrapper.style.cssText = 'margin-bottom: 12px;';
+    // fieldsWrapper.innerHTML = `
+    //     <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;">
+    //         Свойства (поля):
+    //     </label>
+    //     <div id="umlFieldsContainer" style="margin-bottom: 8px;">
+    //         ${(el.fields || []).map(function(f, i) {
+    //             return `<div style="display: flex; gap: 6px; margin-bottom: 4px; align-items: center;">
+    //                 <input type="text" value="${f}" class="uml-field-input" data-index="${i}" style="flex: 1; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; font-family: Ubuntu, sans-serif;">
+    //                 <button onclick="removeUmlField(${el.id}, ${i})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">×</button>
+    //             </div>`;
+    //         }).join('')}
+    //     </div>
+    //     <button onclick="addUmlFieldModal(${el.id})" style="
+    //         padding: 4px 12px;
+    //         border: 1px dashed #8B5CF6;
+    //         border-radius: 4px;
+    //         background: none;
+    //         color: #8B5CF6;
+    //         cursor: pointer;
+    //         font-size: 12px;
+    //         font-family: Ubuntu, sans-serif;
+    //     ">+ Добавить поле</button>
+    // `;
+    // dynamicContainer.appendChild(fieldsWrapper);
+    
+    // // Методы
+    // var methodsWrapper = document.createElement('div');
+    // methodsWrapper.style.cssText = 'margin-top: 12px;';
+    // methodsWrapper.innerHTML = `
+    //     <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;">
+    //         Методы:
+    //     </label>
+    //     <div id="umlMethodsContainer" style="margin-bottom: 8px;">
+    //         ${(el.methods || []).map(function(m, i) {
+    //             var params = m.params && m.params.length > 0 ? '(' + m.params.join(', ') + ')' : '()';
+    //             return `<div style="display: flex; gap: 6px; margin-bottom: 4px; align-items: center;">
+    //                 <input type="text" value="${m.name + params}" class="uml-method-input" data-index="${i}" style="flex: 1; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; font-family: Ubuntu, sans-serif;">
+    //                 <button onclick="removeUmlMethod(${el.id}, ${i})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">×</button>
+    //             </div>`;
+    //         }).join('')}
+    //     </div>
+    //     <button onclick="addUmlMethodModal(${el.id})" style="
+    //         padding: 4px 12px;
+    //         border: 1px dashed #10B981;
+    //         border-radius: 4px;
+    //         background: none;
+    //         color: #10B981;
+    //         cursor: pointer;
+    //         font-size: 12px;
+    //         font-family: Ubuntu, sans-serif;
+    //     ">+ Добавить метод</button>
+    // `;
+    // dynamicContainer.appendChild(methodsWrapper);
+    
+    // Сохраняем ID элемента для обработчиков
+    dynamicContainer.dataset.elementId = el.id;
+}
     
     if (el.isTool && el.tool) {
         config = getToolConfig(el.tool);
@@ -860,6 +821,39 @@ window.saveElementProps = function() {
             }
         });
     }
+    
+    if (selectedElement.type === 'uml-class') {
+    // Сохраняем поля
+    var fieldInputs = document.querySelectorAll('.uml-field-input');
+    var newFields = [];
+    fieldInputs.forEach(function(input) {
+        var val = input.value.trim();
+        if (val) newFields.push(val);
+    });
+    selectedElement.fields = newFields;
+    
+    // Сохраняем методы
+    var methodInputs = document.querySelectorAll('.uml-method-input');
+    var newMethods = [];
+    methodInputs.forEach(function(input) {
+        var val = input.value.trim();
+        if (val) {
+            // Парсим имя метода и параметры
+            var match = val.match(/^(\w+)\s*\(([^)]*)\)$/);
+            if (match) {
+                var params = match[2] ? match[2].split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }) : [];
+                newMethods.push({ name: match[1], params: params, type: 'method' });
+            } else {
+                newMethods.push({ name: val, params: [], type: 'method' });
+            }
+        }
+    });
+    selectedElement.methods = newMethods;
+    
+    // Пересчитываем высоту
+    recalculateUmlClassHeight(selectedElement);
+}
+
 
     renderElements();
     closeElementPropsModal();
@@ -1084,7 +1078,7 @@ window.openConnectionPropsModal = function(connectionId) {
         return;
     }
     
-    if (conn.type === 'data') {
+    if (conn.type === 'dataflow' || conn.type === 'data' ) {
         openDataStructureModal(connectionId);
     } else {
         showCustomAlert('Информация', 'Для связи типа "Управление" структура данных не требуется', 'info');
@@ -1269,6 +1263,39 @@ window.renderConnections = function() {
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;';
 
+    // Добавляем defs для маркеров стрелок
+    var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+    
+    // Маркер для секвенс-диаграммы
+    var markerSeq = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    markerSeq.setAttribute('id', 'arrowhead-sequence');
+    markerSeq.setAttribute('markerWidth', '12');
+    markerSeq.setAttribute('markerHeight', '8');
+    markerSeq.setAttribute('refX', '10');
+    markerSeq.setAttribute('refY', '4');
+    markerSeq.setAttribute('orient', 'auto');
+    var polySeq = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polySeq.setAttribute('points', '0 0, 10 4, 0 8');
+    polySeq.setAttribute('fill', '#10B981');
+    markerSeq.appendChild(polySeq);
+    defs.appendChild(markerSeq);
+    
+    // Маркер для потока данных
+    var markerData = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    markerData.setAttribute('id', 'arrowhead-dataflow');
+    markerData.setAttribute('markerWidth', '12');
+    markerData.setAttribute('markerHeight', '8');
+    markerData.setAttribute('refX', '10');
+    markerData.setAttribute('refY', '4');
+    markerData.setAttribute('orient', 'auto');
+    var polyData = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    polyData.setAttribute('points', '0 0, 10 4, 0 8');
+    polyData.setAttribute('fill', '#10B981');
+    markerData.appendChild(polyData);
+    defs.appendChild(markerData);
+    
+    svg.appendChild(defs);
+
     connections.forEach(function(conn) {
         var fromEl = elements.find(function(e) { return e.id === conn.from; });
         var toEl = elements.find(function(e) { return e.id === conn.to; });
@@ -1276,6 +1303,48 @@ window.renderConnections = function() {
             return;
         }
 
+        // ============================================================
+        // ДИАГРАММА ПОТОКА ДАННЫХ - ПРЯМЫЕ ЛИНИИ
+        // ============================================================
+        if (conn.type === 'data-flow') {
+            var fromX = conn.fromX || (fromEl.x + fromEl.width);
+            var fromY = conn.fromY || (fromEl.y + fromEl.height / 2);
+            var toX = conn.toX || toEl.x;
+            var toY = conn.toY || (toEl.y + toEl.height / 2);
+            var color = conn.color || '#10B981';
+            
+            // Линия потока данных
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            var pathData = 'M ' + fromX + ' ' + fromY + 
+                           ' L ' + (toX - 10) + ' ' + toY;
+            path.setAttribute('d', pathData);
+            path.setAttribute('stroke', color);
+            path.setAttribute('stroke-width', '2');
+            path.setAttribute('fill', 'none');
+            path.setAttribute('marker-end', 'url(#arrowhead-dataflow)');
+            svg.appendChild(path);
+            
+            // Метка потока
+            if (conn.label) {
+                var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                var midX = (fromX + toX) / 2;
+                var midY = (fromY + toY) / 2 - 10;
+                label.setAttribute('x', midX);
+                label.setAttribute('y', midY);
+                label.setAttribute('fill', '#475569');
+                label.setAttribute('font-size', '10');
+                label.setAttribute('font-family', 'Ubuntu, sans-serif');
+                label.setAttribute('text-anchor', 'middle');
+                label.textContent = conn.label;
+                svg.appendChild(label);
+            }
+            
+            return;
+        }
+
+        // ============================================================
+        // СТАНДАРТНАЯ ОТРИСОВКА ДЛЯ ОСТАЛЬНЫХ ТИПОВ
+        // ============================================================
         var fromX = fromEl.x + 120;
         var fromY = fromEl.y + 20;
         var toX = toEl.x;
@@ -1451,8 +1520,219 @@ window.renderConnections = function() {
 window.renderElements = function() {
     var elementsContainer = document.getElementById('canvasElements');
     elementsContainer.innerHTML = '';
+    
     elements.forEach(function(el) {
         var div = document.createElement('div');
+        
+
+if (el.type === 'uml-class') {
+    var div = document.createElement('div');
+    div.style.cssText = `
+        position: absolute;
+        left: ${el.x}px;
+        top: ${el.y}px;
+        width: ${el.width}px;
+        height: ${el.height}px;
+        background: ${el.bgColor || '#ffffff'};
+        border: 2px solid ${el.borderColor || '#8B5CF6'};
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        z-index: 6;
+        cursor: grab;
+        overflow: hidden;
+        font-family: 'Ubuntu', sans-serif;
+        display: flex;
+        flex-direction: column;
+        user-select: none;
+    `;
+    
+    // Заголовок класса
+    var header = document.createElement('div');
+    header.style.cssText = `
+        padding: 8px 12px;
+        background: ${el.borderColor || '#8B5CF6'}20;
+        border-bottom: 2px solid ${el.borderColor || '#8B5CF6'};
+        font-weight: 600;
+        font-size: 13px;
+        color: ${el.textColor || '#1a1a2e'};
+        text-align: center;
+        flex-shrink: 0;
+        cursor: grab;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    `;
+    header.innerHTML = `
+        <span>📦 ${el.name}</span>
+        <span style="display: flex; gap: 4px;">
+            <button class="props-btn" onclick="event.stopPropagation(); openUmlClassModal(${el.id})" title="Свойства" style="
+                background: none;
+                border: none;
+                color: ${el.borderColor || '#8B5CF6'};
+                cursor: pointer;
+                font-size: 12px;
+                padding: 2px 6px;
+                border-radius: 4px;
+            ">
+                <i class="fas fa-cog"></i>
+            </button>
+            <button class="delete-btn" onclick="event.stopPropagation(); deleteElement(${el.id}, event)" title="Удалить" style="
+                background: none;
+                border: none;
+                color: #ef4444;
+                cursor: pointer;
+                font-size: 12px;
+                padding: 2px 6px;
+                border-radius: 4px;
+            ">
+                <i class="fas fa-times"></i>
+            </button>
+        </span>
+    `;
+    div.appendChild(header);
+    
+    // Контейнер для полей и методов
+    var bodyContainer = document.createElement('div');
+    bodyContainer.style.cssText = `
+        flex: 1;
+        padding: 4px 8px;
+        overflow: hidden;
+        font-size: 11px;
+        color: #374151;
+        display: flex;
+        flex-direction: column;
+    `;
+    
+    // Добавляем поля
+    if (el.fields && el.fields.length > 0) {
+        el.fields.forEach(function(field) {
+            var fieldDiv = document.createElement('div');
+            fieldDiv.style.cssText = `
+                color: #6b7280;
+                padding: 1px 0;
+                font-size: 11px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            `;
+            fieldDiv.textContent = '▸ ' + field;
+            bodyContainer.appendChild(fieldDiv);
+        });
+    }
+    
+    // Разделитель
+    if (el.fields && el.fields.length > 0 && el.methods && el.methods.length > 0) {
+        var separator = document.createElement('div');
+        separator.style.cssText = `
+            border-top: 1px solid ${el.borderColor || '#8B5CF6'}40;
+            margin: 2px 0;
+        `;
+        bodyContainer.appendChild(separator);
+    }
+    
+    // Добавляем методы
+    if (el.methods && el.methods.length > 0) {
+        el.methods.forEach(function(method) {
+            var params = method.params && method.params.length > 0 ? '(' + method.params.join(', ') + ')' : '()';
+            var methodName = method.name + params;
+            var methodColor = method.type === 'function' ? '#3B82F6' : '#10B981';
+            
+            var methodDiv = document.createElement('div');
+            methodDiv.style.cssText = `
+                color: ${methodColor};
+                padding: 1px 0;
+                font-size: 11px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            `;
+            methodDiv.textContent = '▸ ' + methodName;
+            bodyContainer.appendChild(methodDiv);
+        });
+    }
+    
+    div.appendChild(bodyContainer);
+    
+    // ============================================================
+    // ПЕРЕТАСКИВАНИЕ
+    // ============================================================
+    div.addEventListener('mousedown', function(e) {
+        if (e.target.closest('.props-btn')) return;
+        if (e.target.closest('.delete-btn')) return;
+        selectElement(el.id);
+        startDrag(e, el.id);
+    });
+    
+    // ============================================================
+    // ДВОЙНОЙ КЛИК - СВОЙСТВА
+    // ============================================================
+div.addEventListener('dblclick', function(e) {
+    e.stopPropagation();
+    openUmlClassModal(el.id);
+});
+    // ============================================================
+    // ПРАВАЯ КНОПКА - КОНТЕКСТНОЕ МЕНЮ
+    // ============================================================
+//     if (contextMenuTarget && contextMenuTarget.type === 'uml-class') {
+//     openUmlClassModal(contextMenuTarget.id);
+// } else {
+//     openElementPropsModal(contextMenuTarget.id);
+// }
+    
+    elementsContainer.appendChild(div);
+    return;
+}
+// // UML Поле (свойство класса)
+if (el.type === 'uml-field') {
+    // var div = document.createElement('div');
+    // div.style.cssText = `
+    //     position: absolute;
+    //     left: ${el.x}px;
+    //     top: ${el.y}px;
+    //     width: ${el.width}px;
+    //     height: ${el.height}px;
+    //     font-size: 11px;
+    //     color: ${el.color || '#6b7280'};
+    //     font-family: 'Ubuntu', sans-serif;
+    //     z-index: 7;
+    //     pointer-events: none;
+    //     padding-left: 4px;
+    //     white-space: nowrap;
+    //     overflow: hidden;
+    //     text-overflow: ellipsis;
+    // `;
+    // div.textContent = '▸ ' + el.name;
+    // elementsContainer.appendChild(div);
+    return;
+}
+
+// // UML Метод
+// if (el.type === 'uml-method') {
+//     var div = document.createElement('div');
+//     div.style.cssText = `
+//         position: absolute;
+//         left: ${el.x}px;
+//         top: ${el.y}px;
+//         width: ${el.width}px;
+//         height: ${el.height}px;
+//         font-size: 11px;
+//         color: ${el.color || '#3B82F6'};
+//         font-family: 'Ubuntu', sans-serif;
+//         z-index: 7;
+//         pointer-events: none;
+//         padding-left: 4px;
+//         white-space: nowrap;
+//         overflow: hidden;
+//         text-overflow: ellipsis;
+//     `;
+//     div.textContent = '▸ ' + el.name;
+//     elementsContainer.appendChild(div);
+//     return;
+// }
+        // ============================================================
+        // ОБЩАЯ ОТРИСОВКА ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
+        // ============================================================
+        
         var typeClass = el.isTool ? 'type-tool' : 'type-' + el.type;
         if (el.type === 'gate-and' || el.type === 'gate-or' || el.type === 'gate-if' || el.type === 'gate-switch') {
             typeClass = 'type-gate';
@@ -1460,13 +1740,16 @@ window.renderElements = function() {
         if (el.type && el.type.startsWith('event-')) {
             typeClass = 'type-event';
         }
+        if (el.type === 'sequence-actor') {
+            typeClass = 'type-sequence-actor';
+        }
         div.className = 'canvas-element ' + typeClass;
         div.dataset.id = el.id;
         div.style.left = el.x + 'px';
         div.style.top = el.y + 'px';
-        div.style.background = el.color + '20';
-        div.style.borderColor = el.color;
-        div.style.color = el.color;
+        div.style.background = el.bgColor || el.color + '20';
+        div.style.borderColor = el.borderColor || el.color;
+        div.style.color = el.textColor || el.color;
 
         if (selectedElement && selectedElement.id === el.id) {
             div.classList.add('selected');
@@ -1476,6 +1759,8 @@ window.renderElements = function() {
         if (el.isTool) {
             var config = getToolConfig(el.tool);
             icon = '<i class="fas ' + (config ? config.icon : 'fa-cube') + '"></i>';
+        } else if (el.type === 'sequence-actor') {
+            icon = '<i class="fas fa-user" style="color: #3B82F6;"></i>';
         } else {
             icon = getElementIcon(el.type);
         }
@@ -1485,6 +1770,9 @@ window.renderElements = function() {
             versionBadge = `<span style="font-size: 8px; background: ${el.color}30; padding: 1px 6px; border-radius: 4px; margin-left: 4px; color: ${el.color};">v${el.version}</span>`;
         }
 
+        // ============================================================
+        // ПРАВЫЙ ПОРТ - ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
+        // ============================================================
         var rightPort = document.createElement('div');
         rightPort.className = 'element-port right';
         rightPort.title = 'Перетащите для создания связи';
@@ -1496,11 +1784,17 @@ window.renderElements = function() {
             }
         });
 
+        // ============================================================
+        // ЛЕВЫЙ ПОРТ - ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
+        // ============================================================
         var leftPort = document.createElement('div');
         leftPort.className = 'element-port left';
         leftPort.style.cssText = 'background: #d1d5db; cursor: default;';
         leftPort.title = 'Входящий порт';
 
+        // ============================================================
+        // КНОПКИ ДЕЙСТВИЙ - ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
+        // ============================================================
         var actions = document.createElement('span');
         actions.className = 'element-actions';
         actions.innerHTML = `
@@ -1560,7 +1854,8 @@ function getElementIcon(type) {
         'event-pause': '<i class="fas fa-pause-circle"></i>',
         'event-timeout': '<i class="fas fa-clock"></i>',
         'event-error': '<i class="fas fa-exclamation-circle"></i>',
-        'event-interrupt': '<i class="fas fa-ban"></i>'
+        'event-interrupt': '<i class="fas fa-ban"></i>',
+        'uml-class': '<i class="fas fa-cube"></i>',
     };
     return icons[type] || '<i class="fas fa-cube"></i>';
 }
@@ -1619,6 +1914,12 @@ function addToolElement(tool, x, y) {
     renderElements();
     selectElement(id);
     document.getElementById('paletteEmpty').classList.add('hidden');
+    
+    // Автоматически открываем окно свойств
+    setTimeout(function() {
+        openElementPropsModal(id);
+    }, 100);
+    
     return element;
 }
 
@@ -1635,12 +1936,33 @@ function addElement(type, x, y) {
         height: 40,
         isTool: false
     };
+
+    if (type === 'class') {
+        element.type = 'uml-class';
+        element.width = 240;
+        element.height = 60;
+        element.fields = [];
+        element.methods = [];
+        element.bgColor = '#ffffff';
+        element.borderColor = '#8B5CF6';
+        element.textColor = '#1a1a2e';
+        element.isUmlClass = true;
+        element.name = 'Новый класс';
+    }
+
     elements.push(element);
     renderElements();
     selectElement(id);
     document.getElementById('paletteEmpty').classList.add('hidden');
+    
+    // Автоматически открываем окно свойств
+    setTimeout(function() {
+        openElementPropsModal(id);
+    }, 100);
+    
     return element;
 }
+
 
 function getDefaultName(type) {
     var names = {
@@ -1659,7 +1981,8 @@ function getDefaultName(type) {
         'event-pause': 'Пауза',
         'event-timeout': 'Таймаут',
         'event-error': 'Ошибка',
-        'event-interrupt': 'Прерывание'
+        'event-interrupt': 'Прерывание',
+        'uml-class': 'Класс'
     };
     return names[type] || 'Элемент';
 }

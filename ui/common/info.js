@@ -142,6 +142,16 @@ function renderLeftPanel(tool) {
             </div>
         `;
     }
+    if (tool.features?.visual?.length > 0) {
+        html += `
+            <div class="settings-section">
+                <h4>Визуализация</h4>
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    ${renderColumns(tool.features.visual, 2)}
+                </div>
+            </div>
+        `;
+    }
     
     if (tool.features?.elements?.length > 0) {
         html += `

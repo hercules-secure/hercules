@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="../common/upgrade.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
     <style>
+
+        
         /* ПАНЕЛЬ ЭЛЕМЕНТОВ НАД ХОЛСТОМ */
         .palette-elements-bar {
             display: flex;
@@ -174,6 +176,9 @@
                     <button class="source-btn" data-source="template">
                         <i class="fas fa-copy"></i> Шаблон
                     </button>
+                     <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
+                        <i class="fas fa-code"></i> Код
+                    </button>
                 </div>
                 <div class="palette-topbar-right">
                     <button class="action-btn success" id="playBtn">
@@ -234,14 +239,14 @@
                         <span class="lib-icon"><i class="fas fa-stop-circle"></i></span>
                         Финиш
                     </div>
-                    <div class="element-library-item event" draggable="true" data-type="event-pause">
+                    <!-- <div class="element-library-item event" draggable="true" data-type="event-pause">
                         <span class="lib-icon"><i class="fas fa-pause-circle"></i></span>
                         Пауза
                     </div>
                     <div class="element-library-item event" draggable="true" data-type="event-timeout">
                         <span class="lib-icon"><i class="fas fa-clock"></i></span>
                         Таймаут
-                    </div>
+                    </div> -->
                 <div class="palette-elements-divider"></div>
                 </div>
                     <span class="elements-label" style="margin-left: 5px;"><i class="fas fa-cubes"></i> Элементы:</span>
@@ -261,21 +266,37 @@
                         <span class="lib-icon"><i class="fas fa-user"></i></span>
                         Субъект
                     </div>
+                    <div class="element-library-item" draggable="true" data-type="class">
+                        <span class="lib-icon"><i class="fas fa-cube"></i></span>
+                        Класс
+                    </div>
                 </div>
                 <div class="palette-elements-divider"></div>
                 <div class="palette-elements-group">
                     <span class="elements-label"><i class="fas fa-code-fork"></i>Шлюзы:</span>
-                    <div class="element-library-item gate" draggable="true" data-type="gate-and">
-                        <span class="lib-icon"><i class="fas fa-code-branch"></i></span>
-                        AND
-                    </div>
                     <div class="element-library-item gate" draggable="true" data-type="gate-or">
                         <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
-                        OR
+                        ИЛИ
                     </div>
                     <div class="element-library-item gate" draggable="true" data-type="gate-if">
                         <span class="lib-icon"><i class="fas fa-question-circle"></i></span>
-                        IF
+                        ЕСЛИ
+                    </div>
+                </div>
+                <div class="palette-elements-divider"></div>
+                <div class="palette-elements-group">
+                    <span class="elements-label"><i class="fas fa-tasks"></i> Задачи:</span>
+                    <div class="element-library-item gate" draggable="true" data-type="render">
+                        <span class="lib-icon"><i class="fas fa-paint-brush"></i></span>
+                        Рендер
+                    </div>
+                    <div class="element-library-item gate" draggable="true" data-type="report">
+                        <span class="lib-icon"><i class="fas fa-file-alt"></i></span>
+                        Отчет
+                    </div>
+                    <div class="element-library-item gate" draggable="true" data-type="alert">
+                        <span class="lib-icon"><i class="fas fa-bell"></i></span>
+                        Алерт
                     </div>
                 </div>
             </div>
@@ -306,43 +327,38 @@
                         <div class="flow-tools-list">
                             <div class="flow-tool-item" draggable="true" data-tool="sca">
                                 <div class="tool-icon"><i class="fas fa-sitemap"></i></div>
-                                <div class="tool-info">
+                                <div class="tool">
                                     <div class="tool-name">Матрешка</div>
                                     <div class="tool-desc">Композиционный анализ</div>
                                 </div>
-                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
                             </div>
                             <div class="flow-tool-item" draggable="true" data-tool="scout">
                                 <div class="tool-icon"><i class="fas fa-binoculars"></i></div>
-                                <div class="tool-info">
+                                <div class="tool">
                                     <div class="tool-name">Скаут</div>
                                     <div class="tool-desc">Разведка и анализ</div>
                                 </div>
-                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
                             </div>
                             <div class="flow-tool-item" draggable="true" data-tool="echo">
                                 <div class="tool-icon"><i class="fas fa-satellite-dish"></i></div>
-                                <div class="tool-info">
+                                <div class="tool">
                                     <div class="tool-name">Эхолот</div>
                                     <div class="tool-desc">Сетевое сканирование</div>
                                 </div>
-                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
                             </div>
                             <div class="flow-tool-item" draggable="true" data-tool="blender">
                                 <div class="tool-icon"><i class="fas fa-flask"></i></div>
-                                <div class="tool-info">
+                                <div class="tool">
                                     <div class="tool-name">Блендер</div>
                                     <div class="tool-desc">Анализ кода</div>
                                 </div>
-                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
                             </div>
                             <div class="flow-tool-item" draggable="true" data-tool="fuzz">
                                 <div class="tool-icon"><i class="fas fa-radiation"></i></div>
-                                <div class="tool-info">
+                                <div class="tool">
                                     <div class="tool-name">Баба Яга</div>
                                     <div class="tool-desc">Динамика и фаззинг</div>
                                 </div>
-                                <div class="tool-drag"><i class="fas fa-grip-vertical"></i></div>
                             </div>
                             <div class="hint">
                                 <i class="fas fa-info-circle"></i> Перетащите на холст для построения flow
@@ -458,19 +474,22 @@
                 <div style="margin-bottom: 14px;">
                     <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Тип</label>
                     <select id="propType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif; background: white;">
+                        <option value="uml-class">UML класс</option>
                         <option value="event-start">Событие - Старт</option>
                         <option value="event-end">Событие - Финиш</option>
-                        <option value="event-pause">Событие - Пауза</option>
-                        <option value="event-timeout">Событие - Таймаут</option>
+                        <!-- <option value="event-pause">Событие - Пауза</option>
+                        <option value="event-timeout">Событие - Таймаут</option> -->
                         <option value="tool">Инструмент</option>
                         <option value="asset">Компонент</option>
                         <option value="threat">Угроза</option>
                         <option value="data">Данные</option>
                         <option value="actor">Субъект</option>
                         <option value="network">Сеть</option>
-                        <option value="gate-and">Шлюз</option>
-                        <option value="gate-or">Шлюз</option>
-                        <option value="gate-if">Шлюз</option>
+                        <option value="gate-or">Шлюз - ИЛИ</option>
+                        <option value="gate-if">Шлюз - ЕСЛИ</option>
+                        <option value="report">Отчет</option>
+                        <option value="render">Визуализация</option>
+                        <option value="alert">Уведомление</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
@@ -605,12 +624,270 @@
     </div>
 
     <script src="palette.js"></script>
+    <script src="client.js"></script>
+    <script src="utils/progress.js"></script>    
     <script src="utils/contextMenu.js"></script>
     <script src="utils/actions.js"></script>    
+    <script src="utils/visualization.js"></script> 
+    <script src="utils/notify.js"></script>   
+    <script src="utils/uml.js"></script>    
     <script src="../common/licence.js"></script>
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
     <script src="../common/info.js"></script>
     <script> loadMenu(); </script>
+
+    <!-- Прогресс-бар выполнения workflow -->
+<div id="workflowProgressBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; z-index: 100000; padding: 12px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); font-family: 'Ubuntu', sans-serif;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-weight: 600; font-size: 14px; color: #1a1a2e;" id="progressTitle">Выполнение workflow</span>
+            <span style="font-size: 12px; color: #6b7280;" id="progressSteps">0 / 0</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 12px; color: #6b7280;" id="progressStatus">⏳ Ожидание...</span>
+            <button onclick="cancelWorkflow()" style="padding: 4px 16px; border: none; border-radius: 6px; background: #EF4444; color: white; cursor: pointer; font-family: 'Ubuntu', sans-serif; font-size: 12px; font-weight: 500;">Отмена</button>
+        </div>
+    </div>
+    <div style="max-width: 1200px; margin-left: auto; margin-right: auto; background: #f3f4f6; border-radius: 8px; height: 8px; overflow: hidden;">
+        <div id="progressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3B82F6, #10B981); transition: width 0.5s ease; border-radius: 8px;"></div>
+    </div>
+    <div style="max-width: 1200px; margin-left: auto; margin-right: auto; display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; margin-top: 4px;">
+        <span id="currentStepName">—</span>
+        <span id="progressPercent">0%</span>
+    </div>
+</div>
+
+<!-- Модалка выбора файла с кодом -->
+
+<div id="codeFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                <i class="fas fa-code"></i> Загрузить код
+            </h3>
+            <button onclick="closeCodeFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+        </div>
+        
+        <!-- Выбор типа диаграммы -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">Тип визуализации</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <div class="diagram-type-option active" data-diagram="dependency" onclick="selectDiagramType('dependency')">
+                    <i class="fas fa-project-diagram" style="font-size: 20px; color:  #3B82F6; display: block; margin-bottom: 4px;"></i>
+                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Зависимости</span>
+                </div>
+                <div class="diagram-type-option" data-diagram="dataflow" onclick="selectDiagramType('dataflow')">
+                    <i class="fas fa-arrows-left-right" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Потоки данных</span>
+                </div>
+                 <div class="diagram-type-option" data-diagram="class" onclick="selectDiagramType('class')">
+                    <i class="fas fa-layer-group" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Классы</span>
+                </div>
+                <div class="diagram-type-option" data-diagram="callgraph" onclick="selectDiagramType('callgraph')">
+                    <i class="fas fa-sitemap" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Граф вызовов</span>
+                </div>
+                <div class="diagram-type-option" data-diagram="component" onclick="selectDiagramType('component')">
+                    <i class="fas fa-cubes" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Компоненты</span>
+                </div>
+            </div>
+        </div>
+        
+<!-- Выбор файла -->
+<div style="margin-bottom: 20px;">
+    <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">
+        <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Выберите файл
+    </label>
+    
+    <!-- Дроп-зона -->
+    <div id="dropZone" style="
+        border: 2px dashed #d1d5db;
+        border-radius: 12px;
+        padding: 30px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #fafafa;
+        position: relative;
+    ">
+        <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc" style="
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        ">
+        
+        <!-- Иконка -->
+        <div style="
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 10px;
+            background: #f3f4f6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        " id="dropIcon">
+            <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+        </div>
+        
+        <!-- Текст -->
+        <p style="
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            font-family: 'Ubuntu', sans-serif;
+        " id="fileStatusText">Перетащите файл сюда или нажмите для выбора</p>
+        
+        <p style="
+            margin: 6px 0 0 0;
+            font-size: 12px;
+            color: #9ca3af;
+            font-family: 'Ubuntu', sans-serif;
+        " id="fileInfoText">Поддерживаются: .js, .py, .java, .go, .rs, .cpp, .c, .h, .cs, .php, .rb, .pl, .sh, .bash, .txt, .json, .xml, .yaml, .yml, .toml, .ini, .cfg, .conf, .md, .rst, .adoc</p>
+        
+        <!-- Информация о выбранном файле -->
+        <div id="codeFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
+            <span id="codeFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Ubuntu', sans-serif;"></span>
+            <span style="margin: 0 8px; color: #6b7280;">|</span>
+            <span id="codeFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
+            <span style="margin: 0 8px; color: #6b7280;">|</span>
+            <span id="codeFileLinesModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
+        </div>
+    </div>
+</div>
+
+<!-- Кнопки -->
+<div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+    <button onclick="closeCodeFileModal()" style="
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        background: #f3f4f6;
+        color: #374151;
+        transition: all 0.2s;
+    ">Отмена</button>
+    <button id="loadCodeFileBtn" style="
+        padding: 10px 24px;
+        border: none;
+        border-radius: 8px;
+        font-family: 'Ubuntu', sans-serif;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: not-allowed;
+        background: #e5e7eb;
+        color: #9ca3af;
+        transition: all 0.2s;
+    ">Загрузить</button>
+</div>
+        
+    </div>
+</div>
+
+<!-- ============================================================
+МОДАЛКА РЕДАКТИРОВАНИЯ UML КЛАССА
+============================================================ -->
+<div id="umlClassModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 700px; width: 95%; max-height: 85vh; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden;">
+        
+        <!-- Заголовок -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
+            <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                <i class="fas fa-cube" style="color: #8B5CF6;"></i> 
+                <span id="umlModalTitle">Редактирование класса</span>
+            </h3>
+            <button onclick="closeUmlClassModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
+        </div>
+        
+        <!-- Имя класса -->
+        <div style="margin-bottom: 16px; flex-shrink: 0;">
+            <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Имя класса</label>
+            <input id="umlClassName" type="text" placeholder="MyClass" style="width: 100%; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Ubuntu', sans-serif; outline: none;">
+        </div>
+        
+        <!-- Поля -->
+        <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
+                <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;">
+                    <i class="fas fa-list" style="color: #6b7280;"></i> Свойства (поля)
+                </label>
+                <button onclick="addUmlFieldModal()" style="
+                    padding: 4px 12px;
+                    border: 1px dashed #8B5CF6;
+                    border-radius: 4px;
+                    background: none;
+                    color: #8B5CF6;
+                    cursor: pointer;
+                    font-size: 12px;
+                    font-family: 'Ubuntu', sans-serif;
+                ">+ Добавить поле</button>
+            </div>
+            <div id="umlFieldsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
+
+            </div>
+        </div>
+        
+
+        <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; margin-top: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
+                <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;">
+                    <i class="fas fa-code" style="color: #6b7280;"></i> Методы
+                </label>
+                <button onclick="addUmlMethodModal()" style="
+                    padding: 4px 12px;
+                    border: 1px dashed #10B981;
+                    border-radius: 4px;
+                    background: none;
+                    color: #10B981;
+                    cursor: pointer;
+                    font-size: 12px;
+                    font-family: 'Ubuntu', sans-serif;
+                ">+ Добавить метод</button>
+            </div>
+            <div id="umlMethodsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
+            </div>
+        </div>
+        
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px; flex-shrink: 0;">
+            <button onclick="closeUmlClassModal()" style="
+                padding: 10px 24px;
+                border: none;
+                border-radius: 8px;
+                font-family: 'Ubuntu', sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                background: #f3f4f6;
+                color: #374151;
+                transition: all 0.2s;
+            ">Отмена</button>
+            <button onclick="saveUmlClass()" style="
+                padding: 10px 24px;
+                border: none;
+                border-radius: 8px;
+                font-family: 'Ubuntu', sans-serif;
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                background: #8B5CF6;
+                color: white;
+                transition: all 0.2s;
+            ">Сохранить</button>
+        </div>
+    </div>
+</div>
 </body>
 </html>
