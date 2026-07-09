@@ -192,20 +192,23 @@
 
                 
                 const shortName = record.sourceType == 'url' ? record.sourceName : getShortName(record.sourceName, record.sourceType);
-                        const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : 
-                        (record.sourceType === 'url' ? 'URL' : 
+                 const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : 
+                        (record.sourceType === 'url' ? 'URL адрес' : 
                         (record.sourceType === 'network' ? 'Сеть' : 
-                        (record.sourceType === 'archive' ? 'Архив' : 'Неизвестно')));
+                        (record.sourceType === 'workflow' ? 'Цепочка событий' : 
+                        (record.sourceType === 'archive' ? 'Архив' : 'Неизвестно'))));
 
-                        const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 
-                         (record.sourceType === 'url' ? 'source-type-url' : 
-                         (record.sourceType === 'network' ? 'source-type-network' : 
-                         (record.sourceType === 'archive' ? 'source-type-archive' : 'source-type-unknown')));
+                 const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 
+                        (record.sourceType === 'url' ? 'source-type-url' : 
+                        (record.sourceType === 'network' ? 'source-type-network' : 
+                        (record.sourceType === 'workflow' ? 'source-type-workflow' : 
+                        (record.sourceType === 'archive' ? 'source-type-archive' : 'source-type-unknown'))));
 
-                        const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : 
-                        (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : 
-                        (record.sourceType === 'network' ? '<i class="fas fa-server"></i>' : 
-                        (record.sourceType === 'archive' ? '<i class="fas fa-file-archive"></i>' : '<i class="fas fa-question-circle"></i>')));
+const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : 
+                       (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : 
+                       (record.sourceType === 'network' ? '<i class="fas fa-server"></i>' : 
+                       (record.sourceType === 'workflow' ? '<i class="fas fa-code-branch"></i>' :
+                       (record.sourceType === 'archive' ? '<i class="fas fa-file-archive"></i>' : '<i class="fas fa-question-circle"></i>'))));
                                 return `
                     <tr>
                         <td><strong>${record.tool?.toUpperCase() || '—'}</strong></td>

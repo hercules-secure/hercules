@@ -1,23 +1,149 @@
+// ============================================================
+// МОДАЛКА ДЛЯ ВВОДА НАЗВАНИЯ WORKFLOW
+// ============================================================
+
+function showWorkflowNameModal(callback) {
+    var overlay = document.createElement('div');
+    overlay.className = 'custom-alert-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        z-index: 99999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: alertFadeIn 0.3s ease;
+    `;
+
+    var modal = document.createElement('div');
+    modal.className = 'custom-alert-modal';
+    modal.style.cssText = `
+        background: white;
+        border-radius: 16px;
+        padding: 32px 36px;
+        max-width: 440px;
+        width: 90%;
+        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+        animation: alertScaleIn 0.3s ease;
+    `;
+
+    modal.innerHTML = `
+        <div style="text-align: center; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
+                <i class="fas fa-file-export" style="font-size: 28px; color: #3B82F6;"></i>
+                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Ubuntu', sans-serif;">Название цепочки событий</h3>
+            </div>
+            <p style="font-size: 14px; color: #6b7280; margin: 0 0 16px 0; font-family: 'Ubuntu', sans-serif;">Введите название для вашего workflow</p>
+            <input id="workflowNameInput" type="text" placeholder="Мой workflow" value="Workflow-" + new Date().toISOString().split('T')[0] style="
+                width: 100%;
+                padding: 10px 14px;
+                border: 2px solid #e5e7eb;
+                border-radius: 8px;
+                font-size: 14px;
+                font-family: 'Ubuntu', sans-serif;
+                transition: border-color 0.2s;
+                outline: none;
+            ">
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px;">
+            <button class="alert-cancel-btn" style="
+                padding: 10px 24px;
+                border: none;
+                border-radius: 8px;
+                background: #e5e7eb;
+                color: #374151;
+                font-family: 'Ubuntu', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">Отмена</button>
+            <button class="alert-confirm-btn" style="
+                padding: 10px 32px;
+                border: none;
+                border-radius: 8px;
+                background: #3B82F6;
+                color: white;
+                font-family: 'Ubuntu', sans-serif;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s;
+            ">Продолжить</button>
+        </div>
+    `;
+
+    overlay.appendChild(modal);
+    document.body.appendChild(overlay);
+
+    var input = modal.querySelector('#workflowNameInput');
+    var confirmBtn = modal.querySelector('.alert-confirm-btn');
+    var cancelBtn = modal.querySelector('.alert-cancel-btn');
+
+    // Фокус на поле ввода
+    setTimeout(function() {
+        input.focus();
+        input.select();
+    }, 100);
+
+    // Обработчик Enter
+    input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            confirmBtn.click();
+        }
+    });
+
+    confirmBtn.addEventListener('click', function() {
+        var name = input.value.trim() || 'Workflow-' + new Date().toISOString().split('T')[0];
+        overlay.remove();
+        if (callback) callback(name);
+    });
+
+    cancelBtn.addEventListener('click', function() {
+        overlay.remove();
+    });
+
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    });
+}
+
+// ============================================================
+// ЭКСПОРТ МОДЕЛИ С ВВОДОМ НАЗВАНИЯ
+// ============================================================
+
 var exportBtn = document.getElementById('exportModelBtn');
-    if (exportBtn) {
-        exportBtn.addEventListener('click', function() {
-            if (elements.length === 0) {
-                showCustomAlert('Внимание', 'Нет элементов для экспорта', 'warning');
-                return;
-            }
-            
+if (exportBtn) {
+    exportBtn.addEventListener('click', function() {
+        if (elements.length === 0) {
+            showCustomAlert('Внимание', 'Нет элементов для экспорта', 'warning');
+            return;
+        }
+        
+        // Показываем модалку для ввода названия
+        showWorkflowNameModal(function(workflowName) {
             var model = window.exportModel();
+            model.workflow.name = workflowName;
+            
             var json = JSON.stringify(model, null, 2);
             var blob = new Blob([json], { type: 'application/json' });
             var url = URL.createObjectURL(blob);
             var a = document.createElement('a');
             a.href = url;
-            a.download = 'hercules-workflow-' + new Date().toISOString().split('T')[0] + '.json';
+            a.download = workflowName.toLowerCase().replace(/\s+/g, '-') + '-' + new Date().toISOString().split('T')[0] + '.json';
             a.click();
             URL.revokeObjectURL(url);
-            showCustomAlert('Успешно', 'Workflow экспортирован', 'success');
+            showCustomAlert('Успешно', 'Workflow "' + workflowName + '" экспортирован', 'success');
         });
-    }
+    });
+}
 
 var importBtn = document.getElementById('importModelBtn');
     if (importBtn) {
@@ -99,18 +225,61 @@ var importBtn = document.getElementById('importModelBtn');
         });
     }
 
-    
+
+// ============================================================
+// КНОПКА PLAY - ЗАПУСК WORKFLOW С МОДАЛЬНЫМ ПРОГРЕССОМ
+// ============================================================
+
 var playBtn = document.getElementById('playBtn');
-    if (playBtn) {
-        playBtn.addEventListener('click', function() {
-            if (elements.length === 0) {
-                showCustomAlert('Внимание', 'Нет элементов для запуска', 'warning');
+if (playBtn) {
+    playBtn.addEventListener('click', function() {
+        if (elements.length === 0) {
+            showCustomAlert('Внимание', 'Нет элементов для запуска', 'warning');
+            return;
+        }
+        
+        showWorkflowNameModal(function(workflowName) {
+            var model = window.exportModel();
+            model.workflow.name = workflowName;
+            
+            var totalSteps = model.workflow.steps.length;
+            
+            // Показываем модальный прогресс-бар
+            showWorkflowProgressModal('Выполнение: ' + workflowName, totalSteps);
+            
+            // Проверяем наличие клиента
+            if (typeof PaletteClient === 'undefined') {
+                showCustomAlert('Ошибка', 'Клиент Palette не инициализирован', 'error');
+                closeWorkflowProgressModal();
                 return;
             }
-            var model = window.exportModel();
-            showCustomAlert('Запуск', 'Workflow запущен! Смотрите консоль для деталей.', 'success');
+            
+            if (!paletteClient) {
+                initPaletteClient();
+            }
+            
+            // Запускаем workflow
+            paletteClient.startWorkflow(model.workflow)
+                .then(function(result) {
+                    if (result.success) {
+                        // Начинаем мониторинг с обновлением прогресса
+                        paletteClient.startMonitoring(function(status) {
+                            if (status.steps) {
+                                updateWorkflowProgressModal(status);
+                            }
+                        }, 1000);
+                    } else {
+                        closeWorkflowProgressModal();
+                        showCustomAlert('Ошибка', 'Не удалось запустить workflow: ' + result.error, 'error');
+                    }
+                })
+                .catch(function(error) {
+                    closeWorkflowProgressModal();
+                    showCustomAlert('Ошибка', 'Ошибка запуска: ' + error.message, 'error');
+                });
         });
-    }
+    });
+}
 
 var loadJsonBtn = document.getElementById('loadJsonBtn');
     var jsonFileInput = document.getElementById('jsonFileInput');
@@ -334,3 +503,86 @@ var loadJsonBtn = document.getElementById('loadJsonBtn');
             }
         });
     }
+
+// Drag & Drop для модального окна
+document.addEventListener('DOMContentLoaded', function() {
+    var dropZone = document.getElementById('dropZone');
+    var fileInput = document.getElementById('codeFileInputModal');
+    var statusText = document.getElementById('fileStatusText');
+    var infoText = document.getElementById('fileInfoText');
+    var icon = document.getElementById('dropIcon');
+    
+    if (dropZone && fileInput) {
+        // Drag over - подсветка
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#8B5CF6';
+            this.style.background = '#f5f3ff';
+            if (icon) icon.style.background = '#ede9fe';
+        });
+        
+        // Drag leave
+        dropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#d1d5db';
+            this.style.background = '#fafafa';
+            if (icon) icon.style.background = '#f3f4f6';
+        });
+        
+        // Drop
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.style.borderColor = '#d1d5db';
+            this.style.background = '#fafafa';
+            if (icon) icon.style.background = '#f3f4f6';
+            
+            var files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                fileInput.dispatchEvent(new Event('change'));
+            }
+        });
+        
+        // Выбор файла
+        fileInput.addEventListener('change', function() {
+            var file = this.files[0];
+            var infoModal = document.getElementById('codeFileInfoModal');
+            var loadBtn = document.getElementById('loadCodeFileBtn');
+            
+            if (file) {
+                statusText.textContent = '📄 ' + file.name;
+                statusText.style.color = '#065f46';
+                infoText.textContent = (file.size / 1024).toFixed(2) + ' KB';
+                
+                // Показываем информацию
+                if (infoModal) infoModal.style.display = 'block';
+                if (loadBtn) {
+                    loadBtn.style.background = '#8B5CF6';
+                    loadBtn.style.color = 'white';
+                    loadBtn.style.cursor = 'pointer';
+                }
+                
+                // Обновляем иконку
+                if (icon) {
+                    icon.style.background = '#ede9fe';
+                    icon.querySelector('i').style.color = '#8B5CF6';
+                }
+            } else {
+                statusText.textContent = 'Перетащите файл сюда или нажмите для выбора';
+                statusText.style.color = '#374151';
+                infoText.textContent = 'Поддерживаются: .js, .py, .java, .go, .rs, ...';
+                
+                if (infoModal) infoModal.style.display = 'none';
+                if (loadBtn) {
+                    loadBtn.style.background = '#e5e7eb';
+                    loadBtn.style.color = '#9ca3af';
+                    loadBtn.style.cursor = 'not-allowed';
+                }
+                if (icon) {
+                    icon.style.background = '#f3f4f6';
+                    icon.querySelector('i').style.color = '#9ca3af';
+                }
+            }
+        });
+    }
+});    
