@@ -12,15 +12,28 @@ contextMenu.style.cssText = `
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 4px 0;
-    min-width: 180px;
+    min-width: 200px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     z-index: 100000;
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
 `;
 contextMenu.innerHTML = `
-    <div class="context-menu-item" data-action="view">
-        <i class="fas fa-eye"></i> Просмотр
+    <div class="context-menu-item" data-action="logs">
+        <i class="fas fa-list"></i> Лог
+    </div>
+    <div class="context-menu-item" data-action="vulnerabilities">
+        <i class="fas fa-shield-alt" style="color: #EF4444;"></i> Проблемы
+        <span id="vulnCountBadge" style="
+            margin-left: auto;
+            background: #EF4444;
+            color: white;
+            padding: 1px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            display: none;
+        ">0</span>
     </div>
     <div class="context-menu-item" data-action="properties">
         <i class="fas fa-cog"></i> Свойства
@@ -74,6 +87,61 @@ document.head.appendChild(contextMenuStyle);
 // Переменная для хранения текущего элемента
 var contextMenuTarget = null;
 
+// ============================================================
+// ОБНОВЛЕНИЕ МЕНЮ В ЗАВИСИМОСТИ ОТ ТИПА ЭЛЕМЕНТА
+// ============================================================
+
+function updateContextMenu(element) {
+    var vulnItem = contextMenu.querySelector('[data-action="vulnerabilities"]');
+    var badge = vulnItem ? vulnItem.querySelector('#vulnCountBadge') : null;
+    var logsItem = contextMenu.querySelector('[data-action="logs"]');
+    var propsItem = contextMenu.querySelector('[data-action="properties"]');
+    
+    var hasVuln = false;
+    var vulnCount = 0;
+    
+    // Проверяем уязвимости для SBOM компонентов
+    if (element && element.bomRef && window.vulnerabilitiesMap) {
+        var vulns = window.vulnerabilitiesMap[element.bomRef];
+        if (vulns && vulns.length > 0) {
+            hasVuln = true;
+            vulnCount = vulns.length;
+        }
+    }
+    
+    if (element && element.componentData) {
+        if (element.componentData.hasVulnerabilities) {
+            hasVuln = true;
+            vulnCount = element.componentData.vulnerabilityCount || 0;
+        }
+    }
+    
+    // Обновляем пункт "Проблемы"
+    if (vulnItem) {
+        if (hasVuln) {
+            vulnItem.style.display = 'flex';
+            if (badge) {
+                badge.textContent = vulnCount;
+                badge.style.display = 'inline-block';
+            }
+        } else {
+            vulnItem.style.display = 'none';
+        }
+    }
+    
+    // Скрываем пункт "Лог" для SBOM и CI/CD элементов
+    if (logsItem) {
+        var isSbom = element && (element.type === 'sbom-root' || element.type === 'sbom-component' || element.type === 'package-dependency');
+        var isCI = element && (element.type === 'ci-root' || element.type === 'ci-stage' || element.type === 'ci-job');
+        
+        if (isSbom || isCI) {
+            logsItem.style.display = 'none';
+        } else {
+            logsItem.style.display = 'flex';
+        }
+    }
+}
+
 // Обработчик правого клика на элементах холста
 document.addEventListener('contextmenu', function(e) {
     var elementDiv = e.target.closest('.canvas-element');
@@ -88,13 +156,14 @@ document.addEventListener('contextmenu', function(e) {
         
         contextMenuTarget = el;
         
-        // Позиционируем меню
+        updateContextMenu(el);
+        
         var menu = document.getElementById('elementContextMenu');
         var x = e.clientX;
         var y = e.clientY;
         
-        var menuWidth = 200;
-        var menuHeight = 130;
+        var menuWidth = 220;
+        var menuHeight = 180;
         if (x + menuWidth > window.innerWidth) {
             x = window.innerWidth - menuWidth - 10;
         }
@@ -134,11 +203,34 @@ document.addEventListener('click', function(e) {
 // ДЕЙСТВИЯ КОНТЕКСТНОГО МЕНЮ
 // ============================================================
 
-// Просмотр (получение логов с сервера по имени элемента)
-document.querySelector('#elementContextMenu .context-menu-item[data-action="view"]').addEventListener('click', function(e) {
+// Лог (бывший Просмотр)
+document.querySelector('#elementContextMenu .context-menu-item[data-action="logs"]').addEventListener('click', function(e) {
     e.stopPropagation();
     if (contextMenuTarget) {
         fetchElementLogs(contextMenuTarget);
+    }
+    closeContextMenu();
+});
+
+// Проблемы (уязвимости)
+document.querySelector('#elementContextMenu .context-menu-item[data-action="vulnerabilities"]').addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (contextMenuTarget) {
+        var bomRef = contextMenuTarget.bomRef || 
+                     (contextMenuTarget.componentData ? contextMenuTarget.componentData.bomRef : null);
+        
+        if (bomRef && window.vulnerabilitiesMap && window.vulnerabilitiesMap[bomRef]) {
+            showVulnerabilitiesForComponent(bomRef);
+        } else if (contextMenuTarget.componentData && contextMenuTarget.componentData.hasVulnerabilities) {
+            var ref = contextMenuTarget.componentData.bomRef;
+            if (ref && window.vulnerabilitiesMap && window.vulnerabilitiesMap[ref]) {
+                showVulnerabilitiesForComponent(ref);
+            } else {
+                showCustomAlert('Информация', 'Уязвимостей для этого компонента не найдено', 'info');
+            }
+        } else {
+            showCustomAlert('Информация', 'Уязвимостей для этого компонента не найдено', 'info');
+        }
     }
     closeContextMenu();
 });
@@ -147,7 +239,15 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="view
 document.querySelector('#elementContextMenu .context-menu-item[data-action="properties"]').addEventListener('click', function(e) {
     e.stopPropagation();
     if (contextMenuTarget) {
-        openElementPropsModal(contextMenuTarget.id);
+        // Проверяем тип элемента и показываем соответствующие свойства
+        if (contextMenuTarget.type === 'ci-stage' || contextMenuTarget.type === 'ci-job' || contextMenuTarget.type === 'ci-root') {
+            showCIProperties(contextMenuTarget);
+        } else if (contextMenuTarget.type === 'sbom-root' || contextMenuTarget.type === 'sbom-component' || contextMenuTarget.type === 'package-dependency') {
+            showSBOMProperties(contextMenuTarget);
+        } else {
+            // Для обычных элементов используем стандартную модалку
+            openElementPropsModal(contextMenuTarget.id);
+        }
     }
     closeContextMenu();
 });
@@ -162,17 +262,482 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="dele
 });
 
 // ============================================================
-// ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ЛОГОВ С СЕРВЕРА ПО ИМЕНИ ЭЛЕМЕНТА
+// ПОКАЗ СВОЙСТВ CI/CD ЭЛЕМЕНТА
+// ============================================================
+
+// ============================================================
+// ПОКАЗ СВОЙСТВ CI/CD ЭЛЕМЕНТА (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+// ============================================================
+
+function showCIProperties(element) {
+    var overlay = document.createElement('div');
+    overlay.className = 'ci-props-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 20000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Ubuntu, sans-serif;
+        animation: alertFadeIn 0.3s ease;
+    `;
+    
+    var properties = [];
+    
+    if (element.type === 'ci-root') {
+        properties.push({ label: 'Тип', value: 'Корень пайплайна' });
+        properties.push({ label: 'Имя', value: element.name || 'CI/CD Pipeline' });
+        properties.push({ label: 'Платформа', value: element.platform || 'GitLab CI' });
+    } else if (element.type === 'ci-stage') {
+        properties.push({ label: 'Тип', value: 'Стадия' });
+        properties.push({ label: 'Имя', value: element.stageName || element.name || 'Unknown' });
+        properties.push({ label: 'Количество задач', value: element.jobCount || '0' });
+        properties.push({ label: 'Параллельные', value: element.hasParallel ? 'Да' : 'Нет' });
+    } else if (element.type === 'ci-job') {
+        properties.push({ label: 'Тип', value: element.isParallel ? 'Параллельная задача' : 'Задача' });
+        properties.push({ label: 'Имя', value: element.jobName || element.name || 'Unknown' });
+        properties.push({ label: 'Стадия', value: element.stageName || 'Unknown' });
+        
+        if (element.runsOn) {
+            properties.push({ label: 'Runner', value: element.runsOn });
+        }
+        
+        if (element.script && Array.isArray(element.script) && element.script.length > 0) {
+            properties.push({ label: 'Шаги (script)', value: element.script.join('\n') });
+        }
+        
+        if (element.needs) {
+            var needsValue = '';
+            if (Array.isArray(element.needs)) {
+                needsValue = element.needs.join(', ');
+            } else if (typeof element.needs === 'string') {
+                needsValue = element.needs;
+            } else if (typeof element.needs === 'object') {
+                try {
+                    needsValue = JSON.stringify(element.needs);
+                } catch (e) {
+                    needsValue = String(element.needs);
+                }
+            }
+            if (needsValue) {
+                properties.push({ label: 'Зависимости', value: needsValue });
+            }
+        }
+        
+        if (element.isParallel) {
+            properties.push({ label: 'Параллельный', value: 'Да' });
+        }
+        if (element.when) {
+            properties.push({ label: 'When', value: element.when });
+        }
+        if (element.allowFailure !== undefined) {
+            properties.push({ label: 'Allow failure', value: element.allowFailure ? 'Да' : 'Нет' });
+        }
+        if (element.strategy) {
+            properties.push({ label: 'Strategy', value: typeof element.strategy === 'object' ? JSON.stringify(element.strategy) : String(element.strategy) });
+        }
+    }
+    
+    var propertiesHtml = properties.map(function(p) {
+        return `
+            <div style="display: flex; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                <div style="width: 120px; font-weight: 500; color: #6b7280; flex-shrink: 0;">${p.label}</div>
+                <div style="color: #1f2937; white-space: pre-wrap; word-break: break-all;">${escapeHtml(String(p.value))}</div>
+            </div>
+        `;
+    }).join('');
+    
+    // ФУНКЦИЯ ЗАКРЫТИЯ
+    function closeModal() {
+        if (overlay && overlay.parentNode) {
+            overlay.remove();
+        }
+        document.removeEventListener('keydown', escHandler);
+    }
+    
+    // ОБРАБОТЧИК ESCAPE
+    function escHandler(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    }
+    
+    overlay.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: alertScaleIn 0.3s ease;
+        ">
+            <div style="
+                padding: 20px 24px;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+            ">
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства CI/CD элемента</h3>
+                <button id="closeCiPropsBtn" style="
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: #9ca3af;
+                    padding: 0 8px;
+                ">&times;</button>
+            </div>
+            <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
+                ${propertiesHtml}
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right; flex-shrink: 0;">
+                <button id="closeCiPropsBtn2" style="
+                    padding: 8px 20px;
+                    background: #3B82F6;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-family: Ubuntu, sans-serif;
+                    font-size: 14px;
+                ">Закрыть</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    // Навешиваем обработчики после добавления в DOM
+    var closeBtn1 = document.getElementById('closeCiPropsBtn');
+    var closeBtn2 = document.getElementById('closeCiPropsBtn2');
+    
+    if (closeBtn1) {
+        closeBtn1.addEventListener('click', closeModal);
+    }
+    if (closeBtn2) {
+        closeBtn2.addEventListener('click', closeModal);
+    }
+    
+    // Закрытие по клику на фон
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            closeModal();
+        }
+    });
+    
+    // Закрытие по Escape
+    document.addEventListener('keydown', escHandler);
+}
+
+// ============================================================
+// ПОКАЗ СВОЙСТВ SBOM КОМПОНЕНТА
+// ============================================================
+
+function showSBOMProperties(element) {
+    var modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 20000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Ubuntu, sans-serif;
+    `;
+    
+    var comp = element.componentData || {};
+    var properties = [];
+    
+    properties.push({ label: 'Тип', value: element.type === 'sbom-root' ? 'Корневой компонент' : 'Компонент' });
+    properties.push({ label: 'Имя', value: comp.name || element.name || 'Unknown' });
+    properties.push({ label: 'Версия', value: comp.version || 'unknown' });
+    properties.push({ label: 'Тип компонента', value: comp.type || 'library' });
+    
+    if (comp.purl) {
+        properties.push({ label: 'PURL', value: comp.purl });
+    }
+    if (comp.bomRef) {
+        properties.push({ label: 'BOM Ref', value: comp.bomRef });
+    }
+    
+    if (element.hasVulnerabilities !== undefined) {
+        properties.push({ 
+            label: 'Уязвимости', 
+            value: element.hasVulnerabilities ? 'Есть (' + (element.vulnerabilityCount || 0) + ')' : 'Нет' 
+        });
+    }
+    
+    if (comp.properties && Array.isArray(comp.properties)) {
+        for (var i = 0; i < Math.min(comp.properties.length, 5); i++) {
+            var prop = comp.properties[i];
+            if (prop && prop.name && prop.value) {
+                var label = prop.name;
+                if (label.startsWith('src:') || label.startsWith('dependency:')) {
+                    label = label.replace(/^(src:|dependency:)/, '');
+                }
+                if (label.startsWith('hercules:')) {
+                    label = label.replace('hercules:', '');
+                }
+                properties.push({ label: label, value: prop.value });
+            }
+        }
+    }
+    
+    var propertiesHtml = properties.map(function(p) {
+        return `
+            <div style="display: flex; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                <div style="width: 120px; font-weight: 500; color: #6b7280; flex-shrink: 0;">${p.label}</div>
+                <div style="color: #1f2937; white-space: pre-wrap; word-break: break-all;">${escapeHtml(String(p.value))}</div>
+            </div>
+        `;
+    }).join('');
+    
+    modal.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        ">
+            <div style="
+                padding: 20px 24px;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+            ">
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства SBOM компонента</h3>
+                <button onclick="this.closest('div').parentElement.remove()" style="
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: #9ca3af;
+                    padding: 0 8px;
+                ">&times;</button>
+            </div>
+            <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
+                ${propertiesHtml}
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right; flex-shrink: 0;">
+                <button onclick="this.closest('div').parentElement.remove()" style="
+                    padding: 8px 20px;
+                    background: #3B82F6;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-family: Ubuntu, sans-serif;
+                    font-size: 14px;
+                ">Закрыть</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// ============================================================
+// ПОКАЗАТЬ УЯЗВИМОСТИ КОМПОНЕНТА
+// ============================================================
+
+function showVulnerabilitiesForComponent(bomRef) {
+    if (!bomRef || !window.vulnerabilitiesMap || !window.vulnerabilitiesMap[bomRef]) {
+        showCustomAlert('Информация', 'Уязвимостей для этого компонента не найдено', 'info');
+        return;
+    }
+    
+    var vulns = window.vulnerabilitiesMap[bomRef];
+    var componentName = 'Unknown';
+    
+    for (var key in nodeElementsMap) {
+        var el = nodeElementsMap[key];
+        if (el.componentData && el.componentData.bomRef === bomRef) {
+            componentName = el.componentData.name || 'Unknown';
+            break;
+        }
+        if (el.bomRef === bomRef) {
+            componentName = el.name || 'Unknown';
+            break;
+        }
+    }
+    
+    var overlay = document.createElement('div');
+    overlay.className = 'vuln-modal-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 20000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Ubuntu, sans-serif;
+        animation: alertFadeIn 0.3s ease;
+    `;
+    
+    var vulnList = '';
+    for (var i = 0; i < vulns.length; i++) {
+        var v = vulns[i];
+        var severity = v.severity || v.ratings?.[0]?.severity || 'UNKNOWN';
+        var severityColor = '#6B7280';
+        var severityLabel = severity;
+        if (severity === 'CRITICAL') {
+            severityColor = '#EF4444';
+        } else if (severity === 'HIGH') {
+            severityColor = '#F59E0B';
+        } else if (severity === 'MODERATE' || severity === 'MEDIUM') {
+            severityColor = '#FBBF24';
+            severityLabel = 'MODERATE';
+        } else if (severity === 'LOW') {
+            severityColor = '#10B981';
+        }
+        
+        vulnList += `
+            <div style="
+                background: #f8f9fa;
+                padding: 12px 16px;
+                margin-bottom: 10px;
+                border-radius: 8px;
+            ">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <strong style="color: #1f2937;">${v.id || 'N/A'}</strong>
+                    <span style="
+                        background: ${severityColor};
+                        color: white;
+                        padding: 2px 10px;
+                        border-radius: 12px;
+                        font-size: 11px;
+                        font-weight: bold;
+                    ">${severityLabel}</span>
+                </div>
+                <div style="margin-top: 6px; font-size: 13px; color: #4b5563;">
+                    ${v.description || 'Нет описания'}
+                </div>
+                ${v.source && v.source.url ? `
+                    <div style="margin-top: 6px;">
+                        <a href="${v.source.url}" target="_blank" style="color: #3B82F6; font-size: 12px;">Подробнее</a>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    function closeVulnModal() {
+        if (overlay && overlay.parentNode) {
+            overlay.remove();
+        }
+        document.removeEventListener('keydown', escHandler);
+    }
+    
+    function escHandler(e) {
+        if (e.key === 'Escape') {
+            closeVulnModal();
+        }
+    }
+    
+    overlay.innerHTML = `
+        <div style="
+            background: white;
+            border-radius: 16px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: alertScaleIn 0.3s ease;
+        ">
+            <div style="
+                padding: 20px 24px;
+                border-bottom: 1px solid #e5e7eb;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                flex-shrink: 0;
+            ">
+                <div>
+                    <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Уязвимости</h3>
+                    <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">
+                        ${componentName} (${vulns.length} уязвимостей)
+                    </div>
+                </div>
+                <button onclick="this.closest('.vuln-modal-overlay').remove()" style="
+                    background: none;
+                    border: none;
+                    font-size: 24px;
+                    cursor: pointer;
+                    color: #9ca3af;
+                    padding: 0 8px;
+                ">&times;</button>
+            </div>
+            <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
+                ${vulnList}
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right; flex-shrink: 0;">
+                <button onclick="this.closest('.vuln-modal-overlay').remove()" style="
+                    padding: 8px 20px;
+                    background: #3B82F6;
+                    color: white;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-family: Ubuntu, sans-serif;
+                    font-size: 14px;
+                ">Закрыть</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(overlay);
+    
+    overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) {
+            closeVulnModal();
+        }
+    });
+    
+    document.addEventListener('keydown', escHandler);
+}
+
+// ============================================================
+// ПОЛУЧЕНИЕ ЛОГОВ
 // ============================================================
 
 function fetchElementLogs(element) {
     var elementId = element.id;
     var elementName = element.name || 'Элемент';
     
-    // Показываем индикатор загрузки
     showLogsModal(element, null, true);
     
-    // Получаем токен из localStorage
     var token = localStorage.getItem('licenseToken');
     var headers = {
         'Content-Type': 'application/json'
@@ -182,7 +747,6 @@ function fetchElementLogs(element) {
         headers['Authorization'] = 'Bearer ' + token;
     }
     
-    // Кодируем имя для URL
     var encodedName = encodeURIComponent(elementName);
     var url = '/api/palette/logs/' + encodedName;
     
@@ -210,11 +774,10 @@ function fetchElementLogs(element) {
 }
 
 // ============================================================
-// ФУНКЦИЯ ДЛЯ ОТОБРАЖЕНИЯ ЛОГОВ ЭЛЕМЕНТА
+// ПОКАЗ ЛОГОВ В МОДАЛКЕ
 // ============================================================
 
 function showLogsModal(element, logs, isLoading) {
-    // Удаляем старую модалку если есть
     var oldModal = document.querySelector('.logs-modal-overlay');
     if (oldModal) oldModal.remove();
     
@@ -288,9 +851,9 @@ function showLogsModal(element, logs, isLoading) {
     modal.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-shrink: 0;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-eye" style="color: #3B82F6; font-size: 20px;"></i>
+                <i class="fas fa-list" style="color: #3B82F6; font-size: 20px;"></i>
                 <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                    Журнал: ${escapeHtml(elementName)} (ID: ${elementId})
+                    Лог: ${escapeHtml(elementName)} (ID: ${elementId})
                 </h3>
             </div>
             <button onclick="this.closest('.logs-modal-overlay').remove()" style="
@@ -376,7 +939,7 @@ function showLogsModal(element, logs, isLoading) {
 }
 
 // ============================================================
-// ФУНКЦИЯ ДЛЯ ПОЛУЧЕНИЯ ЛОГОВ ПО ID (для кнопки обновить)
+// ПОЛУЧЕНИЕ ЛОГОВ ПО ID
 // ============================================================
 
 function fetchElementLogsById(elementId) {
@@ -387,7 +950,7 @@ function fetchElementLogsById(elementId) {
 }
 
 // ============================================================
-// ФУНКЦИЯ ДЛЯ ОЧИСТКИ ЛОГОВ НА СЕРВЕРЕ ПО ИМЕНИ ЭЛЕМЕНТА
+// ОЧИСТКА ЛОГОВ НА СЕРВЕРЕ
 // ============================================================
 
 function clearElementLogsOnServer(elementId) {
@@ -434,7 +997,7 @@ function clearElementLogsOnServer(elementId) {
 }
 
 // ============================================================
-// ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 // ============================================================
 
 function escapeHtml(str) {
@@ -442,10 +1005,7 @@ function escapeHtml(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
-// ============================================================
-// УДАЛЕНИЕ ЧЕРЕЗ КЛАВИШУ
-// ============================================================
-
+// Удаление через клавишу
 document.addEventListener('keydown', function(e) {
     if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElement) {
         e.preventDefault();
@@ -453,10 +1013,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ============================================================
-// СТИЛЬ ДЛЯ ПОДСВЕТКИ ЭЛЕМЕНТА
-// ============================================================
-
+// Стиль для подсветки элемента
 var highlightStyle = document.createElement('style');
 highlightStyle.textContent = `
     .canvas-element.context-active {

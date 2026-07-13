@@ -249,6 +249,131 @@ window.startDrag = function(e, id) {
 };
 
 // ============================================================
+// РАСКРЫТИЕ/СВОРАЧИВАНИЕ УЗЛОВ (ОБНОВЛЕННАЯ ВЕРСИЯ)
+// ============================================================
+
+function toggleNodeExpand(elementId) {
+    var el = elements.find(function(e) { return e.id === elementId; });
+    if (!el) return;
+    
+    // Проверяем, есть ли у этого элемента дочерние узлы (используем childNodes из первого скрипта)
+    var hasChildren = el.childNodes && el.childNodes.length > 0;
+    
+    if (!hasChildren) {
+        showCustomAlert('Информация', 'У этого узла нет дочерних элементов', 'info');
+        return;
+    }
+    
+    // Переключаем состояние
+    el.isExpanded = !el.isExpanded;
+    
+    if (el.isExpanded) {
+        // Раскрываем узел - показываем всех детей
+        expandNodeFromPalette(elementId);
+    } else {
+        // Сворачиваем узел - скрываем всех потомков
+        collapseNodeFromPalette(elementId);
+    }
+    
+    // Обновляем отображение
+    renderElements();
+    renderConnections();
+}
+
+// Новая функция: раскрытие узла из палитры
+function expandNodeFromPalette(nodeId) {
+    var el = elements.find(function(e) { return e.id === nodeId; });
+    if (!el) return;
+    
+    el.isExpanded = true;
+    
+    // Показываем всех прямых детей
+    if (el.childNodes) {
+        el.childNodes.forEach(function(childId) {
+            var childEl = elements.find(function(e) { return e.id === childId; });
+            if (childEl) {
+                childEl.hidden = false;
+                childEl.isVisible = true;
+                // Рекурсивно показываем детей, если они были раскрыты
+                if (childEl.isExpanded) {
+                    expandNodeFromPalette(childId);
+                }
+            }
+        });
+    }
+}
+
+// Новая функция: сворачивание узла из палитры
+function collapseNodeFromPalette(nodeId) {
+    var el = elements.find(function(e) { return e.id === nodeId; });
+    if (!el) return;
+    
+    el.isExpanded = false;
+    
+    // Скрываем всех потомков рекурсивно
+    function hideDescendants(parentId) {
+        var children = elements.filter(function(e) { 
+            return e.parentId === parentId; 
+        });
+        children.forEach(function(child) {
+            child.hidden = true;
+            child.isVisible = false;
+            child.isExpanded = false;
+            hideDescendants(child.id);
+        });
+    }
+    
+    if (el.childNodes) {
+        el.childNodes.forEach(function(childId) {
+            var childEl = elements.find(function(e) { return e.id === childId; });
+            if (childEl) {
+                childEl.hidden = true;
+                childEl.isVisible = false;
+                childEl.isExpanded = false;
+                hideDescendants(childId);
+            }
+        });
+    }
+}
+
+// Функция для раскрытия всех узлов
+function expandAllNodesPalette() {
+    var rootNodes = elements.filter(function(e) { 
+        return e.isRoot === true || e.parentId === null; 
+    });
+    rootNodes.forEach(function(root) {
+        if (root.childNodes && root.childNodes.length > 0) {
+            root.isExpanded = true;
+            expandNodeFromPalette(root.id);
+        }
+    });
+    renderElements();
+    renderConnections();
+    showCustomAlert('Успешно', 'Все узлы раскрыты', 'success');
+}
+
+// Функция для сворачивания всех узлов (кроме корня)
+function collapseAllNodesPalette() {
+    var rootNodes = elements.filter(function(e) { 
+        return e.isRoot === true || e.parentId === null; 
+    });
+    rootNodes.forEach(function(root) {
+        if (root.childNodes && root.childNodes.length > 0) {
+            root.isExpanded = false;
+            collapseNodeFromPalette(root.id);
+            // Корень показываем, но сворачиваем
+            root.isExpanded = false;
+            // Но корень должен оставаться видимым
+            root.hidden = false;
+            root.isVisible = true;
+        }
+    });
+    renderElements();
+    renderConnections();
+    showCustomAlert('Успешно', 'Все узлы свернуты', 'success');
+}
+
+// ============================================================
 // ФУНКЦИИ ДЛЯ МОДАЛКИ СВОЙСТВ ЭЛЕМЕНТА
 // ============================================================
 
@@ -281,84 +406,14 @@ window.openElementPropsModal = function(id) {
     // Проверяем, является ли элемент событием
     var isEvent = el.type && el.type.startsWith('event-');
 
-    // В openElementPropsModal, после проверки isEvent, добавьте:
-
-// UML Класс
-if (el.type === 'uml-class') {
-    var modalTitle = document.querySelector('#elementPropsModal .modal-title');
-    if (modalTitle) {
-        modalTitle.textContent = 'Свойства класса: ' + el.name;
+    // UML Класс
+    if (el.type === 'uml-class') {
+        var modalTitle = document.querySelector('#elementPropsModal .modal-title');
+        if (modalTitle) {
+            modalTitle.textContent = 'Свойства класса: ' + el.name;
+        }
+        dynamicContainer.dataset.elementId = el.id;
     }
-    
-    // var header = document.createElement('div');
-    // header.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;';
-    // header.innerHTML = `
-    //     <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Ubuntu, sans-serif;">
-    //         <i class="fas fa-cube"></i> Поля и методы класса
-    //     </h4>
-    // `;
-    // dynamicContainer.appendChild(header);
-    
-    // // Поля
-    // var fieldsWrapper = document.createElement('div');
-    // fieldsWrapper.style.cssText = 'margin-bottom: 12px;';
-    // fieldsWrapper.innerHTML = `
-    //     <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;">
-    //         Свойства (поля):
-    //     </label>
-    //     <div id="umlFieldsContainer" style="margin-bottom: 8px;">
-    //         ${(el.fields || []).map(function(f, i) {
-    //             return `<div style="display: flex; gap: 6px; margin-bottom: 4px; align-items: center;">
-    //                 <input type="text" value="${f}" class="uml-field-input" data-index="${i}" style="flex: 1; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; font-family: Ubuntu, sans-serif;">
-    //                 <button onclick="removeUmlField(${el.id}, ${i})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">×</button>
-    //             </div>`;
-    //         }).join('')}
-    //     </div>
-    //     <button onclick="addUmlFieldModal(${el.id})" style="
-    //         padding: 4px 12px;
-    //         border: 1px dashed #8B5CF6;
-    //         border-radius: 4px;
-    //         background: none;
-    //         color: #8B5CF6;
-    //         cursor: pointer;
-    //         font-size: 12px;
-    //         font-family: Ubuntu, sans-serif;
-    //     ">+ Добавить поле</button>
-    // `;
-    // dynamicContainer.appendChild(fieldsWrapper);
-    
-    // // Методы
-    // var methodsWrapper = document.createElement('div');
-    // methodsWrapper.style.cssText = 'margin-top: 12px;';
-    // methodsWrapper.innerHTML = `
-    //     <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;">
-    //         Методы:
-    //     </label>
-    //     <div id="umlMethodsContainer" style="margin-bottom: 8px;">
-    //         ${(el.methods || []).map(function(m, i) {
-    //             var params = m.params && m.params.length > 0 ? '(' + m.params.join(', ') + ')' : '()';
-    //             return `<div style="display: flex; gap: 6px; margin-bottom: 4px; align-items: center;">
-    //                 <input type="text" value="${m.name + params}" class="uml-method-input" data-index="${i}" style="flex: 1; padding: 4px 8px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 12px; font-family: Ubuntu, sans-serif;">
-    //                 <button onclick="removeUmlMethod(${el.id}, ${i})" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">×</button>
-    //             </div>`;
-    //         }).join('')}
-    //     </div>
-    //     <button onclick="addUmlMethodModal(${el.id})" style="
-    //         padding: 4px 12px;
-    //         border: 1px dashed #10B981;
-    //         border-radius: 4px;
-    //         background: none;
-    //         color: #10B981;
-    //         cursor: pointer;
-    //         font-size: 12px;
-    //         font-family: Ubuntu, sans-serif;
-    //     ">+ Добавить метод</button>
-    // `;
-    // dynamicContainer.appendChild(methodsWrapper);
-    
-    // Сохраняем ID элемента для обработчиков
-    dynamicContainer.dataset.elementId = el.id;
-}
     
     if (el.isTool && el.tool) {
         config = getToolConfig(el.tool);
@@ -823,37 +878,32 @@ window.saveElementProps = function() {
     }
     
     if (selectedElement.type === 'uml-class') {
-    // Сохраняем поля
-    var fieldInputs = document.querySelectorAll('.uml-field-input');
-    var newFields = [];
-    fieldInputs.forEach(function(input) {
-        var val = input.value.trim();
-        if (val) newFields.push(val);
-    });
-    selectedElement.fields = newFields;
-    
-    // Сохраняем методы
-    var methodInputs = document.querySelectorAll('.uml-method-input');
-    var newMethods = [];
-    methodInputs.forEach(function(input) {
-        var val = input.value.trim();
-        if (val) {
-            // Парсим имя метода и параметры
-            var match = val.match(/^(\w+)\s*\(([^)]*)\)$/);
-            if (match) {
-                var params = match[2] ? match[2].split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }) : [];
-                newMethods.push({ name: match[1], params: params, type: 'method' });
-            } else {
-                newMethods.push({ name: val, params: [], type: 'method' });
+        var fieldInputs = document.querySelectorAll('.uml-field-input');
+        var newFields = [];
+        fieldInputs.forEach(function(input) {
+            var val = input.value.trim();
+            if (val) newFields.push(val);
+        });
+        selectedElement.fields = newFields;
+        
+        var methodInputs = document.querySelectorAll('.uml-method-input');
+        var newMethods = [];
+        methodInputs.forEach(function(input) {
+            var val = input.value.trim();
+            if (val) {
+                var match = val.match(/^(\w+)\s*\(([^)]*)\)$/);
+                if (match) {
+                    var params = match[2] ? match[2].split(',').map(function(p) { return p.trim(); }).filter(function(p) { return p; }) : [];
+                    newMethods.push({ name: match[1], params: params, type: 'method' });
+                } else {
+                    newMethods.push({ name: val, params: [], type: 'method' });
+                }
             }
-        }
-    });
-    selectedElement.methods = newMethods;
-    
-    // Пересчитываем высоту
-    recalculateUmlClassHeight(selectedElement);
-}
-
+        });
+        selectedElement.methods = newMethods;
+        
+        recalculateUmlClassHeight(selectedElement);
+    }
 
     renderElements();
     closeElementPropsModal();
@@ -1302,6 +1352,14 @@ window.renderConnections = function() {
         if (!fromEl || !toEl) {
             return;
         }
+        
+        // Пропускаем невидимые элементы
+        if (fromEl.hidden === true || toEl.hidden === true) {
+            return;
+        }
+        if (fromEl.isVisible === false || toEl.isVisible === false) {
+            return;
+        }
 
         // ============================================================
         // ДИАГРАММА ПОТОКА ДАННЫХ - ПРЯМЫЕ ЛИНИИ
@@ -1313,7 +1371,6 @@ window.renderConnections = function() {
             var toY = conn.toY || (toEl.y + toEl.height / 2);
             var color = conn.color || '#10B981';
             
-            // Линия потока данных
             var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             var pathData = 'M ' + fromX + ' ' + fromY + 
                            ' L ' + (toX - 10) + ' ' + toY;
@@ -1324,7 +1381,6 @@ window.renderConnections = function() {
             path.setAttribute('marker-end', 'url(#arrowhead-dataflow)');
             svg.appendChild(path);
             
-            // Метка потока
             if (conn.label) {
                 var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 var midX = (fromX + toX) / 2;
@@ -1521,214 +1577,206 @@ window.renderElements = function() {
     var elementsContainer = document.getElementById('canvasElements');
     elementsContainer.innerHTML = '';
     
-    elements.forEach(function(el) {
-        var div = document.createElement('div');
-        
-
-if (el.type === 'uml-class') {
-    var div = document.createElement('div');
-    div.style.cssText = `
-        position: absolute;
-        left: ${el.x}px;
-        top: ${el.y}px;
-        width: ${el.width}px;
-        height: ${el.height}px;
-        background: ${el.bgColor || '#ffffff'};
-        border: 2px solid ${el.borderColor || '#8B5CF6'};
-        border-radius: 8px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        z-index: 6;
-        cursor: grab;
-        overflow: hidden;
-        font-family: 'Ubuntu', sans-serif;
-        display: flex;
-        flex-direction: column;
-        user-select: none;
-    `;
-    
-    // Заголовок класса
-    var header = document.createElement('div');
-    header.style.cssText = `
-        padding: 8px 12px;
-        background: ${el.borderColor || '#8B5CF6'}20;
-        border-bottom: 2px solid ${el.borderColor || '#8B5CF6'};
-        font-weight: 600;
-        font-size: 13px;
-        color: ${el.textColor || '#1a1a2e'};
-        text-align: center;
-        flex-shrink: 0;
-        cursor: grab;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    `;
-    header.innerHTML = `
-        <span>📦 ${el.name}</span>
-        <span style="display: flex; gap: 4px;">
-            <button class="props-btn" onclick="event.stopPropagation(); openUmlClassModal(${el.id})" title="Свойства" style="
-                background: none;
-                border: none;
-                color: ${el.borderColor || '#8B5CF6'};
-                cursor: pointer;
-                font-size: 12px;
-                padding: 2px 6px;
-                border-radius: 4px;
-            ">
-                <i class="fas fa-cog"></i>
-            </button>
-            <button class="delete-btn" onclick="event.stopPropagation(); deleteElement(${el.id}, event)" title="Удалить" style="
-                background: none;
-                border: none;
-                color: #ef4444;
-                cursor: pointer;
-                font-size: 12px;
-                padding: 2px 6px;
-                border-radius: 4px;
-            ">
-                <i class="fas fa-times"></i>
-            </button>
-        </span>
-    `;
-    div.appendChild(header);
-    
-    // Контейнер для полей и методов
-    var bodyContainer = document.createElement('div');
-    bodyContainer.style.cssText = `
-        flex: 1;
-        padding: 4px 8px;
-        overflow: hidden;
-        font-size: 11px;
-        color: #374151;
-        display: flex;
-        flex-direction: column;
-    `;
-    
-    // Добавляем поля
-    if (el.fields && el.fields.length > 0) {
-        el.fields.forEach(function(field) {
-            var fieldDiv = document.createElement('div');
-            fieldDiv.style.cssText = `
-                color: #6b7280;
-                padding: 1px 0;
-                font-size: 11px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            `;
-            fieldDiv.textContent = '▸ ' + field;
-            bodyContainer.appendChild(fieldDiv);
-        });
-    }
-    
-    // Разделитель
-    if (el.fields && el.fields.length > 0 && el.methods && el.methods.length > 0) {
-        var separator = document.createElement('div');
-        separator.style.cssText = `
-            border-top: 1px solid ${el.borderColor || '#8B5CF6'}40;
-            margin: 2px 0;
-        `;
-        bodyContainer.appendChild(separator);
-    }
-    
-    // Добавляем методы
-    if (el.methods && el.methods.length > 0) {
-        el.methods.forEach(function(method) {
-            var params = method.params && method.params.length > 0 ? '(' + method.params.join(', ') + ')' : '()';
-            var methodName = method.name + params;
-            var methodColor = method.type === 'function' ? '#3B82F6' : '#10B981';
-            
-            var methodDiv = document.createElement('div');
-            methodDiv.style.cssText = `
-                color: ${methodColor};
-                padding: 1px 0;
-                font-size: 11px;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            `;
-            methodDiv.textContent = '▸ ' + methodName;
-            bodyContainer.appendChild(methodDiv);
-        });
-    }
-    
-    div.appendChild(bodyContainer);
-    
-    // ============================================================
-    // ПЕРЕТАСКИВАНИЕ
-    // ============================================================
-    div.addEventListener('mousedown', function(e) {
-        if (e.target.closest('.props-btn')) return;
-        if (e.target.closest('.delete-btn')) return;
-        selectElement(el.id);
-        startDrag(e, el.id);
+    // Фильтруем скрытые элементы
+    var visibleElements = elements.filter(function(el) {
+        // Если элемент явно скрыт через hidden или isVisible
+        if (el.hidden === true) return false;
+        if (el.isVisible === false) return false;
+        return true;
     });
     
-    // ============================================================
-    // ДВОЙНОЙ КЛИК - СВОЙСТВА
-    // ============================================================
-div.addEventListener('dblclick', function(e) {
-    e.stopPropagation();
-    openUmlClassModal(el.id);
-});
-    // ============================================================
-    // ПРАВАЯ КНОПКА - КОНТЕКСТНОЕ МЕНЮ
-    // ============================================================
-//     if (contextMenuTarget && contextMenuTarget.type === 'uml-class') {
-//     openUmlClassModal(contextMenuTarget.id);
-// } else {
-//     openElementPropsModal(contextMenuTarget.id);
-// }
-    
-    elementsContainer.appendChild(div);
-    return;
-}
-// // UML Поле (свойство класса)
-if (el.type === 'uml-field') {
-    // var div = document.createElement('div');
-    // div.style.cssText = `
-    //     position: absolute;
-    //     left: ${el.x}px;
-    //     top: ${el.y}px;
-    //     width: ${el.width}px;
-    //     height: ${el.height}px;
-    //     font-size: 11px;
-    //     color: ${el.color || '#6b7280'};
-    //     font-family: 'Ubuntu', sans-serif;
-    //     z-index: 7;
-    //     pointer-events: none;
-    //     padding-left: 4px;
-    //     white-space: nowrap;
-    //     overflow: hidden;
-    //     text-overflow: ellipsis;
-    // `;
-    // div.textContent = '▸ ' + el.name;
-    // elementsContainer.appendChild(div);
-    return;
-}
+    visibleElements.forEach(function(el) {
+        var div = document.createElement('div');
 
-// // UML Метод
-// if (el.type === 'uml-method') {
-//     var div = document.createElement('div');
-//     div.style.cssText = `
-//         position: absolute;
-//         left: ${el.x}px;
-//         top: ${el.y}px;
-//         width: ${el.width}px;
-//         height: ${el.height}px;
-//         font-size: 11px;
-//         color: ${el.color || '#3B82F6'};
-//         font-family: 'Ubuntu', sans-serif;
-//         z-index: 7;
-//         pointer-events: none;
-//         padding-left: 4px;
-//         white-space: nowrap;
-//         overflow: hidden;
-//         text-overflow: ellipsis;
-//     `;
-//     div.textContent = '▸ ' + el.name;
-//     elementsContainer.appendChild(div);
-//     return;
-// }
+        // ============================================================
+        // КНОПКА РАСКРЫТИЯ ДЛЯ ЗАВИСИМОСТЕЙ И SBOM
+        // ============================================================
+        if (el.type === 'package-dependency' || el.type === 'sbom-component' || el.type === 'sbom-root') {
+            if (el.hasChildren && el.childNodes && el.childNodes.length > 0) {
+                var toggleBtn = document.createElement('button');
+                toggleBtn.className = 'toggle-btn';
+                toggleBtn.style.cssText = `
+                    position: absolute;
+                    right: -10px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    border: 1px solid ${el.color};
+                    background: white;
+                    color: ${el.color};
+                    cursor: pointer;
+                    font-size: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10;
+                    font-family: 'Ubuntu', sans-serif;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                `;
+                toggleBtn.textContent = el.isExpanded ? '−' : '+';
+                toggleBtn.title = el.isExpanded ? 'Свернуть' : 'Развернуть';
+                toggleBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (typeof toggleNodeExpand === 'function') {
+                        toggleNodeExpand(el.id);
+                    }
+                };
+                div.appendChild(toggleBtn);
+            }
+        }
+
+        // ============================================================
+        // UML КЛАСС
+        // ============================================================
+        if (el.type === 'uml-class') {
+            var divUml = document.createElement('div');
+            divUml.style.cssText = `
+                position: absolute;
+                left: ${el.x}px;
+                top: ${el.y}px;
+                width: ${el.width}px;
+                height: ${el.height}px;
+                background: ${el.bgColor || '#ffffff'};
+                border: 2px solid ${el.borderColor || '#8B5CF6'};
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                z-index: 6;
+                cursor: grab;
+                overflow: hidden;
+                font-family: 'Ubuntu', sans-serif;
+                display: flex;
+                flex-direction: column;
+                user-select: none;
+            `;
+            
+            var header = document.createElement('div');
+            header.style.cssText = `
+                padding: 8px 12px;
+                background: ${el.borderColor || '#8B5CF6'}20;
+                border-bottom: 2px solid ${el.borderColor || '#8B5CF6'};
+                font-weight: 600;
+                font-size: 13px;
+                color: ${el.textColor || '#1a1a2e'};
+                text-align: center;
+                flex-shrink: 0;
+                cursor: grab;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            `;
+            header.innerHTML = `
+                <span>📦 ${el.name}</span>
+                <span style="display: flex; gap: 4px;">
+                    <button class="props-btn" onclick="event.stopPropagation(); openUmlClassModal(${el.id})" title="Свойства" style="
+                        background: none;
+                        border: none;
+                        color: ${el.borderColor || '#8B5CF6'};
+                        cursor: pointer;
+                        font-size: 12px;
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                    ">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteElement(${el.id}, event)" title="Удалить" style="
+                        background: none;
+                        border: none;
+                        color: #ef4444;
+                        cursor: pointer;
+                        font-size: 12px;
+                        padding: 2px 6px;
+                        border-radius: 4px;
+                    ">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </span>
+            `;
+            divUml.appendChild(header);
+            
+            var bodyContainer = document.createElement('div');
+            bodyContainer.style.cssText = `
+                flex: 1;
+                padding: 4px 8px;
+                overflow: hidden;
+                font-size: 11px;
+                color: #374151;
+                display: flex;
+                flex-direction: column;
+            `;
+            
+            if (el.fields && el.fields.length > 0) {
+                el.fields.forEach(function(field) {
+                    var fieldDiv = document.createElement('div');
+                    fieldDiv.style.cssText = `
+                        color: #6b7280;
+                        padding: 1px 0;
+                        font-size: 11px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    `;
+                    fieldDiv.textContent = '▸ ' + field;
+                    bodyContainer.appendChild(fieldDiv);
+                });
+            }
+            
+            if (el.fields && el.fields.length > 0 && el.methods && el.methods.length > 0) {
+                var separator = document.createElement('div');
+                separator.style.cssText = `
+                    border-top: 1px solid ${el.borderColor || '#8B5CF6'}40;
+                    margin: 2px 0;
+                `;
+                bodyContainer.appendChild(separator);
+            }
+            
+            if (el.methods && el.methods.length > 0) {
+                el.methods.forEach(function(method) {
+                    var params = method.params && method.params.length > 0 ? '(' + method.params.join(', ') + ')' : '()';
+                    var methodName = method.name + params;
+                    var methodColor = method.type === 'function' ? '#3B82F6' : '#10B981';
+                    
+                    var methodDiv = document.createElement('div');
+                    methodDiv.style.cssText = `
+                        color: ${methodColor};
+                        padding: 1px 0;
+                        font-size: 11px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    `;
+                    methodDiv.textContent = '▸ ' + methodName;
+                    bodyContainer.appendChild(methodDiv);
+                });
+            }
+            
+            divUml.appendChild(bodyContainer);
+            
+            divUml.addEventListener('mousedown', function(e) {
+                if (e.target.closest('.props-btn')) return;
+                if (e.target.closest('.delete-btn')) return;
+                selectElement(el.id);
+                startDrag(e, el.id);
+            });
+            
+            divUml.addEventListener('dblclick', function(e) {
+                e.stopPropagation();
+                openUmlClassModal(el.id);
+            });
+            
+            elementsContainer.appendChild(divUml);
+            return;
+        }
+
+        // ============================================================
+        // UML ПОЛЕ (СКРЫТО)
+        // ============================================================
+        if (el.type === 'uml-field') {
+            return;
+        }
+
         // ============================================================
         // ОБЩАЯ ОТРИСОВКА ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
         // ============================================================
@@ -1770,9 +1818,6 @@ if (el.type === 'uml-field') {
             versionBadge = `<span style="font-size: 8px; background: ${el.color}30; padding: 1px 6px; border-radius: 4px; margin-left: 4px; color: ${el.color};">v${el.version}</span>`;
         }
 
-        // ============================================================
-        // ПРАВЫЙ ПОРТ - ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
-        // ============================================================
         var rightPort = document.createElement('div');
         rightPort.className = 'element-port right';
         rightPort.title = 'Перетащите для создания связи';
@@ -1784,17 +1829,11 @@ if (el.type === 'uml-field') {
             }
         });
 
-        // ============================================================
-        // ЛЕВЫЙ ПОРТ - ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
-        // ============================================================
         var leftPort = document.createElement('div');
         leftPort.className = 'element-port left';
         leftPort.style.cssText = 'background: #d1d5db; cursor: default;';
         leftPort.title = 'Входящий порт';
 
-        // ============================================================
-        // КНОПКИ ДЕЙСТВИЙ - ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
-        // ============================================================
         var actions = document.createElement('span');
         actions.className = 'element-actions';
         actions.innerHTML = `
@@ -1901,7 +1940,13 @@ function addToolElement(tool, x, y) {
         icon: config.icon || 'fa-cube',
         width: 120,
         height: 40,
-        isTool: true
+        isTool: true,
+        // Добавляем поля для совместимости с раскрытием
+        hasChildren: false,
+        isExpanded: false,
+        childNodes: [],
+        hidden: false,
+        isVisible: true
     };
 
     config.fields.forEach(function(field) {
@@ -1915,7 +1960,6 @@ function addToolElement(tool, x, y) {
     selectElement(id);
     document.getElementById('paletteEmpty').classList.add('hidden');
     
-    // Автоматически открываем окно свойств
     setTimeout(function() {
         openElementPropsModal(id);
     }, 100);
@@ -1934,7 +1978,13 @@ function addElement(type, x, y) {
         color: getDefaultColor(type),
         width: 120,
         height: 40,
-        isTool: false
+        isTool: false,
+        // Добавляем поля для совместимости с раскрытием
+        hasChildren: false,
+        isExpanded: false,
+        childNodes: [],
+        hidden: false,
+        isVisible: true
     };
 
     if (type === 'class') {
@@ -1955,14 +2005,12 @@ function addElement(type, x, y) {
     selectElement(id);
     document.getElementById('paletteEmpty').classList.add('hidden');
     
-    // Автоматически открываем окно свойств
     setTimeout(function() {
         openElementPropsModal(id);
     }, 100);
     
     return element;
 }
-
 
 function getDefaultName(type) {
     var names = {
@@ -2038,7 +2086,6 @@ window.exportModel = function() {
                     }
                 }
                 
-                // Добавляем параметры событий
                 if (el.type && el.type.startsWith('event-')) {
                     var eventConfig = getEventConfig(el.type);
                     if (eventConfig) {
@@ -2079,7 +2126,7 @@ window.exportModel = function() {
 
 document.addEventListener('DOMContentLoaded', function() {
     var canvas = document.getElementById('paletteCanvas');
-        emptyState = document.getElementById('paletteEmpty');
+    emptyState = document.getElementById('paletteEmpty');
 
     if (emptyState) emptyState.classList.remove('hidden');
 
@@ -2090,8 +2137,9 @@ document.addEventListener('DOMContentLoaded', function() {
     var sourceBtns = document.querySelectorAll('.source-btn');
     var sourceContents = {
         empty: document.getElementById('empty-source'),
-        json: document.getElementById('json-source'),
-        template: document.getElementById('template-source')
+        template: document.getElementById('template-source'),
+        code: document.getElementById('code-source'),
+        sbom: document.getElementById('sbom-source')
     };
 
     sourceBtns.forEach(function(btn) {
@@ -2107,6 +2155,30 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     });
+
+    // ============================================================
+    // КНОПКА SBOM - ОТКРЫВАЕМ ВКЛАДКУ
+    // ============================================================
+
+    var sbomBtn = document.querySelector('.source-btn[data-source="sbom"]');
+    if (sbomBtn) {
+        sbomBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var allBtns = document.querySelectorAll('.source-btn');
+            allBtns.forEach(function(b) { b.classList.remove('active'); });
+            sbomBtn.classList.add('active');
+            
+            var allContents = document.querySelectorAll('.source-content-palette');
+            allContents.forEach(function(c) { c.classList.remove('active'); });
+            
+            var sbomContent = document.getElementById('sbom-source');
+            if (sbomContent) {
+                sbomContent.classList.add('active');
+            }
+        });
+    }
 
     // ============================================================
     // Drag & Drop
@@ -2199,7 +2271,15 @@ document.addEventListener('DOMContentLoaded', function() {
             showCustomAlert('Отмена', 'Создание связи отменено', 'info');
         }
     });
-
-
-
 });
+
+// ============================================================
+// ЭКСПОРТ ФУНКЦИЙ ДЛЯ ДРУГИХ СКРИПТОВ
+// ============================================================
+
+window.toggleNodeExpand = toggleNodeExpand;
+window.hideChildrenRecursive = hideChildrenRecursive;
+window.expandNodeFromPalette = expandNodeFromPalette;
+window.collapseNodeFromPalette = collapseNodeFromPalette;
+window.expandAllNodesPalette = expandAllNodesPalette;
+window.collapseAllNodesPalette = collapseAllNodesPalette;
