@@ -156,7 +156,8 @@
 
         <div id="center">
             <div class="page-header">
-                <h2 class="section-title" id="pageTitle">Моделирование и визуализация</h2>
+                <h2 class="section-title" id="pageTitle">Моделирование и визуализация <span class="badge-beta-gradient">Beta</span></h2>
+                
                 <div class="header-buttons">
                     <button class="header-btn" onclick="showToolInfo('palette')">
                         <i class="fas fa-info-circle"></i> Описание инструмента
@@ -170,20 +171,23 @@
                     <button class="source-btn active" data-source="empty">
                         <i class="fas fa-plus-circle"></i> Новая
                     </button>
-                    <button class="source-btn" data-source="json">
-                        <i class="fas fa-file-code"></i> JSON
-                    </button>
                     <button class="source-btn" data-source="template">
                         <i class="fas fa-copy"></i> Шаблон
                     </button>
                      <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
                         <i class="fas fa-code"></i> Код
                     </button>
+                    <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
+                        <i class="fas fa-file-code"></i> Загрузить SBOM
+                    </button>
+                    <button class="source-btn" data-source="ci" onclick="openYAMLModal()">
+                        <i class="fas fa-code-branch"></i>Загрузить CI/CD
+                    </button>
                 </div>
                 <div class="palette-topbar-right">
-                    <button class="action-btn success" id="playBtn">
+                    <!-- <button class="action-btn success" id="playBtn">
                         <i class="fas fa-play"></i> Запустить
-                    </button>
+                    </button> -->
                     <button class="action-btn" id="exportModelBtn">
                         <i class="fas fa-download"></i> Экспорт
                     </button>
@@ -623,14 +627,17 @@
         </div>
     </div>
 
-    <script src="palette.js"></script>
-    <script src="client.js"></script>
+    <script src="utils/sbom.js"></script>
+    <script src="utils/cicd.js"></script>
+    <script src="utils/dependency.js"></script>
     <script src="utils/progress.js"></script>    
     <script src="utils/contextMenu.js"></script>
     <script src="utils/actions.js"></script>    
     <script src="utils/visualization.js"></script> 
     <script src="utils/notify.js"></script>   
     <script src="utils/uml.js"></script>    
+    <script src="palette.js"></script>
+    <script src="client.js"></script>
     <script src="../common/licence.js"></script>
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
@@ -886,6 +893,66 @@
                 color: white;
                 transition: all 0.2s;
             ">Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<!-- МОДАЛКА ЗАГРУЗКИ SBOM -->
+<div id="sbomFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
+                <i class="fas fa-sitemap" style="color: #8B5CF6;"></i> Загрузить SBOM
+            </h3>
+            <button onclick="closeSbomFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
+        </div>
+        
+        <!-- Выбор файла -->
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">
+                <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Выберите SBOM файл
+            </label>
+            
+            <div id="sbomDropZone" style="
+                border: 2px dashed #d1d5db;
+                border-radius: 12px;
+                padding: 30px 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                background: #fafafa;
+                position: relative;
+            ">
+                <input type="file" id="sbomFileInputModal" accept=".json,.xml,.sbom" style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    opacity: 0;
+                    cursor: pointer;
+                ">
+                
+                <div style="width: 56px; height: 56px; margin: 0 auto 10px; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+                </div>
+                
+                <p style="margin: 0; font-size: 14px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;" id="sbomStatusText">Перетащите SBOM файл или нажмите для выбора</p>
+                <p style="margin: 6px 0 0 0; font-size: 12px; color: #9ca3af; font-family: 'Ubuntu', sans-serif;">Поддерживаются: CycloneDX, SPDX (JSON формат)</p>
+                
+                <div id="sbomFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
+                    <span id="sbomFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Ubuntu', sans-serif;"></span>
+                    <span style="margin: 0 8px; color: #6b7280;">|</span>
+                    <span id="sbomFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
+                    <span style="margin: 0 8px; color: #6b7280;">|</span>
+                    <span id="sbomFileComponentsModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+            <button onclick="closeSbomFileModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #f3f4f6; color: #374151;">Отмена</button>
+            <button id="loadSbomFileBtn" onclick="loadSbomFileFromModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: not-allowed; background: #e5e7eb; color: #9ca3af;">Загрузить</button>
         </div>
     </div>
 </div>
