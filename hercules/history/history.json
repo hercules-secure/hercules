@@ -1,3 +1,40 @@
 {
-  "records": []
+  "records": [
+    {
+      "id": "1784148594019",
+      "tool": "echo",
+      "sourceType": "network",
+      "sourceName": "185.114.245.170",
+      "startTime": "2026-07-15T20:49:46.197Z",
+      "endTime": "2026-07-15T20:49:54.019Z",
+      "duration": 7822,
+      "reportId": "echo_mrmk03px_ccue7b",
+      "status": "success",
+      "error": null
+    },
+    {
+      "id": "1784148455186",
+      "tool": "scout",
+      "sourceType": "url",
+      "sourceName": "https://ci08903-wordpress-frkwk.tw1.ru",
+      "startTime": "2026-07-15T20:46:48.504Z",
+      "endTime": "2026-07-15T20:47:35.186Z",
+      "duration": 46682,
+      "reportId": "df769c9e3514487b4dc3b541c3dcafd7",
+      "status": "success",
+      "error": null
+    },
+    {
+      "id": "1784148345280",
+      "tool": "echo",
+      "sourceType": "network",
+      "sourceName": "172.19.28.181",
+      "startTime": "2026-07-15T20:45:39.250Z",
+      "endTime": "2026-07-15T20:45:45.280Z",
+      "duration": 6030,
+      "reportId": "echo_mrmjut6a_26yona",
+      "status": "success",
+      "error": null
+    }
+  ]
 }
