@@ -1,0 +1,37 @@
+{
+  "reportId": "echo_mrmktk5s_fyg4ik",
+  "tool": "echo",
+  "target": "10.78.21.110",
+  "scanType": "single",
+  "status": "success",
+  "startTime": "2026-07-15T21:12:40.528Z",
+  "endTime": "2026-07-15T21:12:46.568Z",
+  "duration": "6034ms",
+  "summary": {
+    "totalIPs": 1,
+    "aliveIPs": 0,
+    "totalOpenPorts": 0
+  },
+  "results": [
+    {
+      "ip": "10.78.21.110",
+      "alive": false,
+      "os": "unknown",
+      "openPorts": [],
+      "portCount": 0,
+      "info": {
+        "ip": "10.78.21.110",
+        "whois": null,
+        "geo": {
+          "status": "private",
+          "message": "Нет публичной информации (частный IP)"
+        },
+        "dns": null,
+        "abuse": null,
+        "available": false
+      }
+    }
+  ],
+  "error": null,
+  "timestamp": "2026-07-15T21:12:46.568Z"
+}
