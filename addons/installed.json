@@ -707,11 +707,6 @@
         "icon": "far fa-file-code",
         "iconColor": "#F7DF1E",
         "name": "JSON"
-      },
-      {
-        "icon": "fas fa-chart-bar",
-        "iconColor": "#10B981",
-        "name": "Lighthouse метрики"
       }
     ]
   }

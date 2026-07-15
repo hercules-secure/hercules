@@ -19,7 +19,11 @@ var vulnerabilitiesMap = {};
 // ============================================================
 
 function buildDependencyGraphFromSBOM(sbomData, fileName) {
+    
+    clearCanvas(); 
     // Распаковываем
+
+
     if (sbomData.sbom) {
         sbomData = sbomData.sbom;
     }
@@ -667,69 +671,6 @@ function findComponentKey(componentMap, search) {
     return null;
 }
 
-function addGraphControls() {
-    var container = document.getElementById('paletteCanvas') || document.getElementById('canvasContainer');
-    if (!container) return;
-    
-    var oldControls = container.querySelector('.graph-controls');
-    if (oldControls) oldControls.remove();
-    
-    var controls = document.createElement('div');
-    controls.className = 'graph-controls';
-    controls.style.cssText = `
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 1000;
-        display: flex;
-        gap: 6px;
-        flex-direction: column;
-        background: rgba(255,255,255,0.95);
-        padding: 8px;
-        border-radius: 8px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-    `;
-    
-    var expandBtn = document.createElement('button');
-    expandBtn.textContent = 'Раскрыть все';
-    expandBtn.style.cssText = `
-        padding: 6px 12px;
-        background: #3B82F6;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 500;
-        font-family: Ubuntu, sans-serif;
-        transition: all 0.2s;
-    `;
-    expandBtn.onmouseenter = function() { this.style.background = '#2563EB'; };
-    expandBtn.onmouseleave = function() { this.style.background = '#3B82F6'; };
-    expandBtn.onclick = expandAllNodes;
-    controls.appendChild(expandBtn);
-    
-    var collapseBtn = document.createElement('button');
-    collapseBtn.textContent = 'Свернуть все';
-    collapseBtn.style.cssText = `
-        padding: 6px 12px;
-        background: #6B7280;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 12px;
-        font-weight: 500;
-        font-family: Ubuntu, sans-serif;
-        transition: all 0.2s;
-    `;
-    collapseBtn.onmouseenter = function() { this.style.background = '#4B5563'; };
-    collapseBtn.onmouseleave = function() { this.style.background = '#6B7280'; };
-    collapseBtn.onclick = collapseAllNodes;
-    controls.appendChild(collapseBtn);
-    
-    container.appendChild(controls);
-}
 
 // ============================================================
 // МОДАЛКА SBOM
@@ -926,7 +867,6 @@ window.toggleNode = toggleNode;
 window.expandAllNodes = expandAllNodes;
 window.collapseAllNodes = collapseAllNodes;
 window.updateConnectionsVisibility = updateConnectionsVisibility;
-window.addGraphControls = addGraphControls;
 window.loadSBOMFile = loadSBOMFile;
 window.selectedSbomFile = null;
 window.vulnerabilitiesMap = {};

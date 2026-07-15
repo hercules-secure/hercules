@@ -1,6 +1,10 @@
 // modal.js
 // Модальное окно для отображения отчёта Эхолота
 
+/*
+   говно код рулит - AK
+*/
+
 // ============================================================
 // ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
 // ============================================================
@@ -24,10 +28,7 @@ function closeEchoModal() {
         document.body.style.overflow = '';
     }
     
-    // Сброс прогресс-бара при закрытии модального окна
     resetProgress();
-    
-    // Очистка полей ввода IP
     clearInputFields();
 }
 
@@ -72,7 +73,6 @@ function clearInputFields() {
         }
     });
     
-    // Деактивируем кнопки сканирования
     var buttons = ['startScanBtn', 'startSingleScanBtn', 'startRangeScanBtn'];
     buttons.forEach(function(id) {
         var btn = document.getElementById(id);
@@ -138,7 +138,26 @@ function downloadEchoReportJSON(reportId) {
 }
 
 // ============================================================
-// РЕНДЕРИНГ ОТЧЁТА ИЗ JSON
+// ЭКРАНИРОВАНИЕ HTML
+// ============================================================
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function formatDate(timestamp) {
+    if (!timestamp || timestamp === '—') return '—';
+    try {
+        var date = new Date(timestamp);
+        if (!isNaN(date.getTime())) {
+            return date.toLocaleString('ru-RU');
+        }
+    } catch (e) {}
+    return '—';
+}
+
+// ============================================================
+// РЕНДЕРИНГ ОТЧЁТА
 // ============================================================
 function renderEchoReport(data) {
     if (!data) {
@@ -149,11 +168,9 @@ function renderEchoReport(data) {
     var modalBody = document.getElementById('echoModalBody');
     if (!modalBody) return;
     
-    // Извлекаем данные из структуры
     var reportId = data.reportId || '—';
     
-    // Определяем, где находятся результаты
-    var resultsData = null;
+    // Извлекаем результаты
     var results = [];
     var summary = {};
     var target = '—';
@@ -161,9 +178,7 @@ function renderEchoReport(data) {
     var scanType = 'unknown';
     var timestamp = '—';
     
-    // Проверяем структуру: data.results.results (из вашего примера)
     if (data.results && data.results.results) {
-        resultsData = data.results;
         results = data.results.results || [];
         summary = {
             totalIPs: data.results.totalIPs || 0,
@@ -185,17 +200,6 @@ function renderEchoReport(data) {
         duration = data.duration || '—';
         scanType = data.type || 'unknown';
         timestamp = data.timestamp || '—';
-    } else if (data.results && data.results.results && data.results.results.length > 0) {
-        results = data.results.results;
-        summary = {
-            totalIPs: data.results.totalIPs || results.length,
-            aliveIPs: data.results.aliveIPs || results.filter(function(h) { return h.alive; }).length,
-            totalOpenPorts: data.results.totalOpenPorts || 0
-        };
-        target = data.results.target || data.target || '—';
-        duration = data.results.duration || data.duration || '—';
-        scanType = data.results.type || data.type || 'unknown';
-        timestamp = data.results.timestamp || data.timestamp || '—';
     } else {
         results = data.results || [];
         summary = {
@@ -209,25 +213,13 @@ function renderEchoReport(data) {
         timestamp = data.timestamp || '—';
     }
     
-    // Форматируем дату
-    var formattedDate = '—';
-    if (timestamp && timestamp !== '—') {
-        try {
-            var date = new Date(timestamp);
-            if (!isNaN(date.getTime())) {
-                formattedDate = date.toLocaleString('ru-RU');
-            }
-        } catch (e) {
-            formattedDate = '—';
-        }
-    }
+    var formattedDate = formatDate(timestamp);
     
-    // Подсчёт статистики
     var totalIPs = summary.totalIPs || 0;
     var aliveIPs = summary.aliveIPs || 0;
     var totalPorts = summary.totalOpenPorts || 0;
     
-    // Собираем все порты
+    // Собираем все порты с информацией об IP
     var allPorts = [];
     results.forEach(function(host) {
         if (host.openPorts && Array.isArray(host.openPorts)) {
@@ -237,7 +229,8 @@ function renderEchoReport(data) {
                     port: p.port,
                     service: p.service || 'unknown',
                     banner: p.banner || null,
-                    os: host.os || 'unknown'
+                    os: host.os || 'unknown',
+                    info: host.info || null
                 });
             });
         }
@@ -261,18 +254,11 @@ function renderEchoReport(data) {
         }
     });
     
-    // Экранирование HTML
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-    }
-    
-    // Сохраняем ID отчёта для кнопок скачивания
+    // Сохраняем ID отчёта
     if (window.scanData) {
         window.scanData.currentReportId = reportId;
     }
     
-    // Обновляем ID в хедере
     var idEl = document.getElementById('echoReportModalId');
     if (idEl) {
         idEl.textContent = 'ID: ' + reportId;
@@ -280,7 +266,9 @@ function renderEchoReport(data) {
     
     var html = '';
     
-    // Информационная панель
+    // ============================================================
+    // ИНФОРМАЦИОННАЯ ПАНЕЛЬ
+    // ============================================================
     html += `
         <div class="echo-info-bar">
             <div class="echo-info-item">
@@ -302,7 +290,9 @@ function renderEchoReport(data) {
         </div>
     `;
     
-    // Статистика
+    // ============================================================
+    // СТАТИСТИКА
+    // ============================================================
     html += `
         <div class="echo-stats-grid">
             <div class="echo-stat-card">
@@ -332,16 +322,21 @@ function renderEchoReport(data) {
         </div>
     `;
     
-    // Вкладки
+    // ============================================================
+    // ВКЛАДКИ
+    // ============================================================
     html += `
         <div class="echo-tabs">
             <button class="echo-tab-btn active" data-tab="hosts">Хосты <span class="echo-tab-count">${results.length}</span></button>
             <button class="echo-tab-btn" data-tab="ports">Порты <span class="echo-tab-count">${allPorts.length}</span></button>
             <button class="echo-tab-btn" data-tab="os">ОС <span class="echo-tab-count">${Object.keys(osStats).length}</span></button>
+            <button class="echo-tab-btn" data-tab="geo">Гео/IP <span class="echo-tab-count">${results.filter(function(h) { return h.info && h.info.geo; }).length}</span></button>
         </div>
     `;
     
-    // Таблица хостов
+    // ============================================================
+    // ТАБЛИЦА ХОСТОВ (с IP информацией)
+    // ============================================================
     var hostsHtml = '';
     if (results.length === 0) {
         hostsHtml = '<div class="echo-empty">Хосты не обнаружены</div>';
@@ -356,10 +351,15 @@ function renderEchoReport(data) {
                         <th>RTT</th>
                         <th>ОС</th>
                         <th>Портов</th>
+                        <th>Страна</th>
+                        <th>Провайдер</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${results.map(function(host, idx) {
+                        var geo = host.info && host.info.geo;
+                        var country = geo ? geo.country : '—';
+                        var isp = geo ? geo.isp : '—';
                         return `
                             <tr>
                                 <td>${idx + 1}</td>
@@ -368,6 +368,8 @@ function renderEchoReport(data) {
                                 <td>${host.rtt ? host.rtt + 'ms' : '—'}</td>
                                 <td>${host.os && host.os !== 'unknown' ? escapeHtml(host.os) : '—'}</td>
                                 <td>${host.portCount || 0}</td>
+                                <td>${escapeHtml(country)}</td>
+                                <td style="font-size:11px; max-width:120px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(isp)}</td>
                             </tr>
                         `;
                     }).join('')}
@@ -377,7 +379,9 @@ function renderEchoReport(data) {
         `;
     }
     
-    // Таблица портов
+    // ============================================================
+    // ТАБЛИЦА ПОРТОВ
+    // ============================================================
     var portsHtml = '';
     if (allPorts.length === 0) {
         portsHtml = '<div class="echo-empty">Открытые порты не обнаружены</div>';
@@ -417,7 +421,9 @@ function renderEchoReport(data) {
         `;
     }
     
-    // ОС
+    // ============================================================
+    // ТАБЛИЦА ОС
+    // ============================================================
     var osHtml = '';
     var osEntries = Object.entries(osStats);
     if (osEntries.length === 0) {
@@ -449,15 +455,77 @@ function renderEchoReport(data) {
         `;
     }
     
+    // ============================================================
+    // ТАБЛИЦА ГЕО/IP ИНФОРМАЦИИ (НОВАЯ ВКЛАДКА)
+    // ============================================================
+    var geoHtml = '';
+    var hostsWithInfo = results.filter(function(h) { return h.info && h.info.geo; });
+    
+    if (hostsWithInfo.length === 0) {
+        geoHtml = '<div class="echo-empty">Гео-информация не доступна</div>';
+    } else {
+        geoHtml = `
+            <table class="echo-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>IP адрес</th>
+                        <th>Страна</th>
+                        <th>Регион</th>
+                        <th>Город</th>
+                        <th>Провайдер</th>
+                        <th>AS</th>
+                        <th>Хостинг</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${hostsWithInfo.map(function(host, idx) {
+                        var info = host.info;
+                        var geo = info.geo || {};
+                        var whois = info.whois || {};
+                        var dns = info.dns || {};
+                        
+                        var country = geo.country || '—';
+                        var region = geo.region || '—';
+                        var city = geo.city || '—';
+                        var isp = geo.isp || '—';
+                        var as = geo.as || whois.orgName || '—';
+                        var hosting = geo.hosting ? 'Да' : 'Нет';
+                        
+                        // Показываем PTR запись, если есть
+                        var ptr = dns.ptr ? '<div style="font-size:10px; color:#888;">' + escapeHtml(dns.ptr) + '</div>' : '';
+                        
+                        return `
+                            <tr>
+                                <td>${idx + 1}</td>
+                                <td><strong>${escapeHtml(host.ip)}</strong>${ptr}</td>
+                                <td>${geo.countryCode ? escapeHtml(geo.countryCode) + ' ' : ''}${escapeHtml(country)}</td>
+                                <td>${escapeHtml(region)}</td>
+                                <td>${escapeHtml(city)}</td>
+                                <td style="font-size:11px; max-width:150px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(isp)}</td>
+                                <td style="font-size:11px;">${escapeHtml(as)}</td>
+                                <td><span class="echo-status-badge ${hosting === 'Да' ? 'online' : 'offline'}">${hosting}</span></td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            </table>
+            <div class="echo-table-footer">Всего IP с гео-информацией: ${hostsWithInfo.length}</div>
+        `;
+    }
+    
     html += `
         <div class="echo-tab-content active" id="echo-tab-hosts">${hostsHtml}</div>
         <div class="echo-tab-content" id="echo-tab-ports">${portsHtml}</div>
         <div class="echo-tab-content" id="echo-tab-os">${osHtml}</div>
+        <div class="echo-tab-content" id="echo-tab-geo">${geoHtml}</div>
     `;
     
     modalBody.innerHTML = html;
     
-    // Инициализация вкладок
+    // ============================================================
+    // ИНИЦИАЛИЗАЦИЯ ВКЛАДОК
+    // ============================================================
     document.querySelectorAll('.echo-tab-btn').forEach(function(btn) {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.echo-tab-btn').forEach(function(b) {
@@ -473,7 +541,6 @@ function renderEchoReport(data) {
         });
     });
     
-    // Открываем модальное окно
     openEchoModal();
 }
 
@@ -491,7 +558,6 @@ function loadAndRenderReport(reportId) {
         body.innerHTML = '<div class="echo-loading"><i class="fas fa-spinner fa-spin fa-2x"></i><span>Загрузка отчёта...</span></div>';
     }
     
-    // Открываем модальное окно сразу
     openEchoModal();
     
     fetch('/api/echo/history/' + reportId, {
@@ -516,17 +582,10 @@ function loadAndRenderReport(reportId) {
     });
 }
 
-// Экранирование для ошибок
-function escapeHtml(str) {
-    if (!str) return '';
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
 // ============================================================
 // ИНИЦИАЛИЗАЦИЯ КНОПОК
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
-    // Кнопка "Скачать HTML"
     var downloadHtmlBtn = document.getElementById('echoDownloadHtml');
     if (downloadHtmlBtn) {
         downloadHtmlBtn.addEventListener('click', function() {
@@ -538,7 +597,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Кнопка "Скачать JSON"
     var downloadJsonBtn = document.getElementById('echoDownloadJson');
     if (downloadJsonBtn) {
         downloadJsonBtn.addEventListener('click', function() {
@@ -551,7 +609,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Экспорт в глобальный объект
+// ============================================================
+// ЭКСПОРТ
+// ============================================================
 window.openEchoModal = openEchoModal;
 window.closeEchoModal = closeEchoModal;
 window.renderEchoReport = renderEchoReport;
@@ -560,3 +620,4 @@ window.downloadEchoReportHTML = downloadEchoReportHTML;
 window.downloadEchoReportJSON = downloadEchoReportJSON;
 window.resetProgress = resetProgress;
 window.clearInputFields = clearInputFields;
+window.escapeHtml = escapeHtml;
