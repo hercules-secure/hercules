@@ -1609,3 +1609,96 @@ border: 2px solid rgb(59, 130, 246); background: rgb(239, 246, 255);
 .uml-method {
     font-family: 'Ubuntu', sans-serif !important;
 }
+
+
+        
+
+        .palette-elements-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            width: 100%;
+            flex-wrap: wrap;
+            margin: 8px 0 12px 0;
+        }
+
+        .palette-elements-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .palette-elements-divider {
+            width: 1px;
+            height: 24px;
+            background: #818181;
+            flex-shrink: 0;
+        }
+
+        .elements-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: black;
+            font-family: 'Ubuntu', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .elements-label i {
+            font-size: 12px;
+            color: black;
+        }
+
+        /* Элементы в панели над холстом - те же стили, что и были */
+        .palette-elements-bar .element-library-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+            font-family: 'Ubuntu', sans-serif;
+            cursor: grab;
+            /* border: 1px solid #e5e7eb; */
+            background: #ffffff;
+            color: #1a1a2e;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+
+        .palette-elements-bar .element-library-item:hover {
+            background: #f8f9fa;
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        .palette-elements-bar .element-library-item:active {
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .palette-elements-bar .element-library-item .lib-icon {
+            font-size: 11px;
+            color: #6c757d;
+        }
+
+        .palette-elements-bar .element-library-item:hover .lib-icon {
+            color: #3B82F6;
+        }
+
+        .palette-elements-bar .element-library-item.gate:hover {
+            border-color: #8B5CF6;
+            color: #8B5CF6;
+        }
+
+        .palette-elements-bar .element-library-item.gate:hover .lib-icon {
+            color: #8B5CF6;
+        }

@@ -1100,7 +1100,7 @@ function buildCIGraphFromYAML(yamlText, fileName) {
     if (typeof renderElements === 'function') renderElements();
     if (typeof renderConnections === 'function') renderConnections();
     setTimeout(autoFitCanvas, 100);
-    setTimeout(addCIControls, 200);
+    setTimeout(addGraphControls(), 200);
     
     var count = elements.filter(function(e) { 
         return e.type === 'ci-stage' || e.type === 'ci-job' || e.type === 'ci-root'; 
@@ -1133,20 +1133,20 @@ function toggleCINode(nodeId) {
     renderConnections();
 }
 
-function addCIControls() {
-    var container = document.getElementById('paletteCanvas') || document.getElementById('canvasContainer');
-    if (!container) return;
-    var oldControls = container.querySelector('.ci-controls');
-    if (oldControls) oldControls.remove();
-    var controls = document.createElement('div');
-    controls.className = 'ci-controls';
-    controls.style.cssText = 'position:absolute;top:10px;right:10px;z-index:1000;display:flex;gap:8px;flex-direction:column;background:rgba(255,255,255,0.95);padding:8px 10px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.15);font-family:Ubuntu,sans-serif;width:auto;flex-shrink:0;';
-    controls.innerHTML = `
-        <button onclick="expandAllCI()" style="padding:6px 14px;background:#3B82F6;color:white;border:none;border-radius:6px;cursor:pointer;font-family:Ubuntu,sans-serif;font-size:12px;font-weight:500;transition:background .2s;white-space:nowrap;width:100%" onmouseenter="this.style.background='#2563EB'" onmouseleave="this.style.background='#3B82F6'">Развернуть все</button>
-        <button onclick="collapseAllCI()" style="padding:6px 14px;background:#6B7280;color:white;border:none;border-radius:6px;cursor:pointer;font-family:Ubuntu,sans-serif;font-size:12px;font-weight:500;transition:background .2s;white-space:nowrap;width:100%" onmouseenter="this.style.background='#4B5563'" onmouseleave="this.style.background='#6B7280'">Свернуть все</button>
-    `;
-    container.appendChild(controls);
-}
+// function addCIControls() {
+//     var container = document.getElementById('paletteCanvas') || document.getElementById('canvasContainer');
+//     if (!container) return;
+//     var oldControls = container.querySelector('.ci-controls');
+//     if (oldControls) oldControls.remove();
+//     var controls = document.createElement('div');
+//     controls.className = 'ci-controls';
+//     controls.style.cssText = 'position:absolute;top:10px;right:10px;z-index:1000;display:flex;gap:8px;flex-direction:column;background:rgba(255,255,255,0.95);padding:8px 10px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.15);font-family:Ubuntu,sans-serif;width:auto;flex-shrink:0;';
+//     controls.innerHTML = `
+//         <button onclick="expandAllCI()" style="padding:6px 14px;background:#3B82F6;color:white;border:none;border-radius:6px;cursor:pointer;font-family:Ubuntu,sans-serif;font-size:12px;font-weight:500;transition:background .2s;white-space:nowrap;width:100%" onmouseenter="this.style.background='#2563EB'" onmouseleave="this.style.background='#3B82F6'">Развернуть все</button>
+//         <button onclick="collapseAllCI()" style="padding:6px 14px;background:#6B7280;color:white;border:none;border-radius:6px;cursor:pointer;font-family:Ubuntu,sans-serif;font-size:12px;font-weight:500;transition:background .2s;white-space:nowrap;width:100%" onmouseenter="this.style.background='#4B5563'" onmouseleave="this.style.background='#6B7280'">Свернуть все</button>
+//     `;
+//     container.appendChild(controls);
+// }
 
 function expandAllCI() {
     var ciNodes = elements.filter(function(e) { return e.type === 'ci-stage' || e.type === 'ci-job'; });
@@ -1187,6 +1187,8 @@ function collapseAllCI() {
 // ============================================================
 
 function openYAMLModal() {
+
+    clearCanvas();
     var modal = document.getElementById('yamlModal');
     if (!modal) { createYAMLModal(); modal = document.getElementById('yamlModal'); }
     modal.style.display = 'flex';

@@ -1506,6 +1506,56 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
 </html>`;
 }
 
+// Функции для обновления прогресса
+    function updateOverallProgress(percent) {
+        const overallProgress = document.getElementById('overallProgress');
+        const overallPercent = document.getElementById('overallPercent');
+        if (overallProgress) {
+            overallProgress.style.width = `${percent}%`;
+        }
+        if (overallPercent) {
+            overallPercent.textContent = `${percent}%`;
+        }
+    }
+
+    function updateThermometerFill(percent) {
+        const fill = document.getElementById('thermometerFill');
+        if (fill) {
+            fill.style.width = `${percent}%`;
+        }
+    }
+
+    function updateStepStatus(step, status) {
+        const dot = document.getElementById(`markDot${step}`);
+        const label = document.getElementById(`markLabel${step}`);
+
+        if (dot) {
+            dot.classList.remove('completed', 'active');
+            if (status === 'completed') {
+                dot.classList.add('completed');
+            } else if (status === 'active') {
+                dot.classList.add('active');
+            }
+        }
+
+        if (label) {
+            label.classList.remove('completed', 'active');
+            if (status === 'completed') {
+                label.classList.add('completed');
+            } else if (status === 'active') {
+                label.classList.add('active');
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const activateBtn = document.getElementById('activateLicenseBtn');
+        if (activateBtn) {
+            activateBtn.onclick = activateLicense;
+        }
+
+    });
+
 export {
     formatBytes,
     delay,
@@ -1514,5 +1564,8 @@ export {
     createZipArchive,
     generateCodeHTML,
     generateSummaryHTML,
-    generateHTMLReport
+    generateHTMLReport,
+    updateOverallProgress,
+    updateThermometerFill,
+    updateStepStatus
 };

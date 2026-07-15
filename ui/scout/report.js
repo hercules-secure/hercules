@@ -1,58 +1,7 @@
 /* следующий кто будет это поддерживать - просто дописывай в конец файла - будь спокоен не ругайся */
 /* не смотри на количество строк - просто отнесись к этому филосовски */
 
-// Функция для скачивания JSON отчета
-function downloadJSONReport(result) {
-    try {
-        const reportData = JSON.stringify(result, null, 2);
-        const blob = new Blob([reportData], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `scout-report-${new Date().toISOString().split('T')[0]}.json`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        if (typeof showToolNotification === 'function') {
-            showToolNotification('JSON отчет успешно скачан', 'success');
-        }
-    } catch (error) {
-        if (typeof showToolNotification === 'function') {
-            showToolNotification('Ошибка при скачивании JSON отчета', 'error');
-        }
-    }
-}
 
-// Функция для скачивания HTML отчета
-function downloadScoutHTMLReport(result) {
-    try {
-        const defaultName = `scout-report-${new Date().toISOString().split('T')[0]}`;
-        let reportName = prompt('Введите имя отчета:', defaultName);
-        if (reportName === null) return;
-        if (reportName.trim() === '') reportName = defaultName;
-        reportName = reportName.trim().replace(/[<>:"/\\|?*]/g, '_').substring(0, 100);
-        
-        const htmlContent = generateScoutFullHTMLReport(result);
-        const blob = new Blob([htmlContent], { type: 'text/html' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${reportName}.html`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        
-        if (typeof showToolNotification === 'function') {
-            showToolNotification(`HTML отчет "${reportName}.html" успешно скачан`, 'success');
-        }
-    } catch (error) {
-        if (typeof showToolNotification === 'function') {
-            showToolNotification('Ошибка при скачивании HTML отчета', 'error');
-        }
-    }
-}
 
 // Функция для группировки путей по типу
 function groupPathsByType(paths, baseUrl) {
@@ -69,15 +18,12 @@ function groupPathsByType(paths, baseUrl) {
         const path = item.path || '';
         const lowerPath = path.toLowerCase();
         
-        // Сначала проверяем API - они не должны попадать в другие категории
         if (lowerPath.includes('/api/') || lowerPath.startsWith('/api')) {
             groups.api.push(item);
         } 
-        // Потом админки
         else if (lowerPath.includes('/admin') || lowerPath.includes('/administrator') || lowerPath.includes('/wp-admin') || lowerPath.includes('/cp') || lowerPath.includes('/manager')) {
             groups.admin.push(item);
         } 
-        // Потом файлы
         else if (path.includes('.') && !path.endsWith('/')) {
             const ext = path.split('.').pop();
             if (['php', 'asp', 'aspx', 'jsp', 'do', 'action', 'py', 'rb', 'pl', 'cgi', 'html', 'htm', 'xml', 'json', 'txt', 'log', 'bak', 'sql', 'zip', 'tar', 'gz', 'rar', '7z'].includes(ext.toLowerCase())) {
@@ -86,7 +32,6 @@ function groupPathsByType(paths, baseUrl) {
                 groups.other.push(item);
             }
         } 
-        // Потом директории
         else if (path !== '/' && path !== '' && !path.includes('.')) {
             groups.directories.push(item);
         } 
@@ -98,7 +43,220 @@ function groupPathsByType(paths, baseUrl) {
     return groups;
 }
 
-// Функция для генерации HTML отчета
+// ============================================================
+// ФУНКЦИЯ ГЕНЕРАЦИИ OSINT HTML
+// ============================================================
+
+function generateOsintHTML(osintData) {
+    const emails = osintData.emails || [];
+    const phones = osintData.phones || [];
+    const socials = osintData.socials || [];
+    const additional = osintData.additional || [];
+    const hrContext = osintData.hrContext || null;
+    
+    let html = '';
+    const escapeHtml = (str) => {
+        if (!str) return '';
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    };
+    
+    // HR контекст
+    if (hrContext && hrContext.isHR) {
+        const confidence = Math.round((hrContext.confidence || 0) * 100);
+        const typeLabels = {
+            'recruiter': 'Рекрутер',
+            'hr': 'HR-специалист',
+            'management': 'Руководство',
+            'vacancy': 'Вакансия',
+            'general': 'Общий'
+        };
+        const typeLabel = typeLabels[hrContext.type] || 'Общий';
+        
+        html += `
+            <div style="background:#d1ecf1; padding:16px 20px; border-radius:12px; margin-bottom:20px; border-left:5px solid #17a2b8;">
+                <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                    <strong style="font-size:15px;">HR контекст обнаружен</strong>
+                    <span style="background:#17a2b8; color:white; padding:2px 14px; border-radius:20px; font-size:12px; font-weight:600;">${escapeHtml(typeLabel)}</span>
+                    <span style="background:#6c757d; color:white; padding:2px 10px; border-radius:20px; font-size:11px;">Уверенность: ${confidence}%</span>
+                </div>
+                ${hrContext.markers && hrContext.markers.length > 0 ? `
+                    <div style="margin-top:8px; font-size:12px; color:#555;">
+                        <strong>Маркеры:</strong> ${hrContext.markers.slice(0, 15).map(m => `<span style="background:#e9ecef; padding:2px 10px; border-radius:12px; margin:2px; display:inline-block; font-size:11px;">${escapeHtml(m)}</span>`).join('')}
+                        ${hrContext.markers.length > 15 ? `... +${hrContext.markers.length - 15}` : ''}
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+    
+    // Email
+    html += `<div style="margin-bottom:20px;">`;
+    html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
+    html += `<h4 style="margin:0; font-size:14px;">Email адреса (${emails.length})</h4>`;
+    html += `</div>`;
+    
+    if (emails.length === 0) {
+        html += `<div style="text-align:center; padding:20px; color:#999; background:#f8f9fa; border-radius:8px; font-size:13px;">Email адреса не обнаружены</div>`;
+    } else {
+        html += `
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead>
+                    <tr style="background:#f1f3f5; border-bottom:2px solid #dee2e6;">
+                        <th style="padding:10px 12px; text-align:left; font-weight:600; width:50px;">#</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Email</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Домен</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Источник</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${emails.map((item, idx) => `
+                        <tr style="border-bottom:1px solid #e9ecef;">
+                            <td style="padding:8px 12px; color:#6c757d;">${idx + 1}</td>
+                            <td style="padding:8px 12px;"><code style="background:#f1f3f5; padding:2px 8px; border-radius:4px; font-size:12px;">${escapeHtml(item.email)}</code></td>
+                            <td style="padding:8px 12px; font-size:12px;">${escapeHtml(item.domain || '—')}</td>
+                            <td style="padding:8px 12px; font-size:12px; color:#666;">${escapeHtml(item.source || '—')}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+    html += `</div>`;
+    
+    // Телефоны
+    html += `<div style="margin-bottom:20px;">`;
+    html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
+    html += `<h4 style="margin:0; font-size:14px;">Телефоны (${phones.length})</h4>`;
+    html += `</div>`;
+    
+    if (phones.length === 0) {
+        html += `<div style="text-align:center; padding:20px; color:#999; background:#f8f9fa; border-radius:8px; font-size:13px;">Телефоны не обнаружены</div>`;
+    } else {
+        html += `
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead>
+                    <tr style="background:#f1f3f5; border-bottom:2px solid #dee2e6;">
+                        <th style="padding:10px 12px; text-align:left; font-weight:600; width:50px;">#</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Телефон</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Оригинал</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Источник</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${phones.map((item, idx) => `
+                        <tr style="border-bottom:1px solid #e9ecef;">
+                            <td style="padding:8px 12px; color:#6c757d;">${idx + 1}</td>
+                            <td style="padding:8px 12px;"><code style="background:#f1f3f5; padding:2px 8px; border-radius:4px; font-size:12px; color:#e83e8c;">${escapeHtml(item.phone)}</code></td>
+                            <td style="padding:8px 12px; font-size:12px; color:#666;">${escapeHtml(item.original || '—')}</td>
+                            <td style="padding:8px 12px; font-size:12px; color:#666;">${escapeHtml(item.source || '—')}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+    html += `</div>`;
+    
+    // Соцсети
+    html += `<div style="margin-bottom:20px;">`;
+    html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
+    html += `<h4 style="margin:0; font-size:14px;">Социальные сети (${socials.length})</h4>`;
+    html += `</div>`;
+    
+    if (socials.length === 0) {
+        html += `<div style="text-align:center; padding:20px; color:#999; background:#f8f9fa; border-radius:8px; font-size:13px;">Социальные сети не обнаружены</div>`;
+    } else {
+        html += `
+            <table style="width:100%; border-collapse:collapse; font-size:13px;">
+                <thead>
+                    <tr style="background:#f1f3f5; border-bottom:2px solid #dee2e6;">
+                        <th style="padding:10px 12px; text-align:left; font-weight:600; width:50px;">#</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Платформа</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">URL</th>
+                        <th style="padding:10px 12px; text-align:left; font-weight:600;">Username</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${socials.map((item, idx) => `
+                        <tr style="border-bottom:1px solid #e9ecef;">
+                            <td style="padding:8px 12px; color:#6c757d;">${idx + 1}</td>
+                            <td style="padding:8px 12px;"><span style="background:#e9ecef; padding:2px 10px; border-radius:12px; font-size:11px;">${escapeHtml(item.platform)}</span></td>
+                            <td style="padding:8px 12px;"><a href="${escapeHtml(item.url)}" target="_blank" style="color:#667eea; text-decoration:none; font-size:12px;">${escapeHtml(item.url.length > 60 ? item.url.substring(0, 60) + '...' : item.url)}</a></td>
+                            <td style="padding:8px 12px; font-size:12px; color:#666;">${escapeHtml(item.username || '—')}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+    }
+    html += `</div>`;
+    
+    if (additional.length > 0) {
+    html += `<div style="margin-bottom:20px;">`;
+    html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
+    html += `<h4 style="margin:0; font-size:14px;">Может быть интересно (${additional.length})</h4>`;
+    html += `</div>`;
+    
+    // Группируем по типу
+    const grouped = {};
+    additional.forEach(item => {
+        const type = item.type || 'unknown';
+        if (!grouped[type]) grouped[type] = [];
+        grouped[type].push(item.value);
+    });
+    
+    const typeLabels = {
+        'name_ru': 'Русские имена',
+        'name_en': 'Английские имена',
+        'skype': 'Skype',
+        'zoom': 'Zoom',
+        'meet': 'Google Meet',
+        'teams': 'Microsoft Teams',
+        'ip': 'IP адреса',
+        'uuid': 'UUID',
+        'jwt': 'JWT токены',
+        'api_key': 'API ключи',
+        'bitcoin': 'Bitcoin'
+    };
+    
+    // Собираем все значения в одну таблицу
+    let allRows = '';
+    let rowIndex = 0;
+    
+    for (const [type, values] of Object.entries(grouped)) {
+        const label = typeLabels[type] || type;
+        for (const value of values) {
+            rowIndex++;
+            allRows += `
+                <tr>
+                    <td class="index-cell">${rowIndex}</td>
+                    <td><span style="background:#e9ecef; padding:2px 10px; border-radius:12px; font-size:11px;">${escapeHtml(label)}</span></td>
+                    <td><code style="background:#f8f9fa; padding:4px 8px; border-radius:4px; font-size:12px; word-break:break-all;">${escapeHtml(value)}</code></td>
+                </tr>
+            `;
+        }
+    }
+    
+    html += `
+        <table class="data-table sortable" id="additionalTable">
+            <thead>
+                <tr><th style="width:50px;">#</th><th style="width:150px;">Тип</th><th>Значение</th></tr>
+            </thead>
+            <tbody>${allRows}</tbody>
+        </table>
+        <div class="table-footer">Всего записей: ${additional.length}</div>
+    `;
+    
+    html += `</div>`;
+}
+    
+    return html;
+}
+
+// ============================================================
+// ФУНКЦИЯ ГЕНЕРАЦИИ HTML ОТЧЕТА (С OSINT И ПОЛЬЗОВАТЕЛЯМИ)
+// ============================================================
+
 function generateScoutFullHTMLReport(result) {
     const summary = result.summary || { critical: 0, high: 0, medium: 0, low: 0 };
     const accessiblePaths = result.accessiblePaths || [];
@@ -120,7 +278,32 @@ function generateScoutFullHTMLReport(result) {
     const links = findings.links || {};
     const dom = findings.dom || [];
     
-    // Получаем отдельные списки субдоменов и IP из новой структуры
+    // ============================================================
+    // ПАРСИНГ OSINT
+    // ============================================================
+    
+    const osint = result.osint || { 
+        emails: [], 
+        phones: [], 
+        socials: [], 
+        additional: [],
+        hrContext: null,
+        summary: { 
+            totalEmails: 0, 
+            totalPhones: 0, 
+            totalSocials: 0, 
+            totalAdditional: 0, 
+            isHR: false 
+        } 
+    };
+    
+    // ============================================================
+    // ПАРСИНГ ПОЛЬЗОВАТЕЛЕЙ (ДОБАВЛЕНО)
+    // ============================================================
+    
+    const users = tech.users || [];
+    const detectedCMS = tech.detectedCMS || null;
+    
     const subdomainsList = subdomainsData.subdomains || [];
     const ipsList = subdomainsData.ips || [];
     
@@ -148,7 +331,6 @@ function generateScoutFullHTMLReport(result) {
     const baseUrl = result.target || '';
     const reportDate = new Date(result.timestamp || Date.now()).toLocaleString('ru-RU');
     
-    // Группировка путей
     function groupPathsByType(paths) {
         const groups = {
             subdomains: new Map(),
@@ -192,7 +374,7 @@ function generateScoutFullHTMLReport(result) {
     
     const groups = groupPathsByType(accessiblePaths);
     
-    // Таблица субдоменов (с заголовками и статусами)
+    // Таблица субдоменов
     const subdomainsTable = () => {
         if (subdomainsList.length === 0) {
             return '<div class="empty-state">Субдомены не обнаружены</div>';
@@ -593,6 +775,41 @@ function generateScoutFullHTMLReport(result) {
         return html;
     };
     
+    // ============================================================
+    // ТАБЛИЦА ПОЛЬЗОВАТЕЛЕЙ (ДОБАВЛЕНО)
+    // ============================================================
+    
+    const usersTable = () => {
+        if (!users || users.length === 0) {
+            return '<div class="empty-state">Пользователи не обнаружены</div>';
+        }
+        
+        const rows = users.map((user, idx) => {
+            const slug = user.slug || '—';
+            return `
+                <tr>
+                    <td class="index-cell">${idx + 1}</td>
+                    <td><code>${escapeHtml(slug)}</code></td>
+                </tr>
+            `;
+        }).join('');
+        
+        return `
+            <div class="stats-info">Обнаружено ${users.length} пользователей${detectedCMS ? ` (${detectedCMS})` : ''}</div>
+            <table class="data-table sortable" id="usersTable">
+                <thead>
+                    <tr><th style="width:50px">#</th><th>Логин (slug)</th></tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <div class="table-footer">Всего пользователей: ${users.length}</div>
+        `;
+    };
+    
+    // ============================================================
+    // СТАТИСТИКА С OSINT И ПОЛЬЗОВАТЕЛЯМИ
+    // ============================================================
+    
     const statsHtml = `
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-value" style="color:#dc3545">${summary.critical || 0}</div><div class="stat-label">Критические</div></div>
@@ -603,6 +820,10 @@ function generateScoutFullHTMLReport(result) {
             <div class="stat-card"><div class="stat-value">${subdomainsList.length}</div><div class="stat-label">Субдомены</div></div>
             <div class="stat-card"><div class="stat-value">${ipsList.length}</div><div class="stat-label">IP адреса</div></div>
             <div class="stat-card"><div class="stat-value">${apiFromJS.apiEndpoints?.length || 0}</div><div class="stat-label">API в JS</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#667eea">${osint.summary.totalEmails || 0}</div><div class="stat-label">Email</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#e83e8c">${osint.summary.totalPhones || 0}</div><div class="stat-label">Телефоны</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#20c997">${osint.summary.totalSocials || 0}</div><div class="stat-label">Соцсети</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#6610f2">${users.length || 0}</div><div class="stat-label">Пользователи</div></div>
         </div>
     `;
     
@@ -644,6 +865,7 @@ function generateScoutFullHTMLReport(result) {
     const securityCount = (headers.issues?.length || 0) + (cookies.issues?.length || 0) + (ssl.issues?.length || 0) + (ports.issues?.length || 0);
     const structureCount = (robots.disallowed?.length || 0) + (sitemap.urls?.length || 0);
     const issuesCount = (links.brokenLinks?.length || 0) + (dom?.length || 0) + (wcag.issues?.length || 0);
+    const osintCount = osint.summary.totalEmails + osint.summary.totalPhones + osint.summary.totalSocials;
     
     return `<!DOCTYPE html>
 <html lang="ru">
@@ -759,7 +981,6 @@ function generateScoutFullHTMLReport(result) {
 </head>
 <body>
     <div class="report-container">
-        <!-- ХЕДЕР -->
         <div class="report-header">
             <h1>Геркулес | Скаут</h1>
             <div class="meta">Дата генерации: ${reportDate} | Тип сканирования: Разведка веб-приложений</div>
@@ -783,6 +1004,8 @@ function generateScoutFullHTMLReport(result) {
             <button class="tab-btn" data-tab="security">Безопасность <span class="tab-count">${securityCount}</span></button>
             <button class="tab-btn" data-tab="structure">Структура <span class="tab-count">${structureCount}</span></button>
             <button class="tab-btn" data-tab="issues">Проблемы <span class="tab-count">${issuesCount}</span></button>
+            <button class="tab-btn" data-tab="osint">OSINT <span class="tab-count">${osintCount}</span></button>
+            <button class="tab-btn" data-tab="users">Пользователи <span class="tab-count">${users.length || 0}</span></button>
         </div>
         
         <div id="tab-all" class="tab-content active">
@@ -865,9 +1088,17 @@ function generateScoutFullHTMLReport(result) {
             ${allIssuesTable()}
         </div>
         
+        <div id="tab-osint" class="tab-content">
+            ${generateOsintHTML(osint)}
+        </div>
+        
+        <div id="tab-users" class="tab-content">
+            ${usersTable()}
+        </div>
+        
         <div class="report-footer">
             <p>Сгенерировано с помощью Геркулес | Скаут — инструмент разведки веб-приложений</p>
-            <p>Всего обнаружено: ${accessiblePaths.length} путей | Субдоменов: ${subdomainsList.length} | IP адресов: ${ipsList.length}</p>
+            <p>Всего обнаружено: ${accessiblePaths.length} путей | Субдоменов: ${subdomainsList.length} | IP адресов: ${ipsList.length} | Пользователей: ${users.length || 0}</p>
         </div>
     </div>
     
@@ -955,6 +1186,7 @@ function generateScoutFullHTMLReport(result) {
             makeSortable('subdomainsTable');
             makeSortable('ipsTable');
             makeSortable('apiJsTable');
+            makeSortable('usersTable');
             
             setupFilter('allPathsTable', 'searchAll', 'filterAllRisk');
             setupFilter('dirsTable', 'searchDirs', 'filterDirsRisk');
@@ -966,6 +1198,10 @@ function generateScoutFullHTMLReport(result) {
 </body>
 </html>`;
 }
+
+// ============================================================
+// ФУНКЦИЯ showScoutReportModal (С OSINT И ПОЛЬЗОВАТЕЛЯМИ)
+// ============================================================
 
 function showScoutReportModal(result, onClose) {
     // Парсим JSON результат
@@ -989,7 +1225,32 @@ function showScoutReportModal(result, onClose) {
     const links = findings.links || {};
     const dom = findings.dom || [];
     
-    // Получаем отдельные списки субдоменов и IP из новой структуры
+    // ============================================================
+    // ПАРСИНГ OSINT
+    // ============================================================
+    
+    const osint = result.osint || { 
+        emails: [], 
+        phones: [], 
+        socials: [], 
+        additional: [],
+        hrContext: null,
+        summary: { 
+            totalEmails: 0, 
+            totalPhones: 0, 
+            totalSocials: 0, 
+            totalAdditional: 0, 
+            isHR: false 
+        } 
+    };
+    
+    // ============================================================
+    // ПАРСИНГ ПОЛЬЗОВАТЕЛЕЙ (ДОБАВЛЕНО)
+    // ============================================================
+    
+    const users = tech.users || [];
+    const detectedCMS = tech.detectedCMS || null;
+    
     const subdomainsList = subdomainsData.subdomains || [];
     const ipsList = subdomainsData.ips || [];
     
@@ -1017,7 +1278,6 @@ function showScoutReportModal(result, onClose) {
     const baseUrl = result.target || '';
     const reportDate = new Date(result.timestamp || Date.now()).toLocaleString('ru-RU');
     
-    // Группировка путей
     function groupPathsByType(paths) {
         const groups = {
             subdomains: new Map(),
@@ -1061,7 +1321,7 @@ function showScoutReportModal(result, onClose) {
     
     const groups = groupPathsByType(accessiblePaths);
     
-    // Таблица субдоменов (с заголовками и статусами)
+    // Таблица субдоменов
     const subdomainsTable = () => {
         if (subdomainsList.length === 0) {
             return '<div class="empty-state">Субдомены не обнаружены</div>';
@@ -1462,6 +1722,41 @@ function showScoutReportModal(result, onClose) {
         return html;
     };
     
+    // ============================================================
+    // ТАБЛИЦА ПОЛЬЗОВАТЕЛЕЙ (ДОБАВЛЕНО)
+    // ============================================================
+    
+    const usersTable = () => {
+        if (!users || users.length === 0) {
+            return '<div class="empty-state">Пользователи не обнаружены</div>';
+        }
+        
+        const rows = users.map((user, idx) => {
+            const slug = user.slug || '—';
+            return `
+                <tr>
+                    <td class="index-cell">${idx + 1}</td>
+                    <td><code>${escapeHtml(slug)}</code></td>
+                </tr>
+            `;
+        }).join('');
+        
+        return `
+            <div class="stats-info">Обнаружено ${users.length} пользователей${detectedCMS ? ` (${detectedCMS})` : ''}</div>
+            <table class="data-table sortable" id="usersTable">
+                <thead>
+                    <tr><th style="width:50px">#</th><th>Логин (slug)</th></tr>
+                </thead>
+                <tbody>${rows}</tbody>
+            </table>
+            <div class="table-footer">Всего пользователей: ${users.length}</div>
+        `;
+    };
+    
+    // ============================================================
+    // СТАТИСТИКА С OSINT И ПОЛЬЗОВАТЕЛЯМИ
+    // ============================================================
+    
     const statsHtml = `
         <div class="stats-grid">
             <div class="stat-card"><div class="stat-value" style="color:#dc3545">${summary.critical || 0}</div><div class="stat-label">Критические</div></div>
@@ -1472,6 +1767,10 @@ function showScoutReportModal(result, onClose) {
             <div class="stat-card"><div class="stat-value">${subdomainsList.length}</div><div class="stat-label">Субдомены</div></div>
             <div class="stat-card"><div class="stat-value">${ipsList.length}</div><div class="stat-label">IP адреса</div></div>
             <div class="stat-card"><div class="stat-value">${apiFromJS.apiEndpoints?.length || 0}</div><div class="stat-label">API в JS</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#667eea">${osint.summary.totalEmails || 0}</div><div class="stat-label">Email</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#e83e8c">${osint.summary.totalPhones || 0}</div><div class="stat-label">Телефоны</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#20c997">${osint.summary.totalSocials || 0}</div><div class="stat-label">Соцсети</div></div>
+            <div class="stat-card"><div class="stat-value" style="color:#6610f2">${users.length || 0}</div><div class="stat-label">Пользователи</div></div>
         </div>
     `;
     
@@ -1480,7 +1779,7 @@ function showScoutReportModal(result, onClose) {
             ${tech.technologies && tech.technologies.length > 0 ? `
             <div class="metric-block">
                 <div class="metric-title">Технологии</div>
-                <div class="metric-content">${tech.technologies.map(t => `<span class="tech-tag">${escapeHtml(t.name)} ${t.version ? 'v' + escapeHtml(t.version) : ''}</span>`).join('')}</div>
+                <div class="metric-content">${tech.technologies.map(t => `<span class="tech-tag">${escapeHtml(t.name)} ${t.version ? escapeHtml(t.version) : ''}</span>`).join('')}</div>
             </div>
             ` : ''}
             ${performance.metrics && performance.metrics.loadTime ? `
@@ -1513,6 +1812,7 @@ function showScoutReportModal(result, onClose) {
     const securityCount = (headers.issues?.length || 0) + (cookies.issues?.length || 0) + (ssl.issues?.length || 0) + (ports.issues?.length || 0);
     const structureCount = (robots.disallowed?.length || 0) + (sitemap.urls?.length || 0);
     const issuesCount = (links.brokenLinks?.length || 0) + (dom?.length || 0) + (wcag.issues?.length || 0);
+    const osintCount = osint.summary.totalEmails + osint.summary.totalPhones + osint.summary.totalSocials;
     
     const modalHtml = `<!DOCTYPE html>
 <html lang="ru">
@@ -1615,6 +1915,8 @@ function showScoutReportModal(result, onClose) {
             <button class="tab-btn" data-tab="security">Безопасность <span class="tab-count">${securityCount}</span></button>
             <button class="tab-btn" data-tab="structure">Структура <span class="tab-count">${structureCount}</span></button>
             <button class="tab-btn" data-tab="issues">Проблемы <span class="tab-count">${issuesCount}</span></button>
+            <button class="tab-btn" data-tab="osint">OSINT <span class="tab-count">${osintCount}</span></button>
+            <button class="tab-btn" data-tab="users">Пользователи <span class="tab-count">${users.length || 0}</span></button>
         </div>
         
         <div id="tab-all" class="tab-content active">
@@ -1697,9 +1999,17 @@ function showScoutReportModal(result, onClose) {
             ${allIssuesTable()}
         </div>
         
+        <div id="tab-osint" class="tab-content">
+            ${generateOsintHTML(osint)}
+        </div>
+        
+        <div id="tab-users" class="tab-content">
+            ${usersTable()}
+        </div>
+        
         <div class="report-footer">
             <p>Сгенерировано с помощью Геркулес | Скаут — инструмент разведки веб-приложений</p>
-            <p>Всего обнаружено: ${accessiblePaths.length} путей | Субдоменов: ${subdomainsList.length} | IP адресов: ${ipsList.length}</p>
+            <p>Всего обнаружено: ${accessiblePaths.length} путей | Субдоменов: ${subdomainsList.length} | IP адресов: ${ipsList.length} | Пользователей: ${users.length || 0}</p>
         </div>
     </div>
     
@@ -1787,6 +2097,7 @@ function showScoutReportModal(result, onClose) {
             makeSortable('subdomainsTable');
             makeSortable('ipsTable');
             makeSortable('apiJsTable');
+            makeSortable('usersTable');
             
             setupFilter('allPathsTable', 'searchAll', 'filterAllRisk');
             setupFilter('dirsTable', 'searchDirs', 'filterDirsRisk');
@@ -1853,7 +2164,6 @@ function showScoutReportModal(result, onClose) {
 }
 
 // Экспорт функций для глобального использования
-window.downloadJSONReport = downloadJSONReport;
-window.downloadScoutHTMLReport = downloadScoutHTMLReport;
+
 window.generateScoutFullHTMLReport = generateScoutFullHTMLReport;
 window.showScoutReportModal = showScoutReportModal;

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Геркулес | Блендер</title>
+    <title>Блендер</title>
     <meta id="toolId" value="blender">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
@@ -18,7 +18,6 @@
 
 <body>
     <div id="box" class="fade-in">
-        <!-- ЛЕВАЯ КОЛОНКА - ИНСТРУМЕНТЫ -->
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
@@ -31,8 +30,6 @@
                     </button>
                 </div>
                 <div class="tool-divider"></div>
-
-                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
@@ -70,7 +67,6 @@
         </div>
 
         <div id="center">
-            <!-- Заголовок с кнопками -->
             <div class="page-header">
                 <h2 class="section-title" id="pageTitle">Выберите источник</h2>
                 <div class="header-buttons">
@@ -79,8 +75,6 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Селектор источника -->
             <div class="source-selector">
                 <button class="source-btn active" onclick="switchSource('git')">
                     <i class="fab fa-git-alt"></i>URL
@@ -92,8 +86,6 @@
                     <i class="fas fa-folder-open"></i> Локальный проект
                 </button>
             </div>
-
-            <!-- Git источник -->
             <div id="git-source" class="source-content active">
                 <div class="input-group">
                     <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий"
@@ -123,7 +115,6 @@
                 </div>
             </div>
 
-            <!-- Архив источник -->
             <div id="archive-source" class="source-content">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">
@@ -151,7 +142,6 @@
                     style="margin-top: 15px; width: 100%;">Начать анализ архива</button>
             </div>
 
-            <!-- Локальный источник -->
             <div id="local-source" class="source-content">
                 <div class="upload-area" id="localUploadArea">
                     <div class="upload-icon">
@@ -176,9 +166,8 @@
                     style="margin-top: 15px; width: 100%;">Начать анализ проекта</button>
             </div>
 
-            <!-- НОВЫЙ ПРОГРЕСС-БАР КАК ГРАДУСНИК -->
             <div class="thermometer-progress">
-                <!-- Общий прогресс -->
+
                 <div class="overall-progress-section">
                     <div class="overall-progress-header">
                         <span>Общий прогресс анализа</span>
@@ -274,7 +263,6 @@
             </div>
             <div class="upgrade-modal-body">
 
-                <!-- Текущая лицензия -->
                 <div class="license-current"
                     style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
                     <div
@@ -288,7 +276,6 @@
                     </div>
                 </div>
 
-                <!-- Поле для ввода ключа -->
                 <div class="license-input-group" style="margin-bottom: 20px;">
                     <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
                         Лицензионный ключ
@@ -302,11 +289,9 @@
                     </div>
                 </div>
 
-                <!-- Сообщение об ошибке/успехе -->
                 <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
                 </div>
 
-                <!-- Ссылка на покупку -->
                 <div style="margin-top: 8px; text-align: center;">
                     <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
                     <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
@@ -318,187 +303,15 @@
             </div>
         </div>
     </div>
-
-    
-
-    <script>
-    function showLicenseModal() {
-        const modal = document.getElementById('licenseModal');
-        if (modal) {
-            modal.style.display = 'flex';
-            const messageDiv = document.getElementById('licenseMessage');
-            if (messageDiv) {
-                messageDiv.style.display = 'none';
-                messageDiv.innerHTML = '';
-            }
-            const input = document.getElementById('licenseKey');
-            if (input) input.value = '';
-        }
-    }
-
-    function closeLicenseModal() {
-        const modal = document.getElementById('licenseModal');
-        if (modal) {
-            modal.style.display = 'none';
-        }
-    }
-
-    // Сохранение JWT токена
-    function saveLicenseToken(token, expiresAt, remainingDays, licenseKey) {
-        if (token) {
-            localStorage.setItem('licenseToken', token);
-            localStorage.setItem('licenseExpiresAt', expiresAt);
-            localStorage.setItem('licenseRemainingDays', remainingDays);
-            localStorage.setItem('licenseKey', licenseKey);
-            console.log('[LICENSE] Token saved, expires:', expiresAt);
-        }
-    }
-
-    // Получение заголовков авторизации
-    function getAuthHeaders() {
-        const token = localStorage.getItem('licenseToken');
-        if (!token) return {};
-        return { 'Authorization': `Bearer ${token}` };
-    }
-
-    async function activateLicense() {
-        const tool = document.getElementById('toolId')?.getAttribute('value');
-        const keyInput = document.getElementById('licenseKey');
-        const key = keyInput?.value.trim();
-        const messageDiv = document.getElementById('licenseMessage');
-        const activateBtn = document.getElementById('activateLicenseBtn');
-
-        if (!key) {
-            if (messageDiv) {
-                messageDiv.style.display = 'block';
-                messageDiv.className = 'error';
-                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Введите лицензионный ключ';
-            }
-            return;
-        }
-
-        try {
-            if (activateBtn) {
-                activateBtn.disabled = true;
-                activateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Проверка...';
-            }
-
-            const response = await fetch('/api/license/activate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ licenseKey: key, tool: tool })
-            });
-
-            const data = await response.json();
-
-            if (data.success) {
-                saveLicenseToken(data.token, data.expiresAt, data.remainingDays, key);
-                
-                if (messageDiv) {
-                    messageDiv.style.display = 'block';
-                    messageDiv.className = 'success';
-                    messageDiv.innerHTML = '<i class="fas fa-check-circle"></i> Лицензия успешно активирована!';
-                }
-
-                setTimeout(() => {
-                    closeLicenseModal();
-                    location.reload();
-                }, 1500);
-            } else {
-                if (messageDiv) {
-                    messageDiv.style.display = 'block';
-                    messageDiv.className = 'error';
-                    messageDiv.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${data.error || 'Неверный лицензионный ключ'}`;
-                }
-                if (activateBtn) {
-                    activateBtn.disabled = false;
-                    activateBtn.innerHTML = '<i class="fas fa-check"></i> Активировать';
-                }
-            }
-        } catch (error) {
-            console.error('[LICENSE] Activation error:', error);
-            if (messageDiv) {
-                messageDiv.style.display = 'block';
-                messageDiv.className = 'error';
-                messageDiv.innerHTML = '<i class="fas fa-exclamation-circle"></i> Ошибка сервера. Попробуйте позже.';
-            }
-            if (activateBtn) {
-                activateBtn.disabled = false;
-                activateBtn.innerHTML = '<i class="fas fa-check"></i> Активировать';
-            }
-        }
-    }
-
-    // Функции для обновления прогресса
-    function updateOverallProgress(percent) {
-        const overallProgress = document.getElementById('overallProgress');
-        const overallPercent = document.getElementById('overallPercent');
-        if (overallProgress) {
-            overallProgress.style.width = `${percent}%`;
-        }
-        if (overallPercent) {
-            overallPercent.textContent = `${percent}%`;
-        }
-    }
-
-    function updateThermometerFill(percent) {
-        const fill = document.getElementById('thermometerFill');
-        if (fill) {
-            fill.style.width = `${percent}%`;
-        }
-    }
-
-    function updateStepStatus(step, status) {
-        const dot = document.getElementById(`markDot${step}`);
-        const label = document.getElementById(`markLabel${step}`);
-
-        if (dot) {
-            dot.classList.remove('completed', 'active');
-            if (status === 'completed') {
-                dot.classList.add('completed');
-            } else if (status === 'active') {
-                dot.classList.add('active');
-            }
-        }
-
-        if (label) {
-            label.classList.remove('completed', 'active');
-            if (status === 'completed') {
-                label.classList.add('completed');
-            } else if (status === 'active') {
-                label.classList.add('active');
-            }
-        }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const activateBtn = document.getElementById('activateLicenseBtn');
-        if (activateBtn) {
-            activateBtn.onclick = activateLicense;
-        }
-
-    });
-
-    // Экспортируем функции для других скриптов
-    window.updateOverallProgress = updateOverallProgress;
-    window.updateThermometerFill = updateThermometerFill;
-    window.updateStepStatus = updateStepStatus;
-    window.showLicenseModal = showLicenseModal;
-    window.closeLicenseModal = closeLicenseModal;
-    window.getAuthHeaders = getAuthHeaders;
-</script>
-
     <script type="module" src="utils.js"></script>
     <script type="module" src="main.js"></script>
     <script type="text/javascript" src="modal.js"></script>
+    <script type="text/javascript" src="../common/licence.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
-    <script type="text/jvascript" src="../common/upgrade.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script>
         loadMenu();
-
-        // Обработчик кнопки обновления
     </script>
 </body>
 

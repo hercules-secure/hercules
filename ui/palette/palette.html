@@ -2,7 +2,7 @@
 <html data-page="construction" data-version="1.0.0" lang="ru">
 <head>
     <meta charset="utf-8">
-    <title>Геркулес | Палитра</title>
+    <title>Палитра</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
@@ -13,100 +13,6 @@
     <link rel="stylesheet" href="../common/sidebar.css">  
     <link rel="stylesheet" href="../common/upgrade.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
-    <style>
-
-        
-        /* ПАНЕЛЬ ЭЛЕМЕНТОВ НАД ХОЛСТОМ */
-        .palette-elements-bar {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 6px 12px;
-            background: #ffffff;
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            width: 100%;
-            flex-wrap: wrap;
-            margin: 8px 0 12px 0;
-        }
-
-        .palette-elements-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex-wrap: wrap;
-        }
-
-        .palette-elements-divider {
-            width: 1px;
-            height: 24px;
-            background: #818181;
-            flex-shrink: 0;
-        }
-
-        .elements-label {
-            font-size: 11px;
-            font-weight: 600;
-            color: black;
-            font-family: 'Ubuntu', sans-serif;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            white-space: nowrap;
-        }
-
-        .elements-label i {
-            font-size: 12px;
-            color: black;
-        }
-
-        /* Элементы в панели над холстом - те же стили, что и были */
-        .palette-elements-bar .element-library-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 500;
-            font-family: 'Ubuntu', sans-serif;
-            cursor: grab;
-            /* border: 1px solid #e5e7eb; */
-            background: #ffffff;
-            color: #1a1a2e;
-            transition: all 0.15s;
-            white-space: nowrap;
-        }
-
-        .palette-elements-bar .element-library-item:hover {
-            background: #f8f9fa;
-            border-color: #3B82F6;
-            color: #3B82F6;
-        }
-
-        .palette-elements-bar .element-library-item:active {
-            cursor: grabbing;
-            transform: scale(0.95);
-        }
-
-        .palette-elements-bar .element-library-item .lib-icon {
-            font-size: 11px;
-            color: #6c757d;
-        }
-
-        .palette-elements-bar .element-library-item:hover .lib-icon {
-            color: #3B82F6;
-        }
-
-        .palette-elements-bar .element-library-item.gate:hover {
-            border-color: #8B5CF6;
-            color: #8B5CF6;
-        }
-
-        .palette-elements-bar .element-library-item.gate:hover .lib-icon {
-            color: #8B5CF6;
-        }
-    </style>
 </head>
 <body>
     <div id="box" class="fade-in">
@@ -638,13 +544,14 @@
     <script src="utils/uml.js"></script>    
     <script src="palette.js"></script>
     <script src="client.js"></script>
+    <script src="utils/utils.js"></script>
     <script src="../common/licence.js"></script>
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
     <script src="../common/info.js"></script>
     <script> loadMenu(); </script>
 
-    <!-- Прогресс-бар выполнения workflow -->
+
 <div id="workflowProgressBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; z-index: 100000; padding: 12px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); font-family: 'Ubuntu', sans-serif;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; max-width: 1200px; margin-left: auto; margin-right: auto;">
         <div style="display: flex; align-items: center; gap: 12px;">
@@ -665,7 +572,7 @@
     </div>
 </div>
 
-<!-- Модалка выбора файла с кодом -->
+
 
 <div id="codeFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
     <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
@@ -676,7 +583,7 @@
             <button onclick="closeCodeFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
         </div>
         
-        <!-- Выбор типа диаграммы -->
+
         <div style="margin-bottom: 20px;">
             <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">Тип визуализации</label>
             <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
@@ -703,13 +610,13 @@
             </div>
         </div>
         
-<!-- Выбор файла -->
+
 <div style="margin-bottom: 20px;">
     <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">
         <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Выберите файл
     </label>
     
-    <!-- Дроп-зона -->
+
     <div id="dropZone" style="
         border: 2px dashed #d1d5db;
         border-radius: 12px;
@@ -730,7 +637,7 @@
             cursor: pointer;
         ">
         
-        <!-- Иконка -->
+
         <div style="
             width: 56px;
             height: 56px;
@@ -745,7 +652,7 @@
             <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
         </div>
         
-        <!-- Текст -->
+
         <p style="
             margin: 0;
             font-size: 14px;
@@ -761,7 +668,6 @@
             font-family: 'Ubuntu', sans-serif;
         " id="fileInfoText">Поддерживаются: .js, .py, .java, .go, .rs, .cpp, .c, .h, .cs, .php, .rb, .pl, .sh, .bash, .txt, .json, .xml, .yaml, .yml, .toml, .ini, .cfg, .conf, .md, .rst, .adoc</p>
         
-        <!-- Информация о выбранном файле -->
         <div id="codeFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
             <span id="codeFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Ubuntu', sans-serif;"></span>
             <span style="margin: 0 8px; color: #6b7280;">|</span>
@@ -772,7 +678,6 @@
     </div>
 </div>
 
-<!-- Кнопки -->
 <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
     <button onclick="closeCodeFileModal()" style="
         padding: 10px 24px;
@@ -803,13 +708,11 @@
     </div>
 </div>
 
-<!-- ============================================================
-МОДАЛКА РЕДАКТИРОВАНИЯ UML КЛАССА
-============================================================ -->
+
 <div id="umlClassModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
     <div style="background: white; border-radius: 16px; padding: 32px; max-width: 700px; width: 95%; max-height: 85vh; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden;">
         
-        <!-- Заголовок -->
+
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
             <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
                 <i class="fas fa-cube" style="color: #8B5CF6;"></i> 
@@ -818,13 +721,11 @@
             <button onclick="closeUmlClassModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
         </div>
         
-        <!-- Имя класса -->
         <div style="margin-bottom: 16px; flex-shrink: 0;">
             <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Имя класса</label>
             <input id="umlClassName" type="text" placeholder="MyClass" style="width: 100%; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Ubuntu', sans-serif; outline: none;">
         </div>
         
-        <!-- Поля -->
         <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
                 <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;">
@@ -897,7 +798,7 @@
     </div>
 </div>
 
-<!-- МОДАЛКА ЗАГРУЗКИ SBOM -->
+
 <div id="sbomFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
     <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -907,7 +808,7 @@
             <button onclick="closeSbomFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
         </div>
         
-        <!-- Выбор файла -->
+
         <div style="margin-bottom: 20px;">
             <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">
                 <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Выберите SBOM файл

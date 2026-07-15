@@ -392,177 +392,177 @@ function generateFullReportHTML(reportData) {
     
     const formattedTime = new Date(scanTime).toLocaleString('ru-RU');
     
-    return `<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>Отчет безопасности Hercules</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Alef:wght@400;700&display=swap');
+//     return `<!DOCTYPE html>
+// <html lang="ru">
+// <head>
+//     <meta charset="UTF-8">
+//     <title>Отчет безопасности Hercules</title>
+//     <style>
+//         @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Alef:wght@400;700&display=swap');
         
-        body {
-            font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-        }
-        .header h1 {
-            font-family: 'Ubuntu', sans-serif;
-            font-weight: 700;
-        }
-        .content {
-            padding: 30px;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: #f8f9fa;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-        }
-        .stat-value {
-            font-size: 36px;
-            font-weight: bold;
-            font-family: 'Alef', monospace;
-            font-weight: 700;
-        }
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        .severity-critical {
-            color: #c0392b;
-        }
-        .severity-high {
-            color: #e67e22;
-        }
-        .severity-medium {
-            color: #f39c12;
-        }
-        .severity-low {
-            color: #27ae60;
-        }
-        .footer {
-            background: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            font-size: 12px;
-            color: #666;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background: #f8f9fa;
-            font-weight: bold;
-            font-family: 'Ubuntu', sans-serif;
-        }
-        .package-name {
-            font-family: 'Alef', monospace;
-            font-size: 13px;
-        }
-        .version-number {
-            font-family: 'Alef', monospace;
-        }
-        h2, h3 {
-            font-family: 'Ubuntu', sans-serif;
-            font-weight: 700;
-        }
-        p {
-            font-family: 'Ubuntu', sans-serif;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Отчет безопасности</h1>
-            <p>Hercules Security Scanner</p>
-        </div>
-        <div class="content">
-            <h2>Проект: ${escapeHtml(projectName)}</h2>
-            <p>Источник: ${escapeHtml(source)} | Время: ${formattedTime}</p>
+//         body {
+//             font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+//             line-height: 1.6;
+//             color: #333;
+//             margin: 0;
+//             padding: 20px;
+//             background: #f5f5f5;
+//         }
+//         .container {
+//             max-width: 1000px;
+//             margin: 0 auto;
+//             background: white;
+//             border-radius: 16px;
+//             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+//             overflow: hidden;
+//         }
+//         .header {
+//             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+//             color: white;
+//             padding: 30px;
+//             text-align: center;
+//         }
+//         .header h1 {
+//             font-family: 'Ubuntu', sans-serif;
+//             font-weight: 700;
+//         }
+//         .content {
+//             padding: 30px;
+//         }
+//         .stats-grid {
+//             display: grid;
+//             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+//             gap: 20px;
+//             margin-bottom: 30px;
+//         }
+//         .stat-card {
+//             background: #f8f9fa;
+//             border-radius: 12px;
+//             padding: 20px;
+//             text-align: center;
+//         }
+//         .stat-value {
+//             font-size: 36px;
+//             font-weight: bold;
+//             font-family: 'Alef', monospace;
+//             font-weight: 700;
+//         }
+//         .stat-label {
+//             font-size: 14px;
+//             color: #666;
+//             margin-top: 5px;
+//             font-family: 'Ubuntu', sans-serif;
+//         }
+//         .severity-critical {
+//             color: #c0392b;
+//         }
+//         .severity-high {
+//             color: #e67e22;
+//         }
+//         .severity-medium {
+//             color: #f39c12;
+//         }
+//         .severity-low {
+//             color: #27ae60;
+//         }
+//         .footer {
+//             background: #f8f9fa;
+//             padding: 20px;
+//             text-align: center;
+//             font-size: 12px;
+//             color: #666;
+//             font-family: 'Ubuntu', sans-serif;
+//         }
+//         table {
+//             width: 100%;
+//             border-collapse: collapse;
+//             font-family: 'Ubuntu', sans-serif;
+//         }
+//         th, td {
+//             padding: 10px;
+//             text-align: left;
+//             border-bottom: 1px solid #eee;
+//         }
+//         th {
+//             background: #f8f9fa;
+//             font-weight: bold;
+//             font-family: 'Ubuntu', sans-serif;
+//         }
+//         .package-name {
+//             font-family: 'Alef', monospace;
+//             font-size: 13px;
+//         }
+//         .version-number {
+//             font-family: 'Alef', monospace;
+//         }
+//         h2, h3 {
+//             font-family: 'Ubuntu', sans-serif;
+//             font-weight: 700;
+//         }
+//         p {
+//             font-family: 'Ubuntu', sans-serif;
+//         }
+//     </style>
+// </head>
+// <body>
+//     <div class="container">
+//         <div class="header">
+//             <h1>Отчет безопасности</h1>
+//             <p>Hercules Security Scanner</p>
+//         </div>
+//         <div class="content">
+//             <h2>Проект: ${escapeHtml(projectName)}</h2>
+//             <p>Источник: ${escapeHtml(source)} | Время: ${formattedTime}</p>
             
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-value severity-critical">${summary.critical || 0}</div>
-                    <div class="stat-label">Critical</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value severity-high">${summary.high || 0}</div>
-                    <div class="stat-label">High</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value severity-medium">${summary.medium || 0}</div>
-                    <div class="stat-label">Medium</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value severity-low">${summary.low || 0}</div>
-                    <div class="stat-label">Low</div>
-                </div>
-            </div>
+//             <div class="stats-grid">
+//                 <div class="stat-card">
+//                     <div class="stat-value severity-critical">${summary.critical || 0}</div>
+//                     <div class="stat-label">Critical</div>
+//                 </div>
+//                 <div class="stat-card">
+//                     <div class="stat-value severity-high">${summary.high || 0}</div>
+//                     <div class="stat-label">High</div>
+//                 </div>
+//                 <div class="stat-card">
+//                     <div class="stat-value severity-medium">${summary.medium || 0}</div>
+//                     <div class="stat-label">Medium</div>
+//                 </div>
+//                 <div class="stat-card">
+//                     <div class="stat-value severity-low">${summary.low || 0}</div>
+//                     <div class="stat-label">Low</div>
+//                 </div>
+//             </div>
             
-            <h3>Зависимости</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Пакет</th>
-                        <th>Версия</th>
-                        <th>Уязвимости</th>
-                        <th>Лицензия</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${(sca.dependencies || []).slice(0, 20).map(d => `
-                    <tr>
-                        <td class="package-name">${escapeHtml(d.name)}</td>
-                        <td class="version-number">${escapeHtml(d.version)}</td>
-                        <td class="${d.cveCount > 0 ? 'severity-critical' : ''}">${d.cveCount || 0}</td>
-                        <td>${escapeHtml(d.license || 'UNKNOWN')}</td>
-                    </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+//             <h3>Зависимости</h3>
+//             <table>
+//                 <thead>
+//                     <tr>
+//                         <th>Пакет</th>
+//                         <th>Версия</th>
+//                         <th>Уязвимости</th>
+//                         <th>Лицензия</th>
+//                     </tr>
+//                 </thead>
+//                 <tbody>
+//                     ${(sca.dependencies || []).slice(0, 20).map(d => `
+//                     <tr>
+//                         <td class="package-name">${escapeHtml(d.name)}</td>
+//                         <td class="version-number">${escapeHtml(d.version)}</td>
+//                         <td class="${d.cveCount > 0 ? 'severity-critical' : ''}">${d.cveCount || 0}</td>
+//                         <td>${escapeHtml(d.license || 'UNKNOWN')}</td>
+//                     </tr>
+//                     `).join('')}
+//                 </tbody>
+//             </table>
             
-            ${(sca.dependencies || []).length > 20 ? `<p style="text-align:center; margin-top:10px;">... и еще ${sca.dependencies.length - 20} зависимостей</p>` : ''}
-        </div>
-        <div class="footer">
-            <p>Hercules Security Scanner | ${new Date().toISOString()}</p>
-        </div>
-    </div>
-</body>
-</html>`;
+//             ${(sca.dependencies || []).length > 20 ? `<p style="text-align:center; margin-top:10px;">... и еще ${sca.dependencies.length - 20} зависимостей</p>` : ''}
+//         </div>
+//         <div class="footer">
+//             <p>Hercules Security Scanner | ${new Date().toISOString()}</p>
+//         </div>
+//     </div>
+// </body>
+// </html>`;
 }
 
 // ==================== ПОЧТОВЫЙ КЛИЕНТ ====================
