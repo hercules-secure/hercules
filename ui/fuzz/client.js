@@ -362,7 +362,7 @@ async function startFuzzing() {
         });
         
         // ===== ПРОВЕРКА НА ЛИЦЕНЗИЮ =====
-        if (response.status === 401) {
+        if (response.status === 403) {
             if (typeof window.showLicenseModal === 'function') {
                 window.showLicenseModal('fuzz');
             }
