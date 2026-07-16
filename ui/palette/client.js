@@ -1,5 +1,5 @@
 // ============================================================
-// ПАЛИТРА - КЛИЕНТ ДЛЯ ВЗАИМОДЕЙСТВИЯ С РОУТЕРОМ
+// palette-client.js - КЛИЕНТ ДЛЯ ВЗАИМОДЕЙСТВИЯ С РОУТЕРОМ
 // ============================================================
 
 // ============================================================
@@ -61,19 +61,13 @@ PaletteClient.prototype.request = async function(endpoint, options) {
 
         clearTimeout(timeoutId);
 
-        // ============================================================
-        // ОБРАБОТКА 403 - ПОКАЗ МОДАЛКИ ЛИЦЕНЗИИ
-        // ============================================================
         if (response.status === 403) {
-            // Проверяем, есть ли функция показа модалки
             if (typeof window.showLicenseModal === 'function') {
-                // Показываем модалку ввода лицензии
                 window.showLicenseModal('palette');
             } else {
                 console.error('Функция showLicenseModal не найдена');
             }
             
-            // Создаем ошибку, чтобы остановить выполнение
             var error = new Error('LICENSE_REQUIRED');
             error.status = 403;
             error.needLicense = true;
@@ -135,7 +129,6 @@ PaletteClient.prototype.startWorkflow = async function(workflowData) {
         }
 
     } catch (error) {
-        // Если ошибка связана с лицензией - пробрасываем дальше
         if (error.message === 'Требуется активация лицензии' || error.needLicense) {
             throw error;
         }
@@ -396,7 +389,7 @@ PaletteClient.prototype.getReportHTML = async function(workflowId) {
 };
 
 // ============================================================
-// ИНИЦИАЛИЗАЦИЯ КЛИЕНТА В ПАЛИТРЕ
+// ИНИЦИАЛИЗАЦИЯ КЛИЕНТА
 // ============================================================
 
 var paletteClient = null;
@@ -565,8 +558,12 @@ function updateWorkflowProgress(type, data) {
     }
 }
 
-// Делаем функции глобальными
+// ============================================================
+// РЕГИСТРАЦИЯ ФУНКЦИЙ
+// ============================================================
+
 window.PaletteClient = PaletteClient;
 window.initPaletteClient = initPaletteClient;
 window.runPaletteWorkflow = runPaletteWorkflow;
 window.getAuthHeaders = getAuthHeaders;
+window.paletteClient = paletteClient;

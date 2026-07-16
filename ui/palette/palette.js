@@ -1316,7 +1316,7 @@ window.renderConnections = function() {
     // Добавляем defs для маркеров стрелок
     var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     
-    // Маркер для секвенс-диаграммы
+    // Маркер для стрелок
     var markerSeq = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     markerSeq.setAttribute('id', 'arrowhead-sequence');
     markerSeq.setAttribute('markerWidth', '12');
@@ -1330,7 +1330,6 @@ window.renderConnections = function() {
     markerSeq.appendChild(polySeq);
     defs.appendChild(markerSeq);
     
-    // Маркер для потока данных
     var markerData = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     markerData.setAttribute('id', 'arrowhead-dataflow');
     markerData.setAttribute('markerWidth', '12');
@@ -1343,6 +1342,22 @@ window.renderConnections = function() {
     polyData.setAttribute('fill', '#10B981');
     markerData.appendChild(polyData);
     defs.appendChild(markerData);
+    
+    // Маркер для contains (без стрелки, но с точкой)
+    var markerContains = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
+    markerContains.setAttribute('id', 'arrowhead-contains');
+    markerContains.setAttribute('markerWidth', '8');
+    markerContains.setAttribute('markerHeight', '8');
+    markerContains.setAttribute('refX', '4');
+    markerContains.setAttribute('refY', '4');
+    markerContains.setAttribute('orient', 'auto');
+    var circleContains = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circleContains.setAttribute('cx', '4');
+    circleContains.setAttribute('cy', '4');
+    circleContains.setAttribute('r', '3');
+    circleContains.setAttribute('fill', '#6B7280');
+    markerContains.appendChild(circleContains);
+    defs.appendChild(markerContains);
     
     svg.appendChild(defs);
 
@@ -1360,6 +1375,94 @@ window.renderConnections = function() {
         if (fromEl.isVisible === false || toEl.isVisible === false) {
             return;
         }
+
+        // ============================================================
+// ОБРАБОТКА contains (вложенность)
+// ============================================================
+if (conn.type === 'contains') {
+    var fromX = fromEl.x + fromEl.width / 2;
+    var fromY = fromEl.y + fromEl.height;
+    var toX = toEl.x + toEl.width / 2;
+    var toY = toEl.y;
+    
+    var color = conn.color || '#6B7280';
+    
+    // Пунктирная линия от родителя к дочернему элементу
+    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    var pathData = 'M ' + fromX + ' ' + fromY + 
+                   ' L ' + fromX + ' ' + (fromY + 10) +
+                   ' L ' + toX + ' ' + (toY - 10) +
+                   ' L ' + toX + ' ' + toY;
+    path.setAttribute('d', pathData);
+    path.setAttribute('stroke', color);
+    path.setAttribute('stroke-width', '1.5');
+    path.setAttribute('stroke-dasharray', '5,5');
+    path.setAttribute('fill', 'none');
+    svg.appendChild(path);
+    
+    // Маленький кружок в конце (вместо стрелки)
+    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    circle.setAttribute('cx', toX);
+    circle.setAttribute('cy', toY);
+    circle.setAttribute('r', '4');
+    circle.setAttribute('fill', color);
+    svg.appendChild(circle);
+    
+    // ============================================================
+    // ПОДПИСЬ ДЛЯ contains
+    // ============================================================
+    var labelText = conn.label || 'содержит';
+    
+    // Вычисляем позицию для подписи
+    var midX = (fromX + toX) / 2;
+    var midY = (fromY + toY) / 2 - 10;
+    
+    // Проверяем, не перекрывает ли подпись элементы
+    var isOver = false;
+    for (var ei = 0; ei < elements.length; ei++) {
+        var el = elements[ei];
+        var elCenterX = el.x + el.width / 2;
+        var elCenterY = el.y + el.height / 2;
+        var dist = Math.sqrt(Math.pow(midX - elCenterX, 2) + Math.pow(midY - elCenterY, 2));
+        if (dist < 50) {
+            isOver = true;
+            break;
+        }
+    }
+    
+    // Если подпись перекрывает элемент - смещаем
+    if (isOver) {
+        midX = midX + 20;
+        midY = midY - 15;
+    }
+    
+    // Фон для подписи
+    var labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    var textWidth = labelText.length * 7;
+    labelBg.setAttribute('x', midX - textWidth / 2 - 6);
+    labelBg.setAttribute('y', midY - 10);
+    labelBg.setAttribute('width', textWidth + 12);
+    labelBg.setAttribute('height', '18');
+    labelBg.setAttribute('rx', '4');
+    labelBg.setAttribute('fill', 'rgba(255, 255, 255, 0.9)');
+    labelBg.setAttribute('stroke', '#E5E7EB');
+    labelBg.setAttribute('stroke-width', '0.5');
+    svg.appendChild(labelBg);
+    
+    // Текст подписи
+    var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    label.setAttribute('x', midX);
+    label.setAttribute('y', midY + 4);
+    label.setAttribute('fill', '#6B7280');
+    label.setAttribute('font-size', '10');
+    label.setAttribute('font-weight', '500');
+    label.setAttribute('font-family', 'Ubuntu, sans-serif');
+    label.setAttribute('text-anchor', 'middle');
+    label.textContent = labelText;
+    svg.appendChild(label);
+    
+    return;
+}
 
         // ============================================================
         // ДИАГРАММА ПОТОКА ДАННЫХ - ПРЯМЫЕ ЛИНИИ
@@ -1399,7 +1502,7 @@ window.renderConnections = function() {
         }
 
         // ============================================================
-        // СТАНДАРТНАЯ ОТРИСОВКА ДЛЯ ОСТАЛЬНЫХ ТИПОВ
+        // СТАНДАРТНАЯ ОТРИСОВКА ДЛЯ ОСТАЛЬНЫХ ТИПОВ (control, call, dependency)
         // ============================================================
         var fromX = fromEl.x + 120;
         var fromY = fromEl.y + 20;
@@ -1572,7 +1675,6 @@ window.renderConnections = function() {
 
     connectionsContainer.appendChild(svg);
 };
-
 window.renderElements = function() {
     var elementsContainer = document.getElementById('canvasElements');
     elementsContainer.innerHTML = '';
