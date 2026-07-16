@@ -4,7 +4,7 @@
 
 // Глобальные переменные
 var selectedCodeFile = null;
-var selectedDiagramType = 'callgraph';
+var selectedDiagramType = 'dependency';
 var selectedSourceType = 'file';
 
 // ============================================================
@@ -1442,7 +1442,6 @@ window.selectDiagramType = function(type) {
 // 13. ВЫБОР ИСТОЧНИКА (ФАЙЛ / ПРОЕКТ)
 // ============================================================
 // ============================================================
-
 window.selectSourceType = function(type) {
     selectedSourceType = type;
     
@@ -1452,17 +1451,9 @@ window.selectSourceType = function(type) {
     if (type === 'file') {
         if (fileInput) fileInput.style.display = 'block';
         if (projectInfo) projectInfo.style.display = 'none';
-        var fileBtn = document.querySelector('.source-type-btn[data-source="file"]');
-        var projectBtn = document.querySelector('.source-type-btn[data-source="project"]');
-        if (fileBtn) fileBtn.style.border = '2px solid #3B82F6';
-        if (projectBtn) projectBtn.style.border = '2px solid #e5e7eb';
     } else if (type === 'project') {
         if (fileInput) fileInput.style.display = 'none';
         if (projectInfo) projectInfo.style.display = 'block';
-        var fileBtn = document.querySelector('.source-type-btn[data-source="file"]');
-        var projectBtn = document.querySelector('.source-type-btn[data-source="project"]');
-        if (fileBtn) fileBtn.style.border = '2px solid #e5e7eb';
-        if (projectBtn) projectBtn.style.border = '2px solid #3B82F6';
     }
 };
 

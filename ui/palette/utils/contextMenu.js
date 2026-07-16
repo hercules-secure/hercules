@@ -1,5 +1,5 @@
 // ============================================================
-// КОНТЕКСТНОЕ МЕНЮ ДЛЯ ЭЛЕМЕНТОВ НА ХОЛСТЕ
+// КОНТЕКСТНОЕ МЕНЮ ДЛЯ ЭЛЕМЕНТОВ НА ХОЛСТЕ (БЕЗ КОНСОЛЬНЫХ ЛОГОВ)
 // ============================================================
 
 // Создаем контекстное меню
@@ -12,16 +12,24 @@ contextMenu.style.cssText = `
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     padding: 4px 0;
-    min-width: 200px;
+    min-width: 220px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     z-index: 100000;
     font-family: 'Ubuntu', sans-serif;
     overflow: hidden;
 `;
 contextMenu.innerHTML = `
+    <!-- Анализ -->
+    <div class="context-menu-item" data-action="analyze">
+        <i class="fas fa-microscope" style="color: #8B5CF6;"></i> Анализ
+    </div>
+    
+    <!-- Лог - будет скрыт для проектных компонентов -->
     <div class="context-menu-item" data-action="logs">
         <i class="fas fa-list"></i> Лог
     </div>
+    
+    <!-- Проблемы -->
     <div class="context-menu-item" data-action="vulnerabilities">
         <i class="fas fa-shield-alt" style="color: #EF4444;"></i> Проблемы
         <span id="vulnCountBadge" style="
@@ -35,10 +43,15 @@ contextMenu.innerHTML = `
             display: none;
         ">0</span>
     </div>
+    
+    <!-- Свойства -->
     <div class="context-menu-item" data-action="properties">
         <i class="fas fa-cog"></i> Свойства
     </div>
+    
     <div class="context-menu-divider"></div>
+    
+    <!-- Удалить -->
     <div class="context-menu-item danger" data-action="delete">
         <i class="fas fa-trash"></i> Удалить
     </div>
@@ -81,6 +94,12 @@ contextMenuStyle.textContent = `
         background: #e5e7eb;
         margin: 4px 0;
     }
+    .context-menu-item .fa-microscope {
+        color: #8B5CF6 !important;
+    }
+    .context-menu-item.hidden {
+        display: none !important;
+    }
 `;
 document.head.appendChild(contextMenuStyle);
 
@@ -95,7 +114,7 @@ function updateContextMenu(element) {
     var vulnItem = contextMenu.querySelector('[data-action="vulnerabilities"]');
     var badge = vulnItem ? vulnItem.querySelector('#vulnCountBadge') : null;
     var logsItem = contextMenu.querySelector('[data-action="logs"]');
-    var propsItem = contextMenu.querySelector('[data-action="properties"]');
+    var analyzeItem = contextMenu.querySelector('[data-action="analyze"]');
     
     var hasVuln = false;
     var vulnCount = 0;
@@ -116,7 +135,27 @@ function updateContextMenu(element) {
         }
     }
     
-    // Обновляем пункт "Проблемы"
+    // Проверка: является ли элемент проектным (папка/файл)
+    var isProjectItem = element && (
+        element.type === 'project-root' ||
+        element.type === 'project-folder' ||
+        element.type === 'project-file' ||
+        element.isFolder === true ||
+        element.isFile === true ||
+        element.isProject === true
+    );
+    
+    // АНАЛИЗ - показываем только для проектных элементов
+    if (analyzeItem) {
+        analyzeItem.style.display = isProjectItem ? 'flex' : 'none';
+    }
+    
+    // ЛОГ - СКРЫВАЕМ ДЛЯ ВСЕХ ПРОЕКТНЫХ КОМПОНЕНТОВ
+    if (logsItem) {
+        logsItem.style.display = isProjectItem ? 'none' : 'flex';
+    }
+    
+    // ПРОБЛЕМЫ - показываем только если есть уязвимости
     if (vulnItem) {
         if (hasVuln) {
             vulnItem.style.display = 'flex';
@@ -126,18 +165,6 @@ function updateContextMenu(element) {
             }
         } else {
             vulnItem.style.display = 'none';
-        }
-    }
-    
-    // Скрываем пункт "Лог" для SBOM и CI/CD элементов
-    if (logsItem) {
-        var isSbom = element && (element.type === 'sbom-root' || element.type === 'sbom-component' || element.type === 'package-dependency');
-        var isCI = element && (element.type === 'ci-root' || element.type === 'ci-stage' || element.type === 'ci-job');
-        
-        if (isSbom || isCI) {
-            logsItem.style.display = 'none';
-        } else {
-            logsItem.style.display = 'flex';
         }
     }
 }
@@ -163,7 +190,7 @@ document.addEventListener('contextmenu', function(e) {
         var y = e.clientY;
         
         var menuWidth = 220;
-        var menuHeight = 180;
+        var menuHeight = 200;
         if (x + menuWidth > window.innerWidth) {
             x = window.innerWidth - menuWidth - 10;
         }
@@ -184,7 +211,7 @@ document.addEventListener('contextmenu', function(e) {
 // Закрытие меню
 function closeContextMenu() {
     var menu = document.getElementById('elementContextMenu');
-    menu.style.display = 'none';
+    if (menu) menu.style.display = 'none';
     contextMenuTarget = null;
     document.querySelectorAll('.canvas-element.context-active').forEach(function(el) {
         el.classList.remove('context-active');
@@ -203,16 +230,33 @@ document.addEventListener('click', function(e) {
 // ДЕЙСТВИЯ КОНТЕКСТНОГО МЕНЮ
 // ============================================================
 
-// Лог (бывший Просмотр)
-document.querySelector('#elementContextMenu .context-menu-item[data-action="logs"]').addEventListener('click', function(e) {
+// АНАЛИЗ - для проектных компонентов
+document.querySelector('#elementContextMenu .context-menu-item[data-action="analyze"]').addEventListener('click', function(e) {
     e.stopPropagation();
     if (contextMenuTarget) {
+        if (typeof analyzeProject === 'function') {
+            if (contextMenuTarget.isFile && contextMenuTarget.fileData) {
+                analyzeSingleFile(contextMenuTarget.fileData);
+            } else {
+                analyzeProject();
+            }
+        } else if (typeof showCustomAlert === 'function') {
+            showCustomAlert('Ошибка', 'Функция анализа не найдена', 'error');
+        }
+    }
+    closeContextMenu();
+});
+
+// ЛОГ (для непроектных элементов)
+document.querySelector('#elementContextMenu .context-menu-item[data-action="logs"]').addEventListener('click', function(e) {
+    e.stopPropagation();
+    if (contextMenuTarget && typeof fetchElementLogs === 'function') {
         fetchElementLogs(contextMenuTarget);
     }
     closeContextMenu();
 });
 
-// Проблемы (уязвимости)
+// ПРОБЛЕМЫ
 document.querySelector('#elementContextMenu .context-menu-item[data-action="vulnerabilities"]').addEventListener('click', function(e) {
     e.stopPropagation();
     if (contextMenuTarget) {
@@ -220,230 +264,108 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="vuln
                      (contextMenuTarget.componentData ? contextMenuTarget.componentData.bomRef : null);
         
         if (bomRef && window.vulnerabilitiesMap && window.vulnerabilitiesMap[bomRef]) {
-            showVulnerabilitiesForComponent(bomRef);
+            if (typeof showVulnerabilitiesForComponent === 'function') {
+                showVulnerabilitiesForComponent(bomRef);
+            }
         } else if (contextMenuTarget.componentData && contextMenuTarget.componentData.hasVulnerabilities) {
             var ref = contextMenuTarget.componentData.bomRef;
             if (ref && window.vulnerabilitiesMap && window.vulnerabilitiesMap[ref]) {
-                showVulnerabilitiesForComponent(ref);
-            } else {
+                if (typeof showVulnerabilitiesForComponent === 'function') {
+                    showVulnerabilitiesForComponent(ref);
+                }
+            } else if (typeof showCustomAlert === 'function') {
                 showCustomAlert('Информация', 'Уязвимостей для этого компонента не найдено', 'info');
             }
-        } else {
+        } else if (typeof showCustomAlert === 'function') {
             showCustomAlert('Информация', 'Уязвимостей для этого компонента не найдено', 'info');
         }
     }
     closeContextMenu();
 });
 
-// Свойства
+// СВОЙСТВА
 document.querySelector('#elementContextMenu .context-menu-item[data-action="properties"]').addEventListener('click', function(e) {
     e.stopPropagation();
     if (contextMenuTarget) {
-        // Проверяем тип элемента и показываем соответствующие свойства
         if (contextMenuTarget.type === 'ci-stage' || contextMenuTarget.type === 'ci-job' || contextMenuTarget.type === 'ci-root') {
-            showCIProperties(contextMenuTarget);
+            if (typeof showCIProperties === 'function') {
+                showCIProperties(contextMenuTarget);
+            }
         } else if (contextMenuTarget.type === 'sbom-root' || contextMenuTarget.type === 'sbom-component' || contextMenuTarget.type === 'package-dependency') {
-            showSBOMProperties(contextMenuTarget);
-        } else {
-            // Для обычных элементов используем стандартную модалку
+            if (typeof showSBOMProperties === 'function') {
+                showSBOMProperties(contextMenuTarget);
+            }
+        } else if (contextMenuTarget.isFile && contextMenuTarget.fileData) {
+            showFileProperties(contextMenuTarget);
+        } else if (contextMenuTarget.isFolder) {
+            showFolderProperties(contextMenuTarget);
+        } else if (typeof openElementPropsModal === 'function') {
             openElementPropsModal(contextMenuTarget.id);
         }
     }
     closeContextMenu();
 });
 
-// Удалить
+// УДАЛИТЬ
 document.querySelector('#elementContextMenu .context-menu-item[data-action="delete"]').addEventListener('click', function(e) {
     e.stopPropagation();
-    if (contextMenuTarget) {
+    if (contextMenuTarget && typeof deleteElement === 'function') {
         deleteElement(contextMenuTarget.id, null);
     }
     closeContextMenu();
 });
 
 // ============================================================
-// ПОКАЗ СВОЙСТВ CI/CD ЭЛЕМЕНТА
+// ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ ПРОЕКТНЫХ ЭЛЕМЕНТОВ
 // ============================================================
 
-// ============================================================
-// ПОКАЗ СВОЙСТВ CI/CD ЭЛЕМЕНТА (ИСПРАВЛЕННАЯ ВЕРСИЯ)
-// ============================================================
-
-function showCIProperties(element) {
-    var overlay = document.createElement('div');
-    overlay.className = 'ci-props-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.7);
-        z-index: 20000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Ubuntu, sans-serif;
-        animation: alertFadeIn 0.3s ease;
-    `;
-    
-    var properties = [];
-    
-    if (element.type === 'ci-root') {
-        properties.push({ label: 'Тип', value: 'Корень пайплайна' });
-        properties.push({ label: 'Имя', value: element.name || 'CI/CD Pipeline' });
-        properties.push({ label: 'Платформа', value: element.platform || 'GitLab CI' });
-    } else if (element.type === 'ci-stage') {
-        properties.push({ label: 'Тип', value: 'Стадия' });
-        properties.push({ label: 'Имя', value: element.stageName || element.name || 'Unknown' });
-        properties.push({ label: 'Количество задач', value: element.jobCount || '0' });
-        properties.push({ label: 'Параллельные', value: element.hasParallel ? 'Да' : 'Нет' });
-    } else if (element.type === 'ci-job') {
-        properties.push({ label: 'Тип', value: element.isParallel ? 'Параллельная задача' : 'Задача' });
-        properties.push({ label: 'Имя', value: element.jobName || element.name || 'Unknown' });
-        properties.push({ label: 'Стадия', value: element.stageName || 'Unknown' });
-        
-        if (element.runsOn) {
-            properties.push({ label: 'Runner', value: element.runsOn });
+// Анализ отдельного файла
+function analyzeSingleFile(fileData) {
+    if (!fileData) {
+        if (typeof showCustomAlert === 'function') {
+            showCustomAlert('Ошибка', 'Файл не выбран', 'error');
         }
-        
-        if (element.script && Array.isArray(element.script) && element.script.length > 0) {
-            properties.push({ label: 'Шаги (script)', value: element.script.join('\n') });
-        }
-        
-        if (element.needs) {
-            var needsValue = '';
-            if (Array.isArray(element.needs)) {
-                needsValue = element.needs.join(', ');
-            } else if (typeof element.needs === 'string') {
-                needsValue = element.needs;
-            } else if (typeof element.needs === 'object') {
-                try {
-                    needsValue = JSON.stringify(element.needs);
-                } catch (e) {
-                    needsValue = String(element.needs);
+        return;
+    }
+    
+    if (typeof showCustomAlert === 'function') {
+        showCustomAlert('Анализ', 'Анализ файла: ' + fileData.name, 'info');
+    }
+    
+    var reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            var content = e.target.result;
+            var ext = fileData.ext;
+            
+            if (typeof parseCodeForCallGraph === 'function') {
+                var parseResult = parseCodeForCallGraph(content, ext);
+                
+                if (typeof showCustomAlert === 'function') {
+                    var msg = '🔧 ' + parseResult.functions.length + ' функций\n' +
+                             '🔗 ' + (parseResult.calls || []).length + ' вызовов\n' +
+                             '📦 ' + (parseResult.imports || []).length + ' импортов';
+                    showCustomAlert('Анализ завершен', msg, 'success');
+                }
+                
+                if (typeof buildCallGraph === 'function') {
+                    buildCallGraph(parseResult, fileData.name);
                 }
             }
-            if (needsValue) {
-                properties.push({ label: 'Зависимости', value: needsValue });
+        } catch (err) {
+            if (typeof showCustomAlert === 'function') {
+                showCustomAlert('Ошибка', 'Ошибка анализа файла: ' + err.message, 'error');
             }
         }
-        
-        if (element.isParallel) {
-            properties.push({ label: 'Параллельный', value: 'Да' });
-        }
-        if (element.when) {
-            properties.push({ label: 'When', value: element.when });
-        }
-        if (element.allowFailure !== undefined) {
-            properties.push({ label: 'Allow failure', value: element.allowFailure ? 'Да' : 'Нет' });
-        }
-        if (element.strategy) {
-            properties.push({ label: 'Strategy', value: typeof element.strategy === 'object' ? JSON.stringify(element.strategy) : String(element.strategy) });
-        }
-    }
-    
-    var propertiesHtml = properties.map(function(p) {
-        return `
-            <div style="display: flex; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
-                <div style="width: 120px; font-weight: 500; color: #6b7280; flex-shrink: 0;">${p.label}</div>
-                <div style="color: #1f2937; white-space: pre-wrap; word-break: break-all;">${escapeHtml(String(p.value))}</div>
-            </div>
-        `;
-    }).join('');
-    
-    // ФУНКЦИЯ ЗАКРЫТИЯ
-    function closeModal() {
-        if (overlay && overlay.parentNode) {
-            overlay.remove();
-        }
-        document.removeEventListener('keydown', escHandler);
-    }
-    
-    // ОБРАБОТЧИК ESCAPE
-    function escHandler(e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-    }
-    
-    overlay.innerHTML = `
-        <div style="
-            background: white;
-            border-radius: 16px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: alertScaleIn 0.3s ease;
-        ">
-            <div style="
-                padding: 20px 24px;
-                border-bottom: 1px solid #e5e7eb;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-shrink: 0;
-            ">
-                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства CI/CD элемента</h3>
-                <button id="closeCiPropsBtn" style="
-                    background: none;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    color: #9ca3af;
-                    padding: 0 8px;
-                ">&times;</button>
-            </div>
-            <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
-                ${propertiesHtml}
-            </div>
-            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right; flex-shrink: 0;">
-                <button id="closeCiPropsBtn2" style="
-                    padding: 8px 20px;
-                    background: #3B82F6;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-family: Ubuntu, sans-serif;
-                    font-size: 14px;
-                ">Закрыть</button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    // Навешиваем обработчики после добавления в DOM
-    var closeBtn1 = document.getElementById('closeCiPropsBtn');
-    var closeBtn2 = document.getElementById('closeCiPropsBtn2');
-    
-    if (closeBtn1) {
-        closeBtn1.addEventListener('click', closeModal);
-    }
-    if (closeBtn2) {
-        closeBtn2.addEventListener('click', closeModal);
-    }
-    
-    // Закрытие по клику на фон
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            closeModal();
-        }
-    });
-    
-    // Закрытие по Escape
-    document.addEventListener('keydown', escHandler);
+    };
+    reader.readAsText(fileData.file);
 }
 
-// ============================================================
-// ПОКАЗ СВОЙСТВ SBOM КОМПОНЕНТА
-// ============================================================
-
-function showSBOMProperties(element) {
+// Свойства файла
+function showFileProperties(element) {
+    var fileData = element.fileData;
+    if (!fileData) return;
+    
     var modal = document.createElement('div');
     modal.style.cssText = `
         position: fixed;
@@ -459,96 +381,93 @@ function showSBOMProperties(element) {
         font-family: Ubuntu, sans-serif;
     `;
     
-    var comp = element.componentData || {};
-    var properties = [];
-    
-    properties.push({ label: 'Тип', value: element.type === 'sbom-root' ? 'Корневой компонент' : 'Компонент' });
-    properties.push({ label: 'Имя', value: comp.name || element.name || 'Unknown' });
-    properties.push({ label: 'Версия', value: comp.version || 'unknown' });
-    properties.push({ label: 'Тип компонента', value: comp.type || 'library' });
-    
-    if (comp.purl) {
-        properties.push({ label: 'PURL', value: comp.purl });
-    }
-    if (comp.bomRef) {
-        properties.push({ label: 'BOM Ref', value: comp.bomRef });
-    }
-    
-    if (element.hasVulnerabilities !== undefined) {
-        properties.push({ 
-            label: 'Уязвимости', 
-            value: element.hasVulnerabilities ? 'Есть (' + (element.vulnerabilityCount || 0) + ')' : 'Нет' 
-        });
-    }
-    
-    if (comp.properties && Array.isArray(comp.properties)) {
-        for (var i = 0; i < Math.min(comp.properties.length, 5); i++) {
-            var prop = comp.properties[i];
-            if (prop && prop.name && prop.value) {
-                var label = prop.name;
-                if (label.startsWith('src:') || label.startsWith('dependency:')) {
-                    label = label.replace(/^(src:|dependency:)/, '');
-                }
-                if (label.startsWith('hercules:')) {
-                    label = label.replace('hercules:', '');
-                }
-                properties.push({ label: label, value: prop.value });
-            }
-        }
-    }
+    var properties = [
+        { label: 'Имя файла', value: fileData.name },
+        { label: 'Путь', value: fileData.path },
+        { label: 'Расширение', value: fileData.ext },
+        { label: 'Размер', value: (fileData.size / 1024).toFixed(2) + ' KB' }
+    ];
     
     var propertiesHtml = properties.map(function(p) {
         return `
             <div style="display: flex; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
                 <div style="width: 120px; font-weight: 500; color: #6b7280; flex-shrink: 0;">${p.label}</div>
-                <div style="color: #1f2937; white-space: pre-wrap; word-break: break-all;">${escapeHtml(String(p.value))}</div>
+                <div style="color: #1f2937; word-break: break-all;">${escapeHtml(String(p.value))}</div>
             </div>
         `;
     }).join('');
     
     modal.innerHTML = `
-        <div style="
-            background: white;
-            border-radius: 16px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        ">
-            <div style="
-                padding: 20px 24px;
-                border-bottom: 1px solid #e5e7eb;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-shrink: 0;
-            ">
-                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства SBOM компонента</h3>
-                <button onclick="this.closest('div').parentElement.remove()" style="
-                    background: none;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    color: #9ca3af;
-                    padding: 0 8px;
-                ">&times;</button>
+        <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства файла</h3>
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
-            <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
+            <div style="padding: 20px 24px;">
                 ${propertiesHtml}
             </div>
-            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right; flex-shrink: 0;">
-                <button onclick="this.closest('div').parentElement.remove()" style="
-                    padding: 8px 20px;
-                    background: #3B82F6;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-family: Ubuntu, sans-serif;
-                    font-size: 14px;
-                ">Закрыть</button>
+            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right;">
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: Ubuntu, sans-serif; font-size: 14px;">Закрыть</button>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.remove();
+        }
+    });
+}
+
+// Свойства папки
+function showFolderProperties(element) {
+    var folderData = element.folderData;
+    if (!folderData) return;
+    
+    var fileCount = countFiles(folderData);
+    
+    var modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.7);
+        z-index: 20000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Ubuntu, sans-serif;
+    `;
+    
+    var properties = [
+        { label: 'Имя папки', value: folderData.name || element.name || 'Unknown' },
+        { label: 'Количество файлов', value: fileCount }
+    ];
+    
+    var propertiesHtml = properties.map(function(p) {
+        return `
+            <div style="display: flex; padding: 8px 0; border-bottom: 1px solid #f3f4f6;">
+                <div style="width: 140px; font-weight: 500; color: #6b7280; flex-shrink: 0;">${p.label}</div>
+                <div style="color: #1f2937;">${escapeHtml(String(p.value))}</div>
+            </div>
+        `;
+    }).join('');
+    
+    modal.innerHTML = `
+        <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства папки</h3>
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+            </div>
+            <div style="padding: 20px 24px;">
+                ${propertiesHtml}
+            </div>
+            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right;">
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: Ubuntu, sans-serif; font-size: 14px;">Закрыть</button>
             </div>
         </div>
     `;
@@ -563,440 +482,6 @@ function showSBOMProperties(element) {
 }
 
 // ============================================================
-// ПОКАЗАТЬ УЯЗВИМОСТИ КОМПОНЕНТА
-// ============================================================
-
-function showVulnerabilitiesForComponent(bomRef) {
-    if (!bomRef || !window.vulnerabilitiesMap || !window.vulnerabilitiesMap[bomRef]) {
-        showCustomAlert('Информация', 'Уязвимостей для этого компонента не найдено', 'info');
-        return;
-    }
-    
-    var vulns = window.vulnerabilitiesMap[bomRef];
-    var componentName = 'Unknown';
-    
-    for (var key in nodeElementsMap) {
-        var el = nodeElementsMap[key];
-        if (el.componentData && el.componentData.bomRef === bomRef) {
-            componentName = el.componentData.name || 'Unknown';
-            break;
-        }
-        if (el.bomRef === bomRef) {
-            componentName = el.name || 'Unknown';
-            break;
-        }
-    }
-    
-    var overlay = document.createElement('div');
-    overlay.className = 'vuln-modal-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.7);
-        z-index: 20000;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Ubuntu, sans-serif;
-        animation: alertFadeIn 0.3s ease;
-    `;
-    
-    var vulnList = '';
-    for (var i = 0; i < vulns.length; i++) {
-        var v = vulns[i];
-        var severity = v.severity || v.ratings?.[0]?.severity || 'UNKNOWN';
-        var severityColor = '#6B7280';
-        var severityLabel = severity;
-        if (severity === 'CRITICAL') {
-            severityColor = '#EF4444';
-        } else if (severity === 'HIGH') {
-            severityColor = '#F59E0B';
-        } else if (severity === 'MODERATE' || severity === 'MEDIUM') {
-            severityColor = '#FBBF24';
-            severityLabel = 'MODERATE';
-        } else if (severity === 'LOW') {
-            severityColor = '#10B981';
-        }
-        
-        vulnList += `
-            <div style="
-                background: #f8f9fa;
-                padding: 12px 16px;
-                margin-bottom: 10px;
-                border-radius: 8px;
-            ">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <strong style="color: #1f2937;">${v.id || 'N/A'}</strong>
-                    <span style="
-                        background: ${severityColor};
-                        color: white;
-                        padding: 2px 10px;
-                        border-radius: 12px;
-                        font-size: 11px;
-                        font-weight: bold;
-                    ">${severityLabel}</span>
-                </div>
-                <div style="margin-top: 6px; font-size: 13px; color: #4b5563;">
-                    ${v.description || 'Нет описания'}
-                </div>
-                ${v.source && v.source.url ? `
-                    <div style="margin-top: 6px;">
-                        <a href="${v.source.url}" target="_blank" style="color: #3B82F6; font-size: 12px;">Подробнее</a>
-                    </div>
-                ` : ''}
-            </div>
-        `;
-    }
-    
-    function closeVulnModal() {
-        if (overlay && overlay.parentNode) {
-            overlay.remove();
-        }
-        document.removeEventListener('keydown', escHandler);
-    }
-    
-    function escHandler(e) {
-        if (e.key === 'Escape') {
-            closeVulnModal();
-        }
-    }
-    
-    overlay.innerHTML = `
-        <div style="
-            background: white;
-            border-radius: 16px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: alertScaleIn 0.3s ease;
-        ">
-            <div style="
-                padding: 20px 24px;
-                border-bottom: 1px solid #e5e7eb;
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                flex-shrink: 0;
-            ">
-                <div>
-                    <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Уязвимости</h3>
-                    <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">
-                        ${componentName} (${vulns.length} уязвимостей)
-                    </div>
-                </div>
-                <button onclick="this.closest('.vuln-modal-overlay').remove()" style="
-                    background: none;
-                    border: none;
-                    font-size: 24px;
-                    cursor: pointer;
-                    color: #9ca3af;
-                    padding: 0 8px;
-                ">&times;</button>
-            </div>
-            <div style="padding: 20px 24px; overflow-y: auto; flex: 1;">
-                ${vulnList}
-            </div>
-            <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right; flex-shrink: 0;">
-                <button onclick="this.closest('.vuln-modal-overlay').remove()" style="
-                    padding: 8px 20px;
-                    background: #3B82F6;
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    cursor: pointer;
-                    font-family: Ubuntu, sans-serif;
-                    font-size: 14px;
-                ">Закрыть</button>
-            </div>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            closeVulnModal();
-        }
-    });
-    
-    document.addEventListener('keydown', escHandler);
-}
-
-// ============================================================
-// ПОЛУЧЕНИЕ ЛОГОВ
-// ============================================================
-
-function fetchElementLogs(element) {
-    var elementId = element.id;
-    var elementName = element.name || 'Элемент';
-    
-    showLogsModal(element, null, true);
-    
-    var token = localStorage.getItem('licenseToken');
-    var headers = {
-        'Content-Type': 'application/json'
-    };
-    
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
-    }
-    
-    var encodedName = encodeURIComponent(elementName);
-    var url = '/api/palette/logs/' + encodedName;
-    
-    fetch(url, {
-        method: 'GET',
-        headers: headers
-    })
-    .then(function(response) {
-        if (!response.ok) {
-            throw new Error('HTTP ' + response.status);
-        }
-        return response.json();
-    })
-    .then(function(data) {
-        var logs = data.logs || [];
-        showLogsModal(element, logs, false);
-    })
-    .catch(function(error) {
-        var errorLogs = [
-            { time: new Date().toLocaleTimeString(), message: 'Ошибка получения логов: ' + error.message, type: 'error' },
-            { time: new Date().toLocaleTimeString(), message: 'Попробуйте обновить страницу', type: 'warning' }
-        ];
-        showLogsModal(element, errorLogs, false);
-    });
-}
-
-// ============================================================
-// ПОКАЗ ЛОГОВ В МОДАЛКЕ
-// ============================================================
-
-function showLogsModal(element, logs, isLoading) {
-    var oldModal = document.querySelector('.logs-modal-overlay');
-    if (oldModal) oldModal.remove();
-    
-    var elementName = element.name || 'Элемент';
-    var elementId = element.id;
-    var hasLogs = logs && logs.length > 0;
-    
-    var overlay = document.createElement('div');
-    overlay.className = 'logs-modal-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        backdrop-filter: blur(4px);
-        z-index: 100001;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        animation: alertFadeIn 0.3s ease;
-    `;
-
-    var modal = document.createElement('div');
-    modal.className = 'logs-modal';
-    modal.style.cssText = `
-        background: white;
-        border-radius: 16px;
-        padding: 28px 32px;
-        max-width: 700px;
-        width: 90%;
-        max-height: 80vh;
-        box-shadow: 0 25px 50px rgba(0,0,0,0.25);
-        animation: alertScaleIn 0.3s ease;
-        display: flex;
-        flex-direction: column;
-    `;
-
-    var logsHtml = '';
-    
-    if (isLoading) {
-        logsHtml = `
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6b7280; min-height: 200px;">
-                <div style="width: 40px; height: 40px; border: 3px solid #e5e7eb; border-top-color: #3B82F6; border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 16px;"></div>
-                <p style="margin: 0; font-family: 'Ubuntu', sans-serif;">Загрузка логов...</p>
-            </div>
-        `;
-    } else if (!hasLogs) {
-        logsHtml = `
-            <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #6b7280; min-height: 200px;">
-                <i class="fas fa-inbox" style="font-size: 32px; margin-bottom: 12px;"></i>
-                <p style="margin: 0; font-family: 'Ubuntu', sans-serif;">Нет записей в журнале</p>
-                <p style="margin: 4px 0 0 0; font-size: 11px; color: #4b5563; font-family: 'Ubuntu', sans-serif;">Логи будут появляться после выполнения</p>
-            </div>
-        `;
-    } else {
-        logsHtml = logs.map(function(log) {
-            var time = log.time || log.timestamp || new Date().toLocaleTimeString();
-            var typeColor = log.type === 'error' ? '#EF4444' : 
-                           log.type === 'warning' ? '#F59E0B' : 
-                           log.type === 'success' ? '#10B981' : '#60A5FA';
-            var message = log.message || log.msg || log.text || JSON.stringify(log);
-            return `<div style="display: flex; gap: 12px; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <span style="color: #6b7280; min-width: 80px;">[${time}]</span>
-                <span style="color: ${typeColor};">${escapeHtml(message)}</span>
-            </div>`;
-        }).join('');
-    }
-
-    modal.innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-shrink: 0;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <i class="fas fa-list" style="color: #3B82F6; font-size: 20px;"></i>
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                    Лог: ${escapeHtml(elementName)} (ID: ${elementId})
-                </h3>
-            </div>
-            <button onclick="this.closest('.logs-modal-overlay').remove()" style="
-                background: none; 
-                border: none; 
-                font-size: 24px; 
-                cursor: pointer; 
-                color: #9ca3af; 
-                padding: 0 8px;
-                font-family: 'Ubuntu', sans-serif;
-            ">&times;</button>
-        </div>
-        <div style="flex: 1; overflow-y: auto; background: #1a1a2e; border-radius: 8px; padding: 16px; font-family: 'Courier New', monospace; font-size: 12px; min-height: 200px; max-height: 400px; display: flex; flex-direction: column;">
-            ${logsHtml}
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb; flex-shrink: 0;">
-            <button onclick="this.closest('.logs-modal-overlay').remove()" style="
-                padding: 8px 24px;
-                border: none;
-                border-radius: 8px;
-                background: #e5e7eb;
-                color: #374151;
-                font-family: 'Ubuntu', sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-            ">Закрыть</button>
-            ${hasLogs && !isLoading ? `<button onclick="clearElementLogsOnServer(${elementId})" style="
-                padding: 8px 24px;
-                border: none;
-                border-radius: 8px;
-                background: #EF4444;
-                color: white;
-                font-family: 'Ubuntu', sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-            ">Очистить логи</button>` : ''}
-            ${!isLoading ? `<button onclick="fetchElementLogsById(${elementId})" style="
-                padding: 8px 24px;
-                border: none;
-                border-radius: 8px;
-                background: #3B82F6;
-                color: white;
-                font-family: 'Ubuntu', sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all 0.2s;
-            "><i class="fas fa-sync-alt"></i> Обновить</button>` : ''}
-        </div>
-    `;
-
-    overlay.appendChild(modal);
-    document.body.appendChild(overlay);
-
-    overlay.addEventListener('click', function(e) {
-        if (e.target === overlay) {
-            overlay.remove();
-        }
-    });
-
-    var escHandler = function(e) {
-        if (e.key === 'Escape') {
-            overlay.remove();
-            document.removeEventListener('keydown', escHandler);
-        }
-    };
-    document.addEventListener('keydown', escHandler);
-    
-    if (isLoading) {
-        var style = document.createElement('style');
-        style.id = 'logsSpinnerStyle';
-        style.textContent = `
-            @keyframes spin {
-                to { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-// ============================================================
-// ПОЛУЧЕНИЕ ЛОГОВ ПО ID
-// ============================================================
-
-function fetchElementLogsById(elementId) {
-    var el = elements.find(function(e) { return e.id === elementId; });
-    if (el) {
-        fetchElementLogs(el);
-    }
-}
-
-// ============================================================
-// ОЧИСТКА ЛОГОВ НА СЕРВЕРЕ
-// ============================================================
-
-function clearElementLogsOnServer(elementId) {
-    var el = elements.find(function(e) { return e.id === elementId; });
-    if (!el) return;
-    
-    var elementName = el.name || 'Элемент';
-    var token = localStorage.getItem('licenseToken');
-    var headers = {
-        'Content-Type': 'application/json'
-    };
-    
-    if (token) {
-        headers['Authorization'] = 'Bearer ' + token;
-    }
-    
-    var encodedName = encodeURIComponent(elementName);
-    var url = '/api/palette/logs/' + encodedName + '/clear';
-    
-    fetch(url, {
-        method: 'DELETE',
-        headers: headers
-    })
-    .then(function(response) {
-        if (!response.ok) {
-            throw new Error('HTTP ' + response.status);
-        }
-        return response.json();
-    })
-    .then(function(data) {
-        if (data.success) {
-            showCustomAlert('Успешно', 'Журнал очищен', 'success');
-            var el = elements.find(function(e) { return e.id === elementId; });
-            if (el) {
-                fetchElementLogs(el);
-            }
-        } else {
-            showCustomAlert('Ошибка', data.error || 'Не удалось очистить логи', 'error');
-        }
-    })
-    .catch(function(error) {
-        showCustomAlert('Ошибка', 'Ошибка очистки: ' + error.message, 'error');
-    });
-}
-
-// ============================================================
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
 // ============================================================
 
@@ -1005,11 +490,25 @@ function escapeHtml(str) {
     return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
+function countFiles(node) {
+    if (!node) return 0;
+    var count = node.files ? node.files.length : 0;
+    if (node.children) {
+        var folderNames = Object.keys(node.children);
+        folderNames.forEach(function(name) {
+            count += countFiles(node.children[name]);
+        });
+    }
+    return count;
+}
+
 // Удаление через клавишу
 document.addEventListener('keydown', function(e) {
-    if ((e.key === 'Delete' || e.key === 'Backspace') && selectedElement) {
+    if ((e.key === 'Delete' || e.key === 'Backspace') && typeof selectedElement !== 'undefined' && selectedElement) {
         e.preventDefault();
-        deleteElement(selectedElement.id, null);
+        if (typeof deleteElement === 'function') {
+            deleteElement(selectedElement.id, null);
+        }
     }
 });
 
