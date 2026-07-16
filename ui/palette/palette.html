@@ -74,9 +74,9 @@
             <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
             <div class="palette-topbar">
                 <div class="palette-topbar-left">
-                    <button class="source-btn active" data-source="empty">
+                    <!-- <button class="source-btn active" data-source="empty">
                         <i class="fas fa-plus-circle"></i> Новая
-                    </button>
+                    </button> -->
                     <button class="source-btn" data-source="template">
                         <i class="fas fa-copy"></i> Шаблон
                     </button>
@@ -109,9 +109,9 @@
                 </div>
 
                 <!-- КОНТЕЙНЕРЫ ИСТОЧНИКОВ -->
-                <div id="empty-source" class="source-content-palette active">
+                <!-- <div id="empty-source" class="source-content-palette active">
                     <div class="hint"><i class="fas fa-info-circle"></i> Пустой холст</div>
-                </div>
+                </div> -->
 
                 <div id="json-source" class="source-content-palette">
                     <div class="input-group">
@@ -752,7 +752,7 @@
         }
     }
 </style>
-
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script> 
     <script src="utils/sbom.js"></script>
     <script src="utils/cicd.js"></script>
     <script src="utils/dependency.js"></script>
@@ -766,6 +766,7 @@
     <script src="palette.js"></script>
     <script src="client.js"></script>
     <script src="utils/utils.js"></script>
+    <script src="utils/analize.js"></script>
     <script src="../common/licence.js"></script>
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
