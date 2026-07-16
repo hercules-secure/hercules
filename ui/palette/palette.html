@@ -83,6 +83,9 @@
                      <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
                         <i class="fas fa-code"></i> Код
                     </button>
+                    <button onclick="openProjectModal()" class="source-btn" data-source="project">
+                       <i class="fas fa-folder"></i> Проект
+                     </button>
                     <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
                         <i class="fas fa-file-code"></i> Загрузить SBOM
                     </button>
@@ -532,6 +535,223 @@
             </div>
         </div>
     </div>
+    
+<!-- ============================================================
+     МОДАЛЬНОЕ ОКНО ВЫБОРА ТИПА ДИАГРАММЫ ДЛЯ ПРОЕКТА
+     ============================================================ -->
+<div id="projectInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 50000; justify-content: center; align-items: center;">
+    <div style="background: white; border-radius: 16px; max-width: 600px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: alertScaleIn 0.3s ease; max-height: 90vh; overflow-y: auto;">
+        
+        <!-- ЗАГОЛОВОК -->
+        <div style="padding: 24px 28px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 16px 16px 0 0;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <i class="fas fa-project-diagram" style="color: #8B5CF6; font-size: 22px;"></i>
+                <h3 style="margin: 0; font-size: 18px; color: #1a1a2e; font-weight: 600;">Построение диаграммы</h3>
+            </div>
+            <button onclick="closeProjectModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <!-- ТЕЛО -->
+        <div style="padding: 24px 28px;">
+            
+            <!-- КНОПКА ВЫБОРА ПАПКИ -->
+            <div style="margin-bottom: 20px;">
+                <button onclick="selectProjectFolder()" style="
+                    width: 100%;
+                    padding: 14px 20px;
+                    background: #8B5CF6;
+                    color: white;
+                    border: none;
+                    border-radius: 10px;
+                    cursor: pointer;
+                    font-family: 'Ubuntu', sans-serif;
+                    font-size: 15px;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 10px;
+                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+                " 
+                onmouseover="this.style.background='#7C3AED'"
+                onmouseout="this.style.background='#8B5CF6'">
+                    <i class="fas fa-folder-open"></i>
+                    Выбрать папку проекта
+                </button>
+                <div style="font-size: 11px; color: #6c757d; margin-top: 6px; text-align: center;">
+                    <i class="fas fa-info-circle"></i> Выберите папку с исходным кодом проекта
+                </div>
+            </div>
+            
+            <!-- Информация о проекте -->
+            <div id="projectInfoBlock" style="margin-bottom: 20px; background: #f8f9fa; border-radius: 10px; padding: 16px; display: none;">
+                <div id="projectNameModal" style="font-weight: 600; font-size: 15px; color: #1a1a2e; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-folder-open" style="color: #F59E0B;"></i>
+                    <span id="projectNameText">Проект</span>
+                </div>
+                <div id="projectFilesModal" style="max-height: 80px; overflow-y: auto; font-size: 12px; color: #4b5563; background: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; border: 1px solid #e5e7eb;"></div>
+                <div id="projectSizeModal" style="margin-top: 8px; font-size: 13px; color: #6c757d; display: flex; align-items: center; gap: 6px;">
+                    <i class="fas fa-file-alt" style="color: #3B82F6;"></i>
+                    <span>Файлов: <strong id="projectFileCount">0</strong></span>
+                </div>
+            </div>
+            
+            <!-- РАЗДЕЛИТЕЛЬ -->
+            <div style="border-top: 1px dashed #e5e7eb; margin: 16px 0 20px 0;"></div>
+            
+            <!-- ВЫБОР ТИПА ДИАГРАММЫ -->
+            <div style="margin-bottom: 22px;">
+                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px;">
+                    <i class="fas fa-sliders-h" style="color: #6c757d; margin-right: 6px;"></i>
+                    Выберите тип диаграммы:
+                </label>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                    <!-- Структура -->
+                    <div class="diagram-type-card" data-type="structure" onclick="selectDiagramTypeCard('structure')" style="
+                        border: 2px solid #e5e7eb;
+                        border-radius: 12px;
+                        padding: 16px 12px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.25s ease;
+                        background: white;
+                    ">
+                        <div style="font-size: 28px; color: #F59E0B; margin-bottom: 6px;">
+                            <i class="fas fa-sitemap"></i>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e;">Структура</div>
+                        <div style="font-size: 10px; color: #6c757d; margin-top: 2px;">Дерево проекта</div>
+                    </div>
+                    
+                    <!-- Потоки данных -->
+                    <div class="diagram-type-card" data-type="dataflow" onclick="selectDiagramTypeCard('dataflow')" style="
+                        border: 2px solid #e5e7eb;
+                        border-radius: 12px;
+                        padding: 16px 12px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.25s ease;
+                        background: white;
+                    ">
+                        <div style="font-size: 28px; color: #10B981; margin-bottom: 6px;">
+                            <i class="fas fa-arrow-right-arrow-left"></i>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e;">Потоки данных</div>
+                        <div style="font-size: 10px; color: #6c757d; margin-top: 2px;">Передача данных</div>
+                    </div>
+                    
+                    <!-- Граф вызовов -->
+                    <div class="diagram-type-card" data-type="callgraph" onclick="selectDiagramTypeCard('callgraph')" style="
+                        border: 2px solid #e5e7eb;
+                        border-radius: 12px;
+                        padding: 16px 12px;
+                        text-align: center;
+                        cursor: pointer;
+                        transition: all 0.25s ease;
+                        background: white;
+                    ">
+                        <div style="font-size: 28px; color: #8B5CF6; margin-bottom: 6px;">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e;">Граф вызовов</div>
+                        <div style="font-size: 10px; color: #6c757d; margin-top: 2px;">Функции и связи</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ -->
+            <div style="margin-bottom: 20px; padding: 16px; background: #f8f9fa; border-radius: 10px; border: 1px dashed #e5e7eb;">
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <span style="font-size: 13px; color: #4b5563; display: flex; align-items: center; gap: 4px;">
+                        <i class="fas fa-tag" style="color: #6c757d;"></i>
+                        <span>Показать:</span>
+                    </span>
+                    
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer;">
+                        <input type="checkbox" id="showFunctions" checked style="accent-color: #8B5CF6;">
+                        <i class="fas fa-code"></i> Функции
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer;">
+                        <input type="checkbox" id="showImports" checked style="accent-color: #8B5CF6;">
+                        <i class="fas fa-boxes"></i> Импорты
+                    </label>
+                    
+                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer;">
+                        <input type="checkbox" id="showCalls" checked style="accent-color: #8B5CF6;">
+                        <i class="fas fa-arrow-right"></i> Вызовы
+                    </label>
+                </div>
+            </div>
+            
+            <!-- КНОПКИ -->
+            <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <button onclick="closeProjectModal()" style="
+                    padding: 10px 24px;
+                    border: 1px solid #e5e7eb;
+                    border-radius: 8px;
+                    background: white;
+                    color: #6c757d;
+                    cursor: pointer;
+                    font-family: 'Ubuntu', sans-serif;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                ">
+                    <i class="fas fa-times"></i> Отмена
+                </button>
+                
+                <button id="buildDiagramBtn" onclick="buildSelectedDiagram()" style="
+                    padding: 10px 28px;
+                    border: none;
+                    border-radius: 8px;
+                    background: #8B5CF6;
+                    color: white;
+                    cursor: pointer;
+                    font-family: 'Ubuntu', sans-serif;
+                    font-size: 14px;
+                    font-weight: 500;
+                    transition: all 0.2s;
+                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+                " 
+                onmouseover="this.style.background='#7C3AED'"
+                onmouseout="this.style.background='#8B5CF6'">
+                    <i class="fas fa-play"></i> Построить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Стили -->
+<style>
+    .diagram-type-card:hover {
+        border-color: #8B5CF6 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+    }
+    
+    .diagram-type-card.selected {
+        border-color: #8B5CF6 !important;
+        background: #f5f3ff !important;
+        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
+    }
+    
+    @keyframes alertScaleIn {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>
 
     <script src="utils/sbom.js"></script>
     <script src="utils/cicd.js"></script>
@@ -540,6 +760,7 @@
     <script src="utils/contextMenu.js"></script>
     <script src="utils/actions.js"></script>    
     <script src="utils/visualization.js"></script> 
+    <script src="utils/prjVisualization.js"></script>
     <script src="utils/notify.js"></script>   
     <script src="utils/uml.js"></script>    
     <script src="palette.js"></script>
