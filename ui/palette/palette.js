@@ -1,7 +1,3 @@
-// ============================================================
-// ПАЛИТРА - КАСТОМНЫЙ АЛЕРТ
-// ============================================================
-
 var emptyState = null
 
 
@@ -2025,9 +2021,12 @@ window.deleteElement = function(id, event) {
 
 function addToolElement(tool, x, y) {
     var config = getToolConfig(tool);
-    if (!config) {
-        showCustomAlert('Ошибка', 'Инструмент не найден: ' + tool, 'error');
-        return null;
+    var templates = ['web-app', 'api', 'database', 'microservices', 'cloud', 'devops'];
+    
+    if (templates.includes(tool)) {
+        // Это шаблон — загружаем его
+        loadTemplateData(tool);
+        return ;
     }
     
     var id = ++elementIdCounter;
@@ -2283,56 +2282,81 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ============================================================
-    // Drag & Drop
-    // ============================================================
+// Drag & Drop
+// ============================================================
 
-    document.querySelectorAll('.element-library-item').forEach(function(item) {
-        item.addEventListener('dragstart', function(e) {
-            e.dataTransfer.setData('text/plain', this.dataset.type);
-            e.dataTransfer.effectAllowed = 'copy';
-        });
+// === СПИСОК ШАБЛОНОВ ===
+var templateList = ['web-app', 'api', 'database', 'microservices', 'cloud', 'devops'];
+
+document.querySelectorAll('.element-library-item').forEach(function(item) {
+    item.addEventListener('dragstart', function(e) {
+        e.dataTransfer.setData('text/plain', this.dataset.type);
+        e.dataTransfer.effectAllowed = 'copy';
+    });
+});
+
+// === ПЕРЕТАСКИВАНИЕ ДЛЯ ИНСТРУМЕНТОВ ===
+document.querySelectorAll('.flow-tool-item').forEach(function(item) {
+    item.addEventListener('dragstart', function(e) {
+        // Проверяем, есть ли data-template (шаблон)
+        var template = this.dataset.template;
+        if (template) {
+            // Это шаблон
+            e.dataTransfer.setData('text/plain', 'template:' + template);
+        } else {
+            // Это инструмент
+            var tool = this.dataset.tool;
+            e.dataTransfer.setData('text/plain', 'tool:' + tool);
+        }
+        e.dataTransfer.effectAllowed = 'copy';
+    });
+});
+
+if (canvas) {
+    canvas.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
     });
 
-    document.querySelectorAll('.flow-tool-item').forEach(function(item) {
-        item.addEventListener('dragstart', function(e) {
-            e.dataTransfer.setData('text/plain', 'tool:' + this.dataset.tool);
-            e.dataTransfer.effectAllowed = 'copy';
-        });
-    });
+    canvas.addEventListener('drop', function(e) {
+        e.preventDefault();
+        var data = e.dataTransfer.getData('text/plain');
+        if (!data) return;
 
-    if (canvas) {
-        canvas.addEventListener('dragover', function(e) {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'copy';
-        });
+        var rect = canvas.getBoundingClientRect();
+        var x = e.clientX - rect.left - 60;
+        var y = e.clientY - rect.top - 20;
 
-        canvas.addEventListener('drop', function(e) {
-            e.preventDefault();
-            var data = e.dataTransfer.getData('text/plain');
-            if (!data) return;
-
-            var rect = canvas.getBoundingClientRect();
-            var x = e.clientX - rect.left - 60;
-            var y = e.clientY - rect.top - 20;
-
-            if (data.startsWith('tool:')) {
-                var toolName = data.replace('tool:', '');
-                addToolElement(toolName, x, y);
-            } else {
-                addElement(data, x, y);
-            }
+        // === ОБРАБОТКА ШАБЛОНОВ ===
+        if (data.startsWith('template:')) {
+            var templateName = data.replace('template:', '');
+            loadTemplateData(templateName);
             if (emptyState) emptyState.classList.add('hidden');
-        });
+            return;
+        }
 
-        canvas.addEventListener('mousemove', function(e) {
-            if (!isConnecting) return;
+        // === ОБРАБОТКА ИНСТРУМЕНТОВ ===
+        if (data.startsWith('tool:')) {
+            var toolName = data.replace('tool:', '');
+            addToolElement(toolName, x, y);
+            if (emptyState) emptyState.classList.add('hidden');
+            return;
+        }
 
-            var rect = canvas.getBoundingClientRect();
-            var mouseX = e.clientX - rect.left;
-            var mouseY = e.clientY - rect.top;
-            updateDragLine(mouseX, mouseY);
-        });
-    }
+        // === ОБЫЧНЫЕ ЭЛЕМЕНТЫ ===
+        addElement(data, x, y);
+        if (emptyState) emptyState.classList.add('hidden');
+    });
+
+    canvas.addEventListener('mousemove', function(e) {
+        if (!isConnecting) return;
+
+        var rect = canvas.getBoundingClientRect();
+        var mouseX = e.clientX - rect.left;
+        var mouseY = e.clientY - rect.top;
+        updateDragLine(mouseX, mouseY);
+    });
+}
 
     // Глобальные обработчики
     document.addEventListener('mouseup', function(e) {

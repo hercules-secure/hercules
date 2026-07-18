@@ -501,7 +501,7 @@ window.selectProjectFolder = function() {
             }
             
             var ext = file.name.split('.').pop().toLowerCase();
-            var validExtensions = ['js', 'ts', 'py', 'java', 'go', 'rs', 'cpp', 'c', 'h', 'php', 'rb', 'cs', 'sh', 'jsx', 'tsx', 'vue', 'html', 'css', 'json', 'xml', 'yaml', 'yml', 'md', 'txt'];
+            var validExtensions = ['js', 'ts', 'py', 'java', 'go', 'rs', 'cpp', 'c', 'h', 'php', 'rb', 'cs', 'sh', 'jsx', 'tsx', 'vue', 'html', 'css', 'json', 'xml', 'yaml', 'yml', 'md', 'txt', 'conf'];
             
             if (validExtensions.indexOf(ext) === -1) {
                 continue;
