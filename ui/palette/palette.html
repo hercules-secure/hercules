@@ -74,29 +74,23 @@
             <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
             <div class="palette-topbar">
                 <div class="palette-topbar-left">
-                    <!-- <button class="source-btn active" data-source="empty">
-                        <i class="fas fa-plus-circle"></i> Новая
-                    </button> -->
-                    <button class="source-btn" data-source="template">
-                        <i class="fas fa-copy"></i> Шаблон
-                    </button>
+                    <div class="palette-elements-bar">
+                     <span class="elements-label">Визуализация:</span>
                      <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
-                        <i class="fas fa-code"></i> Код
+                        <i class="fas fa-code lib-icon"></i><span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Код</span>
                     </button>
                     <button onclick="openProjectModal()" class="source-btn" data-source="project">
-                       <i class="fas fa-folder"></i> Проект
+                       <i class="fas fa-folder lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Проект</span>
                      </button>
                     <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
-                        <i class="fas fa-file-code"></i> Загрузить SBOM
+                        <i class="fas fa-file-code lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">SBOM</span>
                     </button>
                     <button class="source-btn" data-source="ci" onclick="openYAMLModal()">
-                        <i class="fas fa-code-branch"></i>Загрузить CI/CD
+                        <i class="fas fa-code-branch lib-icon"></i><span class="element-library-item" style="cursor: pointer;padding-left: 1px;">CI/CD</span>
                     </button>
+                    </div>
                 </div>
                 <div class="palette-topbar-right">
-                    <!-- <button class="action-btn success" id="playBtn">
-                        <i class="fas fa-play"></i> Запустить
-                    </button> -->
                     <button class="action-btn" id="exportModelBtn">
                         <i class="fas fa-download"></i> Экспорт
                     </button>
@@ -107,43 +101,14 @@
                         <i class="fas fa-trash"></i> Очистить
                     </button>
                 </div>
-
-                <!-- КОНТЕЙНЕРЫ ИСТОЧНИКОВ -->
-                <!-- <div id="empty-source" class="source-content-palette active">
-                    <div class="hint"><i class="fas fa-info-circle"></i> Пустой холст</div>
-                </div> -->
-
-                <div id="json-source" class="source-content-palette">
-                    <div class="input-group">
-                        <input type="file" id="jsonFileInput" accept=".json">
-                        <button class="start-btn" id="loadJsonBtn">
-                            <i class="fas fa-upload"></i> Загрузить
-                        </button>
-                    </div>
-                </div>
-
-                <div id="template-source" class="source-content-palette">
-                    <div class="input-group">
-                        <select id="templateSelect">
-                            <option value="">Выберите шаблон...</option>
-                            <option value="web-app">Веб-приложение</option>
-                            <option value="api">API сервис</option>
-                            <option value="database">База данных</option>
-                            <option value="microservices">Микросервисы</option>
-                            <option value="cloud">Облачная инфраструктура</option>
-                        </select>
-                        <button class="start-btn" id="loadTemplateBtn">
-                            <i class="fas fa-download"></i> Загрузить
-                        </button>
-                    </div>
-                </div>
             </div>
 
             <!-- ЭЛЕМЕНТЫ НАД ХОЛСТОМ (ПЕРЕНЕСЕНЫ ИЗ ПРАВОЙ ПАНЕЛИ) -->
             <div class="palette-elements-bar">
+                <span class="elements-label">Моделирование:</span>
                 <div class="palette-elements-group">
                     <div class="palette-elements-group">
-                    <span class="elements-label"><i class="fas fa-play-circle"></i> События:</span>
+                    <!-- <span class="elements-label"><i class="fas fa-play-circle"></i> События:</span> -->
                     <div class="element-library-item event" draggable="true" data-type="event-start">
                         <span class="lib-icon"><i class="fas fa-play-circle"></i></span>
                         Старт
@@ -162,7 +127,7 @@
                     </div> -->
                 <div class="palette-elements-divider"></div>
                 </div>
-                    <span class="elements-label" style="margin-left: 5px;"><i class="fas fa-cubes"></i> Элементы:</span>
+                    <!-- <span class="elements-label" style="margin-left: 5px;"><i class="fas fa-cubes"></i> Элементы:</span> -->
                     <div class="element-library-item" draggable="true" data-type="asset">
                         <span class="lib-icon"><i class="fas fa-puzzle-piece"></i></span>
                         Компонент
@@ -186,7 +151,7 @@
                 </div>
                 <div class="palette-elements-divider"></div>
                 <div class="palette-elements-group">
-                    <span class="elements-label"><i class="fas fa-code-fork"></i>Шлюзы:</span>
+                    <!-- <span class="elements-label"><i class="fas fa-code-fork"></i>Шлюзы:</span> -->
                     <div class="element-library-item gate" draggable="true" data-type="gate-or">
                         <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
                         ИЛИ
@@ -198,7 +163,7 @@
                 </div>
                 <div class="palette-elements-divider"></div>
                 <div class="palette-elements-group">
-                    <span class="elements-label"><i class="fas fa-tasks"></i> Задачи:</span>
+                    <!-- <span class="elements-label"><i class="fas fa-tasks"></i> Задачи:</span> -->
                     <div class="element-library-item gate" draggable="true" data-type="render">
                         <span class="lib-icon"><i class="fas fa-paint-brush"></i></span>
                         Рендер
@@ -278,6 +243,52 @@
                             </div>
                         </div>
                     </div>
+                    <div class="palette-tool-card">
+    <div class="card-title">
+        <i class="fas fa-copy"></i> Шаблоны
+    </div>
+            <div class="flow-tools-list">
+                <div class="flow-tool-item" draggable="true" data-template="web-app">
+                    <div class="tool-icon"><i class="fas fa-globe"></i></div>
+                    <div class="tool">
+                        <div class="tool-name">Веб-приложение</div>
+                    </div>
+                </div>
+                <div class="flow-tool-item" draggable="true" data-template="api">
+                    <div class="tool-icon"><i class="fas fa-plug"></i></div>
+                    <div class="tool">
+                        <div class="tool-name">API сервис</div>
+                    </div>
+                </div>
+                <div class="flow-tool-item" draggable="true" data-template="database">
+                    <div class="tool-icon"><i class="fas fa-database"></i></div>
+                    <div class="tool">
+                        <div class="tool-name">База данных</div>
+                    </div>
+                </div>
+                <div class="flow-tool-item" draggable="true" data-template="microservices">
+                    <div class="tool-icon"><i class="fas fa-cubes"></i></div>
+                    <div class="tool">
+                        <div class="tool-name">Микросервисы</div>
+                    </div>
+                </div>
+                <div class="flow-tool-item" draggable="true" data-template="cloud">
+                    <div class="tool-icon"><i class="fas fa-cloud"></i></div>
+                    <div class="tool">
+                        <div class="tool-name">Облачная инфраструктура</div>
+                    </div>
+                </div>
+                <div class="flow-tool-item" draggable="true" data-template="devops">
+                    <div class="tool-icon"><i class="fas fa-code-branch"></i></div>
+                    <div class="tool">
+                        <div class="tool-name">CI/CD пайплайн</div>
+                    </div>
+                </div>
+                <div class="hint">
+                    <i class="fas fa-info-circle"></i> Перетащите на холст для построения flow
+                </div>
+            </div>
+</div>
                 </div>
             </div>
         </div>
@@ -762,7 +773,7 @@
     <script src="utils/visualization.js"></script> 
     <script src="utils/prjVisualization.js"></script>
     <script src="utils/notify.js"></script>   
-    <script src="utils/uml.js"></script>    
+    <script src="utils/uml.js"></script>  
     <script src="palette.js"></script>
     <script src="client.js"></script>
     <script src="utils/utils.js"></script>
@@ -849,7 +860,7 @@
         background: #fafafa;
         position: relative;
     ">
-        <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc" style="
+        <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc, .ts, .tsx" style="
             position: absolute;
             top: 0;
             left: 0;

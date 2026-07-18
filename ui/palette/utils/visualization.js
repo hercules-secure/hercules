@@ -7,12 +7,6 @@ var selectedCodeFile = null;
 var selectedDiagramType = 'dependency';
 var selectedSourceType = 'file';
 
-// ============================================================
-// 1. ОСНОВНАЯ ФУНКЦИЯ ПАРСИНГА
-// ============================================================
-// Принимает код и расширение файла, возвращает структуру с функциями, вызовами и импортами
-// ============================================================
-
 function parseCodeForCallGraph(code, ext) {
     var result = {
         functions: [],
@@ -977,60 +971,109 @@ function findCurrentClass(code, index) {
     return lastClass;
 }
 
-
-// ============================================================
-// 11. ПАРСИНГ ИМПОРТОВ (ЗАВИСИМОСТЕЙ) - ВСЕ ЯЗЫКИ
-// ============================================================
-// Находит импорты/зависимости в коде
+    
+// // ============================================================
+// ИСПРАВЛЕННАЯ ФУНКЦИЯ ПАРСИНГА ИМПОРТОВ
+// Поддерживает: .ts, .tsx, .js, .jsx, .mjs, .cjs
 // ============================================================
 
 function parseImports(code, lang) {
     var imports = [];
     
+    // Нормализуем язык
+    var normalizedLang = lang.toLowerCase();
+    
     // ============================================================
-    // JAVASCRIPT / TYPESCRIPT
+    // JAVASCRIPT / TYPESCRIPT (включая .tsx, .jsx, .mjs, .cjs)
     // ============================================================
-    if (lang === 'js' || lang === 'javascript' || lang === 'ts' || lang === 'typescript' || 
-        lang === 'jsx' || lang === 'tsx') {
+    if (normalizedLang === 'js' || normalizedLang === 'javascript' || 
+        normalizedLang === 'ts' || normalizedLang === 'typescript' ||
+        normalizedLang === 'jsx' || normalizedLang === 'tsx' ||
+        normalizedLang === 'mjs' || normalizedLang === 'cjs') {
         
-        // import ... from '...'
-        var importRegex = /import\s+(?:{([^}]+)}|(\w+))\s+from\s+['"]([^'"]+)['"]/g;
+        // console.log('[parseImports] Парсинг JS/TS файла, язык:', normalizedLang);
+        
+        // 1. import ... from '...'
+        var importRegex = /import\s+(?:{([^}]+)}|(\w+)|(?:(\w+)\s+as\s+(\w+))|(?:\*\s+as\s+(\w+)))\s+from\s+['"]([^'"]+)['"]/g;
         var match;
         while ((match = importRegex.exec(code)) !== null) {
             var items = [];
+            var modulePath = match[6] || match[5] || '';
+            var importType = 'named';
+            
+            if (match[1]) {
+                // import { a, b } from 'module'
+                items = match[1].split(',').map(function(i) { return i.trim(); });
+                importType = 'named';
+            } else if (match[2]) {
+                // import Default from 'module'
+                items = [match[2]];
+                importType = 'default';
+            } else if (match[3] && match[4]) {
+                // import Default as Alias from 'module'
+                items = [match[3] + ' as ' + match[4]];
+                importType = 'default-alias';
+            } else if (match[5]) {
+                // import * as Alias from 'module'
+                items = ['* as ' + match[5]];
+                importType = 'star';
+            }
+            
+            if (modulePath) {
+                var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
+                imports.push({
+                    module: modulePath,
+                    items: items,
+                    type: importType,
+                    isLocal: isLocal,
+                    isExternal: !isLocal,
+                    language: 'javascript',
+                    raw: match[0]
+                });
+            }
+        }
+        
+        // 2. import 'module' (side-effect import)
+        var sideEffectRegex = /import\s+['"]([^'"]+)['"]/g;
+        while ((match = sideEffectRegex.exec(code)) !== null) {
+            var modulePath = match[1];
+            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
+            imports.push({
+                module: modulePath,
+                items: ['*'],
+                type: 'side-effect',
+                isLocal: isLocal,
+                isExternal: !isLocal,
+                language: 'javascript',
+                raw: match[0]
+            });
+        }
+        
+        // 3. import type { ... } from '...' (TypeScript)
+        var typeImportRegex = /import\s+type\s+(?:{([^}]+)}|(\w+))\s+from\s+['"]([^'"]+)['"]/g;
+        while ((match = typeImportRegex.exec(code)) !== null) {
+            var items = [];
+            var modulePath = match[3] || '';
             if (match[1]) {
                 items = match[1].split(',').map(function(i) { return i.trim(); });
             } else if (match[2]) {
                 items = [match[2]];
             }
-            var modulePath = match[3];
-            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
-            imports.push({
-                module: modulePath,
-                items: items,
-                type: 'named',
-                isLocal: isLocal,
-                isExternal: !isLocal,
-                language: 'javascript'
-            });
+            if (modulePath) {
+                var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
+                imports.push({
+                    module: modulePath,
+                    items: items,
+                    type: 'type-import',
+                    isLocal: isLocal,
+                    isExternal: !isLocal,
+                    language: 'typescript',
+                    raw: match[0]
+                });
+            }
         }
         
-        // import * as ... from '...'
-        var starRegex = /import\s+\*\s+as\s+(\w+)\s+from\s+['"]([^'"]+)['"]/g;
-        while ((match = starRegex.exec(code)) !== null) {
-            var modulePath = match[2];
-            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
-            imports.push({
-                module: modulePath,
-                items: [match[1]],
-                type: 'star',
-                isLocal: isLocal,
-                isExternal: !isLocal,
-                language: 'javascript'
-            });
-        }
-        
-        // require('...')
+        // 4. require('...')
         var requireRegex = /require\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
         while ((match = requireRegex.exec(code)) !== null) {
             var modulePath = match[1];
@@ -1041,15 +1084,40 @@ function parseImports(code, lang) {
                 type: 'require',
                 isLocal: isLocal,
                 isExternal: !isLocal,
-                language: 'javascript'
+                language: 'javascript',
+                raw: match[0]
             });
+        }
+        
+        // 5. export ... from '...'
+        var exportRegex = /export\s+(?:{([^}]+)}|(\w+))\s+from\s+['"]([^'"]+)['"]/g;
+        while ((match = exportRegex.exec(code)) !== null) {
+            var items = [];
+            var modulePath = match[3] || '';
+            if (match[1]) {
+                items = match[1].split(',').map(function(i) { return i.trim(); });
+            } else if (match[2]) {
+                items = [match[2]];
+            }
+            if (modulePath) {
+                var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
+                imports.push({
+                    module: modulePath,
+                    items: items,
+                    type: 'export-from',
+                    isLocal: isLocal,
+                    isExternal: !isLocal,
+                    language: 'javascript',
+                    raw: match[0]
+                });
+            }
         }
     }
     
     // ============================================================
     // PYTHON
     // ============================================================
-    if (lang === 'py' || lang === 'python') {
+    if (normalizedLang === 'py' || normalizedLang === 'python') {
         // import module
         var importRegex = /import\s+(\w+)/g;
         var match;
@@ -1084,7 +1152,7 @@ function parseImports(code, lang) {
     // ============================================================
     // JAVA
     // ============================================================
-    if (lang === 'java') {
+    if (normalizedLang === 'java') {
         var importRegex = /import\s+([^;]+);/g;
         var match;
         while ((match = importRegex.exec(code)) !== null) {
@@ -1103,124 +1171,68 @@ function parseImports(code, lang) {
     // ============================================================
     // GO
     // ============================================================
-    // ============================================================
-// GO (.go)
-// ============================================================
-if (lang === 'go') {
-    // Обычный импорт: import "module"
-    var importRegex = /import\s+["']([^"']+)["']/g;
-    var match;
-    while ((match = importRegex.exec(code)) !== null) {
-        var modulePath = match[1];
-        var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-        imports.push({
-            module: modulePath,
-            items: ['*'],
-            type: 'import',
-            isLocal: isLocal,
-            isExternal: !isLocal,
-            language: 'go'
-        });
+    if (normalizedLang === 'go') {
+        // Обычный импорт: import "module"
+        var importRegex = /import\s+["']([^"']+)["']/g;
+        var match;
+        while ((match = importRegex.exec(code)) !== null) {
+            var modulePath = match[1];
+            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
+            imports.push({
+                module: modulePath,
+                items: ['*'],
+                type: 'import',
+                isLocal: isLocal,
+                isExternal: !isLocal,
+                language: 'go'
+            });
+        }
+        
+        // Импорт с алиасом: import alias "module"
+        var aliasRegex = /import\s+(\w+)\s+["']([^"']+)["']/g;
+        while ((match = aliasRegex.exec(code)) !== null) {
+            var alias = match[1];
+            var modulePath = match[2];
+            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
+            imports.push({
+                module: modulePath,
+                items: ['*'],
+                type: 'alias-import',
+                alias: alias,
+                isLocal: isLocal,
+                isExternal: !isLocal,
+                language: 'go'
+            });
+        }
+        
+        // Блочный импорт: import ( "module1" "module2" )
+        var blockRegex = /import\s*\(\s*([^)]+)\s*\)/g;
+        while ((match = blockRegex.exec(code)) !== null) {
+            var lines = match[1].split('\n');
+            lines.forEach(function(line) {
+                line = line.trim();
+                if (!line) return;
+                var normalMatch = line.match(/["']([^"']+)["']/);
+                if (normalMatch) {
+                    var modulePath = normalMatch[1];
+                    var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
+                    imports.push({
+                        module: modulePath,
+                        items: ['*'],
+                        type: 'import',
+                        isLocal: isLocal,
+                        isExternal: !isLocal,
+                        language: 'go'
+                    });
+                }
+            });
+        }
     }
-    
-    // Импорт с точкой: import . "module"
-    var dotRegex = /import\s+\.\s+["']([^"']+)["']/g;
-    while ((match = dotRegex.exec(code)) !== null) {
-        var modulePath = match[1];
-        var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-        imports.push({
-            module: modulePath,
-            items: ['*'],
-            type: 'dot-import',
-            isLocal: isLocal,
-            isExternal: !isLocal,
-            language: 'go',
-            isDotImport: true  // помечаем, что это импорт с точкой
-        });
-    }
-    
-    // Импорт с алиасом: import alias "module"
-    var aliasRegex = /import\s+(\w+)\s+["']([^"']+)["']/g;
-    while ((match = aliasRegex.exec(code)) !== null) {
-        var alias = match[1];
-        var modulePath = match[2];
-        var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-        imports.push({
-            module: modulePath,
-            items: ['*'],
-            type: 'alias-import',
-            alias: alias,
-            isLocal: isLocal,
-            isExternal: !isLocal,
-            language: 'go'
-        });
-    }
-    
-    // Блочный импорт: import ( "module1" "module2" )
-    var blockRegex = /import\s*\(\s*([^)]+)\s*\)/g;
-    while ((match = blockRegex.exec(code)) !== null) {
-        var lines = match[1].split('\n');
-        lines.forEach(function(line) {
-            line = line.trim();
-            if (!line) return;
-            
-            // Проверяем на импорт с точкой
-            var dotMatch = line.match(/^\.\s+["']([^"']+)["']/);
-            if (dotMatch) {
-                var modulePath = dotMatch[1];
-                var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-                imports.push({
-                    module: modulePath,
-                    items: ['*'],
-                    type: 'dot-import',
-                    isLocal: isLocal,
-                    isExternal: !isLocal,
-                    language: 'go',
-                    isDotImport: true
-                });
-                return;
-            }
-            
-            // Проверяем на импорт с алиасом
-            var aliasMatch = line.match(/^(\w+)\s+["']([^"']+)["']/);
-            if (aliasMatch) {
-                var alias = aliasMatch[1];
-                var modulePath = aliasMatch[2];
-                var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-                imports.push({
-                    module: modulePath,
-                    items: ['*'],
-                    type: 'alias-import',
-                    alias: alias,
-                    isLocal: isLocal,
-                    isExternal: !isLocal,
-                    language: 'go'
-                });
-                return;
-            }
-            
-            // Обычный импорт
-            var normalMatch = line.match(/["']([^"']+)["']/);
-            if (normalMatch) {
-                var modulePath = normalMatch[1];
-                var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-                imports.push({
-                    module: modulePath,
-                    items: ['*'],
-                    type: 'import',
-                    isLocal: isLocal,
-                    isExternal: !isLocal,
-                    language: 'go'
-                });
-            }
-        });
-    }
-}
     
     // ============================================================
     // RUST
     // ============================================================
-    if (lang === 'rs' || lang === 'rust') {
+    if (normalizedLang === 'rs' || normalizedLang === 'rust') {
         var useRegex = /use\s+([^;]+);/g;
         var match;
         while ((match = useRegex.exec(code)) !== null) {
@@ -1238,9 +1250,77 @@ if (lang === 'go') {
     }
     
     // ============================================================
+    // PHP
+    // ============================================================
+    if (normalizedLang === 'php') {
+        var useRegex = /use\s+([^;]+);/g;
+        var match;
+        while ((match = useRegex.exec(code)) !== null) {
+            var fullPath = match[1].trim();
+            var alias = null;
+            var className = fullPath;
+            
+            var asMatch = fullPath.match(/^(.+?)\s+as\s+(\w+)$/);
+            if (asMatch) {
+                className = asMatch[1].trim();
+                alias = asMatch[2].trim();
+            }
+            
+            var isLocal = fullPath.startsWith('App\\') || 
+                          fullPath.startsWith('My\\') || 
+                          fullPath.startsWith('src\\') ||
+                          fullPath.startsWith('app\\');
+            
+            imports.push({
+                module: className,
+                items: [alias || className.split('\\').pop()],
+                type: 'use',
+                alias: alias,
+                isLocal: isLocal,
+                isExternal: !isLocal,
+                language: 'php'
+            });
+        }
+        
+        var requireRegex = /require(?:_once)?\s+['"]([^'"]+)['"]/g;
+        while ((match = requireRegex.exec(code)) !== null) {
+            var modulePath = match[1];
+            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
+            imports.push({
+                module: modulePath,
+                items: ['*'],
+                type: 'require',
+                isLocal: isLocal,
+                isExternal: !isLocal,
+                language: 'php'
+            });
+        }
+    }
+    
+    // ============================================================
+    // RUBY
+    // ============================================================
+    if (normalizedLang === 'rb' || normalizedLang === 'ruby') {
+        var requireRegex = /require\s+['"]([^'"]+)['"]/g;
+        var match;
+        while ((match = requireRegex.exec(code)) !== null) {
+            var modulePath = match[1];
+            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
+            imports.push({
+                module: modulePath,
+                items: ['*'],
+                type: 'require',
+                isLocal: isLocal,
+                isExternal: !isLocal,
+                language: 'ruby'
+            });
+        }
+    }
+    
+    // ============================================================
     // C / C++
     // ============================================================
-    if (lang === 'c' || lang === 'cpp' || lang === 'h' || lang === 'hpp') {
+    if (normalizedLang === 'c' || normalizedLang === 'cpp' || normalizedLang === 'h' || normalizedLang === 'hpp') {
         var includeRegex = /#include\s+[<"]([^>"]+)[>"]/g;
         var match;
         while ((match = includeRegex.exec(code)) !== null) {
@@ -1260,7 +1340,7 @@ if (lang === 'go') {
     // ============================================================
     // C#
     // ============================================================
-    if (lang === 'cs' || lang === 'csharp') {
+    if (normalizedLang === 'cs' || normalizedLang === 'csharp') {
         var usingRegex = /using\s+([^;]+);/g;
         var match;
         while ((match = usingRegex.exec(code)) !== null) {
@@ -1277,123 +1357,9 @@ if (lang === 'go') {
     }
     
     // ============================================================
-    // PHP
-    // ============================================================
-    // ============================================================
-// PHP (.php) С ОТЛАДКОЙ
-// ============================================================
-if (lang === 'php') {
-
-    
-    // 1. Ищем use
-    var useRegex = /use\s+([^;]+);/g;
-    var match;
-    var useCount = 0;
-    
-    // Временно сохраняем код для отладки
-    var debugCode = code;
-    
-    while ((match = useRegex.exec(debugCode)) !== null) {
-        useCount++;
-        var fullPath = match[1].trim();
-
-        
-        var alias = null;
-        var className = fullPath;
-        
-        // Проверяем на алиас: use Namespace\Class as Alias;
-        var asMatch = fullPath.match(/^(.+?)\s+as\s+(\w+)$/);
-        if (asMatch) {
-            className = asMatch[1].trim();
-            alias = asMatch[2].trim();
-
-        }
-        
-        // Определяем, локальный это импорт или внешний
-        var isLocal = fullPath.startsWith('App\\') || 
-                      fullPath.startsWith('My\\') || 
-                      fullPath.startsWith('src\\') ||
-                      fullPath.startsWith('app\\');
-        
-        var isNamed = fullPath.includes('\\');
-        
-        imports.push({
-            module: className,
-            items: [alias || className.split('\\').pop()],
-            type: 'use',
-            alias: alias,
-            isLocal: isLocal,
-            isExternal: !isLocal,
-            language: 'php',
-            fullPath: fullPath,
-            isNamed: isNamed
-        });
-    }
-
-    
-    // 2. Ищем require
-    var requireRegex = /require(?:_once)?\s+['"]([^'"]+)['"]/g;
-    var requireCount = 0;
-    while ((match = requireRegex.exec(code)) !== null) {
-        requireCount++;
-        var modulePath = match[1];
-
-        
-        var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..') || modulePath.startsWith('/');
-        imports.push({
-            module: modulePath,
-            items: ['*'],
-            type: 'require',
-            isLocal: isLocal,
-            isExternal: !isLocal,
-            language: 'php'
-        });
-    }
-
-    
-    // 3. Если ничего не найдено - проверяем код вручную
-    if (useCount === 0 && requireCount === 0) {
-
-        // Проверяем, есть ли вообще слово "use"
-        var hasUse = code.includes('use ');
-
-        
-        // if (hasUse) {
-        //     // Показываем все строки с "use"
-        //     var lines = code.split('\n');
-        //     lines.forEach(function(line, index) {
-        //         if (line.includes('use ')) {
-        //             console.log(`Строка ${index + 1}: ${line.trim()}`);
-        //         }
-        //     });
-        // }
-    }
-}
-    
-    // ============================================================
-    // RUBY
-    // ============================================================
-    if (lang === 'rb' || lang === 'ruby') {
-        var requireRegex = /require\s+['"]([^'"]+)['"]/g;
-        var match;
-        while ((match = requireRegex.exec(code)) !== null) {
-            var modulePath = match[1];
-            var isLocal = modulePath.startsWith('.') || modulePath.startsWith('..');
-            imports.push({
-                module: modulePath,
-                items: ['*'],
-                type: 'require',
-                isLocal: isLocal,
-                isExternal: !isLocal,
-                language: 'ruby'
-            });
-        }
-    }
-    
-    // ============================================================
     // SHELL / BASH
     // ============================================================
-    if (lang === 'sh' || lang === 'bash') {
+    if (normalizedLang === 'sh' || normalizedLang === 'bash') {
         var sourceRegex = /source\s+([^\s]+)/g;
         var match;
         while ((match = sourceRegex.exec(code)) !== null) {
@@ -1410,9 +1376,9 @@ if (lang === 'php') {
         }
     }
     
+    // console.log('[parseImports] Найдено импортов:', imports.length);
     return imports;
 }
-
 // ============================================================
 // 12. ВЫБОР ТИПА ДИАГРАММЫ
 // ============================================================
@@ -1492,7 +1458,7 @@ window.closeCodeFileModal = function() {
 // ============================================================
 // 15. ОБРАБОТЧИК ВЫБОРА ФАЙЛА
 // ============================================================
-// ============================================================
+
 
 window.handleFileSelect = function() {
     var fileInput = document.getElementById('codeFileInputModal');
@@ -1638,7 +1604,6 @@ function addCodeElement(fileName, content, ext) {
                     }
                     break;
                 case 'dependency':
-                            alert(selectedDiagramType)
 
                     if (typeof buildDependencyDiagram === 'function') {
 
@@ -2664,6 +2629,8 @@ function autoFitCanvas() {
 window.addEventListener('resize', function() {
     setTimeout(autoFitCanvas, 300);
 });
+
+
 
 // Экспортируем функции
 window.fitAllElements = fitAllElements;

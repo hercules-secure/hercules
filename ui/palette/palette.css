@@ -179,7 +179,7 @@
 .palette-topbar {
     display: flex;
     gap: 16px;
-    margin-bottom: 16px;
+    margin-bottom: 0px;
     flex-wrap: wrap;
     align-items: flex-start;
 }
@@ -202,7 +202,7 @@
 .source-btn {
     padding: 5px 12px;
     border-radius: 6px;
-    border: 2px solid #e5e7eb;
+    border: none;
     background: white;
     font-family: 'Ubuntu', sans-serif;
     font-size: 11px;
@@ -223,8 +223,8 @@
 
 .source-btn.active {
     border-color: #3B82F6;
-    background: #eff6ff;
-    color: #3B82F6;
+    background: white;
+    color: black;
 }
 
 .source-btn i {
@@ -455,7 +455,7 @@
 }
 
 .flow-tool-item .tool-name {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 500;
     color: #1a1a2e;
     font-family: 'Ubuntu', sans-serif;
@@ -1621,7 +1621,7 @@ border: 2px solid rgb(59, 130, 246); background: rgb(239, 246, 255);
             background: #ffffff;
             border: 1px solid #e5e7eb;
             border-radius: 8px;
-            width: 100%;
+            max-width: 100%;
             flex-wrap: wrap;
             margin: 8px 0 12px 0;
         }
