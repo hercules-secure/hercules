@@ -854,5 +854,3 @@ window.showToast = showToast;
 window.getSelectedMetlaTargets = getSelectedMetlaTargets;
 window.clearMetlaTargets = clearMetlaTargets;
 window.escapeHtml = escapeHtml;
-
-console.log('✅ modal.js: все функции зарегистрированы в window');
