@@ -1,16 +1,3 @@
 {
-  "records": [
-    {
-      "id": "1784709797423",
-      "tool": "fuzz",
-      "sourceType": "url",
-      "sourceName": "https://varikoz-nc.ru/wp-login.php",
-      "startTime": "2026-07-22T08:43:00.023Z",
-      "endTime": "2026-07-22T08:43:17.423Z",
-      "duration": 17400,
-      "reportId": "fuzz_1784709780023_9fnzmo",
-      "status": "success",
-      "error": null
-    }
-  ]
+  "records": []
 }
