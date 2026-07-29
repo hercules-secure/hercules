@@ -877,7 +877,7 @@ function generateScoutFullHTMLReport(result) {
         
         // DOM уязвимости
         html += '<div class="issues-header" style="margin-top: 20px;">DOM уязвимости</div>';
-        if (!dom || dom.length === 0) {
+        if (!domIssues || domIssues.length === 0) {
             html += '<div class="empty-state">DOM уязвимостей не обнаружено</div>';
         } else {
             html += `
