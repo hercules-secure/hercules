@@ -208,13 +208,6 @@ const renderCodeBlock = (item) => {
                 
                 <h4 style="margin: 20px 0 16px 0; color: #212529; font-size: 16px;">Критические и высокие уязвимости (${criticalHigh.length})</h4>
                 <div id="vulnerabilities-list">${criticalHighHtml}</div>
-                
-                ${issues.length === 0 ? `
-                    <div style="text-align: center; padding: 60px 20px; color: #6c757d;">
-                        <h2 style="font-size: 24px; margin-bottom: 12px;">✅ Уязвимостей не найдено</h2>
-                        <p>Анализ завершен успешно. Код соответствует требованиям безопасности.</p>
-                    </div>
-                ` : ''}
             </div>
             <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 12px; background: white;">
                 <button id="downloadHtmlBtn" class="btn-html" style="background: #6f42c1; color: white; border: none; font-family: Ubuntu; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s;" onmouseover="this.style.background='#5a32a3'" onmouseout="this.style.background='#6f42c1'">

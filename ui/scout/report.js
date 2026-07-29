@@ -191,64 +191,63 @@ function generateOsintHTML(osintData) {
     }
     html += `</div>`;
     
+    // Additional
     if (additional.length > 0) {
-    html += `<div style="margin-bottom:20px;">`;
-    html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
-    html += `<h4 style="margin:0; font-size:14px;">Может быть интересно (${additional.length})</h4>`;
-    html += `</div>`;
-    
-    // Группируем по типу
-    const grouped = {};
-    additional.forEach(item => {
-        const type = item.type || 'unknown';
-        if (!grouped[type]) grouped[type] = [];
-        grouped[type].push(item.value);
-    });
-    
-    const typeLabels = {
-        'name_ru': 'Русские имена',
-        'name_en': 'Английские имена',
-        'skype': 'Skype',
-        'zoom': 'Zoom',
-        'meet': 'Google Meet',
-        'teams': 'Microsoft Teams',
-        'ip': 'IP адреса',
-        'uuid': 'UUID',
-        'jwt': 'JWT токены',
-        'api_key': 'API ключи',
-        'bitcoin': 'Bitcoin'
-    };
-    
-    // Собираем все значения в одну таблицу
-    let allRows = '';
-    let rowIndex = 0;
-    
-    for (const [type, values] of Object.entries(grouped)) {
-        const label = typeLabels[type] || type;
-        for (const value of values) {
-            rowIndex++;
-            allRows += `
-                <tr>
-                    <td class="index-cell">${rowIndex}</td>
-                    <td><span style="background:#e9ecef; padding:2px 10px; border-radius:12px; font-size:11px;">${escapeHtml(label)}</span></td>
-                    <td><code style="background:#f8f9fa; padding:4px 8px; border-radius:4px; font-size:12px; word-break:break-all;">${escapeHtml(value)}</code></td>
-                </tr>
-            `;
+        html += `<div style="margin-bottom:20px;">`;
+        html += `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">`;
+        html += `<h4 style="margin:0; font-size:14px;">Может быть интересно (${additional.length})</h4>`;
+        html += `</div>`;
+        
+        const grouped = {};
+        additional.forEach(item => {
+            const type = item.type || 'unknown';
+            if (!grouped[type]) grouped[type] = [];
+            grouped[type].push(item.value);
+        });
+        
+        const typeLabels = {
+            'name_ru': 'Русские имена',
+            'name_en': 'Английские имена',
+            'skype': 'Skype',
+            'zoom': 'Zoom',
+            'meet': 'Google Meet',
+            'teams': 'Microsoft Teams',
+            'ip': 'IP адреса',
+            'uuid': 'UUID',
+            'jwt': 'JWT токены',
+            'api_key': 'API ключи',
+            'bitcoin': 'Bitcoin'
+        };
+        
+        let allRows = '';
+        let rowIndex = 0;
+        
+        for (const [type, values] of Object.entries(grouped)) {
+            const label = typeLabels[type] || type;
+            for (const value of values) {
+                rowIndex++;
+                allRows += `
+                    <tr>
+                        <td class="index-cell">${rowIndex}</td>
+                        <td><span style="background:#e9ecef; padding:2px 10px; border-radius:12px; font-size:11px;">${escapeHtml(label)}</span></td>
+                        <td><code style="background:#f8f9fa; padding:4px 8px; border-radius:4px; font-size:12px; word-break:break-all;">${escapeHtml(value)}</code></td>
+                    </tr>
+                `;
+            }
         }
+        
+        html += `
+            <table class="data-table sortable" id="additionalTable">
+                <thead>
+                    <tr><th style="width:50px;">#</th><th style="width:150px;">Тип</th><th>Значение</th></tr>
+                </thead>
+                <tbody>${allRows}</tbody>
+            </table>
+            <div class="table-footer">Всего записей: ${additional.length}</div>
+        `;
+        
+        html += `</div>`;
     }
-    
-    html += `
-        <table class="data-table sortable" id="additionalTable">
-            <thead>
-                <tr><th style="width:50px;">#</th><th style="width:150px;">Тип</th><th>Значение</th></tr>
-            </thead>
-            <tbody>${allRows}</tbody>
-        </table>
-        <div class="table-footer">Всего записей: ${additional.length}</div>
-    `;
-    
-    html += `</div>`;
-}
     
     return html;
 }
@@ -259,7 +258,36 @@ function generateOsintHTML(osintData) {
 
 function generateScoutFullHTMLReport(result) {
     const summary = result.summary || { critical: 0, high: 0, medium: 0, low: 0 };
-    const accessiblePaths = result.accessiblePaths || [];
+    
+    // ============================================================
+    // ОБРАБОТКА accessiblePaths ИЗ РАЗНЫХ ИСТОЧНИКОВ
+    // ============================================================
+    
+    let accessiblePaths = [];
+    
+    if (result.pages && Array.isArray(result.pages) && result.pages.length > 0) {
+        accessiblePaths = result.pages.map(page => {
+            let path = '';
+            try {
+                const url = new URL(page.url);
+                path = url.pathname + url.search + url.hash;
+            } catch (e) {
+                path = page.url;
+            }
+            return {
+                path: path || '/',
+                status: page.status || 200,
+                risk: 'info',
+                description: page.title || '',
+                url: page.url
+            };
+        });
+    } else if (result.accessiblePaths && Array.isArray(result.accessiblePaths)) {
+        accessiblePaths = result.accessiblePaths;
+    } else if (result.findings && result.findings.accessiblePaths && Array.isArray(result.findings.accessiblePaths)) {
+        accessiblePaths = result.findings.accessiblePaths;
+    }
+    
     const findings = result.findings || {};
     const tech = findings.tech || {};
     const secrets = findings.secrets || {};
@@ -268,7 +296,6 @@ function generateScoutFullHTMLReport(result) {
     const mobile = findings.mobile || {};
     const performance = findings.performance || {};
     const subdomainsData = findings.subdomains || {};
-    // const apiFromJS = findings.apiFromJS || {}; // УДАЛЕНО - API делает другой инструмент
     const headers = findings.headers || {};
     const cookies = findings.cookies || {};
     const ssl = findings.ssl || {};
@@ -276,12 +303,21 @@ function generateScoutFullHTMLReport(result) {
     const robots = findings.robots || {};
     const sitemap = findings.sitemap || {};
     const links = findings.links || {};
-    const dom = findings.dom || [];
-    const s3 = findings.s3 || { issues: [] }; // ← ДОБАВЛЕНО
     
-    // ============================================================
-    // ПАРСИНГ OSINT
-    // ============================================================
+    // Безопасное получение DOM
+    let dom = [];
+    if (findings.dom) {
+        if (Array.isArray(findings.dom)) {
+            dom = findings.dom;
+        } else if (typeof findings.dom === 'object') {
+            dom = findings.dom.issues || findings.dom.items || findings.dom.data || [];
+            if (!Array.isArray(dom)) {
+                dom = [];
+            }
+        }
+    }
+    
+    const s3 = findings.s3 || { issues: [] };
     
     const osint = result.osint || { 
         emails: [], 
@@ -297,10 +333,6 @@ function generateScoutFullHTMLReport(result) {
             isHR: false 
         } 
     };
-    
-    // ============================================================
-    // ПАРСИНГ ПОЛЬЗОВАТЕЛЕЙ
-    // ============================================================
     
     const users = tech.users || [];
     const detectedCMS = tech.detectedCMS || null;
@@ -347,7 +379,6 @@ function generateScoutFullHTMLReport(result) {
             const path = item.path || '';
             const lowerPath = path.toLowerCase();
             
-            // API исключаем - это делает другой инструмент
             if (lowerPath.includes('/api/') || lowerPath.startsWith('/api')) {
                 return;
             }
@@ -376,7 +407,7 @@ function generateScoutFullHTMLReport(result) {
     const groups = groupPathsByType(accessiblePaths);
     
     // ============================================================
-    // ТАБЛИЦА СУБДОМЕНОВ (БЕЗ IP)
+    // ТАБЛИЦА СУБДОМЕНОВ
     // ============================================================
     
     const subdomainsTable = () => {
@@ -410,7 +441,7 @@ function generateScoutFullHTMLReport(result) {
     };
     
     // ============================================================
-    // ТАБЛИЦА IP АДРЕСОВ (БЕЗ ДОМЕНОВ)
+    // ТАБЛИЦА IP АДРЕСОВ
     // ============================================================
     
     const ipsTable = () => {
@@ -521,7 +552,10 @@ function generateScoutFullHTMLReport(result) {
         `;
     };
     
-    // Таблица директорий
+    // ============================================================
+    // ТАБЛИЦА ДИРЕКТОРИЙ
+    // ============================================================
+    
     const directoriesTable = () => {
         if (groups.directories.length === 0 && groups.admin.length === 0) {
             return '<div class="empty-state">Директории не обнаружены</div>';
@@ -551,7 +585,10 @@ function generateScoutFullHTMLReport(result) {
         `;
     };
     
-    // Таблица файлов
+    // ============================================================
+    // ТАБЛИЦА ФАЙЛОВ
+    // ============================================================
+    
     const filesTable = () => {
         if (groups.files.length === 0) {
             return '<div class="empty-state">Файлы не обнаружены</div>';
@@ -581,7 +618,10 @@ function generateScoutFullHTMLReport(result) {
         `;
     };
     
-    // Таблица всех путей
+    // ============================================================
+    // ТАБЛИЦА ВСЕХ ПУТЕЙ
+    // ============================================================
+    
     const allPathsTable = () => {
         if (accessiblePaths.length === 0) {
             return '<div class="empty-state">Пути не обнаружены</div>';
@@ -589,13 +629,15 @@ function generateScoutFullHTMLReport(result) {
         
         const rows = accessiblePaths.map((item, idx) => {
             const risk = item.risk || 'info';
+            const displayPath = item.path || '/';
+            const displayUrl = item.url || baseUrl + displayPath;
             return `
                 <tr data-risk="${risk}">
                     <td class="index-cell">${idx + 1}</td>
-                    <td><a href="${baseUrl}${escapeHtml(item.path)}" target="_blank"><code>${escapeHtml(item.path)}</code></a></td>
+                    <td><a href="${escapeHtml(displayUrl)}" target="_blank"><code>${escapeHtml(displayPath)}</code></a></td>
                     <td style="text-align:center">${item.status || '?'}</td>
                     <td><span class="risk-badge" style="background:${riskColors[risk]}">${riskNames[risk]}</span></td>
-                    <td class="truncate">${escapeHtml(item.recommendation || '—')}</td>
+                    <td class="truncate">${escapeHtml(item.description || '—')}</td>
                 </tr>
             `;
         }).join('');
@@ -610,21 +652,38 @@ function generateScoutFullHTMLReport(result) {
         `;
     };
     
-    // Таблица проблем безопасности
+    // ============================================================
+    // ТАБЛИЦА ПРОБЛЕМ БЕЗОПАСНОСТИ (С КОЛОНКОЙ "СТРАНИЦА")
+    // ============================================================
+    
     const securityTable = () => {
         let html = '';
         
+        // Заголовки безопасности
         if (headers.issues && headers.issues.length > 0) {
             html += '<div class="issues-header">Заголовки безопасности</div>';
             html += `
                 <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>Проблема</th><th style="width:100px">Риск</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Проблема</th>
+                            <th style="width:100px">Риск</th>
+                            <th style="min-width:200px;">Страница</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${headers.issues.map((issue, idx) => `
                             <tr>
                                 <td class="index-cell">${idx + 1}</td>
-                                <td>${escapeHtml(issue.message)}${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}</td>
+                                <td>
+                                    ${escapeHtml(issue.message)}
+                                    ${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}
+                                </td>
                                 <td class="risk-cell risk-${issue.severity}">${riskNames[issue.severity] || 'Информационный'}</td>
+                                <td style="font-size:11px;">
+                                    ${issue.url ? `<a href="${escapeHtml(issue.url)}" target="_blank" style="color:#667eea;">${escapeHtml(issue.url)}</a>` : '—'}
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -632,17 +691,31 @@ function generateScoutFullHTMLReport(result) {
             `;
         }
         
+        // Cookies
         if (cookies.issues && cookies.issues.length > 0) {
             html += '<div class="issues-header">Cookies безопасность</div>';
             html += `
                 <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>Проблема</th><th style="width:100px">Риск</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Проблема</th>
+                            <th style="width:100px">Риск</th>
+                            <th style="min-width:200px;">Страница</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${cookies.issues.map((issue, idx) => `
                             <tr>
                                 <td class="index-cell">${idx + 1}</td>
-                                <td>${escapeHtml(issue.message)}${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}</td>
+                                <td>
+                                    ${escapeHtml(issue.message)}
+                                    ${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}
+                                </td>
                                 <td class="risk-cell risk-${issue.severity}">${riskNames[issue.severity] || 'Информационный'}</td>
+                                <td style="font-size:11px;">
+                                    ${issue.url ? `<a href="${escapeHtml(issue.url)}" target="_blank" style="color:#667eea;">${escapeHtml(issue.url)}</a>` : '—'}
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -650,17 +723,31 @@ function generateScoutFullHTMLReport(result) {
             `;
         }
         
+        // SSL/TLS
         if (ssl.issues && ssl.issues.length > 0) {
             html += '<div class="issues-header">SSL/TLS</div>';
             html += `
                 <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>Проблема</th><th style="width:100px">Риск</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Проблема</th>
+                            <th style="width:100px">Риск</th>
+                            <th style="min-width:200px;">Страница</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${ssl.issues.map((issue, idx) => `
                             <tr>
                                 <td class="index-cell">${idx + 1}</td>
-                                <td>${escapeHtml(issue.message)}${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}</td>
+                                <td>
+                                    ${escapeHtml(issue.message)}
+                                    ${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}
+                                </td>
                                 <td class="risk-cell risk-${issue.severity}">${riskNames[issue.severity] || 'Информационный'}</td>
+                                <td style="font-size:11px;">
+                                    ${issue.url ? `<a href="${escapeHtml(issue.url)}" target="_blank" style="color:#667eea;">${escapeHtml(issue.url)}</a>` : '—'}
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -668,23 +755,34 @@ function generateScoutFullHTMLReport(result) {
             `;
         }
         
-        if (ports.issues && ports.issues.length > 0) {
-            html += '<div class="issues-header">Открытые порты</div>';
-            html += `
-                <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>Порт</th><th style="width:100px">Риск</th></tr></thead>
-                    <tbody>
-                        ${ports.issues.map((port, idx) => `
-                            <tr>
-                                <td class="index-cell">${idx + 1}</td>
-                                <td>${escapeHtml(port.message)}</td>
-                                <td class="risk-cell risk-${port.severity}">${riskNames[port.severity] || 'Низкий'}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
-            `;
-        }
+        // Открытые порты
+        // if (ports.issues && ports.issues.length > 0) {
+        //     html += '<div class="issues-header">Открытые порты</div>';
+        //     html += `
+        //         <table class="data-table">
+        //             <thead>
+        //                 <tr>
+        //                     <th style="width:50px">#</th>
+        //                     <th>Порт</th>
+        //                     <th style="width:100px">Риск</th>
+        //                     <th style="min-width:200px;">Страница</th>
+        //                 </tr>
+        //             </thead>
+        //             <tbody>
+        //                 ${ports.issues.map((port, idx) => `
+        //                     <tr>
+        //                         <td class="index-cell">${idx + 1}</td>
+        //                         <td>${escapeHtml(port.message)}</td>
+        //                         <td class="risk-cell risk-${port.severity}">${riskNames[port.severity] || 'Низкий'}</td>
+        //                         <td style="font-size:11px;">
+        //                             ${port.url ? `<a href="${escapeHtml(port.url)}" target="_blank" style="color:#667eea;">${escapeHtml(port.pageTitle || port.url)}</a>` : '—'}
+        //                         </td>
+        //                     </tr>
+        //                 `).join('')}
+        //             </tbody>
+        //         </table>
+        //     `;
+        // }
         
         if (html === '') {
             return '<div class="empty-state">Проблем безопасности не обнаружено</div>';
@@ -693,7 +791,10 @@ function generateScoutFullHTMLReport(result) {
         return html;
     };
     
-    // Таблица структуры
+    // ============================================================
+    // ТАБЛИЦА СТРУКТУРЫ
+    // ============================================================
+    
     const structureTable = () => {
         let html = '';
         
@@ -735,10 +836,14 @@ function generateScoutFullHTMLReport(result) {
         return html;
     };
     
-    // Таблица всех проблем
+    // ============================================================
+    // ТАБЛИЦА ВСЕХ ПРОБЛЕМ (С КОЛОНКОЙ "СТРАНИЦА")
+    // ============================================================
+    
     const allIssuesTable = () => {
         let html = '';
         
+        // Битые ссылки
         html += '<div class="issues-header">Битые ссылки</div>';
         if (!links.brokenLinks || links.brokenLinks.length === 0) {
             html += '<div class="empty-state">Битых ссылок не обнаружено</div>';
@@ -746,13 +851,23 @@ function generateScoutFullHTMLReport(result) {
             html += `<div class="stats-info">Всего битых ссылок: ${links.brokenLinks.length}</div>`;
             html += `
                 <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>URL</th><th style="width:80px">Статус</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>URL</th>
+                            <th style="width:80px">Статус</th>
+                            <th style="min-width:200px;">Страница</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${links.brokenLinks.slice(0, 50).map((link, idx) => `
                             <tr>
                                 <td class="index-cell">${idx + 1}</td>
                                 <td class="truncate"><a href="${escapeHtml(link.url)}" target="_blank">${escapeHtml(link.url)}</a></td>
                                 <td class="status-cell status-${link.status === 'timeout' ? 'timeout' : link.status}">${link.status}</td>
+                                <td style="font-size:11px;">
+                                    ${link.pageUrl ? `<a href="${escapeHtml(link.pageUrl)}" target="_blank" style="color:#667eea;">${escapeHtml(link.pageUrl)}</a>` : '—'}
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -761,37 +876,99 @@ function generateScoutFullHTMLReport(result) {
             `;
         }
         
+        // DOM уязвимости
         html += '<div class="issues-header" style="margin-top: 20px;">DOM уязвимости</div>';
         if (!dom || dom.length === 0) {
             html += '<div class="empty-state">DOM уязвимостей не обнаружено</div>';
         } else {
             html += `
                 <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>Уязвимость</th><th style="width:100px">Риск</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Уязвимость</th>
+                            <th style="width:100px">Риск</th>
+                            <th style="min-width:200px;">Страница</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        ${dom.map((item, idx) => `
-                            <tr>
-                                <td class="index-cell">${idx + 1}</td>
-                                <td>${escapeHtml(item.message)}${item.remediation ? `<div class="issue-remediation">${escapeHtml(item.remediation)}</div>` : ''}</td>
-                                <td class="risk-cell risk-${item.severity}">${riskNames[item.severity] || 'Информационный'}</td>
-                            </tr>
-                        `).join('')}
+                        ${domIssues.map((item, idx) => {
+                            // Если есть result и это массив - показываем все элементы
+                            if (item.result && Array.isArray(item.result) && item.result.length > 0) {
+                                return item.result.map((vuln, subIdx) => {
+                                    const name = vuln.message || vuln.title || vuln.name || vuln.description || vuln.text || vuln.issue || vuln.type || 'DOM уязвимость';
+                                    const remediation = vuln.remediation || vuln.fix || vuln.solution || vuln.recommendation || '';
+                                    const severity = vuln.severity || vuln.risk || vuln.level || 'info';
+                                    const url = vuln.url || item.url || '';
+                                    const pageTitle = vuln.pageTitle || item.title || url;
+                                    
+                                    return `
+                                        <tr>
+                                            <td class="index-cell">${idx + 1}.${subIdx + 1}</td>
+                                            <td>
+                                                <strong>${escapeHtml(name)}</strong>
+                                                ${remediation ? `<div class="issue-remediation">${escapeHtml(remediation)}</div>` : ''}
+                                            </td>
+                                            <td class="risk-cell risk-${severity}">${riskNames[severity] || 'Информационный'}</td>
+                                            <td style="font-size:11px;">
+                                                ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:#667eea;">${escapeHtml(url)}</a>` : '—'}
+                                            </td>
+                                        </tr>
+                                    `;
+                                }).join('');
+                            } else {
+                                // Если нет result - показываем сам item
+                                const name = item.message || item.title || item.name || item.description || item.text || item.issue || item.type || 'DOM уязвимость';
+                                const remediation = item.remediation || item.fix || item.solution || item.recommendation || '';
+                                const severity = item.severity || item.risk || item.level || 'info';
+                                const url = item.url || item.pageUrl || '';
+                                const pageTitle = item.pageTitle || item.title || url;
+                                
+                                return `
+                                    <tr>
+                                        <td class="index-cell">${idx + 1}</td>
+                                        <td>
+                                            <strong>${escapeHtml(name)}</strong>
+                                            ${remediation ? `<div class="issue-remediation">💡 ${escapeHtml(remediation)}</div>` : ''}
+                                        </td>
+                                        <td class="risk-cell risk-${severity}">${riskNames[severity] || 'Информационный'}</td>
+                                        <td style="font-size:11px;">
+                                            ${url ? `<a href="${escapeHtml(url)}" target="_blank" style="color:#667eea;">${escapeHtml(url)}</a>` : '—'}
+                                        </td>
+                                    </tr>
+                                `;
+                            }
+                        }).join('')}
                     </tbody>
                 </table>
             `;
         }
         
+        // WCAG проблемы
         if (wcag.issues && wcag.issues.length > 0) {
             html += '<div class="issues-header" style="margin-top: 20px;">WCAG проблемы доступности</div>';
             html += `
                 <table class="data-table">
-                    <thead><tr><th style="width:50px">#</th><th>Проблема</th><th style="width:100px">Риск</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th style="width:50px">#</th>
+                            <th>Проблема</th>
+                            <th style="width:100px">Риск</th>
+                            <th style="min-width:200px;">Страница</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         ${wcag.issues.map((issue, idx) => `
                             <tr>
                                 <td class="index-cell">${idx + 1}</td>
-                                <td>${escapeHtml(issue.message)}${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}</td>
+                                <td>
+                                    ${escapeHtml(issue.message)}
+                                    ${issue.remediation ? `<div class="issue-remediation">${escapeHtml(issue.remediation)}</div>` : ''}
+                                </td>
                                 <td class="risk-cell risk-${issue.severity}">${riskNames[issue.severity] || 'Информационный'}</td>
+                                <td style="font-size:11px;">
+                                    ${issue.url ? `<a href="${escapeHtml(issue.url)}" target="_blank" style="color:#667eea;">${escapeHtml(issue.url)}</a>` : '—'}
+                                </td>
                             </tr>
                         `).join('')}
                     </tbody>
@@ -834,7 +1011,7 @@ function generateScoutFullHTMLReport(result) {
     };
     
     // ============================================================
-    // СТАТИСТИКА (С S3)
+    // СТАТИСТИКА
     // ============================================================
     
     const s3IssuesCount = s3.issues?.length || 0;
