@@ -305,18 +305,17 @@ function generateScoutFullHTMLReport(result) {
     const links = findings.links || {};
     
     // Безопасное получение DOM
-    let dom = [];
+    let domIssues = [];
     if (findings.dom) {
         if (Array.isArray(findings.dom)) {
-            dom = findings.dom;
+            domIssues = findings.dom;
         } else if (typeof findings.dom === 'object') {
-            dom = findings.dom.issues || findings.dom.items || findings.dom.data || [];
-            if (!Array.isArray(dom)) {
-                dom = [];
+            domIssues = findings.dom.issues || findings.dom.items || findings.dom.data || [];
+            if (!Array.isArray(domIssues)) {
+                domIssues = [];
             }
         }
     }
-    
     const s3 = findings.s3 || { issues: [] };
     
     const osint = result.osint || { 
@@ -1070,7 +1069,7 @@ function generateScoutFullHTMLReport(result) {
     
     const securityCount = (headers.issues?.length || 0) + (cookies.issues?.length || 0) + (ssl.issues?.length || 0) + (ports.issues?.length || 0);
     const structureCount = (robots.disallowed?.length || 0) + (sitemap.urls?.length || 0);
-    const issuesCount = (links.brokenLinks?.length || 0) + (dom?.length || 0) + (wcag.issues?.length || 0);
+    const issuesCount = (links.brokenLinks?.length || 0) + (domIssues?.length || 0) + (wcag.issues?.length || 0);
     const osintCount = osint.summary.totalEmails + osint.summary.totalPhones + osint.summary.totalSocials;
     
     return `<!DOCTYPE html>
