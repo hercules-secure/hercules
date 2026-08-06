@@ -4,7 +4,7 @@ class FileUploader {
             acceptArchive: '.zip,.tar,.gz,.tgz,.7z',
             acceptFolder: true,
             compressOnClient: true,
-            maxSize: 100 * 1024 * 1024,
+            maxSize: 2000 * 1024 * 1024,
             onFileSelected: null,
             onFolderSelected: null,
             onProgress: null,
@@ -396,7 +396,7 @@ function initSASTUploader(herculesApp) {
     
     const uploader = new FileUploader({
         acceptArchive: '.zip,.tar,.gz,.tgz,.7z',
-        maxSize: 200 * 1024 * 1024,
+        maxSize: 2000 * 1024 * 1024,
         compressOnClient: true,
         onFileSelected: (file) => {
             const app = herculesApp || window.herculesApp;
