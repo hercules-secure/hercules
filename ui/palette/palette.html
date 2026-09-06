@@ -1,18 +1,88 @@
 <!DOCTYPE html>
-<html data-page="construction" data-version="1.0.0" lang="ru">
+<html data-page="construction" data-version="1.0.0" lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Палитра</title>
+    <title>Palette</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="palette.css">
     <link rel="stylesheet" href="../common/main.css">
     <link rel="stylesheet" href="../common/modal.css">
     <link rel="stylesheet" href="../common/sidebar.css">  
-    <link rel="stylesheet" href="../common/upgrade.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
+    <style>
+
+    
+    .tools-title,
+    .tool-name,
+    .tool-desc,
+    .section-title,
+    .header-btn,
+    .source-btn,
+    .element-library-item,
+    .action-btn,
+    .card-title,
+    .tool-name,
+    .hint,
+    .settings-option,
+    .modal-content,
+    .modal-header h3,
+    .settings-header h3,
+    .about-info h3,
+    .version,
+    .description,
+    label,
+    input,
+    select,
+    button,
+    .palette-empty h3,
+    .palette-empty p {
+        font-family: 'Fira Sans', sans-serif !important;
+    }
+    
+    .palette-empty h3 {
+        font-family: 'Fira Sans', sans-serif !important;
+        font-weight: 600;
+    }
+    
+    .palette-empty p {
+        font-family: 'Fira Sans', sans-serif !important;
+        font-weight: 400;
+    }
+    
+    .task-id,
+    .task-status,
+    .progress-container,
+    .modal-select,
+    .modal-input,
+    .version,
+    .badge-beta-gradient,
+    .format-badge,
+    .supported-format-badge,
+    .license-input,
+    .field-row input,
+    .field-row select {
+        font-family: 'Fira Code', monospace !important;
+    }
+    
+    /* Fira Code для кода */
+    .code-editor,
+    .file-details,
+    .data-structure-preview,
+    .subdomain-item .name,
+    .subdomain-item .ip,
+    .domain-name,
+    .source-name,
+    .metric-value,
+    .score-ring .inner,
+    .report-audit-card .row .value,
+    .report-status-item .value {
+        font-family: 'Fira Code', monospace !important;
+    }
+    </style>
 </head>
 <body>
     <div id="box" class="fade-in">
@@ -21,7 +91,7 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Инструменты</span>
+                        <span>Tools</span>
                     </div>
                     <button class="collapse-btn" id="collapseBtn">
                         <i class="fas fa-chevron-left"></i>
@@ -31,7 +101,7 @@
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
-                        Загрузка...
+                        Loading...
                     </div>
                 </div>
                 <div class="tool-divider"></div>
@@ -40,8 +110,8 @@
                         <div class="tool-item">
                             <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
                             <div class="tool-info">
-                                <span class="tool-name">История</span>
-                                <span class="tool-desc">Журнал сканирований</span>
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
                             </div>
                         </div>
                     </a>
@@ -51,8 +121,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Настройки</span>
-                                <span class="tool-desc">Управление параметрами</span>
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
                             </div>
                         </div>
                     </a>
@@ -62,25 +132,25 @@
 
         <div id="center">
             <div class="page-header">
-                <h2 class="section-title" id="pageTitle">Моделирование и визуализация <span class="badge-beta-gradient">Beta</span></h2>
+                <h2 class="section-title" id="pageTitle">Threat Modeling &amp; Visualization <span class="badge-beta-gradient">Beta</span></h2>
                 
                 <div class="header-buttons">
                     <button class="header-btn" onclick="showToolInfo('palette')">
-                        <i class="fas fa-info-circle"></i> Описание инструмента
+                        <i class="fas fa-info-circle"></i> Tool info
                     </button>
                 </div>
             </div>
 
-            <!-- ВЕРХНЯЯ ПАНЕЛЬ -->
+            <!-- TOP BAR -->
             <div class="palette-topbar">
                 <div class="palette-topbar-left">
                     <div class="palette-elements-bar">
-                     <span class="elements-label">Визуализация:</span>
+                     <span class="elements-label">Import:</span>
                      <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
-                        <i class="fas fa-code lib-icon"></i><span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Код</span>
+                        <i class="fas fa-code lib-icon"></i><span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Code</span>
                     </button>
                     <button onclick="openProjectModal()" class="source-btn" data-source="project">
-                       <i class="fas fa-folder lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Проект</span>
+                       <i class="fas fa-folder lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Project</span>
                      </button>
                     <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
                         <i class="fas fa-file-code lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">SBOM</span>
@@ -92,200 +162,140 @@
                 </div>
                 <div class="palette-topbar-right">
                     <button class="action-btn" id="exportModelBtn">
-                        <i class="fas fa-download"></i> Экспорт
+                        <i class="fas fa-download"></i> Export
                     </button>
                     <button class="action-btn primary" id="importModelBtn">
-                        <i class="fas fa-upload"></i> Импорт
+                        <i class="fas fa-upload"></i> Import
                     </button>
                     <button class="action-btn danger" id="clearCanvasBtn">
-                        <i class="fas fa-trash"></i> Очистить
+                        <i class="fas fa-trash"></i> Clear
                     </button>
                 </div>
             </div>
 
-            <!-- ЭЛЕМЕНТЫ НАД ХОЛСТОМ (ПЕРЕНЕСЕНЫ ИЗ ПРАВОЙ ПАНЕЛИ) -->
+            <!-- ELEMENTS ABOVE CANVAS -->
             <div class="palette-elements-bar">
-                <span class="elements-label">Моделирование:</span>
+                <span class="elements-label">Modeling:</span>
                 <div class="palette-elements-group">
                     <div class="palette-elements-group">
-                    <!-- <span class="elements-label"><i class="fas fa-play-circle"></i> События:</span> -->
                     <div class="element-library-item event" draggable="true" data-type="event-start">
                         <span class="lib-icon"><i class="fas fa-play-circle"></i></span>
-                        Старт
+                        Start
                     </div>
                     <div class="element-library-item event" draggable="true" data-type="event-end">
                         <span class="lib-icon"><i class="fas fa-stop-circle"></i></span>
-                        Финиш
+                        End
                     </div>
-                    <!-- <div class="element-library-item event" draggable="true" data-type="event-pause">
-                        <span class="lib-icon"><i class="fas fa-pause-circle"></i></span>
-                        Пауза
-                    </div>
-                    <div class="element-library-item event" draggable="true" data-type="event-timeout">
-                        <span class="lib-icon"><i class="fas fa-clock"></i></span>
-                        Таймаут
-                    </div> -->
                 <div class="palette-elements-divider"></div>
                 </div>
-                    <!-- <span class="elements-label" style="margin-left: 5px;"><i class="fas fa-cubes"></i> Элементы:</span> -->
                     <div class="element-library-item" draggable="true" data-type="asset">
                         <span class="lib-icon"><i class="fas fa-puzzle-piece"></i></span>
-                        Компонент
+                        Component
                     </div>
                     <div class="element-library-item" draggable="true" data-type="threat">
                         <span class="lib-icon"><i class="fas fa-skull"></i></span>
-                        Угроза
+                        Threat
                     </div>
                     <div class="element-library-item" draggable="true" data-type="data">
                         <span class="lib-icon"><i class="fas fa-file-alt"></i></span>
-                        Данные
+                        Data
                     </div>
                     <div class="element-library-item" draggable="true" data-type="actor">
                         <span class="lib-icon"><i class="fas fa-user"></i></span>
-                        Субъект
+                        Actor
                     </div>
                     <div class="element-library-item" draggable="true" data-type="class">
                         <span class="lib-icon"><i class="fas fa-cube"></i></span>
-                        Класс
+                        Class
                     </div>
                 </div>
                 <div class="palette-elements-divider"></div>
                 <div class="palette-elements-group">
-                    <!-- <span class="elements-label"><i class="fas fa-code-fork"></i>Шлюзы:</span> -->
                     <div class="element-library-item gate" draggable="true" data-type="gate-or">
                         <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
-                        ИЛИ
+                        OR
                     </div>
                     <div class="element-library-item gate" draggable="true" data-type="gate-if">
                         <span class="lib-icon"><i class="fas fa-question-circle"></i></span>
-                        ЕСЛИ
+                        IF
                     </div>
                 </div>
                 <div class="palette-elements-divider"></div>
                 <div class="palette-elements-group">
-                    <!-- <span class="elements-label"><i class="fas fa-tasks"></i> Задачи:</span> -->
                     <div class="element-library-item gate" draggable="true" data-type="render">
                         <span class="lib-icon"><i class="fas fa-paint-brush"></i></span>
-                        Рендер
+                        Render
                     </div>
                     <div class="element-library-item gate" draggable="true" data-type="report">
                         <span class="lib-icon"><i class="fas fa-file-alt"></i></span>
-                        Отчет
+                        Report
                     </div>
                     <div class="element-library-item gate" draggable="true" data-type="alert">
                         <span class="lib-icon"><i class="fas fa-bell"></i></span>
-                        Алерт
+                        Alert
                     </div>
                 </div>
             </div>
 
             <div class="palette-container">
 
-                <!-- ЛЕВАЯ ПАНЕЛЬ: КАНВАС -->
+                <!-- LEFT PANEL: CANVAS -->
                 <div class="palette-canvas-wrapper">
                     <div class="palette-canvas" id="paletteCanvas">
                         <div class="palette-canvas-grid"></div>
                         <div class="palette-empty" id="paletteEmpty">
                             <i class="fas fa-palette"></i>
-                            <h3>Начните моделирование</h3>
-                            <p>Перетащите элементы из библиотеки на холст</p>
+                            <h3>Start modeling</h3>
+                            <p>Drag elements from the library to the canvas</p>
                         </div>
                         <div id="canvasElements"></div>
                         <div id="canvasConnections"></div>
                         <div id="dragLine"></div>
                     </div>
                 </div>
-
-                <!-- ПРАВАЯ ПАНЕЛЬ: ТОЛЬКО ИНСТРУМЕНТЫ -->
-                <div class="palette-tools">
-                    <div class="palette-tool-card">
-                        <div class="card-title">
-                            <i class="fas fa-code-branch"></i> Инструменты
-                        </div>
-                        <div class="flow-tools-list">
-                            <div class="flow-tool-item" draggable="true" data-tool="sca">
-                                <div class="tool-icon"><i class="fas fa-sitemap"></i></div>
-                                <div class="tool">
-                                    <div class="tool-name">Матрешка</div>
-                                    <div class="tool-desc">Композиционный анализ</div>
-                                </div>
-                            </div>
-                            <div class="flow-tool-item" draggable="true" data-tool="scout">
-                                <div class="tool-icon"><i class="fas fa-binoculars"></i></div>
-                                <div class="tool">
-                                    <div class="tool-name">Скаут</div>
-                                    <div class="tool-desc">Разведка и анализ</div>
-                                </div>
-                            </div>
-                            <div class="flow-tool-item" draggable="true" data-tool="echo">
-                                <div class="tool-icon"><i class="fas fa-satellite-dish"></i></div>
-                                <div class="tool">
-                                    <div class="tool-name">Эхолот</div>
-                                    <div class="tool-desc">Сетевое сканирование</div>
-                                </div>
-                            </div>
-                            <div class="flow-tool-item" draggable="true" data-tool="blender">
-                                <div class="tool-icon"><i class="fas fa-flask"></i></div>
-                                <div class="tool">
-                                    <div class="tool-name">Блендер</div>
-                                    <div class="tool-desc">Анализ кода</div>
-                                </div>
-                            </div>
-                            <div class="flow-tool-item" draggable="true" data-tool="fuzz">
-                                <div class="tool-icon"><i class="fas fa-radiation"></i></div>
-                                <div class="tool">
-                                    <div class="tool-name">Баба Яга</div>
-                                    <div class="tool-desc">Динамика и фаззинг</div>
-                                </div>
-                            </div>
-                            <div class="hint">
-                                <i class="fas fa-info-circle"></i> Перетащите на холст для построения flow
-                            </div>
-                        </div>
-                    </div>
                     <div class="palette-tool-card">
     <div class="card-title">
-        <i class="fas fa-copy"></i> Шаблоны
+        <i class="fas fa-copy"></i> Templates
     </div>
             <div class="flow-tools-list">
                 <div class="flow-tool-item" draggable="true" data-template="web-app">
                     <div class="tool-icon"><i class="fas fa-globe"></i></div>
                     <div class="tool">
-                        <div class="tool-name">Веб-приложение</div>
+                        <div class="tool-name">Web Application</div>
                     </div>
                 </div>
                 <div class="flow-tool-item" draggable="true" data-template="api">
                     <div class="tool-icon"><i class="fas fa-plug"></i></div>
                     <div class="tool">
-                        <div class="tool-name">API сервис</div>
+                        <div class="tool-name">API Service</div>
                     </div>
                 </div>
                 <div class="flow-tool-item" draggable="true" data-template="database">
                     <div class="tool-icon"><i class="fas fa-database"></i></div>
                     <div class="tool">
-                        <div class="tool-name">База данных</div>
+                        <div class="tool-name">Database</div>
                     </div>
                 </div>
                 <div class="flow-tool-item" draggable="true" data-template="microservices">
                     <div class="tool-icon"><i class="fas fa-cubes"></i></div>
                     <div class="tool">
-                        <div class="tool-name">Микросервисы</div>
+                        <div class="tool-name">Microservices</div>
                     </div>
                 </div>
                 <div class="flow-tool-item" draggable="true" data-template="cloud">
                     <div class="tool-icon"><i class="fas fa-cloud"></i></div>
                     <div class="tool">
-                        <div class="tool-name">Облачная инфраструктура</div>
+                        <div class="tool-name">Cloud Infrastructure</div>
                     </div>
                 </div>
                 <div class="flow-tool-item" draggable="true" data-template="devops">
                     <div class="tool-icon"><i class="fas fa-code-branch"></i></div>
                     <div class="tool">
-                        <div class="tool-name">CI/CD пайплайн</div>
+                        <div class="tool-name">CI/CD Pipeline</div>
                     </div>
                 </div>
                 <div class="hint">
-                    <i class="fas fa-info-circle"></i> Перетащите на холст для построения flow
+                    <i class="fas fa-info-circle"></i> Drag to canvas to build flow
                 </div>
             </div>
 </div>
@@ -294,43 +304,43 @@
         </div>
     </div>
 
-    <!-- МОДАЛКА ВЫБОРА ТИПА СВЯЗИ -->
+    <!-- CONNECTION TYPE MODAL -->
     <div id="connectionTypeModal" class="modal">
         <div class="modal-content">
-            <h3><i class="fas fa-link"></i> Выберите тип связи</h3>
-            <p style="font-size: 13px; color: #6c757d; margin-bottom: 20px;">Определите, как будут взаимодействовать элементы</p>
+            <h3><i class="fas fa-link"></i> Select connection type</h3>
+            <p style="font-size: 13px; color: #6c757d; margin-bottom: 20px;">Define how elements will interact</p>
             
             <div class="connection-type-option" onclick="selectConnectionType('control')">
                 <div class="option-icon control"><i class="fas fa-arrow-right"></i></div>
                 <div class="option-info">
-                    <div class="option-name">Управление</div>
-                    <div class="option-desc">Передача управления следующему элементу</div>
+                    <div class="option-name">Control</div>
+                    <div class="option-desc">Transfer control to the next element</div>
                 </div>
             </div>
             
             <div class="connection-type-option" onclick="selectConnectionType('data')">
                 <div class="option-icon data"><i class="fas fa-database"></i></div>
                 <div class="option-info">
-                    <div class="option-name">Поток данных</div>
-                    <div class="option-desc">Передача данных с возможностью описания структуры</div>
+                    <div class="option-name">Data Flow</div>
+                    <div class="option-desc">Data transfer with structure description</div>
                 </div>
             </div>
             
             <div class="modal-footer">
-                <button class="btn-cancel" onclick="cancelConnectionType()">Отмена</button>
+                <button class="btn-cancel" onclick="cancelConnectionType()">Cancel</button>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛКА СТРУКТУРЫ ДАННЫХ -->
+    <!-- DATA STRUCTURE MODAL -->
     <div class="data-structure-modal" id="dataStructureModal">
         <div class="data-structure-modal-content">
-            <h3><i class="fas fa-database"></i> Структура данных</h3>
-            <p class="subtitle">Определите поля и типы данных, которые передаются по этому потоку</p>
+            <h3><i class="fas fa-database"></i> Data Structure</h3>
+            <p class="subtitle">Define fields and data types transferred through this flow</p>
             
             <div id="dataFieldsContainer">
                 <div class="field-row">
-                    <input type="text" placeholder="Имя поля" value="id">
+                    <input type="text" placeholder="Field name" value="id">
                     <select>
                         <option value="string">string</option>
                         <option value="number" selected>number</option>
@@ -342,7 +352,7 @@
                     <button class="remove-field" onclick="removeField(this)"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="field-row">
-                    <input type="text" placeholder="Имя поля" value="name">
+                    <input type="text" placeholder="Field name" value="name">
                     <select>
                         <option value="string" selected>string</option>
                         <option value="number">number</option>
@@ -354,7 +364,7 @@
                     <button class="remove-field" onclick="removeField(this)"><i class="fas fa-times"></i></button>
                 </div>
                 <div class="field-row">
-                    <input type="text" placeholder="Имя поля" value="email">
+                    <input type="text" placeholder="Field name" value="email">
                     <select>
                         <option value="string" selected>string</option>
                         <option value="number">number</option>
@@ -367,129 +377,127 @@
                 </div>
             </div>
             
-            <button class="add-field-btn" onclick="addField()"><i class="fas fa-plus"></i> Добавить поле</button>
+            <button class="add-field-btn" onclick="addField()"><i class="fas fa-plus"></i> Add field</button>
             
             <div style="margin-top: 12px;">
-                <label style="font-size: 12px; color: #6c757d;">Предпросмотр структуры:</label>
+                <label style="font-size: 12px; color: #6c757d;">Structure preview:</label>
                 <div class="data-structure-preview" id="dataStructurePreview">{
     "id": 123,
-    "name": "Иван",
-    "email": "ivan@example.com"
+    "name": "John",
+    "email": "john@example.com"
 }</div>
             </div>
             
             <div class="data-structure-modal-footer">
-                <button class="btn-cancel" onclick="closeDataStructureModal()">Отмена</button>
-                <button class="btn-save" onclick="saveDataStructure()">Сохранить</button>
+                <button class="btn-cancel" onclick="closeDataStructureModal()">Cancel</button>
+                <button class="btn-save" onclick="saveDataStructure()">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛКА СВОЙСТВ ЭЛЕМЕНТА -->
+    <!-- ELEMENT PROPERTIES MODAL -->
     <div id="elementPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
         <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                    <i class="fas fa-cog" style="color: #3B82F6;"></i> <span class="modal-title">Свойства элемента</span>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-cog" style="color: #3B82F6;"></i> <span class="modal-title">Element Properties</span>
                 </h3>
                 <button onclick="window.closeElementPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
             <div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Тип</label>
-                    <select id="propType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif; background: white;">
-                        <option value="uml-class">UML класс</option>
-                        <option value="event-start">Событие - Старт</option>
-                        <option value="event-end">Событие - Финиш</option>
-                        <!-- <option value="event-pause">Событие - Пауза</option>
-                        <option value="event-timeout">Событие - Таймаут</option> -->
-                        <option value="tool">Инструмент</option>
-                        <option value="asset">Компонент</option>
-                        <option value="threat">Угроза</option>
-                        <option value="data">Данные</option>
-                        <option value="actor">Субъект</option>
-                        <option value="network">Сеть</option>
-                        <option value="gate-or">Шлюз - ИЛИ</option>
-                        <option value="gate-if">Шлюз - ЕСЛИ</option>
-                        <option value="report">Отчет</option>
-                        <option value="render">Визуализация</option>
-                        <option value="alert">Уведомление</option>
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Type</label>
+                    <select id="propType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: white;">
+                        <option value="uml-class">UML Class</option>
+                        <option value="event-start">Event - Start</option>
+                        <option value="event-end">Event - End</option>
+                        <option value="tool">Tool</option>
+                        <option value="asset">Component</option>
+                        <option value="threat">Threat</option>
+                        <option value="data">Data</option>
+                        <option value="actor">Actor</option>
+                        <option value="network">Network</option>
+                        <option value="gate-or">Gateway - OR</option>
+                        <option value="gate-if">Gateway - IF</option>
+                        <option value="report">Report</option>
+                        <option value="render">Visualization</option>
+                        <option value="alert">Notification</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Название</label>
-                    <input id="propName" type="text" placeholder="Например: Nginx" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Name</label>
+                    <input id="propName" type="text" placeholder="e.g. Nginx" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif;">
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Цвет</label>
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Color</label>
                     <input id="propColor" type="color" value="#3B82F6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">
                 </div>
                 <div id="dynamicFieldsContainer"></div>
                 <div id="eventPropsContainer" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                    <i class="fas fa-clock"></i> Свойства события
+                <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-clock"></i> Event Properties
                 </h4>
                 <div id="eventPropsFields"></div>
             </div>
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
-            <button onclick="window.closeElementPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Отмена</button>
-            <button onclick="window.saveElementProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Сохранить</button>
+            <button onclick="window.closeElementPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Cancel</button>
+            <button onclick="window.saveElementProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Save</button>
         </div>
     </div>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛКА СВОЙСТВ СВЯЗИ -->
+    <!-- CONNECTION PROPERTIES MODAL -->
     <div id="connectionPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
         <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                    <i class="fas fa-link" style="color: #8B5CF6;"></i> Свойства связи
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-link" style="color: #8B5CF6;"></i> Connection Properties
                 </h3>
                 <button onclick="window.closeConnectionPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
             <div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Тип связи</label>
-                    <select id="connPropType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif; background: white;">
-                        <option value="control">Управление</option>
-                        <option value="data">Поток данных</option>
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Connection Type</label>
+                    <select id="connPropType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: white;">
+                        <option value="control">Control</option>
+                        <option value="data">Data Flow</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Цвет</label>
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Color</label>
                     <input type="color" id="connPropColor" value="#8B5CF6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Метка</label>
-                    <input type="text" id="connPropLabel" placeholder="Метка на линии" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Ubuntu', sans-serif;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Label</label>
+                    <input type="text" id="connPropLabel" placeholder="Label on the line" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif;">
                 </div>
             </div>
             <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
-                <button onclick="window.closeConnectionPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Отмена</button>
-                <button onclick="window.saveConnectionProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Сохранить</button>
+                <button onclick="window.closeConnectionPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Cancel</button>
+                <button onclick="window.saveConnectionProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Save</button>
             </div>
         </div>
     </div>
 
-    <!-- МОДАЛКА УСЛОВИЙ -->
+    <!-- CONDITION MODAL -->
     <div id="conditionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100001; align-items: center; justify-content: center;">
         <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                    <i class="fas fa-code-branch" style="color: #8B5CF6;"></i> Выберите условие
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-code-branch" style="color: #8B5CF6;"></i> Select Condition
                 </h3>
                 <button onclick="closeConditionModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
-            <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px; font-family: 'Ubuntu', sans-serif;">
-                При каком условии передавать управление дальше?
+            <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px; font-family: 'Fira Sans', sans-serif;">
+                Under what condition should control be passed further?
             </p>
             <div id="conditionList"></div>
             <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
-                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Отмена</button>
-                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #8B5CF6; color: white;">Пропустить условие</button>
+                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Cancel</button>
+                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #8B5CF6; color: white;">Skip condition</button>
             </div>
         </div>
     </div>
@@ -497,7 +505,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+                <h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -507,263 +515,221 @@
         </div>
     </div>
 
-    <div id="licenseModal" class="upgrade-modal">
-        <div class="upgrade-modal-overlay"></div>
-        <div class="upgrade-modal-content" style="max-width: 480px;">
-            <div class="upgrade-modal-header">
-                <h3>Активация лицензии</h3>
-                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
+    <!-- PROJECT DIAGRAM TYPE SELECTION MODAL -->
+    <div id="projectInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 50000; justify-content: center; align-items: center;">
+        <div style="background: white; border-radius: 16px; max-width: 600px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: alertScaleIn 0.3s ease; max-height: 90vh; overflow-y: auto;">
+            
+            <!-- HEADER -->
+            <div style="padding: 24px 28px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 16px 16px 0 0;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-project-diagram" style="color: #8B5CF6; font-size: 22px;"></i>
+                    <h3 style="margin: 0; font-size: 18px; color: #1a1a2e; font-weight: 600; font-family: 'Fira Sans', sans-serif;">Diagram Builder</h3>
+                </div>
+                <button onclick="closeProjectModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-            <div class="upgrade-modal-body">
-                <div class="license-current" style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
-                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
-                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
+            
+            <!-- BODY -->
+            <div style="padding: 24px 28px;">
+                
+                <!-- SELECT FOLDER BUTTON -->
+                <div style="margin-bottom: 20px;">
+                    <button onclick="selectProjectFolder()" style="
+                        width: 100%;
+                        padding: 14px 20px;
+                        background: #8B5CF6;
+                        color: white;
+                        border: none;
+                        border-radius: 10px;
+                        cursor: pointer;
+                        font-family: 'Fira Sans', sans-serif;
+                        font-size: 15px;
+                        font-weight: 500;
+                        transition: all 0.2s;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+                    " 
+                    onmouseover="this.style.background='#7C3AED'"
+                    onmouseout="this.style.background='#8B5CF6'">
+                        <i class="fas fa-folder-open"></i>
+                        Select Project Folder
+                    </button>
+                    <div style="font-size: 11px; color: #6c757d; margin-top: 6px; text-align: center;">
+                        <i class="fas fa-info-circle"></i> Select a folder with project source code
                     </div>
                 </div>
-                <div class="license-input-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">Лицензионный ключ</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
-                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
-                        <button id="activateLicenseBtn" class="activate-licence-btn">
-                            <i class="fas fa-check"></i> Активировать
-                        </button>
+                
+                <!-- Project Information -->
+                <div id="projectInfoBlock" style="margin-bottom: 20px; background: #f8f9fa; border-radius: 10px; padding: 16px; display: none;">
+                    <div id="projectNameModal" style="font-weight: 600; font-size: 15px; color: #1a1a2e; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-folder-open" style="color: #F59E0B;"></i>
+                        <span id="projectNameText">Project</span>
+                    </div>
+                    <div id="projectFilesModal" style="max-height: 80px; overflow-y: auto; font-size: 12px; color: #4b5563; background: white; padding: 8px 12px; border-radius: 6px; font-family: 'Fira Code', monospace; border: 1px solid #e5e7eb;"></div>
+                    <div id="projectSizeModal" style="margin-top: 8px; font-size: 13px; color: #6c757d; display: flex; align-items: center; gap: 6px; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-file-alt" style="color: #3B82F6;"></i>
+                        <span>Files: <strong id="projectFileCount">0</strong></span>
                     </div>
                 </div>
-                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;"></div>
-                <div style="margin-top: 8px; text-align: center;">
-                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
-                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
-                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
-                        <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
-                    </a>
+                
+                <!-- DIVIDER -->
+                <div style="border-top: 1px dashed #e5e7eb; margin: 16px 0 20px 0;"></div>
+                
+                <!-- DIAGRAM TYPE SELECTION -->
+                <div style="margin-bottom: 22px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-sliders-h" style="color: #6c757d; margin-right: 6px;"></i>
+                        Select diagram type:
+                    </label>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                        <!-- Structure -->
+                        <div class="diagram-type-card" data-type="structure" onclick="selectDiagramTypeCard('structure')" style="
+                            border: 2px solid #e5e7eb;
+                            border-radius: 12px;
+                            padding: 16px 12px;
+                            text-align: center;
+                            cursor: pointer;
+                            transition: all 0.25s ease;
+                            background: white;
+                        ">
+                            <div style="font-size: 28px; color: #F59E0B; margin-bottom: 6px;">
+                                <i class="fas fa-sitemap"></i>
+                            </div>
+                            <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">Structure</div>
+                            <div style="font-size: 10px; color: #6c757d; margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Project tree</div>
+                        </div>
+                        
+                        <!-- Data Flow -->
+                        <div class="diagram-type-card" data-type="dataflow" onclick="selectDiagramTypeCard('dataflow')" style="
+                            border: 2px solid #e5e7eb;
+                            border-radius: 12px;
+                            padding: 16px 12px;
+                            text-align: center;
+                            cursor: pointer;
+                            transition: all 0.25s ease;
+                            background: white;
+                        ">
+                            <div style="font-size: 28px; color: #10B981; margin-bottom: 6px;">
+                                <i class="fas fa-arrow-right-arrow-left"></i>
+                            </div>
+                            <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">Data Flow</div>
+                            <div style="font-size: 10px; color: #6c757d; margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Data transfer</div>
+                        </div>
+                        
+                        <!-- Call Graph -->
+                        <div class="diagram-type-card" data-type="callgraph" onclick="selectDiagramTypeCard('callgraph')" style="
+                            border: 2px solid #e5e7eb;
+                            border-radius: 12px;
+                            padding: 16px 12px;
+                            text-align: center;
+                            cursor: pointer;
+                            transition: all 0.25s ease;
+                            background: white;
+                        ">
+                            <div style="font-size: 28px; color: #8B5CF6; margin-bottom: 6px;">
+                                <i class="fas fa-code-branch"></i>
+                            </div>
+                            <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">Call Graph</div>
+                            <div style="font-size: 10px; color: #6c757d; margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Functions & connections</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ADDITIONAL SETTINGS -->
+                <div style="margin-bottom: 20px; padding: 16px; background: #f8f9fa; border-radius: 10px; border: 1px dashed #e5e7eb;">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                        <span style="font-size: 13px; color: #4b5563; display: flex; align-items: center; gap: 4px; font-family: 'Fira Sans', sans-serif;">
+                            <i class="fas fa-tag" style="color: #6c757d;"></i>
+                            <span>Show:</span>
+                        </span>
+                        
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer; font-family: 'Fira Sans', sans-serif;">
+                            <input type="checkbox" id="showFunctions" checked style="accent-color: #8B5CF6;">
+                            <i class="fas fa-code"></i> Functions
+                        </label>
+                        
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer; font-family: 'Fira Sans', sans-serif;">
+                            <input type="checkbox" id="showImports" checked style="accent-color: #8B5CF6;">
+                            <i class="fas fa-boxes"></i> Imports
+                        </label>
+                        
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer; font-family: 'Fira Sans', sans-serif;">
+                            <input type="checkbox" id="showCalls" checked style="accent-color: #8B5CF6;">
+                            <i class="fas fa-arrow-right"></i> Calls
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- BUTTONS -->
+                <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                    <button onclick="closeProjectModal()" style="
+                        padding: 10px 24px;
+                        border: 1px solid #e5e7eb;
+                        border-radius: 8px;
+                        background: white;
+                        color: #6c757d;
+                        cursor: pointer;
+                        font-family: 'Fira Sans', sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s;
+                    ">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    
+                    <button id="buildDiagramBtn" onclick="buildSelectedDiagram()" style="
+                        padding: 10px 28px;
+                        border: none;
+                        border-radius: 8px;
+                        background: #8B5CF6;
+                        color: white;
+                        cursor: pointer;
+                        font-family: 'Fira Sans', sans-serif;
+                        font-size: 14px;
+                        font-weight: 500;
+                        transition: all 0.2s;
+                        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+                    " 
+                    onmouseover="this.style.background='#7C3AED'"
+                    onmouseout="this.style.background='#8B5CF6'">
+                        <i class="fas fa-play"></i> Build
+                    </button>
                 </div>
             </div>
         </div>
     </div>
-    
-<!-- ============================================================
-     МОДАЛЬНОЕ ОКНО ВЫБОРА ТИПА ДИАГРАММЫ ДЛЯ ПРОЕКТА
-     ============================================================ -->
-<div id="projectInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 50000; justify-content: center; align-items: center;">
-    <div style="background: white; border-radius: 16px; max-width: 600px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: alertScaleIn 0.3s ease; max-height: 90vh; overflow-y: auto;">
-        
-        <!-- ЗАГОЛОВОК -->
-        <div style="padding: 24px 28px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 16px 16px 0 0;">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <i class="fas fa-project-diagram" style="color: #8B5CF6; font-size: 22px;"></i>
-                <h3 style="margin: 0; font-size: 18px; color: #1a1a2e; font-weight: 600;">Построение диаграммы</h3>
-            </div>
-            <button onclick="closeProjectModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <!-- ТЕЛО -->
-        <div style="padding: 24px 28px;">
-            
-            <!-- КНОПКА ВЫБОРА ПАПКИ -->
-            <div style="margin-bottom: 20px;">
-                <button onclick="selectProjectFolder()" style="
-                    width: 100%;
-                    padding: 14px 20px;
-                    background: #8B5CF6;
-                    color: white;
-                    border: none;
-                    border-radius: 10px;
-                    cursor: pointer;
-                    font-family: 'Ubuntu', sans-serif;
-                    font-size: 15px;
-                    font-weight: 500;
-                    transition: all 0.2s;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    gap: 10px;
-                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-                " 
-                onmouseover="this.style.background='#7C3AED'"
-                onmouseout="this.style.background='#8B5CF6'">
-                    <i class="fas fa-folder-open"></i>
-                    Выбрать папку проекта
-                </button>
-                <div style="font-size: 11px; color: #6c757d; margin-top: 6px; text-align: center;">
-                    <i class="fas fa-info-circle"></i> Выберите папку с исходным кодом проекта
-                </div>
-            </div>
-            
-            <!-- Информация о проекте -->
-            <div id="projectInfoBlock" style="margin-bottom: 20px; background: #f8f9fa; border-radius: 10px; padding: 16px; display: none;">
-                <div id="projectNameModal" style="font-weight: 600; font-size: 15px; color: #1a1a2e; margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-folder-open" style="color: #F59E0B;"></i>
-                    <span id="projectNameText">Проект</span>
-                </div>
-                <div id="projectFilesModal" style="max-height: 80px; overflow-y: auto; font-size: 12px; color: #4b5563; background: white; padding: 8px 12px; border-radius: 6px; font-family: monospace; border: 1px solid #e5e7eb;"></div>
-                <div id="projectSizeModal" style="margin-top: 8px; font-size: 13px; color: #6c757d; display: flex; align-items: center; gap: 6px;">
-                    <i class="fas fa-file-alt" style="color: #3B82F6;"></i>
-                    <span>Файлов: <strong id="projectFileCount">0</strong></span>
-                </div>
-            </div>
-            
-            <!-- РАЗДЕЛИТЕЛЬ -->
-            <div style="border-top: 1px dashed #e5e7eb; margin: 16px 0 20px 0;"></div>
-            
-            <!-- ВЫБОР ТИПА ДИАГРАММЫ -->
-            <div style="margin-bottom: 22px;">
-                <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px;">
-                    <i class="fas fa-sliders-h" style="color: #6c757d; margin-right: 6px;"></i>
-                    Выберите тип диаграммы:
-                </label>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                    <!-- Структура -->
-                    <div class="diagram-type-card" data-type="structure" onclick="selectDiagramTypeCard('structure')" style="
-                        border: 2px solid #e5e7eb;
-                        border-radius: 12px;
-                        padding: 16px 12px;
-                        text-align: center;
-                        cursor: pointer;
-                        transition: all 0.25s ease;
-                        background: white;
-                    ">
-                        <div style="font-size: 28px; color: #F59E0B; margin-bottom: 6px;">
-                            <i class="fas fa-sitemap"></i>
-                        </div>
-                        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e;">Структура</div>
-                        <div style="font-size: 10px; color: #6c757d; margin-top: 2px;">Дерево проекта</div>
-                    </div>
-                    
-                    <!-- Потоки данных -->
-                    <div class="diagram-type-card" data-type="dataflow" onclick="selectDiagramTypeCard('dataflow')" style="
-                        border: 2px solid #e5e7eb;
-                        border-radius: 12px;
-                        padding: 16px 12px;
-                        text-align: center;
-                        cursor: pointer;
-                        transition: all 0.25s ease;
-                        background: white;
-                    ">
-                        <div style="font-size: 28px; color: #10B981; margin-bottom: 6px;">
-                            <i class="fas fa-arrow-right-arrow-left"></i>
-                        </div>
-                        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e;">Потоки данных</div>
-                        <div style="font-size: 10px; color: #6c757d; margin-top: 2px;">Передача данных</div>
-                    </div>
-                    
-                    <!-- Граф вызовов -->
-                    <div class="diagram-type-card" data-type="callgraph" onclick="selectDiagramTypeCard('callgraph')" style="
-                        border: 2px solid #e5e7eb;
-                        border-radius: 12px;
-                        padding: 16px 12px;
-                        text-align: center;
-                        cursor: pointer;
-                        transition: all 0.25s ease;
-                        background: white;
-                    ">
-                        <div style="font-size: 28px; color: #8B5CF6; margin-bottom: 6px;">
-                            <i class="fas fa-code-branch"></i>
-                        </div>
-                        <div style="font-size: 13px; font-weight: 600; color: #1a1a2e;">Граф вызовов</div>
-                        <div style="font-size: 10px; color: #6c757d; margin-top: 2px;">Функции и связи</div>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- ДОПОЛНИТЕЛЬНЫЕ НАСТРОЙКИ -->
-            <div style="margin-bottom: 20px; padding: 16px; background: #f8f9fa; border-radius: 10px; border: 1px dashed #e5e7eb;">
-                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                    <span style="font-size: 13px; color: #4b5563; display: flex; align-items: center; gap: 4px;">
-                        <i class="fas fa-tag" style="color: #6c757d;"></i>
-                        <span>Показать:</span>
-                    </span>
-                    
-                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer;">
-                        <input type="checkbox" id="showFunctions" checked style="accent-color: #8B5CF6;">
-                        <i class="fas fa-code"></i> Функции
-                    </label>
-                    
-                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer;">
-                        <input type="checkbox" id="showImports" checked style="accent-color: #8B5CF6;">
-                        <i class="fas fa-boxes"></i> Импорты
-                    </label>
-                    
-                    <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer;">
-                        <input type="checkbox" id="showCalls" checked style="accent-color: #8B5CF6;">
-                        <i class="fas fa-arrow-right"></i> Вызовы
-                    </label>
-                </div>
-            </div>
-            
-            <!-- КНОПКИ -->
-            <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <button onclick="closeProjectModal()" style="
-                    padding: 10px 24px;
-                    border: 1px solid #e5e7eb;
-                    border-radius: 8px;
-                    background: white;
-                    color: #6c757d;
-                    cursor: pointer;
-                    font-family: 'Ubuntu', sans-serif;
-                    font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.2s;
-                ">
-                    <i class="fas fa-times"></i> Отмена
-                </button>
-                
-                <button id="buildDiagramBtn" onclick="buildSelectedDiagram()" style="
-                    padding: 10px 28px;
-                    border: none;
-                    border-radius: 8px;
-                    background: #8B5CF6;
-                    color: white;
-                    cursor: pointer;
-                    font-family: 'Ubuntu', sans-serif;
-                    font-size: 14px;
-                    font-weight: 500;
-                    transition: all 0.2s;
-                    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-                " 
-                onmouseover="this.style.background='#7C3AED'"
-                onmouseout="this.style.background='#8B5CF6'">
-                    <i class="fas fa-play"></i> Построить
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 
-<!-- Стили -->
-<style>
-    .diagram-type-card:hover {
-        border-color: #8B5CF6 !important;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
-    }
-    
-    .diagram-type-card.selected {
-        border-color: #8B5CF6 !important;
-        background: #f5f3ff !important;
-        box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
-    }
-    
-    @keyframes alertScaleIn {
-        from {
-            opacity: 0;
-            transform: scale(0.95) translateY(10px);
+    <style>
+        .diagram-type-card:hover {
+            border-color: #8B5CF6 !important;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
         }
-        to {
-            opacity: 1;
-            transform: scale(1) translateY(0);
+        
+        .diagram-type-card.selected {
+            border-color: #8B5CF6 !important;
+            background: #f5f3ff !important;
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
         }
-    }
-</style>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script> 
+        
+        @keyframes alertScaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script> 
     <script src="utils/sbom.js"></script>
     <script src="utils/cicd.js"></script>
     <script src="utils/dependency.js"></script>
@@ -778,317 +744,309 @@
     <script src="client.js"></script>
     <script src="utils/utils.js"></script>
     <script src="utils/analize.js"></script>
-    <script src="../common/licence.js"></script>
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
     <script src="../common/info.js"></script>
     <script> loadMenu(); </script>
 
-
-<div id="workflowProgressBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; z-index: 100000; padding: 12px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); font-family: 'Ubuntu', sans-serif;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; max-width: 1200px; margin-left: auto; margin-right: auto;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-weight: 600; font-size: 14px; color: #1a1a2e;" id="progressTitle">Выполнение workflow</span>
-            <span style="font-size: 12px; color: #6b7280;" id="progressSteps">0 / 0</span>
-        </div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <span style="font-size: 12px; color: #6b7280;" id="progressStatus">⏳ Ожидание...</span>
-            <button onclick="cancelWorkflow()" style="padding: 4px 16px; border: none; border-radius: 6px; background: #EF4444; color: white; cursor: pointer; font-family: 'Ubuntu', sans-serif; font-size: 12px; font-weight: 500;">Отмена</button>
-        </div>
-    </div>
-    <div style="max-width: 1200px; margin-left: auto; margin-right: auto; background: #f3f4f6; border-radius: 8px; height: 8px; overflow: hidden;">
-        <div id="progressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3B82F6, #10B981); transition: width 0.5s ease; border-radius: 8px;"></div>
-    </div>
-    <div style="max-width: 1200px; margin-left: auto; margin-right: auto; display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; margin-top: 4px;">
-        <span id="currentStepName">—</span>
-        <span id="progressPercent">0%</span>
-    </div>
-</div>
-
-
-
-<div id="codeFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                <i class="fas fa-code"></i> Загрузить код
-            </h3>
-            <button onclick="closeCodeFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
-        </div>
-        
-
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">Тип визуализации</label>
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                <div class="diagram-type-option active" data-diagram="dependency" onclick="selectDiagramType('dependency')">
-                    <i class="fas fa-project-diagram" style="font-size: 20px; color:  #3B82F6; display: block; margin-bottom: 4px;"></i>
-                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Зависимости</span>
-                </div>
-                <div class="diagram-type-option" data-diagram="dataflow" onclick="selectDiagramType('dataflow')">
-                    <i class="fas fa-arrows-left-right" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Потоки данных</span>
-                </div>
-                 <div class="diagram-type-option" data-diagram="class" onclick="selectDiagramType('class')">
-                    <i class="fas fa-layer-group" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Классы</span>
-                </div>
-                <div class="diagram-type-option" data-diagram="callgraph" onclick="selectDiagramType('callgraph')">
-                    <i class="fas fa-sitemap" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Граф вызовов</span>
-                </div>
-                <div class="diagram-type-option" data-diagram="component" onclick="selectDiagramType('component')">
-                    <i class="fas fa-cubes" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                    <span style="font-size: 11px; font-family: 'Ubuntu', sans-serif; font-weight: 500; color: #1a1a2e;">Компоненты</span>
-                </div>
+    <div id="workflowProgressBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; z-index: 100000; padding: 12px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); font-family: 'Fira Sans', sans-serif;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; max-width: 1200px; margin-left: auto; margin-right: auto;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-weight: 600; font-size: 14px; color: #1a1a2e;" id="progressTitle">Workflow execution</span>
+                <span style="font-size: 12px; color: #6b7280;" id="progressSteps">0 / 0</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 12px; color: #6b7280;" id="progressStatus">Waiting...</span>
+                <button onclick="cancelWorkflow()" style="padding: 4px 16px; border: none; border-radius: 6px; background: #EF4444; color: white; cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 12px; font-weight: 500;">Cancel</button>
             </div>
         </div>
-        
-
-<div style="margin-bottom: 20px;">
-    <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">
-        <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Выберите файл
-    </label>
-    
-
-    <div id="dropZone" style="
-        border: 2px dashed #d1d5db;
-        border-radius: 12px;
-        padding: 30px 20px;
-        text-align: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        background: #fafafa;
-        position: relative;
-    ">
-        <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc, .ts, .tsx" style="
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        ">
-        
-
-        <div style="
-            width: 56px;
-            height: 56px;
-            margin: 0 auto 10px;
-            background: #f3f4f6;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        " id="dropIcon">
-            <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+        <div style="max-width: 1200px; margin-left: auto; margin-right: auto; background: #f3f4f6; border-radius: 8px; height: 8px; overflow: hidden;">
+            <div id="progressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3B82F6, #10B981); transition: width 0.5s ease; border-radius: 8px;"></div>
         </div>
-        
-
-        <p style="
-            margin: 0;
-            font-size: 14px;
-            font-weight: 500;
-            color: #374151;
-            font-family: 'Ubuntu', sans-serif;
-        " id="fileStatusText">Перетащите файл сюда или нажмите для выбора</p>
-        
-        <p style="
-            margin: 6px 0 0 0;
-            font-size: 12px;
-            color: #9ca3af;
-            font-family: 'Ubuntu', sans-serif;
-        " id="fileInfoText">Поддерживаются: .js, .py, .java, .go, .rs, .cpp, .c, .h, .cs, .php, .rb, .pl, .sh, .bash, .txt, .json, .xml, .yaml, .yml, .toml, .ini, .cfg, .conf, .md, .rst, .adoc</p>
-        
-        <div id="codeFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
-            <span id="codeFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Ubuntu', sans-serif;"></span>
-            <span style="margin: 0 8px; color: #6b7280;">|</span>
-            <span id="codeFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
-            <span style="margin: 0 8px; color: #6b7280;">|</span>
-            <span id="codeFileLinesModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
+        <div style="max-width: 1200px; margin-left: auto; margin-right: auto; display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; margin-top: 4px;">
+            <span id="currentStepName">—</span>
+            <span id="progressPercent">0%</span>
         </div>
     </div>
-</div>
 
-<div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-    <button onclick="closeCodeFileModal()" style="
-        padding: 10px 24px;
-        border: none;
-        border-radius: 8px;
-        font-family: 'Ubuntu', sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: pointer;
-        background: #f3f4f6;
-        color: #374151;
-        transition: all 0.2s;
-    ">Отмена</button>
-    <button id="loadCodeFileBtn" style="
-        padding: 10px 24px;
-        border: none;
-        border-radius: 8px;
-        font-family: 'Ubuntu', sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        cursor: not-allowed;
-        background: #e5e7eb;
-        color: #9ca3af;
-        transition: all 0.2s;
-    ">Загрузить</button>
-</div>
-        
-    </div>
-</div>
+    <div id="codeFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-code"></i> Upload Code
+                </h3>
+                <button onclick="closeCodeFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+            </div>
 
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">Visualization Type</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <div class="diagram-type-option active" data-diagram="dependency" onclick="selectDiagramType('dependency')">
+                        <i class="fas fa-project-diagram" style="font-size: 20px; color:  #3B82F6; display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Dependencies</span>
+                    </div>
+                    <div class="diagram-type-option" data-diagram="dataflow" onclick="selectDiagramType('dataflow')">
+                        <i class="fas fa-arrows-left-right" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Data Flows</span>
+                    </div>
+                     <div class="diagram-type-option" data-diagram="class" onclick="selectDiagramType('class')">
+                        <i class="fas fa-layer-group" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Classes</span>
+                    </div>
+                    <div class="diagram-type-option" data-diagram="callgraph" onclick="selectDiagramType('callgraph')">
+                        <i class="fas fa-sitemap" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Call Graph</span>
+                    </div>
+                    <div class="diagram-type-option" data-diagram="component" onclick="selectDiagramType('component')">
+                        <i class="fas fa-cubes" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Components</span>
+                    </div>
+                </div>
+            </div>
 
-<div id="umlClassModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 700px; width: 95%; max-height: 85vh; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden;">
-        
-
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
-            <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                <i class="fas fa-cube" style="color: #8B5CF6;"></i> 
-                <span id="umlModalTitle">Редактирование класса</span>
-            </h3>
-            <button onclick="closeUmlClassModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
-        </div>
-        
-        <div style="margin-bottom: 16px; flex-shrink: 0;">
-            <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 4px; font-family: 'Ubuntu', sans-serif;">Имя класса</label>
-            <input id="umlClassName" type="text" placeholder="MyClass" style="width: 100%; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Ubuntu', sans-serif; outline: none;">
-        </div>
-        
-        <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
-                <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;">
-                    <i class="fas fa-list" style="color: #6b7280;"></i> Свойства (поля)
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Select File
                 </label>
-                <button onclick="addUmlFieldModal()" style="
-                    padding: 4px 12px;
-                    border: 1px dashed #8B5CF6;
-                    border-radius: 4px;
-                    background: none;
-                    color: #8B5CF6;
+                
+
+                <div id="dropZone" style="
+                    border: 2px dashed #d1d5db;
+                    border-radius: 12px;
+                    padding: 30px 20px;
+                    text-align: center;
                     cursor: pointer;
-                    font-size: 12px;
-                    font-family: 'Ubuntu', sans-serif;
-                ">+ Добавить поле</button>
-            </div>
-            <div id="umlFieldsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
-
-            </div>
-        </div>
-        
-
-        <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; margin-top: 12px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
-                <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;">
-                    <i class="fas fa-code" style="color: #6b7280;"></i> Методы
-                </label>
-                <button onclick="addUmlMethodModal()" style="
-                    padding: 4px 12px;
-                    border: 1px dashed #10B981;
-                    border-radius: 4px;
-                    background: none;
-                    color: #10B981;
-                    cursor: pointer;
-                    font-size: 12px;
-                    font-family: 'Ubuntu', sans-serif;
-                ">+ Добавить метод</button>
-            </div>
-            <div id="umlMethodsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
-            </div>
-        </div>
-        
-
-        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px; flex-shrink: 0;">
-            <button onclick="closeUmlClassModal()" style="
-                padding: 10px 24px;
-                border: none;
-                border-radius: 8px;
-                font-family: 'Ubuntu', sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                background: #f3f4f6;
-                color: #374151;
-                transition: all 0.2s;
-            ">Отмена</button>
-            <button onclick="saveUmlClass()" style="
-                padding: 10px 24px;
-                border: none;
-                border-radius: 8px;
-                font-family: 'Ubuntu', sans-serif;
-                font-size: 13px;
-                font-weight: 500;
-                cursor: pointer;
-                background: #8B5CF6;
-                color: white;
-                transition: all 0.2s;
-            ">Сохранить</button>
-        </div>
-    </div>
-</div>
-
-
-<div id="sbomFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-    <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">
-                <i class="fas fa-sitemap" style="color: #8B5CF6;"></i> Загрузить SBOM
-            </h3>
-            <button onclick="closeSbomFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
-        </div>
-        
-
-        <div style="margin-bottom: 20px;">
-            <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Ubuntu', sans-serif;">
-                <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Выберите SBOM файл
-            </label>
-            
-            <div id="sbomDropZone" style="
-                border: 2px dashed #d1d5db;
-                border-radius: 12px;
-                padding: 30px 20px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                background: #fafafa;
-                position: relative;
-            ">
-                <input type="file" id="sbomFileInputModal" accept=".json,.xml,.sbom" style="
-                    position: absolute;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    opacity: 0;
-                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    background: #fafafa;
+                    position: relative;
                 ">
-                
-                <div style="width: 56px; height: 56px; margin: 0 auto 10px; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
-                </div>
-                
-                <p style="margin: 0; font-size: 14px; font-weight: 500; color: #374151; font-family: 'Ubuntu', sans-serif;" id="sbomStatusText">Перетащите SBOM файл или нажмите для выбора</p>
-                <p style="margin: 6px 0 0 0; font-size: 12px; color: #9ca3af; font-family: 'Ubuntu', sans-serif;">Поддерживаются: CycloneDX, SPDX (JSON формат)</p>
-                
-                <div id="sbomFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
-                    <span id="sbomFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Ubuntu', sans-serif;"></span>
-                    <span style="margin: 0 8px; color: #6b7280;">|</span>
-                    <span id="sbomFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
-                    <span style="margin: 0 8px; color: #6b7280;">|</span>
-                    <span id="sbomFileComponentsModal" style="font-size: 12px; color: #6b7280; font-family: 'Ubuntu', sans-serif;"></span>
+                    <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc, .ts, .tsx" style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        opacity: 0;
+                        cursor: pointer;
+                    ">
+                    
+
+                    <div style="
+                        width: 56px;
+                        height: 56px;
+                        margin: 0 auto 10px;
+                        background: #f3f4f6;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        transition: all 0.3s ease;
+                    " id="dropIcon">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+                    </div>
+                    
+
+                    <p style="
+                        margin: 0;
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #374151;
+                        font-family: 'Fira Sans', sans-serif;
+                    " id="fileStatusText">Drag & drop file or click to select</p>
+                    
+                    <p style="
+                        margin: 6px 0 0 0;
+                        font-size: 12px;
+                        color: #9ca3af;
+                        font-family: 'Fira Sans', sans-serif;
+                    " id="fileInfoText">Supported: .js, .py, .java, .go, .rs, .cpp, .c, .h, .cs, .php, .rb, .pl, .sh, .bash, .txt, .json, .xml, .yaml, .yml, .toml, .ini, .cfg, .conf, .md, .rst, .adoc</p>
+                    
+                    <div id="codeFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
+                        <span id="codeFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: #6b7280;">|</span>
+                        <span id="codeFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: #6b7280;">|</span>
+                        <span id="codeFileLinesModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
+                    </div>
                 </div>
             </div>
-        </div>
-        
-        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-            <button onclick="closeSbomFileModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #f3f4f6; color: #374151;">Отмена</button>
-            <button id="loadSbomFileBtn" onclick="loadSbomFileFromModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 13px; font-weight: 500; cursor: not-allowed; background: #e5e7eb; color: #9ca3af;">Загрузить</button>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <button onclick="closeCodeFileModal()" style="
+                    padding: 10px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-family: 'Fira Sans', sans-serif;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    background: #f3f4f6;
+                    color: #374151;
+                    transition: all 0.2s;
+                ">Cancel</button>
+                <button id="loadCodeFileBtn" style="
+                    padding: 10px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-family: 'Fira Sans', sans-serif;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: not-allowed;
+                    background: #e5e7eb;
+                    color: #9ca3af;
+                    transition: all 0.2s;
+                ">Upload</button>
+            </div>
+            
         </div>
     </div>
-</div>
+
+    <div id="umlClassModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 700px; width: 95%; max-height: 85vh; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden;">
+            
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
+                <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-cube" style="color: #8B5CF6;"></i> 
+                    <span id="umlModalTitle">Class Editor</span>
+                </h3>
+                <button onclick="closeUmlClassModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
+            </div>
+            
+            <div style="margin-bottom: 16px; flex-shrink: 0;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Class Name</label>
+                <input id="umlClassName" type="text" placeholder="MyClass" style="width: 100%; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Fira Sans', sans-serif; outline: none;">
+            </div>
+            
+            <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
+                    <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-list" style="color: #6b7280;"></i> Properties (Fields)
+                    </label>
+                    <button onclick="addUmlFieldModal()" style="
+                        padding: 4px 12px;
+                        border: 1px dashed #8B5CF6;
+                        border-radius: 4px;
+                        background: none;
+                        color: #8B5CF6;
+                        cursor: pointer;
+                        font-size: 12px;
+                        font-family: 'Fira Sans', sans-serif;
+                    ">+ Add Field</button>
+                </div>
+                <div id="umlFieldsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
+
+                </div>
+            </div>
+            
+
+            <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; margin-top: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
+                    <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-code" style="color: #6b7280;"></i> Methods
+                    </label>
+                    <button onclick="addUmlMethodModal()" style="
+                        padding: 4px 12px;
+                        border: 1px dashed #10B981;
+                        border-radius: 4px;
+                        background: none;
+                        color: #10B981;
+                        cursor: pointer;
+                        font-size: 12px;
+                        font-family: 'Fira Sans', sans-serif;
+                    ">+ Add Method</button>
+                </div>
+                <div id="umlMethodsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
+                </div>
+            </div>
+            
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px; flex-shrink: 0;">
+                <button onclick="closeUmlClassModal()" style="
+                    padding: 10px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-family: 'Fira Sans', sans-serif;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    background: #f3f4f6;
+                    color: #374151;
+                    transition: all 0.2s;
+                ">Cancel</button>
+                <button onclick="saveUmlClass()" style="
+                    padding: 10px 24px;
+                    border: none;
+                    border-radius: 8px;
+                    font-family: 'Fira Sans', sans-serif;
+                    font-size: 13px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    background: #8B5CF6;
+                    color: white;
+                    transition: all 0.2s;
+                ">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="sbomFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-sitemap" style="color: #8B5CF6;"></i> Upload SBOM
+                </h3>
+                <button onclick="closeSbomFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
+            </div>
+            
+
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Select SBOM File
+                </label>
+                
+                <div id="sbomDropZone" style="
+                    border: 2px dashed #d1d5db;
+                    border-radius: 12px;
+                    padding: 30px 20px;
+                    text-align: center;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    background: #fafafa;
+                    position: relative;
+                ">
+                    <input type="file" id="sbomFileInputModal" accept=".json,.xml,.sbom" style="
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        opacity: 0;
+                        cursor: pointer;
+                    ">
+                    
+                    <div style="width: 56px; height: 56px; margin: 0 auto 10px; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+                    </div>
+                    
+                    <p style="margin: 0; font-size: 14px; font-weight: 500; color: #374151; font-family: 'Fira Sans', sans-serif;" id="sbomStatusText">Drag & drop SBOM file or click to select</p>
+                    <p style="margin: 6px 0 0 0; font-size: 12px; color: #9ca3af; font-family: 'Fira Sans', sans-serif;">Supported: CycloneDX, SPDX (JSON format)</p>
+                    
+                    <div id="sbomFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
+                        <span id="sbomFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: #6b7280;">|</span>
+                        <span id="sbomFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: #6b7280;">|</span>
+                        <span id="sbomFileComponentsModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
+                <button onclick="closeSbomFileModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #f3f4f6; color: #374151;">Cancel</button>
+                <button id="loadSbomFileBtn" onclick="loadSbomFileFromModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: not-allowed; background: #e5e7eb; color: #9ca3af;">Upload</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

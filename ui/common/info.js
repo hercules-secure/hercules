@@ -1,63 +1,38 @@
 let cachedExtensions = null;
-let cachedLicence = null; // Добавляем кэш для лицензии
+let cachedLicence = null;
 
-/** Сохраняем расширения в кэш когда они загрузились */
 function cacheExtensions(extensions, licence = null) {
     cachedExtensions = extensions;
-    cachedLicence = licence; // Сохраняем лицензию
+    cachedLicence = licence;
 }
 
-/**
- * Получить расширения из кэша
- */
 function getExtensionsFromCache() {
     return cachedExtensions;
 }
 
-/**
- * Получить информацию о конкретном инструменте из кэша
- */
 function getToolInfoFromCache(toolId) {
     if (!cachedExtensions) return null;
     return cachedExtensions.find(ext => ext.id === toolId);
 }
 
-/**
- * Получить информацию о лицензии из кэша
- */
 function getLicenceFromCache() {
     return cachedLicence;
 }
 
-/**
- * Проверка валидности лицензии (использует глобальную лицензию, не из tool)
- */
 function isLicenseValid() {
-    console.log('cachedLicence:', cachedLicence);
-    
     if (!cachedLicence) return false;
     if (!cachedLicence.expiresAt) return false;
     
     const expiresAt = new Date(cachedLicence.expiresAt);
     const now = new Date();
     
-    console.log('expiresAt:', expiresAt);
-    console.log('now:', now);
-    console.log('is valid:', expiresAt > now);
-    
     return expiresAt > now;
 }
 
-/**
- * Проверка, нужно ли показывать кнопку обновления лицензии
- */
 function showLicenseButton(tool) {
     return !tool.free && !isLicenseValid();
 }
 
-/**
- * Рендер колонок
- */
 function renderColumns(items, columns = 2) {
     if (!items || items.length === 0) return '';
     
@@ -86,9 +61,6 @@ function renderColumns(items, columns = 2) {
     return html;
 }
 
-/**
- * Рендер сетки для протоколов
- */
 function renderGrid(items) {
     if (!items || items.length === 0) return '';
     
@@ -104,70 +76,68 @@ function renderGrid(items) {
     `;
 }
 
-/**
- * Рендер левой панели
- */
 function renderLeftPanel(tool) {
     let html = '';
     
-    // Ключевые возможности
     if (tool.features?.key?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Ключевые возможности</h4>
+                <h4>Key features</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.key, 2)}
                 </div>
             </div>
         `;
     }
-        // Поддерживаемые источники
+
     if (tool.features?.sources?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Поддерживаемые источники</h4>
+                <h4>Supported sources</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.sources, 2)}
                 </div>
             </div>
         `;
     }
+
     if (tool.features?.analysis?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Моделирование</h4>
+                <h4>Modeling</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.analysis, 2)}
                 </div>
             </div>
         `;
     }
+
     if (tool.features?.visual?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Визуализация</h4>
+                <h4>Visualization</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.visual, 2)}
                 </div>
             </div>
         `;
     }
-    
+
     if (tool.features?.elements?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Элементы</h4>
+                <h4>Elements</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.elements, 2)}
                 </div>
             </div>
         `;
     }
-     // Режимы работы
+
     if (tool.features?.modes?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Режимы работы</h4>
+                <h4>Modes</h4>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                     ${tool.features.modes.map(m => `
                         <div class="settings-option" style="flex: 1; min-width: 160px;">
@@ -184,98 +154,91 @@ function renderLeftPanel(tool) {
             </div>
         `;
     }
+
     if (tool.features?.sca?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Композиционный анализ</h4>
+                <h4>Composition analysis</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.sca, 2)}
                 </div>
             </div>
         `;
     }
-    
 
     if (tool.features?.sast?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Анализ исходного кода</h4>
+                <h4>Source code analysis</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.sast, 2)}
                 </div>
             </div>
         `;
     }
-    
-    // Поддерживаемые языки
+
     if (tool.features?.languages?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Поддерживаемые языки</h4>
+                <h4>Supported languages</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.languages, 2)}
                 </div>
             </div>
         `;
     }
-    
-    // Поддерживаемые экосистемы
+
     if (tool.features?.ecosystems?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Поддерживаемые экосистемы</h4>
+                <h4>Supported ecosystems</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.ecosystems, 2)}
                 </div>
             </div>
         `;
     }
-    
-    // Поддерживаемые протоколы API
+
     if (tool.features?.protocols?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Поддерживаемые протоколы API</h4>
+                <h4>Supported API protocols</h4>
                 ${renderGrid(tool.features.protocols)}
             </div>
         `;
     }
-    
-    // Поддерживаемые спецификации
+
     if (tool.features?.specifications?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4> Поддерживаемые спецификации</h4>
+                <h4>Supported specifications</h4>
                 ${renderGrid(tool.features.specifications)}
             </div>
         `;
     }
-        // анализ сети
+
     if (tool.features?.network?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Анализ сети</h4>
+                <h4>Network analysis</h4>
                 ${renderGrid(tool.features.network)}
             </div>
         `;
     }
 
-        // поиск уязвимостей
-        if (tool.features?.vulnerabilities?.length > 0) {
+    if (tool.features?.vulnerabilities?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Поиск уязвимостей</h4>
+                <h4>Vulnerability search</h4>
                 ${renderGrid(tool.features.vulnerabilities)}
             </div>
         `;
     }
 
-    
-    // Форматы отчетов
     if (tool.features?.reports?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Форматы отчетов</h4>
+                <h4>Report formats</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${tool.features.reports.map(r => `
                         <div class="settings-option">
@@ -291,27 +254,19 @@ function renderLeftPanel(tool) {
     return html;
 }
 
-/**
- * Форматирование даты
- */
 function formatDate(dateString) {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleDateString('ru-RU', {
+    return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
         day: 'numeric'
     });
 }
 
-/**
- * Рендер правой панели
- */
 function renderRightPanel(tool) {
     const isValid = isLicenseValid();
     const showBtn = showLicenseButton(tool);
-    
-    // Получаем информацию о лицензии из глобального кэша
     const licence = getLicenceFromCache();
     const expiresAt = licence?.expiresAt;
     
@@ -319,25 +274,25 @@ function renderRightPanel(tool) {
         <div class="about-info">
             <i class="${tool.icon} flask-icon"></i>
             <h3>${tool.name}</h3>
-            <div class="version">Версия ${tool.version}</div>
+            <div class="version">Version ${tool.version}</div>
             <div class="description">${tool.description}</div>
             <hr class="divider">
             
             ${!tool.free ? `
                 <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
                     ${showBtn ? `
-                        <span style="color: black; font-family: 'Ubuntu'; font-size: 15px">Доступно с лицензией</span>
+                        <span style="color: black; font-family: 'Ubuntu'; font-size: 15px">Available with license</span>
                         <span style="padding: 4px 12px; color: black; font-weight: 700; letter-spacing: 0.5px; font-family: 'Ubuntu'; font-size: 15px;">
-                            Геркулес Плюс
+                            Hercules Plus
                         </span>
                         <button class="upgrade-btn" onclick="showLicenseModal('${tool.id}')">
                             <i class="fas fa-credit-card"></i>
-                            <span>Обновить лицензию</span>
+                            <span>Upgrade license</span>
                         </button>
                     ` : `
                        <span style="color: #10b981; font-family: 'Ubuntu'; font-size: 11px; display: inline-flex; align-items: center; gap: 6px;">
                             <i class="fas fa-check" style="font-size: 11px;"></i> 
-                            Лицензия активна ${expiresAt ? `до ${formatDate(expiresAt)}` : 'бессрочно'}
+                            License active ${expiresAt ? `until ${formatDate(expiresAt)}` : 'perpetual'}
                         </span>
                     `}
                 </div>
@@ -346,9 +301,6 @@ function renderRightPanel(tool) {
     `;
 }
 
-/**
- * Показать окно с описанием инструмента (из кэша)
- */
 function showToolInfo(toolId) {
     const tool = getToolInfoFromCache(toolId);
     
@@ -373,16 +325,13 @@ function showToolInfo(toolId) {
         return;
     }
     
-    header.innerHTML = '<h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>';
+    header.innerHTML = '<h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>';
     leftContent.innerHTML = renderLeftPanel(tool);
     rightContent.innerHTML = renderRightPanel(tool);
     
     modal.style.display = 'flex';
 }
 
-/**
- * Закрыть окно
- */
 function closeToolModal() {
     const modal = document.getElementById('unifiedModal');
     if (modal) {
@@ -390,7 +339,6 @@ function closeToolModal() {
     }
 }
 
-// Экспортируем в глобальную область
 window.showToolInfo = showToolInfo;
 window.closeToolModal = closeToolModal;
 window.getLicenceFromCache = getLicenceFromCache;

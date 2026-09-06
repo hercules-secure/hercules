@@ -1,5 +1,5 @@
 // ============================================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// HELPER FUNCTIONS
 // ============================================================
 
 function showToolNotification(message, type) {
@@ -17,7 +17,7 @@ function showToolNotification(message, type) {
         box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         z-index: 10001;
         animation: slideIn 0.3s ease;
-        font-family: 'Ubuntu';
+        font-family: 'Fira Sans', sans-serif;
         font-size: 14px;
         display: flex;
         align-items: center;
@@ -46,9 +46,9 @@ function setActiveTool(element, toolName) {
 
 function updateTaskStatus(taskId, status) {
     var statusMap = {
-        'pending': 'В ожидании',
-        'in-progress': 'В работе',
-        'completed': 'Завершено'
+        'pending': 'Pending',
+        'in-progress': 'In progress',
+        'completed': 'Completed'
     };
     
     var taskElement = findTaskElement(taskId);
@@ -125,7 +125,7 @@ var ProgressReset = {
     resetAllProgress: function() {
         var taskStatuses = document.querySelectorAll('.task-status');
         taskStatuses.forEach(function(status) {
-            status.textContent = 'В ожидании';
+            status.textContent = 'Pending';
             status.className = 'task-status pending';
         });
         
@@ -136,7 +136,7 @@ var ProgressReset = {
         
         var startButton = document.getElementById('start-btn');
         if (startButton) {
-            startButton.textContent = 'Начать анализ';
+            startButton.textContent = 'Start analysis';
             startButton.disabled = false;
             startButton.classList.add('active');
         }
@@ -170,7 +170,7 @@ TokenModal.prototype.createModal = function() {
         z-index: 20000;
         justify-content: center;
         align-items: center;
-        font-family: 'Ubuntu';
+        font-family: 'Fira Sans', sans-serif;
     `;
 
     modal.innerHTML = `
@@ -190,27 +190,27 @@ TokenModal.prototype.createModal = function() {
                 color: white;
             ">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <h3 style="margin: 0; font-size: 18px;">Требуется токен доступа</h3>
+                    <h3 style="margin: 0; font-size: 18px;">Access token required</h3>
                 </div>
             </div>
             <div style="padding: 24px;">
                 <p style="margin-bottom: 16px; color: #374151;">
-                    Для доступа к приватному репозиторию <strong id="modalRepoUrl" style="color: #667eea; word-break: break-all;"></strong> требуется персональный токен.
+                    To access the private repository <strong id="modalRepoUrl" style="color: #667eea; word-break: break-all;"></strong> a personal token is required.
                 </p>
                 
                 <div style="background: #f3f4f6; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
                     <p style="margin: 0 0 8px 0; font-weight: 600; color: #1f2937;">
-                        Как получить токен:
+                        How to get a token:
                     </p>
                     <ol style="margin: 0; padding-left: 20px; color: #4b5563; font-size: 13px;">
-                        <li>Перейдите в <strong>приватный репозиторий</strong></li>
-                        <li>Создайте токен с правами <code>read_api</code> и <code>read_repository</code></li>
-                        <li>Скопируйте полученный токен и вставьте ниже</li>
+                        <li>Go to <strong>private repository</strong></li>
+                        <li>Create a token with <code>read_api</code> and <code>read_repository</code> permissions</li>
+                        <li>Copy the token and paste it below</li>
                     </ol>
                 </div>
                 
                 <div style="margin-bottom: 20px;">
-                    <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #374151;">Ваш токен</label>
+                    <label style="display: block; font-weight: 500; margin-bottom: 8px; color: #374151;">Your token</label>
                     <div style="display: flex; gap: 10px;">
                         <input type="password" id="tokenInputValue" placeholder="glpat-..." style="
                             flex: 1;
@@ -218,7 +218,7 @@ TokenModal.prototype.createModal = function() {
                             border: 2px solid #e5e7eb;
                             border-radius: 10px;
                             font-size: 14px;
-                            font-family: 'Ubuntu';
+                            font-family: 'Fira Sans', sans-serif;
                             outline: none;
                             transition: all 0.2s;
                         ">
@@ -244,8 +244,8 @@ TokenModal.prototype.createModal = function() {
                         cursor: pointer;
                         font-weight: 500;
                         transition: all 0.2s;
-                        font-family: 'Ubuntu';
-                    ">Отмена</button>
+                        font-family: 'Fira Sans', sans-serif;
+                    ">Cancel</button>
                     <button id="submitTokenBtn" style="
                         padding: 10px 20px;
                         background: #667eea;
@@ -255,9 +255,9 @@ TokenModal.prototype.createModal = function() {
                         cursor: pointer;
                         font-weight: 500;
                         transition: all 0.2s;
-                        font-family: 'Ubuntu';
+                        font-family: 'Fira Sans', sans-serif;
                     ">
-                        Сохранить и продолжить
+                        Save and continue
                     </button>
                 </div>
             </div>
@@ -336,7 +336,7 @@ TokenModal.prototype.submit = function() {
         this.resolve(token);
         this.hide();
     } else if (!token) {
-        this.showError('Пожалуйста, введите токен');
+        this.showError('Please enter a token');
     }
 };
 
@@ -361,6 +361,7 @@ TokenModal.prototype.showError = function(message) {
         display: flex;
         align-items: center;
         gap: 6px;
+        font-family: 'Fira Sans', sans-serif;
     `;
     
     var existingError = this.modal.querySelector('.token-error');
@@ -395,7 +396,7 @@ AccessChecker.prototype.checkRepositoryAccess = function(url) {
         return this.checkGitLabAccess(url);
     }
     
-    return Promise.resolve({ accessible: false, requiresAuth: false, error: 'Неизвестная платформа' });
+    return Promise.resolve({ accessible: false, requiresAuth: false, error: 'Unknown platform' });
 };
 
 AccessChecker.prototype.detectPlatform = function(url) {
@@ -409,7 +410,7 @@ AccessChecker.prototype.checkGitLabAccess = function(url) {
     var self = this;
     var match = url.match(/^(https?:\/\/)?([^\/]+)\/(.+)$/);
     if (!match) {
-        return Promise.resolve({ accessible: false, requiresAuth: false, error: 'Неверный формат GitLab URL' });
+        return Promise.resolve({ accessible: false, requiresAuth: false, error: 'Invalid GitLab URL format' });
     }
     
     var protocol = match[1] || 'https://';
@@ -463,7 +464,7 @@ AccessChecker.prototype.checkGitLabAccess = function(url) {
                         return { 
                             accessible: false, 
                             requiresAuth: true, 
-                            error: 'Репозиторий требует авторизации. Возможно, репозиторий приватный.',
+                            error: 'Repository requires authentication. Possibly private.',
                             platform: 'gitlab',
                             baseUrl: baseUrl,
                             projectPath: projectPath
@@ -473,7 +474,7 @@ AccessChecker.prototype.checkGitLabAccess = function(url) {
                 return { 
                     accessible: false, 
                     requiresAuth: true, 
-                    error: 'Репозиторий требует авторизации. Возможно, репозиторий приватный.',
+                    error: 'Repository requires authentication. Possibly private.',
                     platform: 'gitlab',
                     baseUrl: baseUrl,
                     projectPath: projectPath
@@ -483,7 +484,7 @@ AccessChecker.prototype.checkGitLabAccess = function(url) {
             return { 
                 accessible: false, 
                 requiresAuth: false, 
-                error: 'HTTP ошибка: ' + response.status,
+                error: 'HTTP error: ' + response.status,
                 platform: 'gitlab',
                 baseUrl: baseUrl,
                 projectPath: projectPath
@@ -505,7 +506,7 @@ AccessChecker.prototype.checkGitHubAccess = function(url) {
     var self = this;
     var match = url.match(/(?:github\.com[\/:]|^)([^\/]+)\/([^\/\.]+)/);
     if (!match) {
-        return Promise.resolve({ accessible: false, requiresAuth: false, error: 'Неверный формат GitHub URL' });
+        return Promise.resolve({ accessible: false, requiresAuth: false, error: 'Invalid GitHub URL format' });
     }
     
     var owner = match[1];
@@ -531,7 +532,7 @@ AccessChecker.prototype.checkGitHubAccess = function(url) {
             return { 
                 accessible: false, 
                 requiresAuth: true, 
-                error: 'Репозиторий приватный, требуется авторизация',
+                error: 'Private repository, authentication required',
                 platform: 'github'
             };
         } else if (response.status === 404) {
@@ -559,7 +560,7 @@ AccessChecker.prototype.checkGitHubAccess = function(url) {
                                 return { 
                                     accessible: false, 
                                     requiresAuth: true, 
-                                    error: 'Репозиторий не найден или требует авторизации. Возможно, репозиторий приватный.',
+                                    error: 'Repository not found or requires authentication. Possibly private.',
                                     platform: 'github'
                                 };
                             });
@@ -567,7 +568,7 @@ AccessChecker.prototype.checkGitHubAccess = function(url) {
                         return { 
                             accessible: false, 
                             requiresAuth: true, 
-                            error: 'Репозиторий не найден или требует авторизации. Возможно, репозиторий приватный.',
+                            error: 'Repository not found or requires authentication. Possibly private.',
                             platform: 'github'
                         };
                     });
@@ -575,7 +576,7 @@ AccessChecker.prototype.checkGitHubAccess = function(url) {
                 return { 
                     accessible: false, 
                     requiresAuth: true, 
-                    error: 'Репозиторий не найден или требует авторизации. Возможно, репозиторий приватный.',
+                    error: 'Repository not found or requires authentication. Possibly private.',
                     platform: 'github'
                 };
             });
@@ -583,7 +584,7 @@ AccessChecker.prototype.checkGitHubAccess = function(url) {
             return { 
                 accessible: false, 
                 requiresAuth: false, 
-                error: 'HTTP ошибка: ' + response.status,
+                error: 'HTTP error: ' + response.status,
                 platform: 'github'
             };
         }
@@ -744,13 +745,13 @@ HerculesMainApp.prototype.validateURL = function(e) {
     
     if (!url) {
         this.setButtonState(false);
-        this.showValidationMessage('Введите ссылку на репозиторий', '');
+        this.showValidationMessage('Enter repository link', '');
         return;
     }
     
     if (!this.isValidRepoURL(url)) {
         this.setButtonState(false);
-        this.showValidationMessage('Введите корректную ссылку на репозиторий', 'invalid');
+        this.showValidationMessage('Enter a valid repository link', 'invalid');
         this.repoInput.value = "";
     } else {
         this.setButtonState(true);
@@ -788,7 +789,7 @@ HerculesMainApp.prototype.startAnalysis = function() {
         return;
     }
 
-    this.startButton.textContent = 'Проверка доступа...';
+    this.startButton.textContent = 'Checking access...';
     this.startButton.disabled = true;
     
     this.accessChecker.checkRepositoryAccess(url).then(function(accessResult) {
@@ -799,20 +800,20 @@ HerculesMainApp.prototype.startAnalysis = function() {
                 if (token) {
                     var domain = accessResult.baseUrl || (accessResult.platform === 'github' ? 'github.com' : 'gitlab.com');
                     self.tokenStorage.setToken(domain, token).then(function() {
-                        showToolNotification('Токен сохранен, повторяем попытку...');
+                        showToolNotification('Token saved, retrying...');
                         self.performAnalysis(url, token);
                     });
                 } else {
-                    alert('Доступ к репозиторию запрещен. Токен не предоставлен.');
+                    alert('Access to repository denied. Token not provided.');
                     self.resetButton();
                 }
             });
         } else {
-            alert('Ошибка доступа: ' + (accessResult.error || 'Не удалось получить доступ к репозиторию'));
+            alert('Access error: ' + (accessResult.error || 'Failed to access repository'));
             self.resetButton();
         }
     }).catch(function(error) {
-        alert('Не удалось проверить доступ к репозиторию');
+        alert('Failed to check repository access');
         self.resetButton();
     });
 };
@@ -852,7 +853,7 @@ HerculesMainApp.prototype.performAnalysis = function(url, token) {
                         if (response.status === 401 || response.status === 403) {
                             var domain = url.includes('github.com') ? 'github.com' : 'gitlab.com';
                             return self.tokenStorage.deleteToken(domain).then(function() {
-                                throw new Error('Токен недействителен. Пожалуйста, введите новый токен.');
+                                throw new Error('Invalid token. Please enter a new token.');
                             });
                         }
                         throw new Error(errorData.message || 'HTTP error! status: ' + response.status);
@@ -862,12 +863,12 @@ HerculesMainApp.prototype.performAnalysis = function(url, token) {
             }).then(function(data) {
                 self.animateProgress('2.2', 100, 1000, function() {
                     self.updateTaskStatus('2.2', 'completed');
-                    self.startButton.textContent = 'Анализ завершен';
-                    showToolNotification('Анализ успешно завершен');
+                    self.startButton.textContent = 'Analysis completed';
+                    showToolNotification('Analysis completed successfully');
                     handleReportData(data);
                 });
             }).catch(function(error) {
-                if (error.message.includes('Токен недействителен')) {
+                if (error.message.includes('Invalid token')) {
                     self.tokenModal.show(url).then(function(newToken) {
                         if (newToken) {
                             var domain = url.includes('github.com') ? 'github.com' : 'gitlab.com';
@@ -881,13 +882,13 @@ HerculesMainApp.prototype.performAnalysis = function(url, token) {
                     return;
                 }
                 
-                var errorMessage = 'Ошибка соединения с сервером';
+                var errorMessage = 'Connection error';
                 if (error.message.includes('Failed to fetch')) {
-                    errorMessage = 'Сервер недоступен';
+                    errorMessage = 'Server unavailable';
                 } else if (error.message.includes('500')) {
-                    errorMessage = 'Внутренняя ошибка сервера (500)';
+                    errorMessage = 'Internal server error (500)';
                 } else if (error.message.includes('404')) {
-                    errorMessage = 'API эндпоинт не найден (404)';
+                    errorMessage = 'API endpoint not found (404)';
                 } else {
                     errorMessage = error.message;
                 }
@@ -907,13 +908,13 @@ HerculesMainApp.prototype.performAnalysis = function(url, token) {
 };
 
 HerculesMainApp.prototype.resetButton = function() {
-    this.startButton.textContent = 'Начать анализ';
+    this.startButton.textContent = 'Start analysis';
     this.startButton.disabled = false;
     this.startButton.classList.add('active');
 };
 
 HerculesMainApp.prototype.updateTaskStatus = function(taskId, status) {
-    var statusMap = { 'pending': 'В ожидании', 'in-progress': 'В работе', 'completed': 'Завершено' };
+    var statusMap = { 'pending': 'Pending', 'in-progress': 'In progress', 'completed': 'Completed' };
     var taskElement = this.findTaskElement(taskId);
     if (taskElement) {
         var statusElement = taskElement.querySelector('.task-status');
@@ -980,9 +981,8 @@ function initApp() {
 
 initApp();
 
-
 // ============================================================
-// ТОЛЬКО ОБНОВЛЕННЫЙ SCAPopupReporter С ГРУППИРОВКОЙ
+// UPDATED SCAPopupReporter WITH GROUPING
 // ============================================================
 
 var SCAPopupReporter = function(reportData) {
@@ -1015,7 +1015,7 @@ SCAPopupReporter.prototype.showPopup = function() {
             justify-content: center;
             align-items: center;
             z-index: 9999;
-            font-family: Ubuntu;
+            font-family: 'Fira Sans', sans-serif;
             padding: 10px;
         }
         .sca-popup {
@@ -1089,7 +1089,7 @@ SCAPopupReporter.prototype.showPopup = function() {
             border-radius: 6px;
             font-size: 14px;
             font-weight: 500;
-            font-family: Ubuntu;
+            font-family: 'Fira Sans', sans-serif;
             cursor: pointer;
             transition: all 0.2s;
             display: inline-flex;
@@ -1127,7 +1127,6 @@ SCAPopupReporter.prototype.showPopup = function() {
             margin-top: 5px;
         }
         
-        /* Компонент-блоки */
         .sca-component-block {
             background: white;
             border-radius: 8px;
@@ -1266,7 +1265,6 @@ SCAPopupReporter.prototype.showPopup = function() {
             max-width: 400px;
         }
         
-        /* Поиск */
         .sca-toolbar {
             display: flex;
             gap: 10px;
@@ -1281,7 +1279,7 @@ SCAPopupReporter.prototype.showPopup = function() {
             border: 1px solid #ddd;
             border-radius: 6px;
             font-size: 13px;
-            font-family: Ubuntu;
+            font-family: 'Fira Sans', sans-serif;
             background: white;
         }
         .sca-search-input:focus {
@@ -1294,7 +1292,7 @@ SCAPopupReporter.prototype.showPopup = function() {
             border-radius: 6px;
             background: white;
             font-size: 13px;
-            font-family: Ubuntu;
+            font-family: 'Fira Sans', sans-serif;
             cursor: pointer;
         }
         .sca-block-count {
@@ -1324,7 +1322,7 @@ SCAPopupReporter.prototype.showPopup = function() {
     popup.innerHTML = `
         <div class="sca-popup-header">
             <div class="sca-popup-title">
-                Результаты SCA анализа
+                SCA Analysis Results
             </div>
             <button class="sca-popup-close" id="closePopup">&times;</button>
         </div>
@@ -1332,40 +1330,40 @@ SCAPopupReporter.prototype.showPopup = function() {
             <div class="sca-stats-grid">
                 <div class="sca-stat-card">
                     <div class="sca-stat-number">${stats.components}</div>
-                    <div class="sca-stat-label">Компонентов</div>
+                    <div class="sca-stat-label">Components</div>
                 </div>
                 <div class="sca-stat-card">
                     <div class="sca-stat-number">${totalVulns}</div>
-                    <div class="sca-stat-label">Уязвимостей</div>
+                    <div class="sca-stat-label">Vulnerabilities</div>
                 </div>
                 <div class="sca-stat-card">
                     <div class="sca-stat-number" style="color:#dc3545">${stats.critical}</div>
-                    <div class="sca-stat-label">Критических</div>
+                    <div class="sca-stat-label">Critical</div>
                 </div>
                 <div class="sca-stat-card">
                     <div class="sca-stat-number" style="color:#fd7e14">${stats.high}</div>
-                    <div class="sca-stat-label">Высоких</div>
+                    <div class="sca-stat-label">High</div>
                 </div>
                 <div class="sca-stat-card">
                     <div class="sca-stat-number" style="color:#ffc107">${stats.moderate}</div>
-                    <div class="sca-stat-label">Средних</div>
+                    <div class="sca-stat-label">Moderate</div>
                 </div>
                 <div class="sca-stat-card">
                     <div class="sca-stat-number" style="color:#28a745">${stats.low}</div>
-                    <div class="sca-stat-label">Низких</div>
+                    <div class="sca-stat-label">Low</div>
                 </div>
             </div>
             
             <div class="sca-toolbar">
-                <input type="text" class="sca-search-input" id="scaSearch" placeholder="Поиск по компоненту...">
+                <input type="text" class="sca-search-input" id="scaSearch" placeholder="Search component...">
                 <select class="sca-filter-select" id="scaFilter">
-                    <option value="all">Все компоненты</option>
-                    <option value="has-issues">С уязвимостями</option>
-                    <option value="no-issues">Без уязвимостей</option>
-                    <option value="critical">Критические</option>
-                    <option value="high">Высокие</option>
+                    <option value="all">All components</option>
+                    <option value="has-issues">With vulnerabilities</option>
+                    <option value="no-issues">Without vulnerabilities</option>
+                    <option value="critical">Critical</option>
+                    <option value="high">High</option>
                 </select>
-                <span class="sca-block-count">${groupedComponents.length} компонентов</span>
+                <span class="sca-block-count">${groupedComponents.length} components</span>
             </div>
             
             <div id="scaComponents">
@@ -1373,8 +1371,8 @@ SCAPopupReporter.prototype.showPopup = function() {
             </div>
         </div>
         <div class="sca-popup-footer">
-            <button id="downloadHtmlBtn" class="sca-btn sca-btn-html">Скачать HTML</button>
-            <button id="downloadJsonBtn" class="sca-btn sca-btn-json">Скачать JSON</button>
+            <button id="downloadHtmlBtn" class="sca-btn sca-btn-html">Download HTML</button>
+            <button id="downloadJsonBtn" class="sca-btn sca-btn-json">Download JSON</button>
         </div>
     `;
     
@@ -1388,7 +1386,7 @@ SCAPopupReporter.prototype.showPopup = function() {
 };
 
 // ============================================================
-// ГРУППИРОВКА КОМПОНЕНТОВ
+// COMPONENT GROUPING
 // ============================================================
 
 SCAPopupReporter.prototype.groupComponents = function() {
@@ -1465,12 +1463,12 @@ SCAPopupReporter.prototype.groupComponents = function() {
 };
 
 // ============================================================
-// РЕНДЕРИНГ БЛОКОВ
+// RENDER COMPONENT BLOCKS
 // ============================================================
 
 SCAPopupReporter.prototype.renderComponentBlocks = function(components) {
     if (!components || components.length === 0) {
-        return '<div class="sca-empty-state">Компоненты не обнаружены</div>';
+        return '<div class="sca-empty-state">No components found</div>';
     }
     
     var html = '';
@@ -1494,13 +1492,13 @@ SCAPopupReporter.prototype.renderComponentBlocks = function(components) {
         
         var badgeHtml = '';
         if (!hasVulns) {
-            badgeHtml = '<span class="sca-component-badge ok">✅ Безопасен</span>';
+            badgeHtml = '<span class="sca-component-badge ok"><i class="fas fa-check"></i> Safe</span>';
         } else if (hasCritical) {
-            badgeHtml = '<span class="sca-component-badge critical">🔴 Критические</span>';
+            badgeHtml = '<span class="sca-component-badge critical"><i class="fas fa-times"></i> Critical</span>';
         } else if (hasHigh) {
-            badgeHtml = '<span class="sca-component-badge issues">🟠 Высокие</span>';
+            badgeHtml = '<span class="sca-component-badge issues"><i class="fas fa-times"></i> High</span>';
         } else {
-            badgeHtml = '<span class="sca-component-badge issues">🟡 Есть уязвимости</span>';
+            badgeHtml = '<span class="sca-component-badge issues"><i class="fas fa-times"></i> Has vulnerabilities</span>';
         }
         
         var statsHtml = '';
@@ -1514,13 +1512,13 @@ SCAPopupReporter.prototype.renderComponentBlocks = function(components) {
                 else if (sev === 'LOW') lowCount++;
             }
             var parts = [];
-            if (criticalCount > 0) parts.push('<span style="color:#dc3545;">🔴 ' + criticalCount + '</span>');
-            if (highCount > 0) parts.push('<span style="color:#fd7e14;">🟠 ' + highCount + '</span>');
-            if (moderateCount > 0) parts.push('<span style="color:#ffc107;">🟡 ' + moderateCount + '</span>');
-            if (lowCount > 0) parts.push('<span style="color:#28a745;">🟢 ' + lowCount + '</span>');
+            if (criticalCount > 0) parts.push('<span style="color:#dc3545;"><i class="fas fa-times"></i> ' + criticalCount + '</span>');
+            if (highCount > 0) parts.push('<span style="color:#fd7e14;"><i class="fas fa-times"></i> ' + highCount + '</span>');
+            if (moderateCount > 0) parts.push('<span style="color:#ffc107;"><i class="fas fa-exclamation-triangle"></i> ' + moderateCount + '</span>');
+            if (lowCount > 0) parts.push('<span style="color:#28a745;"><i class="fas fa-check"></i> ' + lowCount + '</span>');
             statsHtml = parts.join(' ');
         } else {
-            statsHtml = '<span class="sca-no-vulns-text">✅ Нет уязвимостей</span>';
+            statsHtml = '<span class="sca-no-vulns-text"><i class="fas fa-check"></i> No vulnerabilities</span>';
         }
         
         var tableHtml = '';
@@ -1531,18 +1529,18 @@ SCAPopupReporter.prototype.renderComponentBlocks = function(components) {
                         <tr>
                             <th style="width:30px;">#</th>
                             <th style="min-width:120px;">CVE ID</th>
-                            <th>Описание</th>
-                            <th style="width:100px;">Серьезность</th>
-                            <th style="min-width:140px;">Рекомендация</th>
+                            <th>Description</th>
+                            <th style="width:100px;">Severity</th>
+                            <th style="min-width:140px;">Remediation</th>
                         </tr>
                     </thead>
                     <tbody>
                         ${vulns.map(function(vuln, idx) {
                             var severity = this.getSeverity(vuln);
                             var id = vuln.id || vuln.vulnerability?.id || 'N/A';
-                            var description = vuln.description || vuln.vulnerability?.description || 'Нет описания';
+                            var description = vuln.description || vuln.vulnerability?.description || 'No description';
                             var url = vuln.source?.url || vuln.vulnerability?.source?.url || 'https://osv.dev/vulnerability/' + id;
-                            var remediation = vuln.remediation || vuln.vulnerability?.remediation || vuln.analysis?.detail || 'Обновите до последней версии';
+                            var remediation = vuln.remediation || vuln.vulnerability?.remediation || vuln.analysis?.detail || 'Update to latest version';
                             var severityClass = 'sca-severity-' + severity;
                             
                             return `
@@ -1579,7 +1577,7 @@ SCAPopupReporter.prototype.renderComponentBlocks = function(components) {
                 </div>
                 <div class="sca-component-body ${hasVulns ? 'open' : ''}" id="${bodyId}">
                     ${tableHtml}
-                    ${!hasVulns ? '<div style="text-align:center;padding:12px;color:#28a745;font-size:13px;">✅ Все проверки пройдены, уязвимостей не обнаружено</div>' : ''}
+                    ${!hasVulns ? '<div style="text-align:center;padding:12px;color:#28a745;font-size:13px;"><i class="fas fa-check"></i> All checks passed, no vulnerabilities found</div>' : ''}
                 </div>
             </div>
         `;
@@ -1589,7 +1587,7 @@ SCAPopupReporter.prototype.renderComponentBlocks = function(components) {
 };
 
 // ============================================================
-// ПОЛУЧЕНИЕ SEVERITY
+// GET SEVERITY
 // ============================================================
 
 SCAPopupReporter.prototype.getSeverity = function(vuln) {
@@ -1644,7 +1642,7 @@ SCAPopupReporter.prototype.escapeHtml = function(str) {
 };
 
 // ============================================================
-// СТАТИСТИКА
+// EXTRACT STATS
 // ============================================================
 
 SCAPopupReporter.prototype.extractStats = function() {
@@ -1675,7 +1673,7 @@ SCAPopupReporter.prototype.extractStats = function() {
 };
 
 // ============================================================
-// ИНИЦИАЛИЗАЦИЯ РАСКРЫТИЯ
+// INIT TOGGLES
 // ============================================================
 
 SCAPopupReporter.prototype.initComponentToggles = function(overlay) {
@@ -1692,7 +1690,7 @@ SCAPopupReporter.prototype.initComponentToggles = function(overlay) {
 };
 
 // ============================================================
-// ПОИСК И ФИЛЬТРАЦИЯ
+// SEARCH AND FILTER
 // ============================================================
 
 SCAPopupReporter.prototype.initSearchFilter = function(overlay) {
@@ -1732,7 +1730,7 @@ SCAPopupReporter.prototype.initSearchFilter = function(overlay) {
         });
         
         if (countSpan) {
-            countSpan.textContent = visibleCount + ' компонентов';
+            countSpan.textContent = visibleCount + ' components';
         }
     }
     
@@ -1740,14 +1738,10 @@ SCAPopupReporter.prototype.initSearchFilter = function(overlay) {
     if (filterSelect) filterSelect.addEventListener('change', filterBlocks);
 };
 
-// ============================================================
-// СКАЧИВАНИЕ HTML
-// ============================================================
-
 SCAPopupReporter.prototype.downloadHTML = function() {
     try {
         var defaultName = 'sca-report-' + new Date().toISOString().split('T')[0];
-        var reportName = prompt('Введите имя отчета:', defaultName);
+        var reportName = prompt('Enter report name:', defaultName);
         if (reportName === null) return;
         if (reportName.trim() === '') reportName = defaultName;
         reportName = reportName.trim().replace(/[<>:"/\\|?*]/g, '_').replace(/\s+/g, '_').substring(0, 100);
@@ -1760,14 +1754,14 @@ SCAPopupReporter.prototype.downloadHTML = function() {
         link.download = reportName + '.html';
         link.click();
         URL.revokeObjectURL(url);
-        this.showNotification('HTML отчет "' + reportName + '.html" успешно скачан', 'success');
+        this.showNotification('HTML report "' + reportName + '.html" downloaded successfully', 'success');
     } catch (error) {
-        this.showNotification('Ошибка при скачивании HTML', 'error');
+        this.showNotification('Error downloading HTML', 'error');
     }
 };
 
 // ============================================================
-// СКАЧИВАНИЕ JSON
+// DOWNLOAD JSON
 // ============================================================
 
 SCAPopupReporter.prototype.downloadJSON = function() {
@@ -1780,21 +1774,21 @@ SCAPopupReporter.prototype.downloadJSON = function() {
         link.download = 'sca-report-' + new Date().toISOString().split('T')[0] + '.json';
         link.click();
         URL.revokeObjectURL(url);
-        this.showNotification('JSON отчет успешно скачан', 'success');
+        this.showNotification('JSON report downloaded successfully', 'success');
     } catch (error) {
-        this.showNotification('Ошибка при скачивании JSON', 'error');
+        this.showNotification('Error downloading JSON', 'error');
     }
 };
 
 // ============================================================
-// УВЕДОМЛЕНИЯ
+// NOTIFICATIONS
 // ============================================================
 
 SCAPopupReporter.prototype.showNotification = function(message, type) {
     type = type || 'success';
     var notification = document.createElement('div');
     notification.textContent = message;
-    notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: ' + (type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6') + '; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; animation: slideIn 0.3s ease; font-family: "Ubuntu", sans-serif; font-size: 14px;';
+    notification.style.cssText = 'position: fixed; bottom: 20px; right: 20px; background: ' + (type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6') + '; color: white; padding: 12px 20px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 10001; animation: slideIn 0.3s ease; font-family: "Fira Sans", sans-serif; font-size: 14px;';
     document.body.appendChild(notification);
     setTimeout(function() {
         notification.style.opacity = '0';
@@ -1809,7 +1803,7 @@ SCAPopupReporter.prototype.showNotification = function(message, type) {
 };
 
 // ============================================================
-// ГЕНЕРАЦИЯ ПОЛНОГО HTML ОТЧЕТА
+// GENERATE FULL HTML REPORT
 // ============================================================
 
 SCAPopupReporter.prototype.generateFullHTMLReport = function() {
@@ -1835,16 +1829,16 @@ SCAPopupReporter.prototype.generateFullHTMLReport = function() {
             if (severity === 'HIGH') hasHigh = true;
         }
         
-        var badgeText = hasVulns ? (hasCritical ? '🔴 Критические' : hasHigh ? '🟠 Высокие' : '🟡 Есть уязвимости') : '✅ Безопасен';
+        var badgeText = hasVulns ? (hasCritical ? '🔴 Critical' : hasHigh ? '🟠 High' : '<i class="fas fa-times"></i>Has vulnerabilities') : '<i class="fas fa-check"></i> Safe';
         
         var vulnRows = '';
         if (hasVulns) {
             vulnRows = vulns.map(function(vuln, idx) {
                 var severity = this.getSeverity(vuln);
                 var id = vuln.id || vuln.vulnerability?.id || 'N/A';
-                var description = vuln.description || vuln.vulnerability?.description || 'Нет описания';
+                var description = vuln.description || vuln.vulnerability?.description || 'No description';
                 var url = vuln.source?.url || vuln.vulnerability?.source?.url || 'https://osv.dev/vulnerability/' + id;
-                var remediation = vuln.remediation || vuln.vulnerability?.remediation || vuln.analysis?.detail || 'Обновите до последней версии';
+                var remediation = vuln.remediation || vuln.vulnerability?.remediation || vuln.analysis?.detail || 'Update to latest version';
                 var severityClass = 'severity-' + severity;
                 
                 return '<tr><td>' + (idx + 1) + '</td><td><a href="' + url + '" target="_blank" class="cve-link">' + id + '</a></td><td>' + this.escapeHtml(description.substring(0, 150)) + (description.length > 150 ? '...' : '') + '</td><td class="' + severityClass + '">' + severity + '</td><td style="font-size:11px;color:#6c757d;">' + this.escapeHtml(remediation) + '</td></tr>';
@@ -1859,18 +1853,18 @@ SCAPopupReporter.prototype.generateFullHTMLReport = function() {
                         <span class="component-version">v${this.escapeHtml(comp.version)}</span>
                         <span class="badge${hasVulns ? (hasCritical ? '-critical' : '-issues') : '-ok'}">${badgeText}</span>
                     </div>
-                    <div class="component-stats">${hasVulns ? vulns.length + ' уязвимостей' : '✅ Безопасен'}</div>
+                    <div class="component-stats">${hasVulns ? vulns.length + ' vulnerabilities' : '<i class="fas fa-check"></i> Safe'}</div>
                 </div>
-                ${hasVulns ? `<div class="component-body"><table class="vuln-table"><thead><tr><th>#</th><th>CVE ID</th><th>Описание</th><th>Серьезность</th><th>Рекомендация</th></tr></thead><tbody>${vulnRows}</tbody></table></div>` : `<div class="component-body" style="padding:10px 16px;color:#28a745;font-size:13px;">✅ Все проверки пройдены, уязвимостей не обнаружено</div>`}
+                ${hasVulns ? `<div class="component-body"><table class="vuln-table"><thead><tr><th>#</th><th>CVE ID</th><th>Description</th><th>Severity</th><th>Remediation</th></tr></thead><tbody>${vulnRows}</tbody></table></div>` : `<div class="component-body" style="padding:10px 16px;color:#28a745;font-size:13px;"><i class="fas fa-check"></i> All checks passed, no vulnerabilities found</div>`}
             </div>
         `;
     }
     
-    return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">\n    <title>Геркулес | SCA - ' + new Date().toLocaleDateString() + '</title>\n    <style>\n        * { margin: 0; padding: 0; box-sizing: border-box; }\n        body { font-family: "Ubuntu"; background: white; padding: 20px; color: #333; }\n        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }\n        .header { background: black; color: white; padding: 40px; }\n        .header h1 { font-size: 32px; margin-bottom: 10px; }\n        .header .meta { opacity: 0.9; font-size: 14px; }\n        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }\n        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }\n        .stat-card .label { font-size: 14px; color: #6c757d; margin-bottom: 10px; }\n        .stat-card .value { font-size: 36px; font-weight: bold; }\n        .content { padding: 30px; }\n        .component-block { background: white; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }\n        .component-block.issues { }\n        .component-block.critical { border-left-color: #dc3545; }\n        .component-header { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; background: #fafbfc; }\n        .component-name { font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }\n        .component-version { font-weight: 400; color: #6c757d; font-size: 12px; }\n        .component-stats { font-size: 12px; color: #6c757d; }\n        .badge-ok { background: #d4edda; color: #155724; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .badge-issues { background: #fff3cd; color: #856404; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .badge-critical { background: #f8d7da; color: #721c24; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .component-body { padding: 0 16px 16px 16px; border-top: 1px solid #f0f0f0; }\n        .vuln-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }\n        .vuln-table th { background: #f8f9fa; padding: 8px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }\n        .vuln-table td { padding: 6px 12px; border-bottom: 1px solid #e9ecef; }\n        .vuln-table tr:hover { background: #f8f9fa; }\n        .severity-CRITICAL { color: #dc3545; font-weight: bold; }\n        .severity-HIGH { color: #fd7e14; font-weight: bold; }\n        .severity-MODERATE { color: #ffc107; font-weight: bold; }\n        .severity-MEDIUM { color: #ffc107; font-weight: bold; }\n        .severity-LOW { color: #28a745; font-weight: bold; }\n        .cve-link { color: #0066cc; text-decoration: none; }\n        .cve-link:hover { text-decoration: underline; }\n        .footer { background: #f8f9fa; padding: 20px 30px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }\n        @media (max-width: 768px) {\n            .stats { grid-template-columns: repeat(3, 1fr); padding: 12px 16px; }\n            .content { padding: 12px 16px; }\n            .header { padding: 16px 20px; }\n            .component-header { flex-direction: column; align-items: flex-start; gap: 4px; }\n            .vuln-table { font-size: 10px; }\n            .vuln-table th, .vuln-table td { padding: 4px 6px; }\n        }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <div class="header">\n            <h1>Геркулес | SCA</h1>\n            <div class="meta">Дата генерации: ' + new Date().toLocaleString() + '</div>\n        </div>\n        <div class="stats">\n            <div class="stat-card"><div class="label">Компонентов</div><div class="value" style="color:#667eea;">' + stats.components + '</div></div>\n            <div class="stat-card"><div class="label">Уязвимостей</div><div class="value" style="color:#fd7e14;">' + totalVulns + '</div></div>\n            <div class="stat-card"><div class="label">Критических</div><div class="value" style="color:#dc3545;">' + stats.critical + '</div></div>\n            <div class="stat-card"><div class="label">Высоких</div><div class="value" style="color:#fd7e14;">' + stats.high + '</div></div>\n            <div class="stat-card"><div class="label">Средних</div><div class="value" style="color:#ffc107;">' + stats.moderate + '</div></div>\n            <div class="stat-card"><div class="label">Низких</div><div class="value" style="color:#28a745;">' + stats.low + '</div></div>\n        </div>\n        <div class="content">\n            <h3 style="margin-bottom:16px;font-size:16px;">Все компоненты (' + groupedComponents.length + ')</h3>\n            ' + (groupedComponents.length > 0 ? componentBlocks : '<div style="text-align:center;padding:40px;color:#999;">Компоненты не обнаружены</div>') + '\n        </div>\n        <div class="footer">\n            <p>Сгенерировано с помощью Геркулес | Анализ выполнены на основе данных публичных баз CVE</p>\n            <p>Рекомендуется обновить уязвимые компоненты до последних версий</p>\n        </div>\n    </div>\n</body>\n</html>';
+    return '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n    <title>Hercules | SCA - ' + new Date().toLocaleDateString() + '</title>\n    <style>\n        * { margin: 0; padding: 0; box-sizing: border-box; }\n        body { font-family: "Fira Sans", sans-serif; background: white; padding: 20px; color: #333; }\n        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }\n        .header { background: black; color: white; padding: 40px; }\n        .header h1 { font-size: 32px; margin-bottom: 10px; }\n        .header .meta { opacity: 0.9; font-size: 14px; }\n        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }\n        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }\n        .stat-card .label { font-size: 14px; color: #6c757d; margin-bottom: 10px; }\n        .stat-card .value { font-size: 36px; font-weight: bold; }\n        .content { padding: 30px; }\n        .component-block { background: white; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }\n        .component-block.issues { }\n        .component-block.critical { border-left-color: #dc3545; }\n        .component-header { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; background: #fafbfc; }\n        .component-name { font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }\n        .component-version { font-weight: 400; color: #6c757d; font-size: 12px; }\n        .component-stats { font-size: 12px; color: #6c757d; }\n        .badge-ok { background: #d4edda; color: #155724; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .badge-issues { background: #fff3cd; color: #856404; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .badge-critical { background: #f8d7da; color: #721c24; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .component-body { padding: 0 16px 16px 16px; border-top: 1px solid #f0f0f0; }\n        .vuln-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }\n        .vuln-table th { background: #f8f9fa; padding: 8px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }\n        .vuln-table td { padding: 6px 12px; border-bottom: 1px solid #e9ecef; }\n        .vuln-table tr:hover { background: #f8f9fa; }\n        .severity-CRITICAL { color: #dc3545; font-weight: bold; }\n        .severity-HIGH { color: #fd7e14; font-weight: bold; }\n        .severity-MODERATE { color: #ffc107; font-weight: bold; }\n        .severity-MEDIUM { color: #ffc107; font-weight: bold; }\n        .severity-LOW { color: #28a745; font-weight: bold; }\n        .cve-link { color: #0066cc; text-decoration: none; }\n        .cve-link:hover { text-decoration: underline; }\n        .footer { background: #f8f9fa; padding: 20px 30px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }\n        @media (max-width: 768px) {\n            .stats { grid-template-columns: repeat(3, 1fr); padding: 12px 16px; }\n            .content { padding: 12px 16px; }\n            .header { padding: 16px 20px; }\n            .component-header { flex-direction: column; align-items: flex-start; gap: 4px; }\n            .vuln-table { font-size: 10px; }\n            .vuln-table th, .vuln-table td { padding: 4px 6px; }\n        }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <div class="header">\n            <h1>Hercules | SCA</h1>\n            <div class="meta">Generated: ' + new Date().toLocaleString() + '</div>\n        </div>\n        <div class="stats">\n            <div class="stat-card"><div class="label">Components</div><div class="value" style="color:#667eea;">' + stats.components + '</div></div>\n            <div class="stat-card"><div class="label">Vulnerabilities</div><div class="value" style="color:#fd7e14;">' + totalVulns + '</div></div>\n            <div class="stat-card"><div class="label">Critical</div><div class="value" style="color:#dc3545;">' + stats.critical + '</div></div>\n            <div class="stat-card"><div class="label">High</div><div class="value" style="color:#fd7e14;">' + stats.high + '</div></div>\n            <div class="stat-card"><div class="label">Moderate</div><div class="value" style="color:#ffc107;">' + stats.moderate + '</div></div>\n            <div class="stat-card"><div class="label">Low</div><div class="value" style="color:#28a745;">' + stats.low + '</div></div>\n        </div>\n        <div class="content">\n            <h3 style="margin-bottom:16px;font-size:16px;">All components (' + groupedComponents.length + ')</h3>\n            ' + (groupedComponents.length > 0 ? componentBlocks : '<div style="text-align:center;padding:40px;color:#999;">No components found</div>') + '\n        </div>\n        <div class="footer">\n            <p>Generated with Hercules | Analysis based on public CVE databases</p>\n            <p>It is recommended to update vulnerable components to the latest versions</p>\n        </div>\n    </div>\n</body>\n</html>';
 };
 
 // ============================================================
-// ДОБАВЛЕНИЕ ОБРАБОТЧИКОВ
+// ADD EVENT LISTENERS
 // ============================================================
 
 SCAPopupReporter.prototype.addEventListeners = function(overlay) {
@@ -1924,24 +1918,24 @@ SCAPopupReporter.prototype.addEventListeners = function(overlay) {
 };
 
 // ============================================================
-// ОБРАБОТКА ДАННЫХ ОТЧЕТА
+// HANDLE REPORT DATA
 // ============================================================
 
 function handleReportData(reportData) {
     if (!reportData) {
-        alert('Ошибка: нет данных для отображения');
+        alert('Error: no data to display');
         return;
     }
     try {
         var reporter = new SCAPopupReporter(reportData);
         reporter.showPopup();
     } catch (error) {
-        alert('Ошибка при отображении отчета: ' + error.message);
+        alert('Error displaying report: ' + error.message);
     }
 }
 
 // ============================================================
-// ГЛОБАЛЬНЫЕ ЭКСПОРТЫ (сохраняем оригинальные)
+// GLOBAL EXPORTS
 // ============================================================
 
 window.showToolNotification = showToolNotification;

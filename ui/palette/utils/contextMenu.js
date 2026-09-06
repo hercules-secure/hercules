@@ -1,8 +1,8 @@
 // ============================================================
-// КОНТЕКСТНОЕ МЕНЮ ДЛЯ ЭЛЕМЕНТОВ НА ХОЛСТЕ
+// CONTEXT MENU FOR CANVAS ELEMENTS
 // ============================================================
 
-// Создаем контекстное меню
+// Create context menu
 var contextMenu = document.createElement('div');
 contextMenu.id = 'elementContextMenu';
 contextMenu.style.cssText = `
@@ -15,23 +15,23 @@ contextMenu.style.cssText = `
     min-width: 220px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     z-index: 100000;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', 'Fira Code', sans-serif;
     overflow: hidden;
 `;
 contextMenu.innerHTML = `
-    <!-- Анализ -->
+    <!-- Analyze -->
     <div class="context-menu-item" data-action="analyze">
-        <i class="fas fa-microscope" style="color: #8B5CF6;"></i> Анализ
+        <i class="fas fa-microscope" style="color: #8B5CF6;"></i> Analyze
     </div>
     
-    <!-- Лог -->
+    <!-- Log -->
     <div class="context-menu-item" data-action="logs">
-        <i class="fas fa-list"></i> Лог
+        <i class="fas fa-list"></i> Log
     </div>
     
-    <!-- Проблемы -->
+    <!-- Vulnerabilities -->
     <div class="context-menu-item" data-action="vulnerabilities">
-        <i class="fas fa-shield-alt" style="color: #EF4444;"></i> Проблемы
+        <i class="fas fa-shield-alt" style="color: #EF4444;"></i> Vulnerabilities
         <span id="vulnCountBadge" style="
             margin-left: auto;
             background: #EF4444;
@@ -44,21 +44,21 @@ contextMenu.innerHTML = `
         ">0</span>
     </div>
     
-    <!-- Свойства -->
+    <!-- Properties -->
     <div class="context-menu-item" data-action="properties">
-        <i class="fas fa-cog"></i> Свойства
+        <i class="fas fa-cog"></i> Properties
     </div>
     
     <div class="context-menu-divider"></div>
     
-    <!-- Удалить -->
+    <!-- Delete -->
     <div class="context-menu-item danger" data-action="delete">
-        <i class="fas fa-trash"></i> Удалить
+        <i class="fas fa-trash"></i> Delete
     </div>
 `;
 document.body.appendChild(contextMenu);
 
-// Добавляем стили
+// Add styles
 var contextMenuStyle = document.createElement('style');
 contextMenuStyle.textContent = `
     .context-menu-item {
@@ -70,7 +70,7 @@ contextMenuStyle.textContent = `
         font-size: 13px;
         color: #1a1a2e;
         transition: background 0.15s;
-        font-family: 'Ubuntu', sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     }
     .context-menu-item:hover {
         background: #f3f4f6;
@@ -106,19 +106,32 @@ document.head.appendChild(contextMenuStyle);
 var contextMenuTarget = null;
 
 // ============================================================
-// ОБНОВЛЕНИЕ МЕНЮ
+// UPDATE MENU
 // ============================================================
 
 function updateContextMenu(element) {
+    // Get menu items
+    var analyzeItem = contextMenu.querySelector('[data-action="analyze"]');
+    var logsItem = contextMenu.querySelector('[data-action="logs"]');
     var vulnItem = contextMenu.querySelector('[data-action="vulnerabilities"]');
     var badge = vulnItem ? vulnItem.querySelector('#vulnCountBadge') : null;
-    var logsItem = contextMenu.querySelector('[data-action="logs"]');
-    var analyzeItem = contextMenu.querySelector('[data-action="analyze"]');
+
+    // ------------------------------------------------------------------
+    // 1. Check if element is a tool (Echolot, Scout, etc.)
+    // Look for DOM element on canvas by ID and check type-tool class
+    // ------------------------------------------------------------------
+    var targetDom = element && element.id 
+        ? document.querySelector(`.canvas-element[data-id="${element.id}"]`) 
+        : null;
     
+    var isTool = targetDom && targetDom.classList.contains('type-tool');
+
+    // ------------------------------------------------------------------
+    // 2. Check for vulnerabilities (for badge if needed)
+    // ------------------------------------------------------------------
     var hasVuln = false;
     var vulnCount = 0;
     
-    // Проверяем уязвимости
     if (element && element.bomRef && window.vulnerabilitiesMap) {
         var vulns = window.vulnerabilitiesMap[element.bomRef];
         if (vulns && vulns.length > 0) {
@@ -133,13 +146,17 @@ function updateContextMenu(element) {
             vulnCount = element.componentData.vulnerabilityCount || 0;
         }
     }
+
+    // ------------------------------------------------------------------
+    // 3. Apply show/hide rules for menu items
+    // ------------------------------------------------------------------
     
-    // АНАЛИЗ - показываем для всех
+    // --- ANALYZE: hide for tools ---
     if (analyzeItem) {
-        analyzeItem.style.display = 'flex';
+        analyzeItem.style.display = isTool ? 'none' : 'flex';
     }
-    
-    // Проверка: является ли элемент проектным
+
+    // --- LOG: hide for project elements ---
     var isProjectItem = element && (
         element.type === 'project-root' ||
         element.type === 'project-folder' ||
@@ -156,25 +173,28 @@ function updateContextMenu(element) {
         element.isCode === true
     );
     
-    // ЛОГ - скрываем для проектных
     if (logsItem) {
         logsItem.style.display = isProjectItem ? 'none' : 'flex';
     }
-    
-    // ПРОБЛЕМЫ - показываем всегда, но с бейджем если есть
+
+    // --- VULNERABILITIES: hide for tools ---
     if (vulnItem) {
-        vulnItem.style.display = 'flex';
-        if (hasVuln && badge) {
-            badge.textContent = vulnCount;
-            badge.style.display = 'inline-block';
-        } else if (badge) {
-            badge.style.display = 'none';
+        vulnItem.style.display = isTool ? 'none' : 'flex';
+        
+        // Show badge ONLY if there are vulnerabilities and NOT a tool
+        if (badge) {
+            if (hasVuln && !isTool) {
+                badge.textContent = vulnCount;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
         }
     }
 }
 
 // ============================================================
-// ОБРАБОТЧИК ПРАВОГО КЛИКА
+// RIGHT CLICK HANDLER
 // ============================================================
 
 document.addEventListener('contextmenu', function(e) {
@@ -230,10 +250,10 @@ document.addEventListener('click', function(e) {
 });
 
 // ============================================================
-// ДЕЙСТВИЯ МЕНЮ
+// MENU ACTIONS
 // ============================================================
 
-// АНАЛИЗ
+// ANALYZE
 document.querySelector('#elementContextMenu .context-menu-item[data-action="analyze"]').addEventListener('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -241,13 +261,13 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="anal
         if (typeof openToolSelectionModal === 'function') {
             openToolSelectionModal();
         } else if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Функция анализа не найдена', 'error');
+            showCustomAlert('Error', 'Analysis function not found', 'error');
         }
     }
     closeContextMenu();
 });
 
-// ЛОГ
+// LOG
 document.querySelector('#elementContextMenu .context-menu-item[data-action="logs"]').addEventListener('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -257,18 +277,17 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="logs
     closeContextMenu();
 });
 
-// ПРОБЛЕМЫ - ИСПРАВЛЕННАЯ ВЕРСИЯ
+// VULNERABILITIES
 document.querySelector('#elementContextMenu .context-menu-item[data-action="vulnerabilities"]').addEventListener('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
     if (contextMenuTarget) {
-        // Всегда показываем модальное окно "Проблемы"
         showVulnerabilitiesModal(contextMenuTarget);
     }
     closeContextMenu();
 });
 
-// СВОЙСТВА
+// PROPERTIES
 document.querySelector('#elementContextMenu .context-menu-item[data-action="properties"]').addEventListener('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -294,7 +313,7 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="prop
     closeContextMenu();
 });
 
-// УДАЛИТЬ
+// DELETE
 document.querySelector('#elementContextMenu .context-menu-item[data-action="delete"]').addEventListener('click', function(e) {
     e.stopPropagation();
     e.preventDefault();
@@ -305,15 +324,15 @@ document.querySelector('#elementContextMenu .context-menu-item[data-action="dele
 });
 
 // ============================================================
-// МОДАЛЬНОЕ ОКНО "ПРОБЛЕМЫ"
+// VULNERABILITIES MODAL
 // ============================================================
 
 function showVulnerabilitiesModal(element) {
-    // Проверяем наличие уязвимостей
+    // Check for vulnerabilities
     var hasVuln = false;
     var vulnCount = 0;
     var vulns = [];
-    var elementName = element ? (element.name || 'Элемент') : 'Неизвестно';
+    var elementName = element ? (element.name || 'Element') : 'Unknown';
     
     if (element && element.bomRef && window.vulnerabilitiesMap) {
         var foundVulns = window.vulnerabilitiesMap[element.bomRef];
@@ -334,7 +353,7 @@ function showVulnerabilitiesModal(element) {
         }
     }
     
-    // Создаем модальное окно
+    // Create modal
     var overlay = document.createElement('div');
     overlay.id = 'vulnerabilitiesModal';
     overlay.style.cssText = `
@@ -350,10 +369,10 @@ function showVulnerabilitiesModal(element) {
         justify-content: center;
         align-items: center;
         animation: alertFadeIn 0.3s ease;
-        font-family: 'Ubuntu', sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     `;
     
-    // Формируем список уязвимостей
+    // Build vulnerabilities list
     var vulnListHtml = '';
     if (hasVuln && vulns.length > 0) {
         vulnListHtml = vulns.map(function(v, i) {
@@ -363,19 +382,19 @@ function showVulnerabilitiesModal(element) {
             
             if (severity === 'CRITICAL' || severity === 'critical') {
                 severityColor = '#EF4444';
-                severityLabel = 'Критическая';
+                severityLabel = 'Critical';
             } else if (severity === 'HIGH' || severity === 'high') {
                 severityColor = '#F59E0B';
-                severityLabel = 'Высокая';
+                severityLabel = 'High';
             } else if (severity === 'MODERATE' || severity === 'moderate' || severity === 'MEDIUM' || severity === 'medium') {
                 severityColor = '#FBBF24';
-                severityLabel = 'Средняя';
+                severityLabel = 'Medium';
             } else if (severity === 'LOW' || severity === 'low') {
                 severityColor = '#10B981';
-                severityLabel = 'Низкая';
+                severityLabel = 'Low';
             } else if (severity === 'INFO' || severity === 'info') {
                 severityColor = '#3B82F6';
-                severityLabel = 'Информация';
+                severityLabel = 'Info';
             }
             
             return `
@@ -386,7 +405,7 @@ function showVulnerabilitiesModal(element) {
                     border-radius: 8px;
                 ">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <strong style="color: #1f2937;">${i+1}. ${v.id || v.title || v.name || 'Уязвимость'}</strong>
+                        <strong style="color: #1f2937;">${i+1}. ${v.id || v.title || v.name || 'Vulnerability'}</strong>
                         <span style="
                             background: ${severityColor};
                             color: white;
@@ -397,16 +416,16 @@ function showVulnerabilitiesModal(element) {
                         ">${severityLabel}</span>
                     </div>
                     <div style="margin-top: 6px; font-size: 13px; color: #4b5563;">
-                        ${v.description || v.message || 'Нет описания'}
+                        ${v.description || v.message || 'No description'}
                     </div>
                     ${v.source && v.source.url ? `
                         <div style="margin-top: 6px;">
-                            <a href="${v.source.url}" target="_blank" style="color: #3B82F6; font-size: 12px;">Подробнее</a>
+                            <a href="${v.source.url}" target="_blank" style="color: #3B82F6; font-size: 12px;">Details</a>
                         </div>
                     ` : ''}
                     ${v.remediation ? `
                         <div style="margin-top: 6px; font-size: 12px; color: #10B981;">
-                            <strong>Решение:</strong> ${v.remediation}
+                            <strong>Remediation:</strong> ${v.remediation}
                         </div>
                     ` : ''}
                 </div>
@@ -416,8 +435,8 @@ function showVulnerabilitiesModal(element) {
         vulnListHtml = `
             <div style="text-align: center; padding: 40px 20px; color: #6c757d;">
                 <i class="fas fa-check-circle" style="font-size: 48px; color: #10B981; display: block; margin-bottom: 16px;"></i>
-                <h4 style="margin: 0; color: #495057;">Уязвимостей не найдено</h4>
-                <p style="margin: 8px 0 0 0; font-size: 14px;">Для компонента "${elementName}" уязвимости не обнаружены</p>
+                <h4 style="margin: 0; color: #495057;">No vulnerabilities found</h4>
+                <p style="margin: 8px 0 0 0; font-size: 14px;">No vulnerabilities detected for component "${elementName}"</p>
             </div>
         `;
     }
@@ -447,11 +466,11 @@ function showVulnerabilitiesModal(element) {
                 <div>
                     <h3 style="margin: 0; font-size: 18px; color: #1f2937; display: flex; align-items: center; gap: 10px;">
                         <i class="fas fa-shield-alt" style="color: #EF4444;"></i>
-                        Уязвимости
+                        Vulnerabilities
                         ${hasVuln ? `<span style="font-size: 14px; color: #6c757d; font-weight: 400;">(${vulnCount})</span>` : ''}
                     </h3>
                     <div style="font-size: 13px; color: #6b7280; margin-top: 2px;">
-                        Компонент: ${elementName}
+                        Component: ${elementName}
                     </div>
                 </div>
                 <button onclick="closeVulnerabilitiesModal()" style="
@@ -476,10 +495,10 @@ function showVulnerabilitiesModal(element) {
                     border: none;
                     border-radius: 8px;
                     cursor: pointer;
-                    font-family: Ubuntu, sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     font-size: 14px;
                 ">
-                    <i class="fas fa-check"></i> Закрыть
+                    <i class="fas fa-check"></i> Close
                 </button>
             </div>
         </div>
@@ -487,14 +506,14 @@ function showVulnerabilitiesModal(element) {
     
     document.body.appendChild(overlay);
     
-    // Закрытие по клику на фон
+    // Close on backdrop click
     overlay.addEventListener('click', function(e) {
         if (e.target === overlay) {
             closeVulnerabilitiesModal();
         }
     });
     
-    // Закрытие по Escape
+    // Close on Escape
     var escHandler = function(e) {
         if (e.key === 'Escape') {
             closeVulnerabilitiesModal();
@@ -509,12 +528,11 @@ function closeVulnerabilitiesModal() {
     if (modal) {
         modal.remove();
     }
-    // Удаляем обработчик Escape
     document.removeEventListener('keydown', closeVulnerabilitiesModal._escHandler);
 }
 
 // ============================================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
+// HELPER FUNCTIONS
 // ============================================================
 
 function escapeHtml(str) {
@@ -534,7 +552,7 @@ function countFiles(node) {
     return count;
 }
 
-// Свойства для элементов кода
+// Code element properties
 function showCodeElementProperties(element) {
     var modal = document.createElement('div');
     modal.style.cssText = `
@@ -548,34 +566,34 @@ function showCodeElementProperties(element) {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: Ubuntu, sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     `;
     
     var properties = [
-        { label: 'Тип', value: element.type || 'Элемент кода' },
-        { label: 'Имя', value: element.name || 'Без имени' },
+        { label: 'Type', value: element.type || 'Code element' },
+        { label: 'Name', value: element.name || 'Unnamed' },
     ];
     
     if (element.functionData) {
         var fn = element.functionData;
         if (fn.params && fn.params.length > 0) {
-            properties.push({ label: 'Параметры', value: fn.params.join(', ') });
+            properties.push({ label: 'Parameters', value: fn.params.join(', ') });
         }
         if (fn.type) {
-            properties.push({ label: 'Тип функции', value: fn.type });
+            properties.push({ label: 'Function type', value: fn.type });
         }
         if (fn.file) {
-            properties.push({ label: 'Файл', value: fn.file });
+            properties.push({ label: 'File', value: fn.file });
         }
     }
     
     if (element.fields && element.fields.length > 0) {
-        properties.push({ label: 'Поля', value: element.fields.join(', ') });
+        properties.push({ label: 'Fields', value: element.fields.join(', ') });
     }
     
     if (element.methods && element.methods.length > 0) {
         var methodNames = element.methods.map(function(m) { return m.name || m; });
-        properties.push({ label: 'Методы', value: methodNames.join(', ') });
+        properties.push({ label: 'Methods', value: methodNames.join(', ') });
     }
     
     var propertiesHtml = properties.map(function(p) {
@@ -590,14 +608,14 @@ function showCodeElementProperties(element) {
     modal.innerHTML = `
         <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства элемента</h3>
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Element Properties</h3>
                 <button onclick="this.closest('div[style]').parentElement.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
             <div style="padding: 20px 24px;">
                 ${propertiesHtml}
             </div>
             <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right;">
-                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: Ubuntu, sans-serif; font-size: 14px;">Закрыть</button>
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Fira Sans', 'Fira Code', sans-serif; font-size: 14px;">Close</button>
             </div>
         </div>
     `;
@@ -610,7 +628,7 @@ function showCodeElementProperties(element) {
     });
 }
 
-// Свойства файла
+// File properties
 function showFileProperties(element) {
     var fileData = element.fileData;
     if (!fileData) return;
@@ -627,14 +645,14 @@ function showFileProperties(element) {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: Ubuntu, sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     `;
     
     var properties = [
-        { label: 'Имя файла', value: fileData.name },
-        { label: 'Путь', value: fileData.path },
-        { label: 'Расширение', value: fileData.ext },
-        { label: 'Размер', value: (fileData.size / 1024).toFixed(2) + ' KB' }
+        { label: 'File name', value: fileData.name },
+        { label: 'Path', value: fileData.path },
+        { label: 'Extension', value: fileData.ext },
+        { label: 'Size', value: (fileData.size / 1024).toFixed(2) + ' KB' }
     ];
     
     var propertiesHtml = properties.map(function(p) {
@@ -649,14 +667,14 @@ function showFileProperties(element) {
     modal.innerHTML = `
         <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства файла</h3>
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">File Properties</h3>
                 <button onclick="this.closest('div[style]').parentElement.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
             <div style="padding: 20px 24px;">
                 ${propertiesHtml}
             </div>
             <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right;">
-                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: Ubuntu, sans-serif; font-size: 14px;">Закрыть</button>
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Fira Sans', 'Fira Code', sans-serif; font-size: 14px;">Close</button>
             </div>
         </div>
     `;
@@ -669,7 +687,7 @@ function showFileProperties(element) {
     });
 }
 
-// Свойства папки
+// Folder properties
 function showFolderProperties(element) {
     var folderData = element.folderData;
     if (!folderData) return;
@@ -688,12 +706,12 @@ function showFolderProperties(element) {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-family: Ubuntu, sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     `;
     
     var properties = [
-        { label: 'Имя папки', value: folderData.name || element.name || 'Unknown' },
-        { label: 'Количество файлов', value: fileCount }
+        { label: 'Folder name', value: folderData.name || element.name || 'Unknown' },
+        { label: 'File count', value: fileCount }
     ];
     
     var propertiesHtml = properties.map(function(p) {
@@ -708,14 +726,14 @@ function showFolderProperties(element) {
     modal.innerHTML = `
         <div style="background: white; border-radius: 16px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
             <div style="padding: 20px 24px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Свойства папки</h3>
+                <h3 style="margin: 0; font-size: 18px; color: #1f2937;">Folder Properties</h3>
                 <button onclick="this.closest('div[style]').parentElement.remove()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
             </div>
             <div style="padding: 20px 24px;">
                 ${propertiesHtml}
             </div>
             <div style="padding: 16px 24px; border-top: 1px solid #e5e7eb; text-align: right;">
-                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: Ubuntu, sans-serif; font-size: 14px;">Закрыть</button>
+                <button onclick="this.closest('div[style]').parentElement.remove()" style="padding: 8px 20px; background: #3B82F6; color: white; border: none; border-radius: 8px; cursor: pointer; font-family: 'Fira Sans', 'Fira Code', sans-serif; font-size: 14px;">Close</button>
             </div>
         </div>
     `;
@@ -729,7 +747,7 @@ function showFolderProperties(element) {
 }
 
 // ============================================================
-// УДАЛЕНИЕ ЧЕРЕЗ КЛАВИШУ
+// DELETE VIA KEYBOARD
 // ============================================================
 
 document.addEventListener('keydown', function(e) {
@@ -741,7 +759,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Стиль для подсветки
+// Highlight style
 var highlightStyle = document.createElement('style');
 highlightStyle.textContent = `
     .canvas-element.context-active {
@@ -761,7 +779,7 @@ highlightStyle.textContent = `
 document.head.appendChild(highlightStyle);
 
 // ============================================================
-// РЕГИСТРАЦИЯ ФУНКЦИЙ
+// REGISTER FUNCTIONS
 // ============================================================
 
 window.showVulnerabilitiesModal = showVulnerabilitiesModal;

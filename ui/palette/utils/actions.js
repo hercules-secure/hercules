@@ -1,5 +1,5 @@
 // ============================================================
-// МОДАЛКА ДЛЯ ВВОДА НАЗВАНИЯ WORKFLOW
+// MODAL FOR WORKFLOW NAME INPUT
 // ============================================================
 
 function showWorkflowNameModal(callback) {
@@ -36,16 +36,16 @@ function showWorkflowNameModal(callback) {
         <div style="text-align: center; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
                 <i class="fas fa-file-export" style="font-size: 28px; color: #3B82F6;"></i>
-                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Ubuntu', sans-serif;">Название цепочки событий</h3>
+                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Fira Sans', 'Fira Code', sans-serif;">Workflow Name</h3>
             </div>
-            <p style="font-size: 14px; color: #6b7280; margin: 0 0 16px 0; font-family: 'Ubuntu', sans-serif;">Введите название для вашего workflow</p>
-            <input id="workflowNameInput" type="text" placeholder="Мой workflow" value="Workflow-" + new Date().toISOString().split('T')[0] style="
+            <p style="font-size: 14px; color: #6b7280; margin: 0 0 16px 0; font-family: 'Fira Sans', 'Fira Code', sans-serif;">Enter a name for your workflow</p>
+            <input id="workflowNameInput" type="text" placeholder="My Workflow" value="Workflow-" + new Date().toISOString().split('T')[0] style="
                 width: 100%;
                 padding: 10px 14px;
                 border: 2px solid #e5e7eb;
                 border-radius: 8px;
                 font-size: 14px;
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 transition: border-color 0.2s;
                 outline: none;
             ">
@@ -57,24 +57,24 @@ function showWorkflowNameModal(callback) {
                 border-radius: 8px;
                 background: #e5e7eb;
                 color: #374151;
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s;
-            ">Отмена</button>
+            ">Cancel</button>
             <button class="alert-confirm-btn" style="
                 padding: 10px 32px;
                 border: none;
                 border-radius: 8px;
                 background: #3B82F6;
                 color: white;
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s;
-            ">Продолжить</button>
+            ">Continue</button>
         </div>
     `;
 
@@ -114,14 +114,14 @@ function showWorkflowNameModal(callback) {
 }
 
 // ============================================================
-// ЭКСПОРТ МОДЕЛИ С ВВОДОМ НАЗВАНИЯ
+// EXPORT MODEL WITH NAME INPUT
 // ============================================================
 
 var exportBtn = document.getElementById('exportModelBtn');
 if (exportBtn) {
     exportBtn.addEventListener('click', function() {
         if (elements.length === 0) {
-            showCustomAlert('Внимание', 'Нет элементов для экспорта', 'warning');
+            showCustomAlert('Notice', 'No elements to export', 'warning');
             return;
         }
         
@@ -137,7 +137,7 @@ if (exportBtn) {
             a.download = workflowName.toLowerCase().replace(/\s+/g, '-') + '-' + new Date().toISOString().split('T')[0] + '.json';
             a.click();
             URL.revokeObjectURL(url);
-            showCustomAlert('Успешно', 'Workflow "' + workflowName + '" экспортирован', 'success');
+            showCustomAlert('Success', 'Workflow "' + workflowName + '" exported', 'success');
         });
     });
 }
@@ -189,10 +189,10 @@ if (importBtn) {
                         if (elements.length > 0) {
                             if (emptyState) emptyState.classList.add('hidden');
                         }
-                        showCustomAlert('Успешно', 'Workflow импортирован', 'success');
+                        showCustomAlert('Success', 'Workflow imported', 'success');
                     }
                 } catch (err) {
-                    showCustomAlert('Ошибка', 'Ошибка импорта: ' + err.message, 'error');
+                    showCustomAlert('Error', 'Import error: ' + err.message, 'error');
                 }
             };
             reader.readAsText(file);
@@ -206,31 +206,31 @@ if (clearBtn) {
     clearBtn.addEventListener('click', function() {
         if (elements.length === 0) return;
         showCustomAlert(
-            'Подтверждение',
-            'Удалить все элементы с холста?',
+            'Confirmation',
+            'Delete all elements from canvas?',
             'warning',
-            'Удалить',
+            'Delete',
             function() {
                 elements = [];
                 connections = [];
                 selectedElement = null;
                 renderElements();
                 if (emptyState) emptyState.classList.remove('hidden');
-                showCustomAlert('Готово', 'Холст очищен', 'success');
+                showCustomAlert('Done', 'Canvas cleared', 'success');
             }
         );
     });
 }
 
 // ============================================================
-// КНОПКА PLAY - ЗАПУСК WORKFLOW С МОДАЛЬНЫМ ПРОГРЕССОМ
+// PLAY BUTTON - RUN WORKFLOW WITH PROGRESS MODAL
 // ============================================================
 
 var playBtn = document.getElementById('playBtn');
 if (playBtn) {
     playBtn.addEventListener('click', function() {
         if (elements.length === 0) {
-            showCustomAlert('Внимание', 'Нет элементов для запуска', 'warning');
+            showCustomAlert('Notice', 'No elements to run', 'warning');
             return;
         }
         
@@ -240,10 +240,10 @@ if (playBtn) {
             
             var totalSteps = model.workflow.steps.length;
             
-            showWorkflowProgressModal('Выполнение: ' + workflowName, totalSteps);
+            showWorkflowProgressModal('Running: ' + workflowName, totalSteps);
             
             if (typeof PaletteClient === 'undefined') {
-                showCustomAlert('Ошибка', 'Клиент Palette не инициализирован', 'error');
+                showCustomAlert('Error', 'Palette client not initialized', 'error');
                 closeWorkflowProgressModal();
                 return;
             }
@@ -262,19 +262,19 @@ if (playBtn) {
                         }, 1000);
                     } else {
                         closeWorkflowProgressModal();
-                        showCustomAlert('Ошибка', 'Не удалось запустить workflow: ' + result.error, 'error');
+                        showCustomAlert('Error', 'Failed to start workflow: ' + result.error, 'error');
                     }
                 })
                 .catch(function(error) {
                     closeWorkflowProgressModal();
-                    showCustomAlert('Ошибка', 'Ошибка запуска: ' + error.message, 'error');
+                    showCustomAlert('Error', 'Startup error: ' + error.message, 'error');
                 });
         });
     });
 }
 
 // ============================================================
-// ШАБЛОНЫ — ЗАГРУЗКА ПО КЛИКУ
+// TEMPLATES — LOAD ON CLICK
 // ============================================================
 
 // var loadTemplateBtn = document.getElementById('loadTemplateBtn');
@@ -284,7 +284,7 @@ if (playBtn) {
 //     loadTemplateBtn.addEventListener('click', function() {
 //         var template = templateSelect.value;
 //         if (!template) {
-//             showCustomAlert('Ошибка', 'Выберите шаблон из списка', 'warning');
+//             showCustomAlert('Error', 'Select a template from the list', 'warning');
 //             return;
 //         }
 //         loadTemplateData(template);
@@ -306,10 +306,10 @@ if (playBtn) {
 // }
 
 // ============================================================
-// ШАБЛОНЫ — DRAG & DROP НА ХОЛСТ
+// TEMPLATES — DRAG & DROP ON CANVAS
 // ============================================================
 
-// 1. Настройка перетаскивания для шаблонов
+// 1. Setup drag for templates
 document.querySelectorAll('.flow-tool-item[draggable="true"]').forEach(function(item) {
 
     var templateName = item.getAttribute('data-template');
@@ -329,7 +329,7 @@ document.querySelectorAll('.flow-tool-item[draggable="true"]').forEach(function(
     }
 });
 
-// 2. Обработка drop на холсте
+// 2. Handle drop on canvas
 var canvas = document.getElementById('paletteCanvas');
 if (canvas) {
     canvas.addEventListener('dragover', function(e) {
@@ -354,7 +354,7 @@ if (canvas) {
         
         if (data.startsWith('template:')) {
             var template = data.replace('template:', '');
-            // Автоматически выбираем в select и загружаем
+            // Auto-select in dropdown and load
             if (templateSelect) {
                 templateSelect.value = template;
                 loadTemplateData(template);
@@ -363,27 +363,27 @@ if (canvas) {
     });
 }
 
-// 3. Общая функция загрузки шаблона
+// 3. Generic template load function
 function loadTemplateData(template) {
     var templates = {
         'web-app': {
             elements: [
-                { id: 1, type: 'actor', name: 'Пользователь', x: 50, y: 50, color: '#6366F1' },
-                { id: 2, type: 'asset', name: 'Веб-сервер', x: 250, y: 30, color: '#3B82F6' },
-                { id: 3, type: 'asset', name: 'База данных', x: 250, y: 200, color: '#3B82F6' },
+                { id: 1, type: 'actor', name: 'User', x: 50, y: 50, color: '#6366F1' },
+                { id: 2, type: 'asset', name: 'Web Server', x: 250, y: 30, color: '#3B82F6' },
+                { id: 3, type: 'asset', name: 'Database', x: 250, y: 200, color: '#3B82F6' },
                 { id: 4, type: 'control', name: 'WAF', x: 420, y: 80, color: '#10B981' },
                 { id: 5, type: 'threat', name: 'XSS', x: 420, y: 200, color: '#EF4444' },
-                { id: 6, type: 'data', name: 'Пользовательские данные', x: 80, y: 250, color: '#F59E0B' }
+                { id: 6, type: 'data', name: 'User Data', x: 80, y: 250, color: '#F59E0B' }
             ],
             connections: []
         },
         'api': {
             elements: [
-                { id: 1, type: 'actor', name: 'Клиент', x: 50, y: 80, color: '#6366F1' },
+                { id: 1, type: 'actor', name: 'Client', x: 50, y: 80, color: '#6366F1' },
                 { id: 2, type: 'asset', name: 'API Gateway', x: 220, y: 40, color: '#3B82F6' },
                 { id: 3, type: 'asset', name: 'Auth Service', x: 220, y: 200, color: '#3B82F6' },
                 { id: 4, type: 'asset', name: 'User Service', x: 380, y: 80, color: '#3B82F6' },
-                { id: 5, type: 'asset', name: 'БД пользователей', x: 380, y: 220, color: '#3B82F6' },
+                { id: 5, type: 'asset', name: 'User DB', x: 380, y: 220, color: '#3B82F6' },
                 { id: 6, type: 'control', name: 'Rate Limiter', x: 400, y: 40, color: '#10B981' }
             ],
             connections: []
@@ -401,23 +401,23 @@ function loadTemplateData(template) {
         },
         'microservices': {
             elements: [
-                { id: 1, type: 'actor', name: 'Пользователь', x: 30, y: 120, color: '#6366F1' },
+                { id: 1, type: 'actor', name: 'User', x: 30, y: 120, color: '#6366F1' },
                 { id: 2, type: 'asset', name: 'API Gateway', x: 150, y: 30, color: '#3B82F6' },
                 { id: 3, type: 'asset', name: 'Order Service', x: 150, y: 180, color: '#3B82F6' },
                 { id: 4, type: 'asset', name: 'Payment Service', x: 300, y: 80, color: '#3B82F6' },
                 { id: 5, type: 'asset', name: 'Notification', x: 300, y: 220, color: '#3B82F6' },
-                { id: 6, type: 'asset', name: 'БД Orders', x: 450, y: 180, color: '#3B82F6' },
+                { id: 6, type: 'asset', name: 'Orders DB', x: 450, y: 180, color: '#3B82F6' },
                 { id: 7, type: 'control', name: 'Circuit Breaker', x: 450, y: 30, color: '#10B981' }
             ],
             connections: []
         },
         'cloud': {
             elements: [
-                { id: 1, type: 'actor', name: 'Пользователь', x: 30, y: 100, color: '#6366F1' },
+                { id: 1, type: 'actor', name: 'User', x: 30, y: 100, color: '#6366F1' },
                 { id: 2, type: 'asset', name: 'Load Balancer', x: 180, y: 30, color: '#3B82F6' },
                 { id: 3, type: 'asset', name: 'App Server 1', x: 140, y: 160, color: '#3B82F6' },
                 { id: 4, type: 'asset', name: 'App Server 2', x: 280, y: 160, color: '#3B82F6' },
-                { id: 5, type: 'asset', name: 'БД Cluster', x: 210, y: 280, color: '#3B82F6' },
+                { id: 5, type: 'asset', name: 'DB Cluster', x: 210, y: 280, color: '#3B82F6' },
                 { id: 6, type: 'asset', name: 'Cache (Redis)', x: 380, y: 100, color: '#3B82F6' },
                 { id: 7, type: 'control', name: 'Auto-scaling', x: 380, y: 250, color: '#10B981' }
             ],
@@ -425,7 +425,7 @@ function loadTemplateData(template) {
         },
         'devops': {
             elements: [
-                { id: 1, type: 'actor', name: 'Разработчик', x: 30, y: 50, color: '#6366F1' },
+                { id: 1, type: 'actor', name: 'Developer', x: 30, y: 50, color: '#6366F1' },
                 { id: 2, type: 'asset', name: 'Git', x: 180, y: 20, color: '#F97316' },
                 { id: 3, type: 'asset', name: 'CI/CD Server', x: 180, y: 140, color: '#3B82F6' },
                 { id: 4, type: 'asset', name: 'Artifactory', x: 330, y: 60, color: '#3B82F6' },
@@ -439,28 +439,28 @@ function loadTemplateData(template) {
 
     var data = templates[template];
     if (!data) {
-        showCustomAlert('Ошибка', 'Шаблон не найден', 'error');
+        showCustomAlert('Error', 'Template not found', 'error');
         return;
     }
 
     if (elements.length > 0) {
-        var templateName = templateSelect ? templateSelect.options[templateSelect.selectedIndex]?.text || 'Шаблон' : 'Шаблон';
+        var templateName = templateSelect ? templateSelect.options[templateSelect.selectedIndex]?.text || 'Template' : 'Template';
         showCustomAlert(
-            'Подтверждение',
-            'Это заменит текущую модель. Продолжить?',
+            'Confirmation',
+            'This will replace the current model. Continue?',
             'warning',
-            'Продолжить',
+            'Continue',
             function() {
                 applyTemplate(data);
-                showCustomAlert('Успешно', 'Шаблон "' + templateName + '" загружен!', 'success');
+                showCustomAlert('Success', 'Template "' + templateName + '" loaded!', 'success');
             }
         );
         return;
     }
 
     applyTemplate(data);
-    var templateName = templateSelect ? templateSelect.options[templateSelect.selectedIndex]?.text || 'Шаблон' : 'Шаблон';
-    showCustomAlert('Успешно', 'Шаблон "' + templateName + '" загружен!', 'success');
+    var templateName = templateSelect ? templateSelect.options[templateSelect.selectedIndex]?.text || 'Template' : 'Template';
+    showCustomAlert('Success', 'Template "' + templateName + '" loaded!', 'success');
 }
 
 function applyTemplate(data) {
@@ -481,7 +481,7 @@ function applyTemplate(data) {
 }
 
 // ============================================================
-// DRAG & DROP ДЛЯ МОДАЛЬНОГО ОКНА ЗАГРУЗКИ КОДА
+// DRAG & DROP FOR CODE UPLOAD MODAL
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -541,9 +541,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     icon.querySelector('i').style.color = '#8B5CF6';
                 }
             } else {
-                statusText.textContent = 'Перетащите файл сюда или нажмите для выбора';
+                statusText.textContent = 'Drag and drop a file here or click to select';
                 statusText.style.color = '#374151';
-                infoText.textContent = 'Поддерживаются: .js, .py, .java, .go, .rs, ...';
+                infoText.textContent = 'Supported: .js, .py, .java, .go, .rs, ...';
                 
                 if (infoModal) infoModal.style.display = 'none';
                 if (loadBtn) {
@@ -561,7 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================================
-// ЭКСПОРТ ФУНКЦИЙ
+// EXPORT FUNCTIONS
 // ============================================================
 window.loadTemplateData = loadTemplateData;
 window.applyTemplate = applyTemplate;

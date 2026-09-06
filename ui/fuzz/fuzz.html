@@ -1,27 +1,56 @@
 <!DOCTYPE html>
-<html data-page="construction" data-version="1.27.0" lang="ru">
+<html data-page="construction" data-version="1.27.0" lang="en">
 <head>
-    <title>Баба Яга</title>
+    <title>Baba Yaga</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="replay.css">
     <link rel="stylesheet" href="fuzz.css">
     <link rel="stylesheet" href="../common/sidebar.css">  
     <link rel="stylesheet" href="../common/modal.css">
     <link rel="stylesheet" href="../common/main.css">
-    <link rel="stylesheet" href="../common/upgrade.css">    
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
     <style>
-/* ============================================================
-   FUZZ INPUT GROUP
-============================================================ */
+*:not(.fa):not(.fas):not(.far):not(.fab):not(i):not([class*="fa-"]) {
+    font-family: 'Fira Sans', sans-serif !important;
+}
+
+.task-id, .task-status, .modal-select, .modal-input,
+.license-input, .data-structure-preview, .version,
+.format-badge, .supported-format-badge, .tools-loader i,
+.progress-container, .start-button, .header-btn,
+.input-group input, .section-title, .task-status,
+.card-header, .card-body h4, .upload-text,
+.supported-format-badge, .format-badge span,
+.tools-loader, .error-message, .source-btn,
+.thermometer-mark .mark-label, .overall-percent,
+.result-tab, .btn-download, .btn-download-html,
+.metla-detail-method, .metla-detail-path, .metla-detail-tab,
+.metla-detail-btn, .metla-detail-analysis-select,
+.metla-detail-info-item .label, .metla-detail-info-item .value,
+.metla-detail-code-block, .metla-detail-empty,
+.metla-detail-analysis-label, .step-label, .thermometer-percent,
+.metla-header, .metla-header-cell, .metla-method, .metla-path,
+.metla-badge, .metla-stats, .metla-detail-auth-badge,
+.mode-btn-mode, .fuzz-input-group input, .fuzz-input-group .fuzz-start-btn,
+.upload-text, .upload-hint, .spec-info-item, .metla-empty {
+    font-family: 'Fira Code', monospace !important;
+}
+
+input, select, textarea, button {
+    font-family: 'Fira Sans', sans-serif;
+}
+
 .fuzz-input-group {
     display: flex !important;
     gap: 10px !important;
@@ -43,7 +72,7 @@
     padding: 10px 14px !important;
     border: 1px solid var(--border, #e9ecef) !important;
     border-radius: 8px !important;
-    font-family: 'Ubuntu', sans-serif !important;
+    font-family: 'Fira Sans', sans-serif !important;
     font-size: 14px !important;
     background: var(--bg-primary, white) !important;
     color: var(--text-primary, #1a1a2e) !important;
@@ -80,7 +109,7 @@
     justify-content: center !important;
     border: none !important;
     border-radius: 8px !important;
-    font-family: 'Ubuntu', sans-serif !important;
+    font-family: 'Fira Sans', sans-serif !important;
     font-size: 14px !important;
     font-weight: 500 !important;
     cursor: pointer !important;
@@ -110,9 +139,6 @@
     cursor: not-allowed !important;
 }
 
-/* ============================================================
-   МЕТЛА - СПИСОК ЦЕЛЕЙ
-============================================================ */
 .metla-targets-area {
     border: 1px dashed black;
     border-radius: 12px;
@@ -133,7 +159,7 @@
     color: var(--text-muted, #6c757d);
     text-align: center;
     padding: 20px 0;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .metla-targets-area .metla-empty i {
@@ -148,9 +174,6 @@
     margin-top: 4px;
 }
 
-/* ============================================================
-   ЗАГОЛОВКИ ТАБЛИЦЫ МЕТЛЫ
-============================================================ */
 .metla-header {
     display: flex;
     align-items: center;
@@ -163,7 +186,7 @@
     color: var(--text-secondary, #6c757d);
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .metla-header-cell {
@@ -232,7 +255,7 @@
 }
 
 .metla-method {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 12px;
     font-weight: 700;
     min-width: 44px;
@@ -242,7 +265,7 @@
 }
 
 .metla-path {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 13px;
     color: var(--text-primary, #1a1a2e);
     flex: 1;
@@ -253,7 +276,7 @@
 }
 
 .metla-badge {
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans';
     font-size: 9px;
     font-weight: 600;
     padding: 2px 10px;
@@ -286,7 +309,6 @@
     color: var(--text-secondary, #6c757d);
 }
 
-/* Статистика */
 .metla-stats {
     display: none;
     align-items: center;
@@ -298,20 +320,20 @@
     font-size: 12px;
     color: var(--text-secondary, #6c757d);
     flex-wrap: wrap;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .metla-stats .stat-item {
     display: flex;
     align-items: center;
     gap: 2px;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 12px;
     color: var(--text-secondary, #6c757d);
 }
 
 .metla-stats .stat-item strong {
-    font-family: 'Alef', sans-serif;
+    font-family: 'Fira Code', monospace;
     font-weight: 700;
     color: var(--text-primary, #1a1a2e);
 }
@@ -321,10 +343,6 @@
     height: 16px;
     background: var(--border, #e9ecef);
 }
-
-/* ============================================================
-   МОДАЛЬНОЕ ОКНО ДЛЯ ДЕТАЛЕЙ (Swagger/Postman стиль)
-============================================================ */
 
 .metla-detail-modal {
     display: none;
@@ -363,7 +381,6 @@
     overflow: hidden;
 }
 
-/* ХЕДЕР */
 .metla-detail-header {
     display: flex;
     align-items: center;
@@ -383,7 +400,7 @@
 }
 
 .metla-detail-method {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-weight: 700;
     font-size: 14px;
     padding: 4px 14px;
@@ -392,7 +409,7 @@
 }
 
 .metla-detail-path {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 14px;
     font-weight: 500;
     color: var(--text-primary, #1a1a2e);
@@ -402,7 +419,7 @@
 }
 
 .metla-detail-auth-badge {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 10px;
     font-weight: 600;
     padding: 2px 12px;
@@ -436,7 +453,7 @@
     background: white;
     color: var(--text-secondary, #6c757d);
     cursor: pointer;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 12px;
     font-weight: 500;
     transition: all 0.2s;
@@ -487,7 +504,6 @@
     color: var(--text-primary, #1a1a2e);
 }
 
-/* ТАБЫ */
 .metla-detail-tabs {
     display: flex;
     gap: 4px;
@@ -504,7 +520,7 @@
     background: transparent;
     color: var(--text-secondary, #6c757d);
     cursor: pointer;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 12px;
     font-weight: 500;
     transition: all 0.2s;
@@ -526,7 +542,6 @@
     font-size: 13px;
 }
 
-/* ТЕЛО */
 .metla-detail-body {
     padding: 16px 20px;
     overflow-y: auto;
@@ -538,7 +553,6 @@
     animation: metlaFadeIn 0.2s ease;
 }
 
-/* Информация */
 .metla-detail-info {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -552,7 +566,7 @@
 }
 
 .metla-detail-info-item .label {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 11px;
     font-weight: 600;
     color: var(--text-secondary, #6c757d);
@@ -561,19 +575,18 @@
 }
 
 .metla-detail-info-item .value {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 13px;
     color: var(--text-primary, #1a1a2e);
     word-break: break-all;
 }
 
-/* Код */
 .metla-detail-code-block {
     background: #1a1a2e;
     color: #e9ecef;
     padding: 14px 18px;
     border-radius: 8px;
-    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-family: 'Fira Code', monospace;
     font-size: 12px;
     line-height: 1.7;
     overflow-x: auto;
@@ -586,11 +599,10 @@
 
 .metla-detail-empty {
     color: #6c757d;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 13px;
 }
 
-/* ФУТЕР */
 .metla-detail-footer {
     display: flex;
     align-items: center;
@@ -630,7 +642,7 @@
 }
 
 .metla-detail-analysis-label {
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 12px;
     color: var(--text-secondary, #6c757d);
     font-weight: 500;
@@ -640,7 +652,7 @@
     padding: 4px 10px;
     border: 1px solid var(--border, #e9ecef);
     border-radius: 6px;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 12px;
     background: white;
     color: var(--text-primary, #1a1a2e);
@@ -652,7 +664,6 @@
     border-color: #667eea;
 }
 
-/* Адаптив */
 @media (max-width: 768px) {
     .metla-detail-content {
         width: 95%;
@@ -736,9 +747,7 @@
         padding: 3px 8px;
     }
 }
-/* ============================================================
-   ПРОГРЕСС
-============================================================ */
+
 .progress-thermometer {
     background: white;
     border-radius: 12px;
@@ -767,7 +776,7 @@
     font-weight: 700;
     color: black;
     font-variant-numeric: tabular-nums;
-    font-family: 'Alef';
+    font-family: 'Fira Code', monospace;
 }
 
 .thermometer-track {
@@ -854,6 +863,7 @@
     max-width: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-family: 'Fira Code', monospace;
 }
 
 .step-label.active {
@@ -882,9 +892,6 @@
     }
 }
 
-/* ============================================================
-   РЕЖИМЫ
-============================================================ */
 .mode-selector {
     display: flex;
     gap: 8px;
@@ -900,7 +907,7 @@
     padding: 10px 18px;
     border: none;
     border-radius: 9px;
-    font-family: 'Ubuntu', sans-serif;
+    font-family: 'Fira Sans', sans-serif;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -954,7 +961,6 @@
     }
 }
 
-/* Скрытие/показ */
 .mode-domovoy .metla-targets-area {
     display: none !important;
 }
@@ -967,9 +973,6 @@
     display: flex !important;
 }
 
-/* ============================================================
-   ДОМОВОЙ
-============================================================ */
 .domovoy-only .upload-area {
     border: 2px dashed var(--border, #e9ecef);
     border-radius: 12px;
@@ -1094,7 +1097,7 @@
     border-radius: 4px;
     border: 1px solid var(--border, #e9ecef);
     font-size: 12px;
-    font-family: monospace;
+    font-family: 'Fira Code', monospace;
 }
 
 .domovoy-only .spec-endpoints .method-badge {
@@ -1117,15 +1120,14 @@
 </head>
 <body>
     <div id="box" class="fade-in">
-        <!-- ЛЕВАЯ КОЛОНКА - ИНСТРУМЕНТЫ -->
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Инструменты</span>
+                        <span>Tools</span>
                     </div>
-                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 </div>
@@ -1134,7 +1136,7 @@
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
-                        Загрузка...
+                        Loading...
                     </div>
                 </div>
                 
@@ -1146,8 +1148,8 @@
                                 <i class="fas fa-history black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">История</span>
-                                <span class="tool-desc">Журнал сканирований</span>
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
                             </div>
                         </div>
                     </a>
@@ -1158,8 +1160,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Настройки</span>
-                                <span class="tool-desc">Управление параметрами</span>
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
                             </div>
                         </div>
                     </a> 
@@ -1167,45 +1169,42 @@
             </div>
         </div>
 
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА -->
         <div id="center">
 
             <div class="page-header">
-                <h2 class="section-title">Выберите источник</h2>
+                <h2 class="section-title">Select source</h2>
                 <div class="header-buttons">
                     <button class="header-btn" onclick="showToolInfo('fuzz')">
-                        <i class="fas fa-info-circle"></i> Описание инструмента
+                        <i class="fas fa-info-circle"></i> Tool info
                     </button>
                 </div>
             </div>
             
             <div class="mode-selector" id="modeSelector">
                 <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy">
-                    Домовой
+                    Domovoy
                 </button>
                 <button class="mode-btn-mode" data-mode="metla" id="modeMetla">
-                    Метла <span class="badge-beta-gradient">Beta</span>
+                    Broom <span class="badge-beta-gradient">Beta</span>
                 </button>
             </div>
 
-            <!-- Поле ввода URL -->
             <div class="fuzz-input-group">
                 <div class="fuzz-input-wrapper">
-                    <input type="text" id="specUrl" placeholder="Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)">
+                    <input type="text" id="specUrl" placeholder="Paste OpenAPI specification link (Swagger/OpenAPI)">
                 </div>
                 <button class="fuzz-start-btn" id="start-btn" type="button" disabled>
-                    <i class="fas fa-play" style="margin-right: 6px;"></i>Начать анализ
+                    <i class="fas fa-play" style="margin-right: 6px;"></i>Start analysis
                 </button>
             </div>
 
-            <!-- Блок ДОМОВОЙ -->
             <div class="domovoy-only">
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt black-icon"></i>
                     </div>
                     <div class="upload-text">
-                        Нажмите для выбора файла спецификации<br>
+                        Click to select specification file<br>
                         <span style="font-size: 9px">
                             <div class="icons-row">
                                 <span class="format-badge"><i class="fas fa-file-code" style="color:orange; font-size:15px"></i> JSON</span>
@@ -1215,7 +1214,7 @@
                         </span>
                     </div>
                     <div class="upload-hint">
-                        Поддерживаются Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
+                        Supports Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
                     </div>
                     <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
                 </div>
@@ -1235,28 +1234,24 @@
                     <div class="spec-info">
                         <div class="spec-info-item">
                             <i class="fas fa-tag"></i>
-                            <span id="specTitle">Название</span>
+                            <span id="specTitle">Title</span>
                         </div>
                         <div class="spec-info-item">
                             <i class="fas fa-code-branch"></i>
-                            <span id="specVersion">Версия</span>
+                            <span id="specVersion">Version</span>
                         </div>
                         <div class="spec-info-item">
                             <i class="fas fa-cube"></i>
-                            <span id="specFormat">Формат</span>
+                            <span id="specFormat">Format</span>
                         </div>
                     </div>
                     <div class="spec-endpoints" id="specEndpoints"></div>
                 </div>
             </div>
 
-            <!-- Блок МЕТЛА с заголовками -->
-            
-
-            <!-- Прогресс -->
             <div class="progress-thermometer" id="progressThermometer">
                 <div class="thermometer-header">
-                    <span class="thermometer-title" id="thermometerTitle">Общий прогресс анализа</span>
+                    <span class="thermometer-title" id="thermometerTitle">Overall analysis progress</span>
                     <span class="thermometer-percent" id="thermometerPercent">0%</span>
                 </div>
                 <div class="thermometer-track">
@@ -1268,45 +1263,45 @@
                     <div class="thermometer-step domovoy-steps">
                         <div class="step-item">
                             <span class="step-dot" data-step="0"></span>
-                            <span class="step-label">Загрузка</span>
+                            <span class="step-label">Loading</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="25"></span>
-                            <span class="step-label">Генерация</span>
+                            <span class="step-label">Generation</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="50"></span>
-                            <span class="step-label">Фаззинг</span>
+                            <span class="step-label">Fuzzing</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="75"></span>
-                            <span class="step-label">Анализ</span>
+                            <span class="step-label">Analysis</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="100"></span>
-                            <span class="step-label">Отчет</span>
+                            <span class="step-label">Report</span>
                         </div>
                     </div>
                     <div class="thermometer-step metla-steps" style="display: none;">
                         <div class="step-item">
                             <span class="step-dot" data-step="0"></span>
-                            <span class="step-label">Поиск целей</span>
+                            <span class="step-label">Discovery</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="25"></span>
-                            <span class="step-label">Анализ</span>
+                            <span class="step-label">Analysis</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="50"></span>
-                            <span class="step-label">Генерация</span>
+                            <span class="step-label">Generation</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="75"></span>
-                            <span class="step-label">Фаззинг</span>
+                            <span class="step-label">Fuzzing</span>
                         </div>
                         <div class="step-item">
                             <span class="step-dot" data-step="100"></span>
-                            <span class="step-label">Отчет</span>
+                            <span class="step-label">Report</span>
                         </div>
                     </div>
                 </div>
@@ -1314,16 +1309,13 @@
 
             <div class="metla-targets-area" id="metlaTargetsArea">
                 <div class="metla-empty" id="metlaEmpty">
-                    <div style="font-weight: 500; margin-bottom: 4px;">Цели для фаззинга</div>
-                    <div class="metla-hint">Найденные эндпоинты появятся здесь после сканирования</div>
+                    <div style="font-weight: 500; margin-bottom: 4px;">Fuzzing targets</div>
+                    <div class="metla-hint">Discovered endpoints will appear here after scanning</div>
                 </div>
                 
-                <!-- ЗАГОЛОВКИ ТАБЛИЦЫ -->
                 <div class="metla-header" id="metlaHeader" style="display: none;">
-                    <div class="metla-header-cell">Метод</div>
-                    <div class="metla-header-cell">Путь</div>
-                    <!-- <div class="metla-header-cell">Доступ</div> -->
-                    <!-- <div class="metla-header-cell"></div> -->
+                    <div class="metla-header-cell">Method</div>
+                    <div class="metla-header-cell">Path</div>
                 </div>
                 
                 <div class="metla-targets-list" id="metlaTargetsList" style="display: none;"></div>
@@ -1332,12 +1324,9 @@
         </div>
     </div>
 
-    <!-- Модальное окно для деталей Метлы -->
-    <di<!-- Модальное окно для деталей Метлы в стиле Swagger/Postman -->
 <div id="metlaDetailModal" class="metla-detail-modal">
     <div class="metla-detail-overlay" onclick="closeMetlaDetail()"></div>
     <div class="metla-detail-content">
-        <!-- ХЕДЕР как в Swagger -->
         <div class="metla-detail-header">
             <div class="metla-detail-title">
                 <span class="metla-detail-method" id="metla-detail-method">GET</span>
@@ -1345,32 +1334,29 @@
                 <span class="metla-detail-auth-badge" id="metla-detail-auth-badge">Public</span>
             </div>
             <div class="metla-detail-actions">
-                <button class="metla-detail-btn" onclick="copyMetlaRequest()" title="Скопировать запрос">
+                <button class="metla-detail-btn" onclick="copyMetlaRequest()" title="Copy request">
                     <i class="fas fa-copy"></i>
                 </button>
                 <button class="metla-detail-close" onclick="closeMetlaDetail()">✕</button>
             </div>
         </div>
 
-        <!-- ТАБЫ как в Postman -->
         <div class="metla-detail-tabs">
             <button class="metla-detail-tab active" data-tab="details" onclick="switchMetlaTab('details')">
-                <i class="fas fa-info-circle"></i> Детали
+                <i class="fas fa-info-circle"></i> Details
             </button>
             <button class="metla-detail-tab" data-tab="headers" onclick="switchMetlaTab('headers')">
-                <i class="fas fa-heading"></i> Заголовки
+                <i class="fas fa-heading"></i> Headers
             </button>
             <button class="metla-detail-tab" data-tab="body" onclick="switchMetlaTab('body')">
-                <i class="fas fa-code"></i> Тело
+                <i class="fas fa-code"></i> Body
             </button>
             <button class="metla-detail-tab" data-tab="schema" onclick="switchMetlaTab('schema')">
-                <i class="fas fa-cube"></i> Схема
+                <i class="fas fa-cube"></i> Schema
             </button>
         </div>
 
-        <!-- ТЕЛО с вкладками -->
         <div class="metla-detail-body" id="metla-detail-body">
-            <!-- Вкладка: Детали -->
             <div class="metla-detail-panel active" id="panel-details">
                 <div class="metla-detail-info">
                     <div class="metla-detail-info-item">
@@ -1392,32 +1378,27 @@
                 </div>
             </div>
 
-            <!-- Вкладка: Заголовки -->
             <div class="metla-detail-panel" id="panel-headers" style="display: none;">
                 <div class="metla-detail-code-block" id="metla-detail-headers-content">
-                    <span class="metla-detail-empty">Нет заголовков</span>
+                    <span class="metla-detail-empty">No headers</span>
                 </div>
             </div>
 
-            <!-- Вкладка: Тело -->
             <div class="metla-detail-panel" id="panel-body" style="display: none;">
                 <div class="metla-detail-code-block" id="metla-detail-body-content">
-                    <span class="metla-detail-empty">Нет тела запроса</span>
+                    <span class="metla-detail-empty">No request body</span>
                 </div>
             </div>
 
-            <!-- Вкладка: Схема -->
             <div class="metla-detail-panel" id="panel-schema" style="display: none;">
                 <div class="metla-detail-code-block" id="metla-detail-schema-content">
-                    <span class="metla-detail-empty">Нет схемы</span>
+                    <span class="metla-detail-empty">No schema</span>
                 </div>
             </div>
         </div>
 
-        <!-- ФУТЕР с кнопками как в Postman -->
         <div class="metla-detail-footer">
             <div class="metla-detail-footer-left">
-                <!-- Кнопки экспорта -->
                 <div class="metla-detail-export-group">
                     <button class="metla-detail-btn small" onclick="exportMetlaRequest('curl')">
                         <i class="fas fa-terminal"></i> cURL
@@ -1435,21 +1416,20 @@
             </div>
             
             <div class="metla-detail-footer-right">
-                <!-- Типы анализа -->
                 <div class="metla-detail-analysis-group">
-                    <span class="metla-detail-analysis-label">Анализ:</span>
+                    <span class="metla-detail-analysis-label">Analysis:</span>
                     <select class="metla-detail-analysis-select" id="metlaAnalysisType">
                         <option value="xss">XSS</option>
                         <option value="sql">SQL Injection</option>
-                        <option value="headers">Заголовки</option>
-                        <option value="bruteforce">Брутфорс</option>
-                        <option value="full">Полный</option>
+                        <option value="headers">Headers</option>
+                        <option value="bruteforce">Bruteforce</option>
+                        <option value="full">Full</option>
                     </select>
                     <button class="metla-detail-btn primary small" onclick="runMetlaAnalysis()">
-                        <i class="fas fa-play"></i> Запустить
+                        <i class="fas fa-play"></i> Run
                     </button>
                     <button class="metla-detail-btn small" onclick="saveMetlaRequest()">
-                        <i class="fas fa-save"></i> Сохранить
+                        <i class="fas fa-save"></i> Save
                     </button>
                 </div>
             </div>
@@ -1457,17 +1437,16 @@
     </div>
 </div>
 
-    <!-- Модальные окна -->
     <div id="fuzzModal" class="modal-overlay">
         <div class="modal-container">
             <div class="modal-header">
-                <h3>Результаты анализа</h3>
+                <h3>Analysis results</h3>
                 <span class="modal-close" onclick="closeFuzzModal()">&times;</span>
             </div>
             <div class="modal-body" id="fuzzModalBody"></div>
             <div class="modal-footer">
                 <button class="start-button active" onclick="downloadReport()" style="background: #28a745; color: white; font-size: 11px;" id="downloadReport">
-                    <i class="fas fa-download"></i> Скачать отчет
+                    <i class="fas fa-download"></i> Download report
                 </button>
             </div>
         </div>
@@ -1476,7 +1455,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+                <h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -1486,51 +1465,10 @@
         </div>
     </div>
 
-    <div id="licenseModal" class="upgrade-modal">
-        <div class="upgrade-modal-overlay"></div>
-        <div class="upgrade-modal-content" style="max-width: 480px;">
-            <div class="upgrade-modal-header">
-                <h3>Активация лицензии</h3>
-                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
-            </div>
-            <div class="upgrade-modal-body">
-                <div class="license-current" style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
-                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
-                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
-                    </div>
-                </div>
-                <div class="license-input-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
-                        Лицензионный ключ
-                    </label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX" style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
-                        <button id="activateLicenseBtn" class="activate-licence-btn">
-                            <i class="fas fa-check"></i> Активировать
-                        </button>
-                    </div>
-                </div>
-                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;"></div>
-                <div style="margin-top: 8px; text-align: center;">
-                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
-                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank" style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
-                        <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script type="text/javascript" src="utils.js"></script>
     <script type="text/javascript" src="modal.js"></script>
     <script type="text/javascript" src="client.js"></script>
-    <script type="text/javascript" src="../common/licence.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
@@ -1538,9 +1476,6 @@
     <script>
         loadMenu();
 
-        // ============================================================
-        // ПЕРЕКЛЮЧЕНИЕ РЕЖИМОВ
-        // ============================================================
         document.addEventListener('DOMContentLoaded', function() {
             const modeDomovoy = document.getElementById('modeDomovoy');
             const modeMetla = document.getElementById('modeMetla');
@@ -1555,14 +1490,14 @@
                 if (mode === 'domovoy') {
                     modeDomovoy.classList.add('active');
                     center.classList.add('mode-domovoy');
-                    specUrlInput.placeholder = 'Вставьте ссылку на OpenAPI спецификацию (Swagger/OpenAPI)';
+                    specUrlInput.placeholder = 'Paste OpenAPI specification link (Swagger/OpenAPI)';
                     if (typeof validateStartButton === 'function') {
                         validateStartButton();
                     }
                 } else {
                     modeMetla.classList.add('active');
                     center.classList.add('mode-metla');
-                    specUrlInput.placeholder = 'Вставьте URL для сканирования (Метла)';
+                    specUrlInput.placeholder = 'Paste URL for scanning (Broom)';
                     if (typeof validateStartButton === 'function') {
                         validateStartButton();
                     }
@@ -1579,8 +1514,6 @@
 
             setMode('domovoy');
         });
-
-        
     </script>
 </body>
 </html>

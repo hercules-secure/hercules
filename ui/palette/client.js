@@ -1,11 +1,3 @@
-// ============================================================
-// palette-client.js - КЛИЕНТ ДЛЯ ВЗАИМОДЕЙСТВИЯ С РОУТЕРОМ
-// ============================================================
-
-// ============================================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ============================================================
-
 function getAuthHeaders() {
     var token = localStorage.getItem('licenseToken');
     if (token) {
@@ -14,9 +6,6 @@ function getAuthHeaders() {
     return {};
 }
 
-// ============================================================
-// КЛИЕНТ
-// ============================================================
 
 var PaletteClient = function(options) {
     options = options || {};
@@ -27,9 +16,7 @@ var PaletteClient = function(options) {
     this.currentStatus = null;
 };
 
-// ============================================================
-// БАЗОВЫЙ ЗАПРОС
-// ============================================================
+
 PaletteClient.prototype.request = async function(endpoint, options) {
     options = options || {};
     var url = this.baseUrl + endpoint;
@@ -65,7 +52,7 @@ PaletteClient.prototype.request = async function(endpoint, options) {
             if (typeof window.showLicenseModal === 'function') {
                 window.showLicenseModal('palette');
             } else {
-                console.error('Функция showLicenseModal не найдена');
+                console.error('showLicenseModal function not found');
             }
             
             var error = new Error('LICENSE_REQUIRED');
@@ -98,16 +85,14 @@ PaletteClient.prototype.request = async function(endpoint, options) {
         }
         
         if (error.message === 'LICENSE_REQUIRED' || error.needLicense) {
-            throw new Error('Требуется активация лицензии');
+            throw new Error('License activation required');
         }
         
         throw error;
     }
 };
 
-// ============================================================
-// ЗАПУСК WORKFLOW
-// ============================================================
+
 PaletteClient.prototype.startWorkflow = async function(workflowData) {
     try {
         var result = await this.request('/start', {
@@ -125,11 +110,11 @@ PaletteClient.prototype.startWorkflow = async function(workflowData) {
                 license: result.license
             };
         } else {
-            throw new Error(result.error || 'Ошибка запуска workflow');
+            throw new Error(result.error || 'Failed to start workflow');
         }
 
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             throw error;
         }
         return {
@@ -139,16 +124,13 @@ PaletteClient.prototype.startWorkflow = async function(workflowData) {
     }
 };
 
-// ============================================================
-// ПОЛУЧЕНИЕ СТАТУСА
-// ============================================================
 PaletteClient.prototype.getStatus = async function() {
     try {
         var result = await this.request('/status');
         this.currentStatus = result.status || { running: false };
         return this.currentStatus;
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             throw error;
         }
         return {
@@ -158,55 +140,44 @@ PaletteClient.prototype.getStatus = async function() {
     }
 };
 
-// ============================================================
-// ПОЛУЧЕНИЕ ЛОГОВ
-// ============================================================
 PaletteClient.prototype.getLogs = async function(limit) {
     limit = limit || 50;
     try {
         var result = await this.request('/logs?limit=' + limit);
         return result.logs || [];
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             throw error;
         }
         return [];
     }
 };
 
-// ============================================================
-// ПОЛУЧЕНИЕ ИСТОРИИ
-// ============================================================
 PaletteClient.prototype.getHistory = async function() {
     try {
         var result = await this.request('/history');
         return result.workflows || [];
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             throw error;
         }
         return [];
     }
 };
 
-// ============================================================
-// ПОЛУЧЕНИЕ ОТЧЁТА ПО ID
-// ============================================================
+
 PaletteClient.prototype.getReport = async function(workflowId) {
     try {
         var result = await this.request('/history/' + workflowId);
         return result.report || null;
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             throw error;
         }
         return null;
     }
 };
 
-// ============================================================
-// МОНИТОРИНГ СТАТУСА
-// ============================================================
 PaletteClient.prototype.startMonitoring = function(onUpdate, interval) {
     interval = interval || 2000;
     var self = this;
@@ -227,10 +198,10 @@ PaletteClient.prototype.startMonitoring = function(onUpdate, interval) {
                 self.stopMonitoring();
             }
         } catch (error) {
-            if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+            if (error.message === 'License activation required' || error.needLicense) {
                 self.stopMonitoring();
                 if (onUpdate) {
-                    onUpdate({ running: false, status: 'error', error: 'Требуется активация лицензии' });
+                    onUpdate({ running: false, status: 'error', error: 'License activation required' });
                 }
             }
         }
@@ -246,24 +217,20 @@ PaletteClient.prototype.stopMonitoring = function() {
     }
 };
 
-// ============================================================
-// ПРОВЕРКА ЛИЦЕНЗИИ
-// ============================================================
+
 PaletteClient.prototype.checkLicense = async function() {
     try {
         await this.request('/status');
         return { valid: true };
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             return { valid: false, needLicense: true };
         }
         return { valid: false, error: error.message };
     }
 };
 
-// ============================================================
-// ВЫПОЛНЕНИЕ WORKFLOW С МОНИТОРИНГОМ
-// ============================================================
+
 PaletteClient.prototype.runWorkflowWithMonitoring = async function(workflowData, options) {
     options = options || {};
     var self = this;
@@ -314,7 +281,7 @@ PaletteClient.prototype.runWorkflowWithMonitoring = async function(workflowData,
                             if (onComplete) onComplete(status);
                             resolve({ success: true, status: status });
                         } else if (status.status === 'failed' || status.status === 'error') {
-                            var error = status.error || 'Workflow завершился с ошибкой';
+                            var error = status.error || 'Workflow failed';
                             if (onError) onError(error);
                             resolve({ success: false, error: error, status: status });
                         } else {
@@ -326,9 +293,9 @@ PaletteClient.prototype.runWorkflowWithMonitoring = async function(workflowData,
                     setTimeout(monitor, interval);
                 } catch (error) {
                     self.stopMonitoring();
-                    if (error.message === 'Требуется активация лицензии' || error.needLicense) {
-                        if (onError) onError('Требуется активация лицензии');
-                        resolve({ success: false, error: 'Требуется активация лицензии' });
+                    if (error.message === 'License activation required' || error.needLicense) {
+                        if (onError) onError('License activation required');
+                        resolve({ success: false, error: 'License activation required' });
                     } else {
                         if (onError) onError(error.message);
                         resolve({ success: false, error: error.message });
@@ -340,18 +307,16 @@ PaletteClient.prototype.runWorkflowWithMonitoring = async function(workflowData,
         });
 
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
-            if (onError) onError('Требуется активация лицензии');
-            return { success: false, error: 'Требуется активация лицензии' };
+        if (error.message === 'License activation required' || error.needLicense) {
+            if (onError) onError('License activation required');
+            return { success: false, error: 'License activation required' };
         }
         if (onError) onError(error.message);
         return { success: false, error: error.message };
     }
 };
 
-// ============================================================
-// ПОЛУЧЕНИЕ HTML ОТЧЁТА
-// ============================================================
+
 PaletteClient.prototype.getReportHTML = async function(workflowId) {
     try {
         var url = this.baseUrl + '/history/' + workflowId;
@@ -379,7 +344,7 @@ PaletteClient.prototype.getReportHTML = async function(workflowId) {
         
         return await response.text();
     } catch (error) {
-        if (error.message === 'Требуется активация лицензии' || error.needLicense) {
+        if (error.message === 'License activation required' || error.needLicense) {
             if (typeof window.showLicenseModal === 'function') {
                 window.showLicenseModal('fuzz');
             }
@@ -388,9 +353,6 @@ PaletteClient.prototype.getReportHTML = async function(workflowId) {
     }
 };
 
-// ============================================================
-// ИНИЦИАЛИЗАЦИЯ КЛИЕНТА
-// ============================================================
 
 var paletteClient = null;
 
@@ -404,7 +366,7 @@ function initPaletteClient(options) {
 }
 
 // ============================================================
-// ФУНКЦИЯ ДЛЯ ЗАПУСКА ИЗ ПАЛИТРЫ
+// FUNCTION TO RUN FROM PALETTE
 // ============================================================
 
 async function runPaletteWorkflow(workflowData, options) {
@@ -454,9 +416,7 @@ async function runPaletteWorkflow(workflowData, options) {
     }
 }
 
-// ============================================================
-// UI ИНДИКАТОР ВЫПОЛНЕНИЯ
-// ============================================================
+
 
 function showWorkflowProgress() {
     var indicator = document.getElementById('workflowProgress');
@@ -473,22 +433,22 @@ function showWorkflowProgress() {
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             z-index: 100000;
             min-width: 250px;
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Fira Sans', 'Fira Code', sans-serif;
             border: 1px solid #e5e7eb;
             display: none;
         `;
         indicator.innerHTML = `
             <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
                 <div class="workflow-spinner" style="width: 16px; height: 16px; border: 2px solid #e5e7eb; border-top-color: #3B82F6; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-                <span style="font-weight: 600; font-size: 14px; color: #1a1a2e;">Выполнение workflow</span>
+                <span style="font-weight: 600; font-size: 14px; color: #1a1a2e;">Running workflow</span>
             </div>
-            <div style="font-size: 12px; color: #6b7280;" id="workflowStatus">Запуск...</div>
+            <div style="font-size: 12px; color: #6b7280;" id="workflowStatus">Starting...</div>
             <div style="margin-top: 8px;">
                 <div style="background: #f3f4f6; border-radius: 4px; height: 4px; overflow: hidden;">
                     <div id="workflowProgressBar" style="width: 0%; height: 100%; background: #3B82F6; transition: width 0.3s;"></div>
                 </div>
             </div>
-            <div style="margin-top: 8px; font-size: 11px; color: #9ca3af;" id="workflowSteps">0 / 0 шагов</div>
+            <div style="margin-top: 8px; font-size: 11px; color: #9ca3af;" id="workflowSteps">0 / 0 steps</div>
         `;
         document.body.appendChild(indicator);
 
@@ -517,26 +477,26 @@ function updateWorkflowProgress(type, data) {
 
     switch (type) {
         case 'start':
-            statusEl.textContent = 'Запуск: ' + (data.workflowName || 'Workflow');
+            statusEl.textContent = 'Starting: ' + (data.workflowName || 'Workflow');
             progressBar.style.width = '10%';
-            stepsEl.textContent = '0 / ' + (data.totalSteps || 0) + ' шагов';
+            stepsEl.textContent = '0 / ' + (data.totalSteps || 0) + ' steps';
             break;
 
         case 'step':
             if (data && data.length > 0) {
                 var lastStep = data[data.length - 1];
-                statusEl.textContent = 'Выполняется: ' + (lastStep.name || 'Шаг');
+                statusEl.textContent = 'Running: ' + (lastStep.name || 'Step');
                 var total = parseInt(stepsEl.textContent.split('/')[1]) || 1;
                 var completed = parseInt(stepsEl.textContent.split('/')[0]) || 0;
                 var newCompleted = completed + data.length;
                 var percent = Math.min((newCompleted / total) * 100, 95);
                 progressBar.style.width = percent + '%';
-                stepsEl.textContent = newCompleted + ' / ' + total + ' шагов';
+                stepsEl.textContent = newCompleted + ' / ' + total + ' steps';
             }
             break;
 
         case 'complete':
-            statusEl.textContent = 'Workflow завершен успешно!';
+            statusEl.textContent = 'Workflow completed successfully!';
             progressBar.style.width = '100%';
             var spinner = document.querySelector('.workflow-spinner');
             if (spinner) spinner.remove();
@@ -546,7 +506,7 @@ function updateWorkflowProgress(type, data) {
             break;
 
         case 'error':
-            statusEl.textContent = 'Ошибка: ' + (typeof data === 'string' ? data : data.message || 'Неизвестная ошибка');
+            statusEl.textContent = 'Error: ' + (typeof data === 'string' ? data : data.message || 'Unknown error');
             progressBar.style.width = '100%';
             progressBar.style.background = '#EF4444';
             var spinner = document.querySelector('.workflow-spinner');
@@ -559,7 +519,7 @@ function updateWorkflowProgress(type, data) {
 }
 
 // ============================================================
-// РЕГИСТРАЦИЯ ФУНКЦИЙ
+// REGISTER FUNCTIONS
 // ============================================================
 
 window.PaletteClient = PaletteClient;

@@ -1,16 +1,19 @@
 <!DOCTYPE html>
-<html data-page="construction" data-version="1.27.0" lang="ru">
+<html data-page="construction" data-version="1.27.0" lang="en">
 
 <head>
-    <title>Настройки и параметры</title>
+    <title>Settings & Parameters</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../common/main.css">
     <link rel="stylesheet" href="../common/sidebar.css">
@@ -18,150 +21,35 @@
     <link rel="stylesheet" href="config.css">
     <link rel="stylesheet" href="update.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
-
+    
     <style>
-        .badge-beta-gradient {
-            display: inline-block;
-            padding: 2px 8px;
-            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6);
-            background-size: 200% 200%;
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            border-radius: 20px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-            animation: gradient 3s ease infinite;
-            margin-left: 8px;
-            vertical-align: middle;
+        *:not(.fa):not(.fas):not(.far):not(.fab):not(i):not([class*="fa-"]) {
+            font-family: 'Fira Sans', sans-serif !important;
         }
 
-        @keyframes gradient {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+        .version-number, .license-type, .license-expiry,
+        .settings-select, .settings-input, .integration-select,
+        .webhook-url code, .badge-beta-gradient, .version-badge,
+        .update-version-info, .update-changelog pre,
+        .update-progress-text, .update-progress-percent,
+        .update-progress-detail, .lang-modal-title, .lang-modal-desc,
+        .lang-modal-btn, .settings-section-title, .setting-label,
+        .setting-description, .alert-message, .settings-actions button {
+            font-family: 'Fira Code', monospace !important;
         }
-
-        .integration-select {
-            padding: 6px 10px;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            background: white;
-            font-size: 13px;
-            font-family: 'Ubuntu', sans-serif;
-            min-width: 140px;
-        }
-
-        .integration-select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .sub-settings {
-            margin-left: 40px;
-            padding-left: 16px;
-            border-left: 2px solid #e2e8f0;
-        }
-
-        /* ===== ПРОГРЕСС-БАР ===== */
-
-.update-progress {
-    margin-top: 20px;
-    padding: 16px 18px;
-    background: #f7f7f7;
-    border-radius: 10px;
-    border: 1px solid #e5e5e5;
-}
-
-.update-progress-status {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.update-progress-icon {
-    font-size: 18px;
-    width: 24px;
-    text-align: center;
-}
-
-.update-progress-text {
-    font-size: 14px;
-    font-weight: 500;
-    color: #111111;
-}
-
-.update-progress-bar-track {
-    width: 100%;
-    height: 6px;
-    background: #e5e5e5;
-    border-radius: 99px;
-    overflow: hidden;
-}
-
-.update-progress-bar-fill {
-    height: 100%;
-    background: #111111;
-    border-radius: 99px;
-    transition: width 0.4s ease;
-    width: 0%;
-}
-
-.update-progress-percent {
-    text-align: right;
-    font-size: 13px;
-    font-weight: 600;
-    color: #111111;
-    margin-top: 6px;
-}
-
-.update-progress-detail {
-    font-size: 12px;
-    color: #888888;
-    text-align: center;
-    margin-top: 6px;
-    font-style: italic;
-    min-height: 18px;
-}
-
-/* Анимация для иконки загрузки */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.update-progress-icon.spin {
-    display: inline-block;
-    animation: spin 1s linear infinite;
-}
-
-/* Блок изменений скрыт во время обновления */
-.update-changelog.hidden {
-    display: none;
-}
     </style>
 </head>
 
 <body>
     <div id="box" class="fade-in">
-        <!-- ЛЕВАЯ КОЛОНКА - МЕНЮ ИНСТРУМЕНТОВ -->
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Инструменты</span>
+                        <span>Tools</span>
                     </div>
-                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 </div>
@@ -170,7 +58,7 @@
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
-                        Загрузка...
+                        Loading...
                     </div>
                 </div>
 
@@ -182,82 +70,75 @@
                                 <i class="fas fa-history black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">История</span>
-                                <span class="tool-desc">Журнал сканирований</span>
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
                             </div>
                         </div>
                     </a>
                     <div class="tool-divider"></div>
-                    <div class="tool-item">
+                    <div class="tool-item active">
                         <div class="tool-icon">
                             <i class="fas fa-cogs black-icon"></i>
                         </div>
                         <div class="tool-info">
-                            <span class="tool-name">Настройки</span>
-                            <span class="tool-desc">Управление параметрами</span>
+                            <span class="tool-name">Settings</span>
+                            <span class="tool-desc">Manage parameters</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА - НАСТРОЙКИ -->
         <div id="center">
             <div class="settings-container">
                 <h2 class="section-title">
-                    Настройки и параметры
+                    Settings & Parameters
                 </h2>
 
-                <!-- БЛОК: Версия и обновления -->
+                <!-- Version & Updates -->
                 <div class="settings-section" style="margin-top: 12px;">
                     <div class="settings-section-header">
                         <div class="settings-section-title">
                             <i class="fas fa-code-branch black-icon"></i>
-                            <span>Версия и обновления</span>
+                            <span>Version & Updates</span>
                         </div>
                         <button class="upgrade-config-btn" id="checkUpdateBtn">
                             <i class="fas fa-sync-alt"></i>
-                            <span>Проверить обновление</span>
+                            <span>Check for update</span>
                         </button>
                     </div>
                     <div class="section-divider"></div>
-                    <!-- Текущая версия -->
+                    
                     <div class="setting-row">
                         <div class="setting-info">
-                            <div class="setting-label">Текущая версия</div>
-                            <div class="setting-description">Установленная версия платформы</div>
+                            <div class="setting-label">Current version</div>
                         </div>
                         <div class="version-badge">
                             <span class="version-number" id="versionNumber" data-path="info.versionNumber"></span>
                         </div>
                     </div>
 
-                    <!-- Информация о лицензии -->
                     <div class="setting-row">
                         <div class="setting-info">
-                            <div class="setting-label">Лицензия</div>
-                            <div class="setting-description">Срок действия</div>
+                            <div class="setting-label">License</div>
                         </div>
                         <div class="license-info">
-                            <span class="license-type" id="licenseType" data-path="info.licenseType">Загрузка...</span>
-                            <span class="license-expiry" id="licenseExpiry"
-                                data-path="info.licenseExpiry">Загрузка...</span>
+                            <span class="license-type" id="licenseType" data-path="info.licenseType">Loading...</span>
+                            <span class="license-expiry" id="licenseExpiry" data-path="info.licenseExpiry"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- БЛОК: Вход по логину -->
+                <!-- Authentication -->
                 <div class="settings-section" style="margin-top: 24px;">
                     <div class="settings-section-title">
                         <i class="fas fa-sign-in-alt" style="color:black"></i>
-                        <span>Вход по логину</span>
+                        <span>Authentication</span>
                     </div>
                     <div class="section-divider"></div>
-                    <!-- Включить авторизацию -->
                     <div class="setting-row">
                         <div class="setting-info">
-                            <div class="setting-label">Включить авторизацию</div>
-                            <div class="setting-description">Требовать логин и пароль для доступа</div>
+                            <div class="setting-label">Enable authentication</div>
+                            <div class="setting-description">Require login and password for access</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="authEnabled" data-path="auth.authEnabled">
@@ -265,12 +146,11 @@
                         </label>
                     </div>
 
-                    <!-- Поля логина и пароля (скрыты по умолчанию) -->
                     <div id="passwordFields" style="display: none;">
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Логин</div>
-                                <div class="setting-description">Имя пользователя для входа</div>
+                                <div class="setting-label">Username</div>
+                                <div class="setting-description">Username for login</div>
                             </div>
                             <input type="text" id="loginUsername" class="settings-input" placeholder="admin"
                                 data-path="auth.users.loginUsername">
@@ -278,8 +158,8 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Пароль</div>
-                                <div class="setting-description">Пароль для входа (мин. 4 символа)</div>
+                                <div class="setting-label">Password</div>
+                                <div class="setting-description">Login password (min 4 chars)</div>
                             </div>
                             <input type="text" id="loginPassword" class="settings-input"
                                 data-path="auth.users.loginPassword">
@@ -287,34 +167,33 @@
 
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Таймаут сессии</div>
-                                <div class="setting-description">Время бездействия до выхода (минуты)</div>
+                                <div class="setting-label">Session timeout</div>
+                                <div class="setting-description">Inactivity timeout in minutes</div>
                             </div>
                             <select id="sessionTimeout" class="settings-select" data-path="auth.users.sessionTimeout">
-                                <option value="15">15 минут</option>
-                                <option value="30" selected>30 минут</option>
-                                <option value="60">1 час</option>
-                                <option value="120">2 часа</option>
-                                <option value="480">8 часов</option>
+                                <option value="15">15 minutes</option>
+                                <option value="30" selected>30 minutes</option>
+                                <option value="60">1 hour</option>
+                                <option value="120">2 hours</option>
+                                <option value="480">8 hours</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <!-- БЛОК: История сканирований -->
+                <!-- Scan History -->
                 <div class="settings-section history-section">
                     <div class="settings-section-header">
                         <div class="settings-section-title">
                             <i class="fas fa-history black-icon"></i>
-                            <span>История сканирований</span>
+                            <span>Scan History</span>
                         </div>
                     </div>
                     <div class="section-divider"></div>
-                    <!-- Включить журнал -->
                     <div class="setting-row">
                         <div class="setting-info">
-                            <div class="setting-label">Вести журнал</div>
-                            <div class="setting-description">Сохранять историю всех сканирований</div>
+                            <div class="setting-label">Enable logging</div>
+                            <div class="setting-description">Save history of all scans</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="historyEnabled" data-path="history.enabled">
@@ -324,33 +203,33 @@
 
                     <div class="setting-row" id="historyStorageRow" style="display: none;">
                         <div class="setting-info">
-                            <div class="setting-label">Хранить записи</div>
-                            <div class="setting-description">Количество дней хранения истории (0 — бессрочно)</div>
+                            <div class="setting-label">Retention period</div>
+                            <div class="setting-description">Days to keep history (0 — forever)</div>
                         </div>
                         <select id="historyRetention" class="settings-select" data-path="history.retention">
-                            <option value="7">7 дней</option>
-                            <option value="14">14 дней</option>
-                            <option value="30" selected>30 дней</option>
-                            <option value="60">60 дней</option>
-                            <option value="90">90 дней</option>
-                            <option value="0">Бессрочно</option>
+                            <option value="7">7 days</option>
+                            <option value="14">14 days</option>
+                            <option value="30" selected>30 days</option>
+                            <option value="60">60 days</option>
+                            <option value="90">90 days</option>
+                            <option value="0">Forever</option>
                         </select>
                     </div>
                 </div>
 
-                <!-- БЛОК: Интеграции -->
+                <!-- Integrations -->
                 <div class="settings-section" style="margin-top: 24px;">
                     <div class="settings-section-title">
                         <i class="fas fa-plug" style="color:black"></i>
-                        <span>Интеграции</span>
+                        <span>Integrations</span>
                     </div>
                     <div class="section-divider"></div>
 
-                    <!-- ========== GIT INTEGRATION ========== -->
+                    <!-- Git Integration -->
                     <div class="setting-row">
                         <div class="setting-info">
-                            <div class="setting-label">Git интеграция</div>
-                            <div class="setting-description">Автоматический анализ при push в репозиторий</div>
+                            <div class="setting-label">Git integration</div>
+                            <div class="setting-description">Automatic analysis on push to repository</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="gitIntegrationEnabled" data-path="integrations.git.enabled">
@@ -359,14 +238,13 @@
                     </div>
 
                     <div id="gitIntegrationSettings" style="display: none; margin-left: 24px; margin-bottom: 20px;">
-                        <!-- Выбор инструмента -->
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Инструмент для анализа</div>
-                                <div class="setting-description">Какой инструмент будет обрабатывать webhook</div>
+                                <div class="setting-label">Analysis tool</div>
+                                <div class="setting-description">Which tool will process the webhook</div>
                             </div>
                             <select id="gitTool" class="integration-select" data-path="integrations.git.tool">
-                                <option value="blender">Блендер (комплексный)</option>
+                                <option value="blender">Blender (comprehensive)</option>
                                 <option value="sca">SCA</option>
                                 <option value="sast">SAST</option>
                             </select>
@@ -374,8 +252,7 @@
                         <div class="setting-row">
                             <div class="setting-info">
                                 <div class="setting-label">Webhook URL</div>
-                                <div class="setting-description">Скопируйте этот URL в настройки webhook вашего
-                                    репозитория</div>
+                                <div class="setting-description">Copy this URL to your repository webhook settings</div>
                             </div>
                             <div class="webhook-url" style="display: flex; gap: 8px; align-items: center;">
                                 <code id="webhookUrl"
@@ -388,43 +265,42 @@
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Секретный ключ</div>
-                                <div class="setting-description">Для проверки подлинности webhook (опционально)</div>
+                                <div class="setting-label">Secret key</div>
+                                <div class="setting-description">For webhook authenticity verification (optional)</div>
                             </div>
                             <div style="display: flex; gap: 8px; align-items: center;">
                                 <input type="text" id="webhookSecret" class="settings-input" style="width: 300px;"
                                     data-path="integrations.git.secret" placeholder="your-secret-key">
                                 <button type="button" class="btn-secondary" id="generateSecretBtn" onclick="generateWebhookSecret(this.id)"
-                                    style="padding: 8px 12px;" title="Сгенерировать">
+                                    style="padding: 8px 12px;" title="Generate">
                                     <i class="fas fa-sync-alt"></i>
                                 </button>
                                 <button type="button" class="btn-secondary" id="copySecretBtn"
-                                    style="padding: 8px 12px;" title="Копировать">
+                                    style="padding: 8px 12px;" title="Copy">
                                     <i class="fas fa-copy"></i>
                                 </button>
                             </div>
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Ветки для анализа</div>
-                                <div class="setting-description">Оставьте пустым для всех веток</div>
+                                <div class="setting-label">Branches to analyze</div>
+                                <div class="setting-description">Leave empty for all branches</div>
                             </div>
                             <input type="text" id="webhookBranches" class="settings-input" style="width: 300px;"
                                 data-path="integrations.git.branches" placeholder="main, develop, release/*">
                         </div>
                         <div id="webhookLocalhostWarning" class="alert-message warning"
-                            style="display: none; margin-top: 12px; font-size: 13px; font-family: 'Ubuntu';">
+                            style="display: none; margin-top: 12px; font-size: 13px; font-family: 'Fira Sans', sans-serif;">
                             <i class="fas fa-exclamation-triangle" style="color: red;"></i>
-                            Webhook недоступен на localhost. Для полноценной интеграции разверните сервер на доступном в
-                            вашей сети хосте.
+                            Webhook is not available on localhost. For full integration, deploy the server on a host accessible in your network.
                         </div>
                     </div>
 
-                    <!-- ========== MATTERMOST INTEGRATION ========== -->
+                    <!-- Mattermost Integration -->
                     <div class="setting-row">
                         <div class="setting-info">
                             <div class="setting-label">Mattermost <span class="badge-beta-gradient">Beta</span></div>
-                            <div class="setting-description">Отправка уведомлений в Mattermost канал</div>
+                            <div class="setting-description">Send notifications to Mattermost channel</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="mattermostEnabled" data-path="integrations.mattermost.enabled">
@@ -433,17 +309,15 @@
                     </div>
 
                     <div id="mattermostSettings" style="display: none; margin-left: 24px; margin-bottom: 20px;">
-                        <!-- Выбор инструмента для уведомлений -->
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Инструмент для уведомлений</div>
-                                <div class="setting-description">О завершении какого инструмента отправлять уведомления
-                                </div>
+                                <div class="setting-label">Notification tool</div>
+                                <div class="setting-description">Which tool completion to notify about</div>
                             </div>
                             <select id="mattermostTool" class="integration-select"
                                 data-path="integrations.mattermost.tool">
-                                <option value="all">Все инструменты</option>
-                                <option value="blender">Блендер</option>
+                                <option value="all">All tools</option>
+                                <option value="blender">Blender</option>
                                 <option value="sca">SCA</option>
                                 <option value="sast">SAST</option>
                                 <option value="fuzz">FUZZ</option>
@@ -452,7 +326,7 @@
                         <div class="setting-row">
                             <div class="setting-info">
                                 <div class="setting-label">Webhook URL</div>
-                                <div class="setting-description">URL вебхука Mattermost</div>
+                                <div class="setting-description">Mattermost webhook URL</div>
                             </div>
                             <input type="text" id="mattermostWebhook" class="settings-input" style="width: 400px;"
                                 data-path="integrations.mattermost.webhookUrl"
@@ -460,45 +334,45 @@
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Канал</div>
-                                <div class="setting-description">Канал для уведомлений (опционально)</div>
+                                <div class="setting-label">Channel</div>
+                                <div class="setting-description">Channel for notifications (optional)</div>
                             </div>
                             <input type="text" id="mattermostChannel" class="settings-input" style="width: 300px;"
                                 data-path="integrations.mattermost.channel" placeholder="town-square, security-alerts">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Уведомлять о</div>
-                                <div class="setting-description">Какие события отправлять</div>
+                                <div class="setting-label">Notify on</div>
+                                <div class="setting-description">Which events to send</div>
                             </div>
                             <div>
                                 <label style="margin-right: 16px;">
                                     <input type="checkbox" id="mattermostNotifySuccess"
-                                        data-path="integrations.mattermost.notifyOnSuccess" checked> Успешный анализ
+                                        data-path="integrations.mattermost.notifyOnSuccess" checked> Successful analysis
                                 </label>
                                 <label>
                                     <input type="checkbox" id="mattermostNotifyError"
-                                        data-path="integrations.mattermost.notifyOnError" checked> Ошибки
+                                        data-path="integrations.mattermost.notifyOnError" checked> Errors
                                 </label>
                             </div>
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Тестовое подключение</div>
+                                <div class="setting-label">Test connection</div>
                             </div>
                             <button class="btn-primary" onclick="testMattermostConnection()">
-                                <i class="fas fa-vial"></i> Проверить
+                                <i class="fas fa-vial"></i> Test
                             </button>
                         </div>
                     </div>
 
-                    <!-- ========== EMAIL INTEGRATION ========== -->
+                    <!-- Email Integration -->
                     <div class="setting-row" style="margin-top: 16px;">
                         <div class="setting-info">
                             <div class="setting-label">
-                                Email уведомления <span class="badge-beta-gradient">Beta</span>
+                                Email notifications <span class="badge-beta-gradient">Beta</span>
                             </div>
-                            <div class="setting-description">Отправка результатов анализа на email</div>
+                            <div class="setting-description">Send analysis results via email</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="emailEnabled" data-path="integrations.email.enabled">
@@ -507,15 +381,14 @@
                     </div>
 
                     <div id="emailSettings" style="display: none; margin-left: 24px; margin-bottom: 20px;">
-                        <!-- Выбор инструмента для уведомлений -->
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Инструмент для уведомлений</div>
-                                <div class="setting-description">О завершении какого инструмента отправлять email</div>
+                                <div class="setting-label">Notification tool</div>
+                                <div class="setting-description">Which tool completion to send email about</div>
                             </div>
                             <select id="emailTool" class="integration-select" data-path="integrations.email.tool">
-                                <option value="all">Все инструменты</option>
-                                <option value="blender">Блендер</option>
+                                <option value="all">All tools</option>
+                                <option value="blender">Blender</option>
                                 <option value="sca">SCA</option>
                                 <option value="sast">SAST</option>
                                 <option value="fuzz">FUZZ</option>
@@ -523,60 +396,60 @@
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">SMTP сервер</div>
-                                <div class="setting-description">Адрес SMTP сервера</div>
+                                <div class="setting-label">SMTP server</div>
+                                <div class="setting-description">SMTP server address</div>
                             </div>
                             <input type="text" id="smtpHost" class="settings-input" style="width: 300px;"
                                 data-path="integrations.email.smtpHost" placeholder="smtp.gmail.com">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Порт</div>
-                                <div class="setting-description">Порт SMTP (587 или 465)</div>
+                                <div class="setting-label">Port</div>
+                                <div class="setting-description">SMTP port (587 or 465)</div>
                             </div>
                             <input type="number" id="smtpPort" class="settings-input" style="width: 100px;"
                                 data-path="integrations.email.smtpPort" value="587">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Email отправителя</div>
+                                <div class="setting-label">From email</div>
                             </div>
                             <input type="email" id="emailFrom" class="settings-input" style="width: 300px;"
                                 data-path="integrations.email.from" placeholder="noreply@hercules.dev">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Email получателя</div>
-                                <div class="setting-description">Кому отправлять отчёты</div>
+                                <div class="setting-label">To email</div>
+                                <div class="setting-description">Where to send reports</div>
                             </div>
                             <input type="email" id="emailTo" class="settings-input" style="width: 300px;"
                                 data-path="integrations.email.to" placeholder="admin@example.com">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Пароль приложения</div>
-                                <div class="setting-description">Пароль для SMTP аутентификации</div>
+                                <div class="setting-label">App password</div>
+                                <div class="setting-description">Password for SMTP authentication</div>
                             </div>
                             <input type="password" id="emailPassword" class="settings-input" style="width: 300px;"
                                 data-path="integrations.email.password" placeholder="••••••••">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Тестовое письмо</div>
+                                <div class="setting-label">Test email</div>
                             </div>
                             <button class="btn-primary" onclick="sendTestEmail()">
-                                <i class="fas fa-paper-plane"></i> Отправить тест
+                                <i class="fas fa-paper-plane"></i> Send test
                             </button>
                         </div>
                     </div>
 
-                    <!-- ========== JIRA INTEGRATION ========== -->
+                    <!-- Jira Integration -->
                     <div class="setting-row" style="margin-top: 16px;">
                         <div class="setting-info">
                             <div class="setting-label">
                                 Jira <span class="badge-beta-gradient">Beta</span>
                             </div>
-                            <div class="setting-description">Создание задач по результатам анализа</div>
+                            <div class="setting-description">Create issues from analysis results</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="jiraEnabled" data-path="integrations.jira.enabled">
@@ -585,15 +458,14 @@
                     </div>
 
                     <div id="jiraSettings" style="display: none; margin-left: 24px; margin-bottom: 20px;">
-                        <!-- Выбор инструмента для создания задач -->
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Инструмент для задач</div>
-                                <div class="setting-description">Для какого инструмента создавать задачи в Jira</div>
+                                <div class="setting-label">Issue tool</div>
+                                <div class="setting-description">Which tool to create Jira issues for</div>
                             </div>
                             <select id="jiraTool" class="integration-select" data-path="integrations.jira.tool">
-                                <option value="all">Все инструменты</option>
-                                <option value="blender">Блендер</option>
+                                <option value="all">All tools</option>
+                                <option value="blender">Blender</option>
                                 <option value="sca">SCA</option>
                                 <option value="sast">SAST</option>
                                 <option value="fuzz">FUZZ</option>
@@ -602,14 +474,14 @@
                         <div class="setting-row">
                             <div class="setting-info">
                                 <div class="setting-label">Jira URL</div>
-                                <div class="setting-description">Адрес вашего Jira instance</div>
+                                <div class="setting-description">Your Jira instance URL</div>
                             </div>
                             <input type="text" id="jiraUrl" class="settings-input" style="width: 400px;"
                                 data-path="integrations.jira.url" placeholder="https://your-domain.atlassian.net">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Email / Логин</div>
+                                <div class="setting-label">Email / Username</div>
                             </div>
                             <input type="text" id="jiraEmail" class="settings-input" style="width: 300px;"
                                 data-path="integrations.jira.email" placeholder="user@example.com">
@@ -619,22 +491,22 @@
                                 <div class="setting-label">API Token</div>
                                 <div class="setting-description"><a
                                         href="https://id.atlassian.com/manage-profile/security/api-tokens"
-                                        target="_blank">Получить токен</a></div>
+                                        target="_blank">Get token</a></div>
                             </div>
                             <input type="password" id="jiraToken" class="settings-input" style="width: 300px;"
                                 data-path="integrations.jira.token" placeholder="••••••••">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Проект ID</div>
-                                <div class="setting-description">Куда создавать задачи</div>
+                                <div class="setting-label">Project ID</div>
+                                <div class="setting-description">Where to create issues</div>
                             </div>
                             <input type="text" id="jiraProject" class="settings-input" style="width: 200px;"
                                 data-path="integrations.jira.project" placeholder="PROJ">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Тип задачи</div>
+                                <div class="setting-label">Issue type</div>
                                 <div class="setting-description">Task, Bug, Story</div>
                             </div>
                             <select id="jiraIssueType" class="settings-select" style="width: 150px;"
@@ -646,34 +518,33 @@
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Создавать задачу при</div>
+                                <div class="setting-label">Create issue on</div>
                             </div>
                             <div>
                                 <label style="margin-right: 16px;"><input type="checkbox"
-                                        data-path="integrations.jira.onCritical" checked> Критические уязвимости</label>
+                                        data-path="integrations.jira.onCritical" checked> Critical vulnerabilities</label>
                                 <label style="margin-right: 16px;"><input type="checkbox"
-                                        data-path="integrations.jira.onHigh" checked> Высокие уязвимости</label>
-                                <label><input type="checkbox" data-path="integrations.jira.onError"> Ошибки
-                                    анализа</label>
+                                        data-path="integrations.jira.onHigh" checked> High vulnerabilities</label>
+                                <label><input type="checkbox" data-path="integrations.jira.onError"> Analysis errors</label>
                             </div>
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Тестовое подключение</div>
+                                <div class="setting-label">Test connection</div>
                             </div>
                             <button class="btn-primary" onclick="testJiraConnection()">
-                                <i class="fas fa-vial"></i> Проверить
+                                <i class="fas fa-vial"></i> Test
                             </button>
                         </div>
                     </div>
 
-                    <!-- ========== YANDEX TRACKER INTEGRATION ========== -->
+                    <!-- Yandex Tracker Integration -->
                     <div class="setting-row" style="margin-top: 16px;">
                         <div class="setting-info">
                             <div class="setting-label">
-                                Яндекс Трекер <span class="badge-beta-gradient">Beta</span>
+                                Yandex Tracker <span class="badge-beta-gradient">Beta</span>
                             </div>
-                            <div class="setting-description">Создание задач по результатам анализа</div>
+                            <div class="setting-description">Create issues from analysis results</div>
                         </div>
                         <label class="toggle-switch">
                             <input type="checkbox" id="yandexEnabled" data-path="integrations.yandex.enabled">
@@ -682,17 +553,14 @@
                     </div>
 
                     <div id="yandexSettings" style="display: none; margin-left: 24px; margin-bottom: 20px;">
-                        <!-- Выбор инструмента для создания задач -->
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Инструмент для задач</div>
-                                <div class="setting-description">Для какого инструмента создавать задачи в Яндекс
-                                    Трекере
-                                </div>
+                                <div class="setting-label">Issue tool</div>
+                                <div class="setting-description">Which tool to create Yandex Tracker issues for</div>
                             </div>
                             <select id="yandexTool" class="integration-select" data-path="integrations.yandex.tool">
-                                <option value="all">Все инструменты</option>
-                                <option value="blender">Блендер</option>
+                                <option value="all">All tools</option>
+                                <option value="blender">Blender</option>
                                 <option value="sca">SCA</option>
                                 <option value="sast">SAST</option>
                                 <option value="fuzz">FUZZ</option>
@@ -701,7 +569,7 @@
                         <div class="setting-row">
                             <div class="setting-info">
                                 <div class="setting-label">Organization ID</div>
-                                <div class="setting-description">ID вашей организации в Yandex Cloud</div>
+                                <div class="setting-description">Your Yandex Cloud organization ID</div>
                             </div>
                             <input type="text" id="yandexOrgId" class="settings-input" style="width: 300px;"
                                 data-path="integrations.yandex.orgId" placeholder="xxxxxxx">
@@ -711,7 +579,7 @@
                                 <div class="setting-label">OAuth Token</div>
                                 <div class="setting-description"><a
                                         href="https://cloud.yandex.ru/docs/iam/operations/iam-token/create"
-                                        target="_blank">Инструкция</a></div>
+                                        target="_blank">Instructions</a></div>
                             </div>
                             <input type="password" id="yandexToken" class="settings-input" style="width: 400px;"
                                 data-path="integrations.yandex.token" placeholder="y0_xxxxxxxxxxxx">
@@ -719,43 +587,41 @@
                         <div class="setting-row">
                             <div class="setting-info">
                                 <div class="setting-label">Queue ID</div>
-                                <div class="setting-description">Очередь для задач</div>
+                                <div class="setting-description">Queue for issues</div>
                             </div>
                             <input type="text" id="yandexQueue" class="settings-input" style="width: 200px;"
                                 data-path="integrations.yandex.queue" placeholder="TEST">
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Создавать задачу при</div>
+                                <div class="setting-label">Create issue on</div>
                             </div>
                             <div>
                                 <label style="margin-right: 16px;"><input type="checkbox"
-                                        data-path="integrations.yandex.onCritical" checked> Критические
-                                    уязвимости</label>
+                                        data-path="integrations.yandex.onCritical" checked> Critical vulnerabilities</label>
                                 <label style="margin-right: 16px;"><input type="checkbox"
-                                        data-path="integrations.yandex.onHigh" checked> Высокие уязвимости</label>
-                                <label><input type="checkbox" data-path="integrations.yandex.onError"> Ошибки
-                                    анализа</label>
+                                        data-path="integrations.yandex.onHigh" checked> High vulnerabilities</label>
+                                <label><input type="checkbox" data-path="integrations.yandex.onError"> Analysis errors</label>
                             </div>
                         </div>
                         <div class="setting-row">
                             <div class="setting-info">
-                                <div class="setting-label">Тестовое подключение</div>
+                                <div class="setting-label">Test connection</div>
                             </div>
                             <button class="btn-primary" onclick="testYandexConnection()">
-                                <i class="fas fa-vial"></i> Проверить
+                                <i class="fas fa-vial"></i> Test
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Кнопки сохранения и сброса -->
+                <!-- Action buttons -->
                 <div class="settings-actions">
                     <button class="btn-primary" id="saveBtn">
-                        <i class="fas fa-save"></i> Сохранить
+                        <i class="fas fa-save"></i> Save
                     </button>
                     <button class="btn-secondary" id="resetBtn">
-                        <i class="fas fa-undo-alt"></i> Сбросить
+                        <i class="fas fa-undo-alt"></i> Reset
                     </button>
                 </div>
             </div>
@@ -772,7 +638,6 @@
     <script>
         loadMenu();
 
-        // Инициализация Webhook URL
         function initWebhookUrl() {
             const webhookUrlElement = document.getElementById('webhookUrl');
             if (webhookUrlElement) {
@@ -783,7 +648,7 @@
         function copyWebhookUrl() {
             const url = window.location.origin + '/api/webhook';
             navigator.clipboard.writeText(url);
-            showNotification('Webhook URL скопирован', 'success');
+            showNotification('Webhook URL copied', 'success');
         }
 
         function showNotification(message, type) {
@@ -800,98 +665,108 @@
                 border-radius: 8px;
                 z-index: 10001;
                 animation: slideIn 0.3s ease;
-                font-family: Ubuntu;
+                font-family: 'Fira Sans', sans-serif;
             `;
             document.body.appendChild(notification);
             setTimeout(() => notification.remove(), 3000);
         }
 
-        // Предупреждение о localhost
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
             const warning = document.getElementById('webhookLocalhostWarning');
             if (warning) warning.style.display = 'block';
         }
 
-        // Функции тестирования
         async function testMattermostConnection() {
             const webhookUrl = document.getElementById('mattermostWebhook')?.value;
             if (!webhookUrl) {
-                showNotification('Укажите Webhook URL', 'error');
+                showNotification('Please enter Webhook URL', 'error');
                 return;
             }
-            showNotification('Тестовое сообщение отправлено в Mattermost', 'success');
+            showNotification('Test message sent to Mattermost', 'success');
         }
 
         async function sendTestEmail() {
-            showNotification('Тестовое письмо отправлено', 'success');
+            showNotification('Test email sent', 'success');
         }
 
         async function testJiraConnection() {
-            showNotification('Jira подключение проверено', 'success');
+            showNotification('Jira connection verified', 'success');
         }
 
         async function testYandexConnection() {
-            showNotification('Яндекс Трекер подключение проверено', 'success');
+            showNotification('Yandex Tracker connection verified', 'success');
         }
 
-        // Экспорт функций
         window.copyWebhookUrl = copyWebhookUrl;
         window.testMattermostConnection = testMattermostConnection;
         window.sendTestEmail = sendTestEmail;
         window.testJiraConnection = testJiraConnection;
         window.testYandexConnection = testYandexConnection;
 
-        // Инициализация
         initWebhookUrl();
     </script>
 
-    <!-- Модальное окно обновления -->
+    <!-- Update Modal -->
     <div id="updateModal" class="update-modal" style="display: none;">
-    <div class="update-modal-content">
-        <div class="update-modal-header">
-            <h3 id="modalTitle">Доступно обновление</h3>
-            <button class="update-modal-close" onclick="closeUpdateModal()">✕</button>
-        </div>
-
-        <div class="update-modal-body">
-            <!-- Информация о версиях -->
-            <div class="update-version-info">
-                <span class="current-version-label">Текущая версия:</span>
-                <span class="current-version-value" id="modalCurrentVersion">v3.2.0</span>
-                <i class="fas fa-arrow-right"></i>
-                <span class="latest-version-label">Новая версия:</span>
-                <span class="latest-version-value" id="modalLatestVersion">v3.2.1</span>
-                <span class="update-version-badge">Новая</span>
+        <div class="update-modal-content">
+            <div class="update-modal-header">
+                <h3 id="modalTitle">Update available</h3>
+                <button class="update-modal-close" onclick="closeUpdateModal()">✕</button>
             </div>
 
-            <!-- Список изменений -->
-            <div class="update-changelog" id="changelogBlock">
-                <strong>Что нового:</strong>
-                <pre id="modalChangelog"></pre>
-            </div>
-
-            <!-- ===== ПРОГРЕСС-БАР ===== -->
-            <div class="update-progress" id="progressBlock" style="display: none;">
-                <div class="update-progress-status">
-                    <span class="update-progress-text" id="progressText">Подготовка к обновлению...</span>
+            <div class="update-modal-body">
+                <div class="update-version-info">
+                    <span class="current-version-label">Current version:</span>
+                    <span class="current-version-value" id="modalCurrentVersion">v3.2.0</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span class="latest-version-label">New version:</span>
+                    <span class="latest-version-value" id="modalLatestVersion">v3.2.1</span>
+                    <span class="update-version-badge">New</span>
                 </div>
-                <div class="update-progress-bar-track">
-                    <div class="update-progress-bar-fill" id="progressBar" style="width: 0%;"></div>
-                </div>
-                <div class="update-progress-percent" id="progressPercent">0%</div>
-                <div class="update-progress-detail" id="progressDetail">—</div>
-            </div>
-        </div>
 
-        <div class="update-modal-footer" id="modalFooter">
-            <button class="btn-secondary" onclick="closeUpdateModal()" id="cancelBtn">Отмена</button>
-            <button class="btn-primary" id="updateNowBtn">
-                <i class="fas fa-download"></i> Обновить сейчас
-            </button>
+                <div class="update-changelog" id="changelogBlock">
+                    <strong>What's new:</strong>
+                    <pre id="modalChangelog"></pre>
+                </div>
+
+                <div class="update-progress" id="progressBlock" style="display: none;">
+                    <div class="update-progress-status">
+                        <span class="update-progress-text" id="progressText">Preparing update...</span>
+                    </div>
+                    <div class="update-progress-bar-track">
+                        <div class="update-progress-bar-fill" id="progressBar" style="width: 0%;"></div>
+                    </div>
+                    <div class="update-progress-percent" id="progressPercent">0%</div>
+                    <div class="update-progress-detail" id="progressDetail">—</div>
+                </div>
+            </div>
+
+            <div class="update-modal-footer" id="modalFooter">
+                <button class="btn-secondary" onclick="closeUpdateModal()" id="cancelBtn">Cancel</button>
+                <button class="btn-primary" id="updateNowBtn">
+                    <i class="fas fa-download"></i> Update now
+                </button>
+            </div>
         </div>
     </div>
-</div>
 
+    <!-- Language Modal -->
+    <div class="lang-modal-overlay" id="langModal">
+        <div class="lang-modal-box">
+            <div class="lang-modal-title">
+                <i class="fas fa-globe" style="margin-right: 8px; color: #4a9eff;"></i>
+                Change language?
+            </div>
+            <div class="lang-modal-desc">
+                Applying new language will require a page reload.
+                <br><strong>Continue?</strong>
+            </div>
+            <div class="lang-modal-actions">
+                <button class="lang-modal-btn cancel" id="langModalCancel">Cancel</button>
+                <button class="lang-modal-btn confirm" id="langModalConfirm">Yes, reload</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

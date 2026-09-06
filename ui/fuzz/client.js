@@ -1,5 +1,3 @@
-
-
 let currentSpec = null;
 let currentReport = null;
 let selectedFile = null;
@@ -15,14 +13,14 @@ let statusCheckInterval = null;
 function resetStartButton() {
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
-        startBtn.innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Начать анализ';
+        startBtn.innerHTML = '<i class="fas fa-play" style="margin-right: 6px;"></i>Start Analysis';
         startBtn.disabled = false;
         startBtn.classList.remove('active');
     }
 }
 
 function setStartButtonLoading(text) {
-    text = text || 'Загрузка...';
+    text = text || 'Loading...';
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
         startBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 6px;"></i>' + text;
@@ -31,7 +29,7 @@ function setStartButtonLoading(text) {
 }
 
 function setStartButtonError(text) {
-    text = text || 'Ошибка';
+    text = text || 'Error';
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
         startBtn.innerHTML = '<i class="fas fa-exclamation-triangle" style="margin-right: 6px; color: #ef4444;"></i>' + text;
@@ -55,7 +53,7 @@ function validateStartButton() {
 }
 
 // ============================================================
-// СБРОС СОСТОЯНИЯ
+// RESET STATE
 // ============================================================
 
 function resetAllState() {
@@ -92,7 +90,7 @@ function resetAllState() {
 }
 
 // ============================================================
-// ОТОБРАЖЕНИЕ СПЕЦИФИКАЦИИ
+// DISPLAY SPECIFICATION
 // ============================================================
 
 function displaySpecInfo(data) {
@@ -112,8 +110,8 @@ function displaySpecInfo(data) {
     const formatEl = document.getElementById('specFormat');
     const endpointsContainer = document.getElementById('specEndpoints');
     
-    if (titleEl) titleEl.textContent = spec.info?.title || 'Название';
-    if (versionEl) versionEl.textContent = spec.info?.version || 'Версия';
+    if (titleEl) titleEl.textContent = spec.info?.title || 'Title';
+    if (versionEl) versionEl.textContent = spec.info?.version || 'Version';
     if (formatEl) formatEl.textContent = format;
     
     if (endpointsContainer) {
@@ -133,7 +131,7 @@ function displaySpecInfo(data) {
         if (endpoints.length > 10) {
             const div = document.createElement('div');
             div.className = 'endpoint-item';
-            div.innerHTML = '<span style="color: var(--text-secondary);">... и еще ' + (endpoints.length - 10) + ' эндпоинтов</span>';
+            div.innerHTML = '<span style="color: var(--text-secondary);">... and ' + (endpoints.length - 10) + ' more endpoints</span>';
             endpointsContainer.appendChild(div);
         }
     }
@@ -142,7 +140,7 @@ function displaySpecInfo(data) {
 }
 
 // ============================================================
-// ОПРОС СТАТУСА
+// POLL STATUS
 // ============================================================
 
 function checkFuzzStatus() {
@@ -168,13 +166,11 @@ function checkFuzzStatus() {
             currentSpec = data.report?.spec;
             specLoaded = true;
             
-
-            
             resetStartButton();
             resetAllProgress();
             resetThermometer(); 
             
-            showValidationMessage('Фаззинг успешно завершен. Найдено уязвимостей: ' + (data.report?.vulnerabilities?.length || 0), 'success');
+            showValidationMessage('Fuzzing completed successfully. Found vulnerabilities: ' + (data.report?.vulnerabilities?.length || 0), 'success');
             
             if (data.report?.spec) {
                 const endpoints = data.report.byEndpoint ? Object.keys(data.report.byEndpoint) : [];
@@ -191,19 +187,19 @@ function checkFuzzStatus() {
             clearInterval(statusCheckInterval);
             statusCheckInterval = null;
             
-            showErrorModal('Ошибка', data.message || 'Ошибка выполнения фаззинга');
-            showValidationMessage(data.message || 'Ошибка выполнения фаззинга', 'error');
+            showErrorModal('Error', data.message || 'Fuzzing execution error');
+            showValidationMessage(data.message || 'Fuzzing execution error', 'error');
             resetAllState();
             fuzzTaskId = null;
         }
     })
     .catch(function(error) {
-        showValidationMessage('Ошибка проверки статуса задачи', 'error');
+        showValidationMessage('Error checking task status', 'error');
     });
 }
 
 function getAuthHeaders() {
-    const token = localStorage.getItem('licenseToken');
+    const token = localStorage.getItem('authToken');
     if (token) {
         return { 'Authorization': `Bearer ${token}` };
     }
@@ -211,7 +207,7 @@ function getAuthHeaders() {
 }
 
 // ============================================================
-// ГЛАВНАЯ ФУНКЦИЯ - ЗАПУСК ФАЗЗИНГА
+// MAIN FUNCTION - START FUZZING
 // ============================================================
 async function startFuzzing() {
     
@@ -225,7 +221,7 @@ async function startFuzzing() {
     const mode = modeElement?.getAttribute('data-mode') === 'metla' ? 1 : 0;
     
 
-    // === РЕЖИМ 1 - МЕТЛА ===
+    // === MODE 1 - METLA ===
     if (mode === 1) {
         
         const metlaTargetUrl = document.getElementById('specUrl');
@@ -233,16 +229,16 @@ async function startFuzzing() {
         
        
         if (!targetUrl) {
-            showValidationMessage('Введите адрес приложения', 'invalid');
+            showValidationMessage('Enter application URL', 'invalid');
             return;
         }
         
         if (!isValidUrl(targetUrl)) {
-            showValidationMessage('Введите корректный URL (http:// или https://)', 'invalid');
+            showValidationMessage('Enter a valid URL (http:// or https://)', 'invalid');
             return;
         }
         
-        setStartButtonLoading('Анализ запущен ...');
+        setStartButtonLoading('Analysis running ...');
         clearValidationMessage();
         
         try {
@@ -254,7 +250,7 @@ async function startFuzzing() {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
-                    ...getAuthHeaders()  // ← добавляем токен
+                    ...getAuthHeaders()
                 },
                 body: JSON.stringify({
                     url: targetUrl,
@@ -262,29 +258,17 @@ async function startFuzzing() {
                 })
             });
             
-            // ===== ПРОВЕРКА НА ЛИЦЕНЗИЮ =====
-            if (response.status === 403) {
-                if (typeof window.showLicenseModal === 'function') {
-                    window.showLicenseModal('fuzz');
-                }
-                showValidationMessage('Требуется активация лицензии', 'error');
-                stopProgressEmulator();
-                resetAllState();
-                return;
-            }
-            
-            
             let data;
             try {
                 data = await response.json();
 
             } catch (e) {
-                throw new Error('Сервер вернул некорректный ответ');
+                throw new Error('Server returned invalid response');
             }
             
             if (!response.ok || (data && data.success === false)) {
-                const errorMessage = data?.message || 'Ошибка на сервере';
-                showErrorModal('Ошибка', errorMessage);
+                const errorMessage = data?.message || 'Server error';
+                showErrorModal('Error', errorMessage);
                 showValidationMessage(errorMessage, 'error');
                 stopProgressEmulator();
                 resetAllState();
@@ -293,7 +277,7 @@ async function startFuzzing() {
             
             if (data && data.status === 'started') {
                 fuzzTaskId = data.taskId;
-                showValidationMessage('Анализ запущен...', 'info');
+                showValidationMessage('Analysis started...', 'info');
                 
                 startProgressBars();
                 
@@ -308,15 +292,15 @@ async function startFuzzing() {
             
         } catch (error) {
 
-            let errorMessage = error.message || 'Неизвестная ошибка';
+            let errorMessage = error.message || 'Unknown error';
             
             if (error.message && error.message.includes('fetch')) {
-                errorMessage = 'Не удалось подключиться к серверу. Проверьте что сервер запущен.';
+                errorMessage = 'Unable to connect to server. Make sure the server is running.';
             } else if (error.message && error.message.includes('JSON')) {
-                errorMessage = 'Сервер вернул некорректный ответ. Попробуйте позже.';
+                errorMessage = 'Server returned invalid response. Please try again later.';
             }
             
-            showErrorModal('Ошибка', errorMessage);
+            showErrorModal('Error', errorMessage);
             showValidationMessage(errorMessage, 'error');
             stopProgressEmulator();
             resetAllState();
@@ -330,13 +314,13 @@ async function startFuzzing() {
     }
     
     
-    // === РЕЖИМ 0 - ДОМОВОЙ ===
+    // === MODE 0 - DOMOVOY ===
     if (!url && !selectedFile) {
-        showValidationMessage('Введите ссылку или выберите файл', 'invalid');
+        showValidationMessage('Enter URL or select a file', 'invalid');
         return;
     }
     
-    setStartButtonLoading('Анализ запущен ...');
+    setStartButtonLoading('Analysis running ...');
     clearValidationMessage();
     
     try {
@@ -347,29 +331,19 @@ async function startFuzzing() {
         
         if (url && isValidUrl(url)) {
             formData.append('specUrl', url);
-            showValidationMessage('Загрузка спецификации по ссылке...', 'info');
+            showValidationMessage('Loading specification from URL...', 'info');
         } else if (selectedFile) {
             formData.append('spec', selectedFile);
-            showValidationMessage('Загрузка файла: ' + selectedFile.name, 'info');
+            showValidationMessage('Loading file: ' + selectedFile.name, 'info');
         } else {
-            throw new Error('Нет источника спецификации');
+            throw new Error('No specification source');
         }
         console.log(mode)
         const response = await fetch('/api/fuzz', {
             method: 'POST',
-            headers: getAuthHeaders(),  // ← добавляем токен
+            headers: getAuthHeaders(),
             body: formData
         });
-        
-        // ===== ПРОВЕРКА НА ЛИЦЕНЗИЮ =====
-        if (response.status === 403) {
-            if (typeof window.showLicenseModal === 'function') {
-                window.showLicenseModal('fuzz');
-            }
-            showValidationMessage('Требуется активация лицензии', 'error');
-            resetAllState();
-            return;
-        }
         
         if (response.status === 403) {
             let data;
@@ -377,18 +351,10 @@ async function startFuzzing() {
                 data = await response.json();
             } catch (e) {}
             
-            if (data && data.needRenew) {
-                if (typeof window.showLicenseModal === 'function') {
-                    window.showLicenseModal('fuzz');
-                }
-                showValidationMessage('Срок действия лицензии истёк', 'error');
-            } else if (data && data.needReauth) {
-                if (typeof window.showLicenseModal === 'function') {
-                    window.showLicenseModal('fuzz');
-                }
-                showValidationMessage('Токен истёк, требуется повторная активация', 'error');
+            if (data && data.needReauth) {
+                showValidationMessage('Session expired, please re-login', 'error');
             } else {
-                showErrorModal('Ошибка', data?.message || 'Ошибка доступа');
+                showErrorModal('Error', data?.message || 'Access error');
             }
             resetAllState();
             return;
@@ -398,12 +364,12 @@ async function startFuzzing() {
         try {
             data = await response.json();
         } catch (e) {
-            throw new Error('Сервер вернул некорректный ответ');
+            throw new Error('Server returned invalid response');
         }
         
         if (data && data.success === false) {
-            let errorMessage = data?.message || 'Ошибка на сервере';
-            showErrorModal('Ошибка', errorMessage);
+            let errorMessage = data?.message || 'Server error';
+            showErrorModal('Error', errorMessage);
             showValidationMessage(errorMessage, 'error');
             resetAllState();
             return;
@@ -411,7 +377,7 @@ async function startFuzzing() {
         
         if (data && data.status === 'started') {
             fuzzTaskId = data.taskId;
-            showValidationMessage('Фаззинг запущен...', 'info');
+            showValidationMessage('Fuzzing started...', 'info');
             
             startProgressBars();
             
@@ -448,7 +414,7 @@ async function startFuzzing() {
         
         resetStartButton();
         resetAllProgress();
-        showValidationMessage('Фаззинг успешно завершен. Найдено уязвимостей: ' + (report.vulnerabilities?.length || 0), 'success');
+        showValidationMessage('Fuzzing completed successfully. Found vulnerabilities: ' + (report.vulnerabilities?.length || 0), 'success');
         
         if (report.spec) {
             const endpoints = report.byEndpoint ? Object.keys(report.byEndpoint) : [];
@@ -464,24 +430,24 @@ async function startFuzzing() {
         return report;
         
     } catch (error) {
-        let errorMessage = error.message || 'Неизвестная ошибка';
+        let errorMessage = error.message || 'Unknown error';
         
         if (error.message && error.message.includes('fetch')) {
-            errorMessage = 'Не удалось подключиться к серверу.';
+            errorMessage = 'Unable to connect to server.';
         } else if (error.message && error.message.includes('JSON')) {
-            errorMessage = 'Сервер вернул некорректный ответ. Попробуйте позже.';
+            errorMessage = 'Server returned invalid response. Please try again later.';
         } else if (error.message && error.message.includes('413')) {
-            errorMessage = 'Файл слишком большой. Уменьшите размер спецификации.';
+            errorMessage = 'File is too large. Reduce specification size.';
         }
         
-        showErrorModal('Ошибка', errorMessage);
+        showErrorModal('Error', errorMessage);
         showValidationMessage(errorMessage, 'error');
         resetAllState();
     }
 }
 
 // ============================================================
-// ФАЙЛЫ
+// FILES
 // ============================================================
 
 function handleFileSelect(file) {
@@ -489,7 +455,7 @@ function handleFileSelect(file) {
         const validExtensions = ['.json', '.yaml', '.yml'];
         const ext = '.' + file.name.split('.').pop().toLowerCase();
         if (!validExtensions.includes(ext)) {
-            showValidationMessage('Поддерживаются только JSON и YAML файлы', 'error');
+            showValidationMessage('Only JSON and YAML files are supported', 'error');
             return;
         }
         
@@ -503,7 +469,7 @@ function handleFileSelect(file) {
         if (fileSize) fileSize.textContent = formatFileSize(file.size);
         if (fileInfo) fileInfo.style.display = 'flex';
         
-        showValidationMessage('Файл выбран: ' + file.name, 'success');
+        showValidationMessage('File selected: ' + file.name, 'success');
         validateStartButton();
     }
 }
@@ -523,12 +489,12 @@ function removeFile() {
 }
 
 // ============================================================
-// ОТЧЕТ
+// REPORT
 // ============================================================
 
 function downloadReport() {
     if (!currentReport) {
-        showToolNotification('Нет отчета для скачивания', 'error');
+        showToolNotification('No report to download', 'error');
         return;
     }
     
@@ -543,11 +509,11 @@ function downloadReport() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     
-    showToolNotification('Отчет скачан', 'success');
+    showToolNotification('Report downloaded', 'success');
 }
 
 // ============================================================
-// ИНИЦИАЛИЗАЦИЯ
+// INITIALIZATION
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -558,7 +524,7 @@ document.addEventListener('DOMContentLoaded', function() {
         specUrlInput.addEventListener('input', function() {
             const url = this.value.trim();
             if (url && isValidUrl(url)) {
-                showValidationMessage('Ссылка введена. Нажмите "Начать анализ"', 'info');
+                showValidationMessage('URL entered. Click "Start Analysis"', 'info');
             }
             validateStartButton();
         });
@@ -621,7 +587,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ============================================================
-// РЕГИСТРАЦИЯ В window
+// REGISTER IN window
 // ============================================================
 
 window.startFuzzing = startFuzzing;

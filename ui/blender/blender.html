@@ -3,17 +3,80 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Блендер</title>
+    <title>Blender</title>
     <meta id="toolId" value="blender">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="main.css">
     <link rel="stylesheet" href="../common/modal.css">
     <link rel="stylesheet" href="../common/sidebar.css">
-    <link rel="stylesheet" href="../common/upgrade.css">
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
 
+    <style>
+        *:not(.fa):not(.fas):not(.far):not(.fab):not(i):not([class*="fa-"]) {
+            font-family: 'Fira Sans', sans-serif !important;
+        }
+
+        .task-id, .task-status, .modal-select, .modal-input,
+        .license-input, .data-structure-preview, .version,
+        .format-badge, .supported-format-badge, .tools-loader i,
+        .progress-container, .start-button, .header-btn,
+        .input-group input, .section-title, .task-status,
+        .card-header, .card-body h4, .upload-text,
+        .supported-format-badge, .format-badge span,
+        .tools-loader, .error-message, .source-btn,
+        .thermometer-mark .mark-label, .overall-percent,
+        .result-tab, .btn-download, .btn-download-html {
+            font-family: 'Fira Code', monospace !important;
+        }
+
+        input, select, textarea, button {
+            font-family: 'Fira Sans', sans-serif;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .page-header .section-title {
+            margin-bottom: 0;
+        }
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .header-btn {
+            background: transparent;
+            border: 1px solid var(--border-color, #e2e8f0);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-primary, #0f172a);
+            font-family: 'Fira Code', monospace;
+        }
+        .header-btn:hover {
+            background: var(--primary-color, #2563eb);
+            border-color: var(--primary-color, #2563eb);
+            color: white;
+        }
+        .header-btn i {
+            font-size: 14px;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,9 +86,9 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon" style="color:black"></i>
-                        <span>Инструменты</span>
+                        <span>Tools</span>
                     </div>
-                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 </div>
@@ -33,7 +96,7 @@
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
-                        Загрузка...
+                        Loading...
                     </div>
                 </div>
 
@@ -45,8 +108,8 @@
                                 <i class="fas fa-history black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">История</span>
-                                <span class="tool-desc">Журнал сканирований</span>
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
                             </div>
                         </div>
                     </a>
@@ -57,8 +120,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Настройки</span>
-                                <span class="tool-desc">Управление параметрами</span>
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
                             </div>
                         </div>
                     </a>
@@ -68,30 +131,31 @@
 
         <div id="center">
             <div class="page-header">
-                <h2 class="section-title" id="pageTitle">Выберите источник</h2>
+                <h2 class="section-title" id="pageTitle">Select source</h2>
                 <div class="header-buttons">
                     <button class="header-btn" onclick="showToolInfo('blender')">
-                        <i class="fas fa-info-circle"></i> Описание инструмента
+                        <i class="fas fa-info-circle"></i> Tool info
                     </button>
                 </div>
             </div>
             <div class="source-selector">
                 <button class="source-btn active" onclick="switchSource('git')">
-                    <i class="fab fa-git-alt"></i>URL
+                    <i class="fab fa-git-alt"></i> URL
                 </button>
                 <button class="source-btn" onclick="switchSource('archive')">
-                    <i class="fas fa-file-archive"></i> Архив
+                    <i class="fas fa-file-archive"></i> Archive
                 </button>
                 <button class="source-btn" onclick="switchSource('local')">
-                    <i class="fas fa-folder-open"></i> Локальный проект
+                    <i class="fas fa-folder-open"></i> Local project
                 </button>
             </div>
             <div id="git-source" class="source-content active">
                 <div class="input-group">
-                    <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий"
-                        aria-label="Ссылка на репозиторий github gitlab">
+                    <input type="text" id="repo" placeholder="Paste repository link"
+                        aria-label="GitHub or GitLab repository link">
                     <button class="start-button" id="start-btn" type="button" disabled>
-                        <i class="fas fa-play" style="margin-right: 6px;"></i>Начать анализ</button>
+                        <i class="fas fa-play" style="margin-right: 6px;"></i>Start analysis
+                    </button>
                 </div>
                 <div class="tech-stack">
                     <div class="platforms-row">
@@ -104,12 +168,12 @@
                             <span>GitLab</span>
                         </span>
                         <span class="format-badge">
-                            <i class="fab fa-bitbucket fa-1x" style="color: blue;"></i>
+                            <i class="fab fa-bitbucket fa-1x" style="color: #0052CC;"></i>
                             <span>Bitbucket</span>
                         </span>
                         <span class="format-badge">
                             <i class="fab fa-git-alt fa-1x" style="color: #FF6445;"></i>
-                            <span>Корпоративные репозитории</span>
+                            <span>Enterprise repositories</span>
                         </span>
                     </div>
                 </div>
@@ -121,11 +185,11 @@
                         <i class="fas fa-cloud-upload-alt black-icon"></i>
                     </div>
                     <div class="upload-text">
-                        Нажмите для выбора архива<br>
+                        Click to select archive<br>
                         <span style="font-size: 9px">
                             <div class="icons-row">
                                 <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;"
-                                        title="Загрузить архив"></i></span>
+                                        title="Upload archive"></i></span>
                             </div>
                         </span>
                     </div>
@@ -139,7 +203,7 @@
                 </div>
                 <div id="archiveFileInfo" class="file-info"></div>
                 <button class="start-button" id="archive-start-btn" type="button" disabled
-                    style="margin-top: 15px; width: 100%;">Начать анализ архива</button>
+                    style="margin-top: 15px; width: 100%;">Start archive analysis</button>
             </div>
 
             <div id="local-source" class="source-content">
@@ -148,29 +212,29 @@
                         <i class="fas fa-cloud-upload-alt black-icon"></i>
                     </div>
                     <div class="upload-text">
-                        Нажмите для выбора локального проекта<br>
+                        Click to select local project<br>
                         <span style="font-size: 9px">
                             <div class="icons-row">
                                 <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;"
-                                        title="Выбрать локальный проект"></i></span>
+                                        title="Select local project"></i></span>
                             </div>
                         </span>
                     </div>
                     <div class="supported-formats">
-                        <span class="supported-format-badge">Любая папка</span>
+                        <span class="supported-format-badge">Any folder</span>
                     </div>
                     <input type="file" id="localFolderInput" webkitdirectory directory style="display: none;">
                 </div>
                 <div id="localFolderInfo" class="file-info"></div>
                 <button class="start-button" id="local-start-btn" type="button" disabled
-                    style="margin-top: 15px; width: 100%;">Начать анализ проекта</button>
+                    style="margin-top: 15px; width: 100%;">Start project analysis</button>
             </div>
 
             <div class="thermometer-progress">
 
                 <div class="overall-progress-section">
                     <div class="overall-progress-header">
-                        <span>Общий прогресс анализа</span>
+                        <span>Overall analysis progress</span>
                         <span class="overall-percent" id="overallPercent">0%</span>
                     </div>
                     <div class="overall-progress-container">
@@ -180,32 +244,32 @@
                     <div class="thermometer-marks" id="thermometerMarks">
                         <div class="thermometer-mark" data-step="1">
                             <div class="mark-dot" id="markDot1"></div>
-                            <div class="mark-label" id="markLabel1">Загрузка</div>
+                            <div class="mark-label" id="markLabel1">Loading</div>
 
                         </div>
                         <div class="thermometer-mark" data-step="2">
                             <div class="mark-dot" id="markDot2"></div>
-                            <div class="mark-label" id="markLabel2">Сканирование</div>
+                            <div class="mark-label" id="markLabel2">Scanning</div>
 
                         </div>
                         <div class="thermometer-mark" data-step="3">
                             <div class="mark-dot" id="markDot3"></div>
-                            <div class="mark-label" id="markLabel3">Компоненты</div>
+                            <div class="mark-label" id="markLabel3">Components</div>
 
                         </div>
                         <div class="thermometer-mark" data-step="4">
                             <div class="mark-dot" id="markDot4"></div>
-                            <div class="mark-label" id="markLabel4">Анализ кода</div>
+                            <div class="mark-label" id="markLabel4">Code analysis</div>
 
                         </div>
                         <div class="thermometer-mark" data-step="5">
                             <div class="mark-dot" id="markDot5"></div>
-                            <div class="mark-label" id="markLabel5">Уязвимости</div>
+                            <div class="mark-label" id="markLabel5">Vulnerabilities</div>
 
                         </div>
                         <div class="thermometer-mark" data-step="7">
                             <div class="mark-dot" id="markDot7"></div>
-                            <div class="mark-label" id="markLabel7">Генерация отчёта</div>
+                            <div class="mark-label" id="markLabel7">Generating report</div>
                         </div>
                     </div>
                 </div>
@@ -217,96 +281,45 @@
     <div id="resultModal" class="result-modal-overlay">
         <div class="result-modal-container">
             <div class="result-modal-header">
-                <h3>Результаты анализа</h3>
+                <h3>Analysis results</h3>
                 <button class="result-modal-close" onclick="closeResultModal()">&times;</button>
             </div>
             <div class="result-modal-body">
                 <div class="result-tabs">
-                    <button class="result-tab active" onclick="showResultTab('summary')">Обзор</button>
-                    <button class="result-tab" onclick="showResultTab('dependencies')">Зависимости</button>
-                    <button class="result-tab" onclick="showResultTab('code')">Анализ кода</button>
+                    <button class="result-tab active" onclick="showResultTab('summary')">Overview</button>
+                    <button class="result-tab" onclick="showResultTab('dependencies')">Dependencies</button>
+                    <button class="result-tab" onclick="showResultTab('code')">Code analysis</button>
                 </div>
-
 
                 <div id="resultContent" class="result-content"></div>
             </div>
             <div class="result-modal-footer">
-                <button class="btn-download-html" onclick="downloadHTML()" style="background: #6f42c1; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-family: Ubuntu; font-size: 13px;">
-                    <i class="fab fa-html5" style="margin-right: 10px;"></i> Скачать HTML
+                <button class="btn-download-html" onclick="downloadHTML()" style="background: #6f42c1; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 13px;">
+                    <i class="fab fa-html5" style="margin-right: 10px;"></i> Download HTML
                 </button>
-                <button class="btn-download" onclick="downloadJSON()" style="background: #10b981; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-family: Ubuntu; font-size: 13px;">
-                    <i class="fas fa-download" style="margin-right: 10px;"></i>Скачать JSON
+                <button class="btn-download" onclick="downloadJSON()" style="background: #10b981; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 13px;">
+                    <i class="fas fa-download" style="margin-right: 10px;"></i> Download JSON
                 </button>
             </div>
         </div>
     </div>
 
-<div id="unifiedModal" class="settings-modal">
-    <div class="settings-content">
-        <div class="settings-header">
-            <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
-            <span class="settings-close" onclick="closeToolModal()">&times;</span>
-        </div>
-        <div class="unified-layout">
-            <div class="unified-left"></div>
-            <div class="unified-right"></div>
-        </div>
-    </div>
-</div>
-
-    <div id="licenseModal" class="upgrade-modal">
-        <div class="upgrade-modal-overlay"></div>
-        <div class="upgrade-modal-content" style="max-width: 480px;">
-            <div class="upgrade-modal-header">
-                <h3>Активация лицензии</h3>
-                <button class="upgrade-modal-close" onclick="closeLicenseModal()">&times;</button>
+    <div id="unifiedModal" class="settings-modal">
+        <div class="settings-content">
+            <div class="settings-header">
+                <h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>
+                <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
-            <div class="upgrade-modal-body">
-
-                <div class="license-current"
-                    style="margin-bottom: 24px; padding: 20px; background: #f8fafc;">
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-size: 13px; color: #64748b;">Текущая лицензия</span>
-                        <span style="font-size: 14px; font-weight: 600;" id="currentLicenseType">Геркулес</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <span style="font-size: 13px; color: #64748b;">Срок действия</span>
-                        <span style="font-size: 12px; color: #64748b;" id="currentLicenseExpiry">Бессрочно</span>
-                    </div>
-                </div>
-
-                <div class="license-input-group" style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 8px; font-weight: 500; font-size: 14px;">
-                        Лицензионный ключ
-                    </label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="licenseKey" class="license-input" placeholder="XXXX-XXXX-XXXX-XXXX"
-                            style="flex: 1; padding: 12px; border: 1px solid #e2e8f0; font-family: 'Ubuntu'; font-size: 11px;">
-                        <button id="activateLicenseBtn" class="activate-licence-btn">
-                            <i class="fas fa-check"></i> Активировать
-                        </button>
-                    </div>
-                </div>
-
-                <div id="licenseMessage" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 20px;">
-                </div>
-
-                <div style="margin-top: 8px; text-align: center;">
-                    <span style="font-size: 12px; color: #64748b;">Нет ключа?</span>
-                    <a href="https://hercules-security.ru/payment/order" id="buyLicenseLink" target="_blank"
-                        style="margin-left: 8px; color: #3b82f6; text-decoration: none; font-size: 12px;">
-                        <i class="fas fa-shopping-cart"></i> Получить лицензионный ключ
-                    </a>
-                </div>
-
+            <div class="unified-layout">
+                <div class="unified-left"></div>
+                <div class="unified-right"></div>
             </div>
         </div>
     </div>
+
     <script type="module" src="utils.js"></script>
     <script type="module" src="main.js"></script>
     <script type="text/javascript" src="modal.js"></script>
-    <script type="text/javascript" src="../common/licence.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>

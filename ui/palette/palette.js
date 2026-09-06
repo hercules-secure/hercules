@@ -1,10 +1,6 @@
-var emptyState = null
 
-
-// ============================================================
-// ГЛОБАЛЬНЫЕ ДАННЫЕ
-// ============================================================
-
+var templateSelect = null;
+var emptyState = null;
 var elements = [];
 var connections = [];
 var selectedElement = null;
@@ -18,189 +14,117 @@ var connectFromType = null;
 var currentConnectionPropsId = null;
 var pendingConnectionData = null;
 
-// ============================================================
-// КОНФИГУРАЦИЯ ПОЛЕЙ ДЛЯ ИНСТРУМЕНТОВ
-// ============================================================
-
-const toolFieldsConfig = {
-    'scout': {
-        label: 'Скаут',
-        type: 'recon',
-        icon: 'fa-binoculars',
-        color: '#8B5CF6',
-        description: 'Сканирование веб-ресурсов и сбор информации',
-        fields: [
-            { id: 'source', label: 'Источник', type: 'select', options: ['url'], default: 'url' },
-            { id: 'sourceValue', label: 'Целевой URL', type: 'text', placeholder: 'https://example.com', required: true, showFor: ['url'] }
-        ]
-    },
-    'echo': {
-        label: 'Эхолот',
-        type: 'network_scan',
-        icon: 'fa-satellite-dish',
-        color: '#3B82F6',
-        description: 'Сканирование сети и портов',
-        fields: [
-            { id: 'source', label: 'Источник', type: 'select', options: ['ip', 'range', 'network'], default: 'ip' },
-            { id: 'sourceValue', label: 'Значение', type: 'text', placeholder: '192.168.1.1 или 192.168.1.0/24', required: true, showFor: ['ip', 'range', 'network'] },
-            { id: 'ports', label: 'Порты', type: 'text', placeholder: '80,443,1-1000', default: '1-1000' }
-        ]
-    },
-    'sca': {
-        label: 'Матрешка',
-        type: 'composition',
-        icon: 'fa-sitemap',
-        color: '#8B5CF6',
-        description: 'Композиционный анализ зависимостей',
-        fields: [
-            { id: 'source', label: 'Источник', type: 'select', options: ['git'], default: 'git' },
-            { id: 'sourceValue', label: 'URL репозитория', type: 'text', placeholder: 'https://github.com/user/repo.git', required: true, showFor: ['git'] }
-        ]
-    },
-    'blender': {
-        label: 'Блендер',
-        type: 'code_analysis',
-        icon: 'fa-flask',
-        color: '#10B981',
-        description: 'Анализ исходного кода',
-        fields: [
-            { id: 'source', label: 'Источник', type: 'select', options: ['git'], default: 'git' },
-            { id: 'sourceValue', label: 'URL репозитория', type: 'text', placeholder: 'https://github.com/user/repo.git', required: true, showFor: ['git'] }
-        ]
-    },
-    'fuzz': {
-        label: 'Баба Яга',
-        type: 'fuzzing',
-        icon: 'fa-radiation',
-        color: '#EF4444',
-        description: 'Динамический анализ и фаззинг',
-        fields: [
-            { id: 'mode', label: 'Режим', type: 'select', options: ['domovoy', 'metla'], default: 'domovoy' },
-            { id: 'source', label: 'Источник', type: 'select', options: ['url', 'ip'], default: 'url' },
-            { id: 'sourceValue', label: 'Цель', type: 'text', placeholder: 'https://example.com/api или 192.168.1.1', required: true, showFor: ['url', 'ip'] }
-        ]
-    }
-};
-
-function getToolConfig(toolName) {
-    return toolFieldsConfig[toolName] || null;
-}
-
-// ============================================================
-// КОНФИГУРАЦИЯ ПОЛЕЙ ДЛЯ БАЗОВЫХ ЭЛЕМЕНТОВ
-// ============================================================
-
 const elementFieldsConfig = {
     asset: {
-        label: 'Компонент',
+        label: 'Component',
         fields: [
-            { id: 'propVersion', label: 'Версия', type: 'text', placeholder: '1.24.0' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание компонента...' }
+            { id: 'propVersion', label: 'Version', type: 'text', placeholder: '1.24.0' },
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Component description...' }
         ]
     },
     threat: {
-        label: 'Угроза',
+        label: 'Threat',
         fields: [
-            { id: 'propSeverity', label: 'Критичность', type: 'select', options: ['critical', 'high', 'medium', 'low'] },
+            { id: 'propSeverity', label: 'Severity', type: 'select', options: ['critical', 'high', 'medium', 'low'] },
             { id: 'propCve', label: 'CVE', type: 'text', placeholder: 'CVE-2024-XXXX' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание угрозы...' },
-            { id: 'propMitigation', label: 'Методы защиты', type: 'textarea', placeholder: 'Способы защиты...' }
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Threat description...' },
+            { id: 'propMitigation', label: 'Mitigation', type: 'textarea', placeholder: 'Protection methods...' }
         ]
     },
     data: {
-        label: 'Данные',
+        label: 'Data',
         fields: [
-            { id: 'propSensitivity', label: 'Чувствительность', type: 'select', options: ['public', 'internal', 'confidential', 'top-secret'] },
-            { id: 'propFormat', label: 'Формат', type: 'text', placeholder: 'JSON, XML, CSV...' },
-            { id: 'propStorage', label: 'Хранилище', type: 'text', placeholder: 'S3, PostgreSQL, Redis...' }
+            { id: 'propSensitivity', label: 'Sensitivity', type: 'select', options: ['public', 'internal', 'confidential', 'top-secret'] },
+            { id: 'propFormat', label: 'Format', type: 'text', placeholder: 'JSON, XML, CSV...' },
+            { id: 'propStorage', label: 'Storage', type: 'text', placeholder: 'S3, PostgreSQL, Redis...' }
         ]
     },
     actor: {
-        label: 'Субъект',
+        label: 'Actor',
         fields: [
-            { id: 'propRole', label: 'Роль', type: 'text', placeholder: 'admin, user, service...' },
-            { id: 'propPermissions', label: 'Права доступа', type: 'text', placeholder: 'read, write, admin...' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание субъекта...' }
+            { id: 'propRole', label: 'Role', type: 'text', placeholder: 'admin, user, service...' },
+            { id: 'propPermissions', label: 'Permissions', type: 'text', placeholder: 'read, write, admin...' },
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Actor description...' }
         ]
     },
     network: {
-        label: 'Сеть',
+        label: 'Network',
         fields: [
-            { id: 'propProtocol', label: 'Протокол', type: 'text', placeholder: 'TCP, UDP, HTTP...' },
-            { id: 'propPorts', label: 'Порты', type: 'text', placeholder: '80, 443, 8080...' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание сетевого взаимодействия...' }
+            { id: 'propProtocol', label: 'Protocol', type: 'text', placeholder: 'TCP, UDP, HTTP...' },
+            { id: 'propPorts', label: 'Ports', type: 'text', placeholder: '80, 443, 8080...' },
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Network interaction description...' }
         ]
     },
     'gate-and': {
         label: 'AND',
         fields: [
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Условия срабатывания...' }
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Conditions...' }
         ]
     },
     'gate-or': {
         label: 'OR',
         fields: [
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Условия срабатывания...' }
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Conditions...' }
         ]
     },
     'gate-if': {
         label: 'IF',
         fields: [
-            { id: 'propCondition', label: 'Условие', type: 'text', placeholder: 'Условие для ветвления...' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание условий...' }
+            { id: 'propCondition', label: 'Condition', type: 'text', placeholder: 'Condition for branching...' },
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Conditions description...' }
         ]
     },
     'gate-switch': {
         label: 'SWITCH',
         fields: [
-            { id: 'propCases', label: 'Варианты', type: 'text', placeholder: 'case1, case2, case3...' },
-            { id: 'propDefault', label: 'По умолчанию', type: 'text', placeholder: 'default' },
-            { id: 'propDescription', label: 'Описание', type: 'textarea', placeholder: 'Описание переключателя...' }
+            { id: 'propCases', label: 'Cases', type: 'text', placeholder: 'case1, case2, case3...' },
+            { id: 'propDefault', label: 'Default', type: 'text', placeholder: 'default' },
+            { id: 'propDescription', label: 'Description', type: 'textarea', placeholder: 'Switch description...' }
         ]
     },
     'event-start': {
-        label: 'Старт',
+        label: 'Start',
         fields: [
-            { id: 'eventTrigger', label: 'Триггер', type: 'select', options: ['none', 'message', 'timer', 'signal', 'conditional'], default: 'none' },
-            { id: 'eventTimer', label: 'Таймер (ms)', type: 'text', placeholder: '5000', showFor: ['timer'] },
-            { id: 'eventMessage', label: 'Сообщение', type: 'text', placeholder: 'start.event', showFor: ['message'] }
+            { id: 'eventTrigger', label: 'Trigger', type: 'select', options: ['none', 'message', 'timer', 'signal', 'conditional'], default: 'none' },
+            { id: 'eventTimer', label: 'Timer (ms)', type: 'text', placeholder: '5000', showFor: ['timer'] },
+            { id: 'eventMessage', label: 'Message', type: 'text', placeholder: 'start.event', showFor: ['message'] }
         ]
     },
     'event-end': {
-        label: 'Финиш',
+        label: 'End',
         fields: [
-            { id: 'eventResult', label: 'Результат', type: 'select', options: ['success', 'error', 'cancel'], default: 'success' },
-            { id: 'eventMessage', label: 'Сообщение', type: 'text', placeholder: 'Результат выполнения' }
+            { id: 'eventResult', label: 'Result', type: 'select', options: ['success', 'error', 'cancel'], default: 'success' },
+            { id: 'eventMessage', label: 'Message', type: 'text', placeholder: 'Execution result' }
         ]
     },
     'event-pause': {
-        label: 'Пауза',
+        label: 'Pause',
         fields: [
-            { id: 'eventDuration', label: 'Длительность (ms)', type: 'text', placeholder: '5000' },
-            { id: 'eventCondition', label: 'Условие продолжения', type: 'text', placeholder: 'condition === true' }
+            { id: 'eventDuration', label: 'Duration (ms)', type: 'text', placeholder: '5000' },
+            { id: 'eventCondition', label: 'Resume condition', type: 'text', placeholder: 'condition === true' }
         ]
     },
     'event-timeout': {
-        label: 'Таймаут',
+        label: 'Timeout',
         fields: [
-            { id: 'eventTimeout', label: 'Таймаут (ms)', type: 'text', placeholder: '30000', default: '30000' },
-            { id: 'eventAction', label: 'Действие', type: 'select', options: ['interrupt', 'continue', 'retry', 'fail'], default: 'interrupt' },
-            { id: 'eventRetryCount', label: 'Количество попыток', type: 'text', placeholder: '3', showFor: ['retry'] }
+            { id: 'eventTimeout', label: 'Timeout (ms)', type: 'text', placeholder: '30000', default: '30000' },
+            { id: 'eventAction', label: 'Action', type: 'select', options: ['interrupt', 'continue', 'retry', 'fail'], default: 'interrupt' },
+            { id: 'eventRetryCount', label: 'Retry count', type: 'text', placeholder: '3', showFor: ['retry'] }
         ]
     },
     'event-error': {
-        label: 'Ошибка',
+        label: 'Error',
         fields: [
-            { id: 'eventErrorCode', label: 'Код ошибки', type: 'text', placeholder: 'ERR-001' },
-            { id: 'eventErrorMessage', label: 'Сообщение', type: 'textarea', placeholder: 'Описание ошибки...' },
-            { id: 'eventAction', label: 'Действие', type: 'select', options: ['retry', 'fail', 'ignore'], default: 'fail' }
+            { id: 'eventErrorCode', label: 'Error code', type: 'text', placeholder: 'ERR-001' },
+            { id: 'eventErrorMessage', label: 'Message', type: 'textarea', placeholder: 'Error description...' },
+            { id: 'eventAction', label: 'Action', type: 'select', options: ['retry', 'fail', 'ignore'], default: 'fail' }
         ]
     },
     'event-interrupt': {
-        label: 'Прерывание',
+        label: 'Interrupt',
         fields: [
-            { id: 'eventInterruptType', label: 'Тип', type: 'select', options: ['cancel', 'terminate'], default: 'cancel' },
-            { id: 'eventMessage', label: 'Сообщение', type: 'text', placeholder: 'Прерывание выполнения' }
+            { id: 'eventInterruptType', label: 'Type', type: 'select', options: ['cancel', 'terminate'], default: 'cancel' },
+            { id: 'eventMessage', label: 'Message', type: 'text', placeholder: 'Execution interrupted' }
         ]
     }
 };
@@ -245,128 +169,210 @@ window.startDrag = function(e, id) {
 };
 
 // ============================================================
-// РАСКРЫТИЕ/СВОРАЧИВАНИЕ УЗЛОВ (ОБНОВЛЕННАЯ ВЕРСИЯ)
+// ШАБЛОНЫ
 // ============================================================
 
-function toggleNodeExpand(elementId) {
-    var el = elements.find(function(e) { return e.id === elementId; });
-    if (!el) return;
-    
-    // Проверяем, есть ли у этого элемента дочерние узлы (используем childNodes из первого скрипта)
-    var hasChildren = el.childNodes && el.childNodes.length > 0;
-    
-    if (!hasChildren) {
-        showCustomAlert('Информация', 'У этого узла нет дочерних элементов', 'info');
+var templateData = {
+    'web-app': {
+        name: 'Web Application',
+        elements: [
+            { type: 'event-start', name: 'Request', x: 50, y: 100 },
+            { type: 'event-end', name: 'Response', x: 50, y: 400 },
+            { type: 'asset', name: 'Frontend', x: 250, y: 150 },
+            { type: 'asset', name: 'Backend API', x: 250, y: 300 },
+            { type: 'data', name: 'User Data', x: 450, y: 250 },
+            { type: 'actor', name: 'User', x: 450, y: 100 },
+            { type: 'threat', name: 'XSS Attack', x: 50, y: 250 }
+        ],
+        connections: [
+            { from: 1, to: 3, type: 'control' },
+            { from: 3, to: 4, type: 'control' },
+            { from: 4, to: 5, type: 'data' },
+            { from: 6, to: 1, type: 'control' },
+            { from: 4, to: 2, type: 'control' }
+        ]
+    },
+    'api': {
+        name: 'API Service',
+        elements: [
+            { type: 'event-start', name: 'Request', x: 50, y: 150 },
+            { type: 'event-end', name: 'Response', x: 50, y: 450 },
+            { type: 'asset', name: 'API Gateway', x: 250, y: 150 },
+            { type: 'asset', name: 'Auth Service', x: 250, y: 300 },
+            { type: 'data', name: 'Database', x: 450, y: 300 },
+            { type: 'actor', name: 'Client', x: 450, y: 150 }
+        ],
+        connections: [
+            { from: 1, to: 3, type: 'control' },
+            { from: 3, to: 4, type: 'control' },
+            { from: 3, to: 5, type: 'data' },
+            { from: 4, to: 5, type: 'data' },
+            { from: 4, to: 2, type: 'control' },
+            { from: 6, to: 1, type: 'control' }
+        ]
+    },
+    'database': {
+        name: 'Database',
+        elements: [
+            { type: 'event-start', name: 'Query', x: 50, y: 100 },
+            { type: 'event-end', name: 'Result', x: 50, y: 400 },
+            { type: 'asset', name: 'Database', x: 250, y: 250 },
+            { type: 'data', name: 'Table Data', x: 450, y: 250 },
+            { type: 'actor', name: 'Application', x: 450, y: 100 }
+        ],
+        connections: [
+            { from: 1, to: 3, type: 'control' },
+            { from: 3, to: 4, type: 'data' },
+            { from: 3, to: 2, type: 'control' },
+            { from: 5, to: 1, type: 'control' }
+        ]
+    },
+    'microservices': {
+        name: 'Microservices',
+        elements: [
+            { type: 'event-start', name: 'Request', x: 50, y: 150 },
+            { type: 'event-end', name: 'Response', x: 50, y: 450 },
+            { type: 'asset', name: 'API Gateway', x: 250, y: 150 },
+            { type: 'asset', name: 'Order Service', x: 450, y: 100 },
+            { type: 'asset', name: 'Inventory Service', x: 450, y: 250 },
+            { type: 'asset', name: 'Payment Service', x: 450, y: 400 },
+            { type: 'data', name: 'Order DB', x: 650, y: 100 },
+            { type: 'data', name: 'Inventory DB', x: 650, y: 250 },
+            { type: 'data', name: 'Payment DB', x: 650, y: 400 }
+        ],
+        connections: [
+            { from: 1, to: 3, type: 'control' },
+            { from: 3, to: 4, type: 'control' },
+            { from: 3, to: 5, type: 'control' },
+            { from: 3, to: 6, type: 'control' },
+            { from: 4, to: 7, type: 'data' },
+            { from: 5, to: 8, type: 'data' },
+            { from: 6, to: 9, type: 'data' },
+            { from: 4, to: 2, type: 'control' }
+        ]
+    },
+    'cloud': {
+        name: 'Cloud Infrastructure',
+        elements: [
+            { type: 'event-start', name: 'Deploy', x: 50, y: 100 },
+            { type: 'asset', name: 'K8s Cluster', x: 250, y: 150 },
+            { type: 'asset', name: 'Service Mesh', x: 250, y: 300 },
+            { type: 'data', name: 'Config Map', x: 450, y: 100 },
+            { type: 'data', name: 'Secrets', x: 450, y: 250 },
+            { type: 'network', name: 'Ingress', x: 450, y: 400 },
+            { type: 'actor', name: 'DevOps', x: 650, y: 250 }
+        ],
+        connections: [
+            { from: 1, to: 2, type: 'control' },
+            { from: 2, to: 3, type: 'control' },
+            { from: 2, to: 4, type: 'data' },
+            { from: 2, to: 5, type: 'data' },
+            { from: 2, to: 6, type: 'data' },
+            { from: 7, to: 1, type: 'control' }
+        ]
+    },
+    'devops': {
+        name: 'CI/CD Pipeline',
+        elements: [
+            { type: 'event-start', name: 'Commit', x: 50, y: 100 },
+            { type: 'event-end', name: 'Deploy', x: 50, y: 450 },
+            { type: 'asset', name: 'Build', x: 250, y: 100 },
+            { type: 'asset', name: 'Test', x: 250, y: 200 },
+            { type: 'asset', name: 'Security Scan', x: 250, y: 300 },
+            { type: 'asset', name: 'Release', x: 250, y: 400 },
+            { type: 'threat', name: 'Vulnerability', x: 450, y: 200 },
+            { type: 'data', name: 'Artifacts', x: 450, y: 350 }
+        ],
+        connections: [
+            { from: 1, to: 3, type: 'control' },
+            { from: 3, to: 4, type: 'control' },
+            { from: 4, to: 5, type: 'control' },
+            { from: 5, to: 6, type: 'control' },
+            { from: 6, to: 2, type: 'control' },
+            { from: 5, to: 7, type: 'data' },
+            { from: 6, to: 8, type: 'data' }
+        ]
+    }
+};
+
+// ============================================================
+// ЗАГРУЗКА ШАБЛОНА
+// ============================================================
+
+function loadTemplateData(templateName) {
+    var template = templateData[templateName];
+    if (!template) {
+        showCustomAlert('Error', 'Template not found: ' + templateName, 'error');
         return;
     }
     
-    // Переключаем состояние
-    el.isExpanded = !el.isExpanded;
+    // Удаляем все существующие элементы
+    elements = [];
+    connections = [];
+    selectedElement = null;
     
-    if (el.isExpanded) {
-        // Раскрываем узел - показываем всех детей
-        expandNodeFromPalette(elementId);
-    } else {
-        // Сворачиваем узел - скрываем всех потомков
-        collapseNodeFromPalette(elementId);
-    }
+    var canvas = document.getElementById('paletteCanvas');
+    var rect = canvas.getBoundingClientRect();
+    var canvasWidth = canvas.clientWidth || 800;
+    var canvasHeight = canvas.clientHeight || 500;
     
-    // Обновляем отображение
-    renderElements();
-    renderConnections();
-}
-
-// Новая функция: раскрытие узла из палитры
-function expandNodeFromPalette(nodeId) {
-    var el = elements.find(function(e) { return e.id === nodeId; });
-    if (!el) return;
+    var offsetX = 50;
+    var offsetY = 50;
     
-    el.isExpanded = true;
-    
-    // Показываем всех прямых детей
-    if (el.childNodes) {
-        el.childNodes.forEach(function(childId) {
-            var childEl = elements.find(function(e) { return e.id === childId; });
-            if (childEl) {
-                childEl.hidden = false;
-                childEl.isVisible = true;
-                // Рекурсивно показываем детей, если они были раскрыты
-                if (childEl.isExpanded) {
-                    expandNodeFromPalette(childId);
-                }
-            }
-        });
-    }
-}
-
-// Новая функция: сворачивание узла из палитры
-function collapseNodeFromPalette(nodeId) {
-    var el = elements.find(function(e) { return e.id === nodeId; });
-    if (!el) return;
-    
-    el.isExpanded = false;
-    
-    // Скрываем всех потомков рекурсивно
-    function hideDescendants(parentId) {
-        var children = elements.filter(function(e) { 
-            return e.parentId === parentId; 
-        });
-        children.forEach(function(child) {
-            child.hidden = true;
-            child.isVisible = false;
-            child.isExpanded = false;
-            hideDescendants(child.id);
-        });
-    }
-    
-    if (el.childNodes) {
-        el.childNodes.forEach(function(childId) {
-            var childEl = elements.find(function(e) { return e.id === childId; });
-            if (childEl) {
-                childEl.hidden = true;
-                childEl.isVisible = false;
-                childEl.isExpanded = false;
-                hideDescendants(childId);
-            }
-        });
-    }
-}
-
-// Функция для раскрытия всех узлов
-function expandAllNodesPalette() {
-    var rootNodes = elements.filter(function(e) { 
-        return e.isRoot === true || e.parentId === null; 
+    var newElements = [];
+    template.elements.forEach(function(elData) {
+        var newEl = {
+            id: ++elementIdCounter,
+            type: elData.type,
+            name: elData.name || getDefaultName(elData.type),
+            x: elData.x + offsetX,
+            y: elData.y + offsetY,
+            color: getDefaultColor(elData.type),
+            width: 120,
+            height: 40,
+            isTool: false,
+            hasChildren: false,
+            isExpanded: false,
+            childNodes: [],
+            hidden: false,
+            isVisible: true
+        };
+        
+        if (elData.type === 'uml-class') {
+            newEl.fields = [];
+            newEl.methods = [];
+            newEl.bgColor = '#ffffff';
+            newEl.borderColor = '#8B5CF6';
+            newEl.textColor = '#1a1a2e';
+            newEl.isUmlClass = true;
+            newEl.width = 200;
+            newEl.height = 60;
+        }
+        
+        elements.push(newEl);
+        newElements.push(newEl);
     });
-    rootNodes.forEach(function(root) {
-        if (root.childNodes && root.childNodes.length > 0) {
-            root.isExpanded = true;
-            expandNodeFromPalette(root.id);
+    
+    template.connections.forEach(function(connData) {
+        var fromId = newElements[connData.from - 1]?.id;
+        var toId = newElements[connData.to - 1]?.id;
+        if (fromId && toId) {
+            connections.push({
+                id: connections.length + 1,
+                from: fromId,
+                to: toId,
+                type: connData.type,
+                label: connData.label || (connData.type === 'control' ? 'control' : 'data flow'),
+                color: connData.type === 'control' ? '#8B5CF6' : '#10B981',
+                dataStructure: null
+            });
         }
     });
+    
     renderElements();
-    renderConnections();
-    showCustomAlert('Успешно', 'Все узлы раскрыты', 'success');
-}
-
-// Функция для сворачивания всех узлов (кроме корня)
-function collapseAllNodesPalette() {
-    var rootNodes = elements.filter(function(e) { 
-        return e.isRoot === true || e.parentId === null; 
-    });
-    rootNodes.forEach(function(root) {
-        if (root.childNodes && root.childNodes.length > 0) {
-            root.isExpanded = false;
-            collapseNodeFromPalette(root.id);
-            // Корень показываем, но сворачиваем
-            root.isExpanded = false;
-            // Но корень должен оставаться видимым
-            root.hidden = false;
-            root.isVisible = true;
-        }
-    });
-    renderElements();
-    renderConnections();
-    showCustomAlert('Успешно', 'Все узлы свернуты', 'success');
+    document.getElementById('paletteEmpty').classList.add('hidden');
+    
+    showCustomAlert('Success', 'Template "' + template.name + '" loaded successfully!', 'success');
 }
 
 // ============================================================
@@ -376,14 +382,14 @@ function collapseAllNodesPalette() {
 window.openElementPropsModal = function(id) {
     var el = elements.find(function(e) { return e.id === id; });
     if (!el) {
-        showCustomAlert('Ошибка', 'Элемент не найден', 'error');
+        showCustomAlert('Error', 'Element not found', 'error');
         return;
     }
 
     selectedElement = el;
     var modal = document.getElementById('elementPropsModal');
     if (!modal) {
-        showCustomAlert('Ошибка', 'Модалка свойств элемента не найдена', 'error');
+        showCustomAlert('Error', 'Element properties modal not found', 'error');
         return;
     }
     
@@ -398,232 +404,29 @@ window.openElementPropsModal = function(id) {
     dynamicContainer.innerHTML = '';
     
     var config;
-    
-    // Проверяем, является ли элемент событием
     var isEvent = el.type && el.type.startsWith('event-');
 
-    // UML Класс
     if (el.type === 'uml-class') {
         var modalTitle = document.querySelector('#elementPropsModal .modal-title');
         if (modalTitle) {
-            modalTitle.textContent = 'Свойства класса: ' + el.name;
+            modalTitle.textContent = 'Class properties: ' + el.name;
         }
         dynamicContainer.dataset.elementId = el.id;
     }
     
-    if (el.isTool && el.tool) {
-        config = getToolConfig(el.tool);
-        if (config) {
-            var modalTitle = document.querySelector('#elementPropsModal .modal-title');
-            if (modalTitle) {
-                modalTitle.textContent = 'Свойства: ' + config.label;
-            }
-            
-            var header = document.createElement('div');
-            header.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;';
-            header.innerHTML = `
-                <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Ubuntu, sans-serif;">
-                    Параметры инструмента
-                </h4>
-                <p style="margin: 0 0 12px 0; font-size: 12px; color: #6b7280; font-family: Ubuntu, sans-serif;">
-                    ${config.description || ''}
-                </p>
-            `;
-            dynamicContainer.appendChild(header);
-            
-            var currentSource = el.source || config.fields[0]?.default || 'git';
-            var fieldsWrapper = document.createElement('div');
-            fieldsWrapper.id = 'fieldsWrapper';
-            
-            config.fields.forEach(function(field) {
-                var fieldDiv = document.createElement('div');
-                fieldDiv.style.cssText = 'margin-bottom: 12px;';
-                fieldDiv.className = 'param-field';
-                if (field.showFor) {
-                    fieldDiv.dataset.showFor = field.showFor.join(',');
-                }
-                if (field.showFor && !field.showFor.includes(currentSource)) {
-                    fieldDiv.style.display = 'none';
-                }
-                
-                var label = document.createElement('label');
-                label.style.cssText = 'display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;';
-                label.textContent = field.label + (field.required ? ' *' : '');
-                fieldDiv.appendChild(label);
-                
-                if (field.type === 'select') {
-                    var select = document.createElement('select');
-                    select.id = field.id;
-                    select.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; background: white;';
-                    
-                    var optionLabels = {
-                        'git': 'Git репозиторий',
-                        'domovoy': 'Домовой',
-                        'metla': 'Метла',
-                        'url': 'URL',
-                        'ip': 'IP адрес',
-                        'range': 'Диапазон IP',
-                        'network': 'Сеть (CIDR)',
-                        'all': 'Все типы',
-                        'xss': 'XSS',
-                        'sqli': 'SQL Injection',
-                        'path_traversal': 'Path Traversal',
-                        'rce': 'RCE'
-                    };
-                    
-                    field.options.forEach(function(opt) {
-                        var option = document.createElement('option');
-                        option.value = opt;
-                        option.textContent = optionLabels[opt] || opt;
-                        if (el[field.id] === opt || (field.default && field.default === opt && !el[field.id])) {
-                            option.selected = true;
-                        }
-                        select.appendChild(option);
-                    });
-                    
-                    if (field.id === 'source') {
-                        select.addEventListener('change', function() {
-                            var newSource = this.value;
-                            var allFields = fieldsWrapper.querySelectorAll('.param-field');
-                            allFields.forEach(function(fieldEl) {
-                                var showFor = fieldEl.dataset.showFor;
-                                if (showFor) {
-                                    var showValues = showFor.split(',');
-                                    if (showValues.includes(newSource)) {
-                                        fieldEl.style.display = 'block';
-                                    } else {
-                                        fieldEl.style.display = 'none';
-                                    }
-                                }
-                            });
-                        });
-                    }
-                    
-                    fieldDiv.appendChild(select);
-                } else if (field.type === 'file') {
-                    var fileWrapper = document.createElement('div');
-                    fileWrapper.style.cssText = 'display: flex; gap: 10px; align-items: center; flex-wrap: wrap;';
-                    
-                    var fileInput = document.createElement('input');
-                    fileInput.type = 'file';
-                    fileInput.id = field.id;
-                    fileInput.accept = field.accept || '*/*';
-                    fileInput.style.cssText = 'flex: 1; padding: 6px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; min-width: 150px;';
-                    
-                    var fileNameDisplay = document.createElement('span');
-                    fileNameDisplay.style.cssText = 'font-size: 12px; color: #6b7280;';
-                    fileNameDisplay.textContent = 'Файл не выбран';
-                    
-                    fileInput.addEventListener('change', function() {
-                        if (this.files && this.files[0]) {
-                            fileNameDisplay.textContent = this.files[0].name;
-                        }
-                    });
-                    
-                    fileWrapper.appendChild(fileInput);
-                    fileWrapper.appendChild(fileNameDisplay);
-                    fieldDiv.appendChild(fileWrapper);
-                } else if (field.type === 'folder') {
-                    var folderWrapper = document.createElement('div');
-                    folderWrapper.style.cssText = 'display: flex; gap: 10px; align-items: center; flex-wrap: wrap;';
-                    
-                    var folderInput = document.createElement('input');
-                    folderInput.type = 'text';
-                    folderInput.id = field.id;
-                    folderInput.placeholder = field.placeholder || 'Выберите папку...';
-                    folderInput.style.cssText = 'flex: 1; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; min-width: 150px; background: #f8fafc;';
-                    if (el[field.id]) {
-                        folderInput.value = el[field.id];
-                    }
-                    
-                    var folderBtn = document.createElement('button');
-                    folderBtn.type = 'button';
-                    folderBtn.innerHTML = '<i class="fas fa-folder-open"></i> Выбрать';
-                    folderBtn.style.cssText = `
-                        padding: 8px 16px;
-                        border: 1px solid #3B82F6;
-                        border-radius: 6px;
-                        background: #3B82F6;
-                        color: white;
-                        cursor: pointer;
-                        font-family: Ubuntu, sans-serif;
-                        font-size: 13px;
-                        font-weight: 500;
-                        transition: all 0.2s;
-                        display: flex;
-                        align-items: center;
-                        gap: 6px;
-                    `;
-                    folderBtn.onmouseover = function() {
-                        this.style.background = '#2563EB';
-                        this.style.borderColor = '#2563EB';
-                    };
-                    folderBtn.onmouseout = function() {
-                        this.style.background = '#3B82F6';
-                        this.style.borderColor = '#3B82F6';
-                    };
-                    folderBtn.onclick = function() {
-                        var dirPicker = document.createElement('input');
-                        dirPicker.type = 'file';
-                        dirPicker.setAttribute('webkitdirectory', '');
-                        dirPicker.setAttribute('directory', '');
-                        dirPicker.style.display = 'none';
-                        dirPicker.onchange = function(e) {
-                            if (this.files && this.files.length > 0) {
-                                var path = this.files[0].webkitRelativePath.split('/')[0];
-                                folderInput.value = path;
-                                el[field.id] = path;
-                            }
-                        };
-                        document.body.appendChild(dirPicker);
-                        dirPicker.click();
-                        document.body.removeChild(dirPicker);
-                    };
-                    
-                    folderWrapper.appendChild(folderInput);
-                    folderWrapper.appendChild(folderBtn);
-                    fieldDiv.appendChild(folderWrapper);
-                } else {
-                    var input = document.createElement('input');
-                    input.type = 'text';
-                    input.id = field.id;
-                    input.placeholder = field.placeholder || '';
-                    input.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif;';
-                    if (field.default && !el[field.id]) {
-                        input.value = field.default;
-                    }
-                    if (el[field.id]) {
-                        input.value = el[field.id];
-                    }
-                    fieldDiv.appendChild(input);
-                }
-                
-                if (field.description) {
-                    var desc = document.createElement('div');
-                    desc.style.cssText = 'font-size: 11px; color: #9ca3af; margin-top: 2px; font-family: Ubuntu, sans-serif;';
-                    desc.textContent = field.description;
-                    fieldDiv.appendChild(desc);
-                }
-                
-                fieldsWrapper.appendChild(fieldDiv);
-            });
-            
-            dynamicContainer.appendChild(fieldsWrapper);
-        }
-    } else if (isEvent) {
-        // Блок для событий
+    if (isEvent) {
         var eventConfig = getEventConfig(el.type);
         if (eventConfig) {
             var modalTitle = document.querySelector('#elementPropsModal .modal-title');
             if (modalTitle) {
-                modalTitle.textContent = 'Свойства: ' + eventConfig.label;
+                modalTitle.textContent = 'Properties: ' + eventConfig.label;
             }
             
             var header = document.createElement('div');
             header.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;';
             header.innerHTML = `
-                <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Ubuntu, sans-serif;">
-                    <i class="fas fa-clock"></i> Свойства события
+                <h4 style="margin: 0 0 4px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Fira Sans, sans-serif;">
+                    <i class="fas fa-clock"></i> Event Properties
                 </h4>
             `;
             dynamicContainer.appendChild(header);
@@ -640,14 +443,14 @@ window.openElementPropsModal = function(id) {
                 }
                 
                 var label = document.createElement('label');
-                label.style.cssText = 'display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;';
+                label.style.cssText = 'display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Fira Sans, sans-serif;';
                 label.textContent = field.label + (field.required ? ' *' : '');
                 fieldDiv.appendChild(label);
                 
                 if (field.type === 'select') {
                     var select = document.createElement('select');
                     select.id = field.id;
-                    select.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; background: white;';
+                    select.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Fira Sans, sans-serif; background: white;';
                     
                     field.options.forEach(function(opt) {
                         var option = document.createElement('option');
@@ -683,7 +486,7 @@ window.openElementPropsModal = function(id) {
                     textarea.id = field.id;
                     textarea.rows = 2;
                     textarea.placeholder = field.placeholder || '';
-                    textarea.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; resize: vertical;';
+                    textarea.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Fira Sans, sans-serif; resize: vertical;';
                     if (el[field.id]) {
                         textarea.value = el[field.id];
                     }
@@ -693,7 +496,7 @@ window.openElementPropsModal = function(id) {
                     input.type = 'text';
                     input.id = field.id;
                     input.placeholder = field.placeholder || '';
-                    input.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif;';
+                    input.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Fira Sans, sans-serif;';
                     if (field.default && !el[field.id]) {
                         input.value = field.default;
                     }
@@ -705,7 +508,7 @@ window.openElementPropsModal = function(id) {
                 
                 if (field.description) {
                     var desc = document.createElement('div');
-                    desc.style.cssText = 'font-size: 11px; color: #9ca3af; margin-top: 2px; font-family: Ubuntu, sans-serif;';
+                    desc.style.cssText = 'font-size: 11px; color: #9ca3af; margin-top: 2px; font-family: Fira Sans, sans-serif;';
                     desc.textContent = field.description;
                     fieldDiv.appendChild(desc);
                 }
@@ -713,7 +516,6 @@ window.openElementPropsModal = function(id) {
                 fieldsWrapper.appendChild(fieldDiv);
             });
             
-            // Обновляем видимость зависимых полей
             setTimeout(function() {
                 var firstSelect = fieldsWrapper.querySelector('select');
                 if (firstSelect) {
@@ -729,13 +531,13 @@ window.openElementPropsModal = function(id) {
         
         var modalTitle = document.querySelector('#elementPropsModal .modal-title');
         if (modalTitle) {
-            modalTitle.textContent = 'Свойства: ' + config.label;
+            modalTitle.textContent = 'Properties: ' + config.label;
         }
         
         if (config.fields && config.fields.length > 0) {
             var header = document.createElement('div');
             header.style.cssText = 'margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;';
-            header.innerHTML = '<h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Ubuntu, sans-serif;">Дополнительные параметры</h4>';
+            header.innerHTML = '<h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: Fira Sans, sans-serif;">Additional parameters</h4>';
             dynamicContainer.appendChild(header);
         }
         
@@ -744,14 +546,14 @@ window.openElementPropsModal = function(id) {
             fieldDiv.style.cssText = 'margin-bottom: 14px;';
             
             var label = document.createElement('label');
-            label.style.cssText = 'display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Ubuntu, sans-serif;';
+            label.style.cssText = 'display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: Fira Sans, sans-serif;';
             label.textContent = field.label;
             fieldDiv.appendChild(label);
             
             if (field.type === 'select') {
                 var select = document.createElement('select');
                 select.id = field.id;
-                select.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; background: white;';
+                select.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Fira Sans, sans-serif; background: white;';
                 
                 field.options.forEach(function(opt) {
                     var option = document.createElement('option');
@@ -768,7 +570,7 @@ window.openElementPropsModal = function(id) {
                 textarea.id = field.id;
                 textarea.rows = 2;
                 textarea.placeholder = field.placeholder || '';
-                textarea.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif; resize: vertical;';
+                textarea.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Fira Sans, sans-serif; resize: vertical;';
                 if (el[field.id]) {
                     textarea.value = el[field.id];
                 }
@@ -778,7 +580,7 @@ window.openElementPropsModal = function(id) {
                 input.type = field.type || 'text';
                 input.id = field.id;
                 input.placeholder = field.placeholder || '';
-                input.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Ubuntu, sans-serif;';
+                input.style.cssText = 'width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: Fira Sans, sans-serif;';
                 if (el[field.id]) {
                     input.value = el[field.id];
                 }
@@ -801,7 +603,7 @@ window.closeElementPropsModal = function() {
 
 window.saveElementProps = function() {
     if (!selectedElement) {
-        showCustomAlert('Ошибка', 'Элемент не выбран', 'error');
+        showCustomAlert('Error', 'No element selected', 'error');
         return;
     }
 
@@ -815,31 +617,7 @@ window.saveElementProps = function() {
     
     var isEvent = type && type.startsWith('event-');
     
-    if (selectedElement.isTool && selectedElement.tool) {
-        var config = getToolConfig(selectedElement.tool);
-        if (config) {
-            var currentSource = selectedElement.source || config.fields[0]?.default || 'git';
-            var visibleFields = config.fields.filter(function(field) {
-                if (!field.showFor) return true;
-                return field.showFor.includes(currentSource);
-            });
-            
-            visibleFields.forEach(function(field) {
-                var fieldElement = document.getElementById(field.id);
-                if (fieldElement) {
-                    if (field.type === 'file') {
-                        if (fieldElement.files && fieldElement.files[0]) {
-                            selectedElement[field.id + 'Name'] = fieldElement.files[0].name;
-                        }
-                    } else if (field.type === 'folder') {
-                        selectedElement[field.id] = fieldElement.value;
-                    } else {
-                        selectedElement[field.id] = fieldElement.value;
-                    }
-                }
-            });
-        }
-    } else if (isEvent) {
+    if (isEvent) {
         var eventConfig = getEventConfig(type);
         if (eventConfig) {
             eventConfig.fields.forEach(function(field) {
@@ -903,7 +681,7 @@ window.saveElementProps = function() {
 
     renderElements();
     closeElementPropsModal();
-    showCustomAlert('Успешно', 'Свойства сохранены', 'success');
+    showCustomAlert('Success', 'Properties saved', 'success');
 };
 
 // ============================================================
@@ -941,7 +719,7 @@ function openConnectionTypeModal(fromId, toId) {
     
     var modal = document.getElementById('connectionTypeModal');
     if (!modal) {
-        showCustomAlert('Ошибка', 'Модалка выбора типа связи не найдена', 'error');
+        showCustomAlert('Error', 'Connection type modal not found', 'error');
         return;
     }
     
@@ -996,7 +774,7 @@ function openDataStructureModalWithData(connectionData) {
     
     var modal = document.getElementById('dataStructureModal');
     if (!modal) {
-        showCustomAlert('Ошибка', 'Модалка структуры данных не найдена', 'error');
+        showCustomAlert('Error', 'Data structure modal not found', 'error');
         return;
     }
     
@@ -1015,14 +793,14 @@ function openDataStructureModalWithData(connectionData) {
 
 window.selectConnectionType = function(type) {
     if (connectionFromId === null || connectionToId === null) {
-        showCustomAlert('Ошибка', 'Не выбраны элементы для соединения', 'error');
+        showCustomAlert('Error', 'No elements selected for connection', 'error');
         return;
     }
 
     var fromEl = elements.find(function(e) { return e.id === connectionFromId; });
     var toEl = elements.find(function(e) { return e.id === connectionToId; });
     if (!fromEl || !toEl) {
-        showCustomAlert('Ошибка', 'Один из элементов не найден', 'error');
+        showCustomAlert('Error', 'One of the elements not found', 'error');
         cancelConnectionType();
         return;
     }
@@ -1031,7 +809,7 @@ window.selectConnectionType = function(type) {
         return c.from === connectionFromId && c.to === connectionToId;
     });
     if (existingConnection) {
-        showCustomAlert('Внимание', 'Связь между этими элементами уже существует', 'warning');
+        showCustomAlert('Warning', 'Connection already exists between these elements', 'warning');
         cancelConnectionType();
         return;
     }
@@ -1040,7 +818,7 @@ window.selectConnectionType = function(type) {
         from: connectionFromId,
         to: connectionToId,
         type: type,
-        label: type === 'control' ? 'управление' : 'поток данных',
+        label: type === 'control' ? 'control' : 'data flow',
         color: type === 'control' ? '#8B5CF6' : '#10B981',
         dataStructure: null
     };
@@ -1059,16 +837,12 @@ window.selectConnectionType = function(type) {
         connections.push(connection);
         cancelConnectionType();
         renderConnections();
-        showCustomAlert('Соединение создано', 'Связь "Управление" создана', 'success');
+        showCustomAlert('Connection created', 'Control connection created', 'success');
     } else {
         cancelConnectionType();
         openDataStructureModalWithData(connectionData);
     }
 };
-
-// ============================================================
-// ФУНКЦИИ ДЛЯ ОБНОВЛЕНИЯ ЛИНИИ ПРИ ПРОТЯГИВАНИИ
-// ============================================================
 
 function updateDragLine(x, y) {
     var dragLineContainer = document.getElementById('dragLine');
@@ -1113,34 +887,26 @@ function cancelCurrentConnection() {
     if (canvas) canvas.style.cursor = 'default';
 }
 
-// ============================================================
-// МОДАЛКА ДЛЯ КЛИКА ПО ШЕСТЕРЕНКЕ (СВЯЗИ)
-// ============================================================
-
 window.openConnectionPropsModal = function(connectionId) {
     var conn = connections.find(function(c) { return c.id === connectionId; });
     if (!conn) {
-        showCustomAlert('Ошибка', 'Соединение не найдено', 'error');
+        showCustomAlert('Error', 'Connection not found', 'error');
         return;
     }
     
     if (conn.type === 'dataflow' || conn.type === 'data' ) {
         openDataStructureModal(connectionId);
     } else {
-        showCustomAlert('Информация', 'Для связи типа "Управление" структура данных не требуется', 'info');
+        showCustomAlert('Info', 'No data structure required for "Control" connections', 'info');
     }
 };
-
-// ============================================================
-// ФУНКЦИИ ДЛЯ МОДАЛКИ СТРУКТУРЫ ДАННЫХ
-// ============================================================
 
 function openDataStructureModal(connectionId) {
     currentDataConnectionId = connectionId;
     var modal = document.getElementById('dataStructureModal');
     
     if (!modal) {
-        showCustomAlert('Ошибка', 'Модалка структуры данных не найдена', 'error');
+        showCustomAlert('Error', 'Data structure modal not found', 'error');
         return;
     }
     
@@ -1163,7 +929,7 @@ function openDataStructureModal(connectionId) {
         addField('email', 'string');
         updatePreview();
     }
-};
+}
 
 window.closeDataStructureModal = function() {
     var modal = document.getElementById('dataStructureModal');
@@ -1183,8 +949,8 @@ window.addField = function(name, type) {
     row.className = 'field-row';
     row.style.cssText = 'display: flex; gap: 8px; margin-bottom: 8px; align-items: center;';
     row.innerHTML = `
-        <input type="text" placeholder="Имя поля" value="${name || ''}" style="flex: 1; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; font-family: Ubuntu, sans-serif;">
-        <select style="padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; font-family: Ubuntu, sans-serif; background: white; min-width: 80px;">
+        <input type="text" placeholder="Field name" value="${name || ''}" style="flex: 1; padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; font-family: Fira Sans, sans-serif;">
+        <select style="padding: 6px 10px; border: 1px solid #d1d5db; border-radius: 4px; font-size: 13px; font-family: Fira Sans, sans-serif; background: white; min-width: 80px;">
             <option value="string" ${type === 'string' ? 'selected' : ''}>string</option>
             <option value="number" ${type === 'number' ? 'selected' : ''}>number</option>
             <option value="boolean" ${type === 'boolean' ? 'selected' : ''}>boolean</option>
@@ -1201,7 +967,7 @@ window.addField = function(name, type) {
 window.removeField = function(btn) {
     var container = document.getElementById('dataFieldsContainer');
     if (container.children.length <= 1) {
-        showCustomAlert('Внимание', 'Должно быть хотя бы одно поле', 'warning');
+        showCustomAlert('Warning', 'At least one field is required', 'warning');
         return;
     }
     btn.closest('.field-row').remove();
@@ -1262,7 +1028,7 @@ window.saveDataStructure = function() {
     });
     
     if (fields.length === 0) {
-        showCustomAlert('Ошибка', 'Добавьте хотя бы одно поле', 'warning');
+        showCustomAlert('Error', 'Add at least one field', 'warning');
         return;
     }
     
@@ -1281,12 +1047,12 @@ window.saveDataStructure = function() {
         pendingConnectionData = null;
         closeDataStructureModal();
         renderConnections();
-        showCustomAlert('Успешно', 'Структура данных сохранена и связь создана', 'success');
+        showCustomAlert('Success', 'Data structure saved and connection created', 'success');
     } else {
         var conn = connections.find(function(c) { return c.id === currentDataConnectionId; });
         if (conn) {
             conn.dataStructure = { fields: fields };
-            showCustomAlert('Успешно', 'Структура данных сохранена', 'success');
+            showCustomAlert('Success', 'Data structure saved', 'success');
             renderConnections();
         }
         closeDataStructureModal();
@@ -1294,25 +1060,130 @@ window.saveDataStructure = function() {
 };
 
 // ============================================================
+// ФУНКЦИИ РАСКРЫТИЯ/СВОРАЧИВАНИЯ
+// ============================================================
+
+function toggleNodeExpand(elementId) {
+    var el = elements.find(function(e) { return e.id === elementId; });
+    if (!el) return;
+    
+    var hasChildren = el.childNodes && el.childNodes.length > 0;
+    
+    if (!hasChildren) {
+        showCustomAlert('Info', 'This node has no child elements', 'info');
+        return;
+    }
+    
+    el.isExpanded = !el.isExpanded;
+    
+    if (el.isExpanded) {
+        expandNodeFromPalette(elementId);
+    } else {
+        collapseNodeFromPalette(elementId);
+    }
+    
+    renderElements();
+    renderConnections();
+}
+
+function expandNodeFromPalette(nodeId) {
+    var el = elements.find(function(e) { return e.id === nodeId; });
+    if (!el) return;
+    
+    el.isExpanded = true;
+    
+    if (el.childNodes) {
+        el.childNodes.forEach(function(childId) {
+            var childEl = elements.find(function(e) { return e.id === childId; });
+            if (childEl) {
+                childEl.hidden = false;
+                childEl.isVisible = true;
+                if (childEl.isExpanded) {
+                    expandNodeFromPalette(childId);
+                }
+            }
+        });
+    }
+}
+
+function collapseNodeFromPalette(nodeId) {
+    var el = elements.find(function(e) { return e.id === nodeId; });
+    if (!el) return;
+    
+    el.isExpanded = false;
+    
+    function hideDescendants(parentId) {
+        var children = elements.filter(function(e) { 
+            return e.parentId === parentId; 
+        });
+        children.forEach(function(child) {
+            child.hidden = true;
+            child.isVisible = false;
+            child.isExpanded = false;
+            hideDescendants(child.id);
+        });
+    }
+    
+    if (el.childNodes) {
+        el.childNodes.forEach(function(childId) {
+            var childEl = elements.find(function(e) { return e.id === childId; });
+            if (childEl) {
+                childEl.hidden = true;
+                childEl.isVisible = false;
+                childEl.isExpanded = false;
+                hideDescendants(childId);
+            }
+        });
+    }
+}
+
+function expandAllNodesPalette() {
+    var rootNodes = elements.filter(function(e) { 
+        return e.isRoot === true || e.parentId === null; 
+    });
+    rootNodes.forEach(function(root) {
+        if (root.childNodes && root.childNodes.length > 0) {
+            root.isExpanded = true;
+            expandNodeFromPalette(root.id);
+        }
+    });
+    renderElements();
+    renderConnections();
+    showCustomAlert('Success', 'All nodes expanded', 'success');
+}
+
+function collapseAllNodesPalette() {
+    var rootNodes = elements.filter(function(e) { 
+        return e.isRoot === true || e.parentId === null; 
+    });
+    rootNodes.forEach(function(root) {
+        if (root.childNodes && root.childNodes.length > 0) {
+            root.isExpanded = false;
+            collapseNodeFromPalette(root.id);
+            root.hidden = false;
+            root.isVisible = true;
+        }
+    });
+    renderElements();
+    renderConnections();
+    showCustomAlert('Success', 'All nodes collapsed', 'success');
+}
+
+// ============================================================
 // ФУНКЦИИ РЕНДЕРИНГА
 // ============================================================
 
 window.renderConnections = function() {
     var connectionsContainer = document.getElementById('canvasConnections');
-    if (!connectionsContainer) {
-        return;
-    }
+    if (!connectionsContainer) return;
     connectionsContainer.innerHTML = '';
-
     if (connections.length === 0) return;
 
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
     svg.style.cssText = 'position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10;';
 
-    // Добавляем defs для маркеров стрелок
     var defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
     
-    // Маркер для стрелок
     var markerSeq = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     markerSeq.setAttribute('id', 'arrowhead-sequence');
     markerSeq.setAttribute('markerWidth', '12');
@@ -1339,7 +1210,6 @@ window.renderConnections = function() {
     markerData.appendChild(polyData);
     defs.appendChild(markerData);
     
-    // Маркер для contains (без стрелки, но с точкой)
     var markerContains = document.createElementNS('http://www.w3.org/2000/svg', 'marker');
     markerContains.setAttribute('id', 'arrowhead-contains');
     markerContains.setAttribute('markerWidth', '8');
@@ -1360,109 +1230,38 @@ window.renderConnections = function() {
     connections.forEach(function(conn) {
         var fromEl = elements.find(function(e) { return e.id === conn.from; });
         var toEl = elements.find(function(e) { return e.id === conn.to; });
-        if (!fromEl || !toEl) {
-            return;
-        }
-        
-        // Пропускаем невидимые элементы
-        if (fromEl.hidden === true || toEl.hidden === true) {
-            return;
-        }
-        if (fromEl.isVisible === false || toEl.isVisible === false) {
+        if (!fromEl || !toEl) return;
+        if (fromEl.hidden === true || toEl.hidden === true) return;
+        if (fromEl.isVisible === false || toEl.isVisible === false) return;
+
+        if (conn.type === 'contains') {
+            var fromX = fromEl.x + fromEl.width / 2;
+            var fromY = fromEl.y + fromEl.height;
+            var toX = toEl.x + toEl.width / 2;
+            var toY = toEl.y;
+            var color = conn.color || '#6B7280';
+            
+            var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            var pathData = 'M ' + fromX + ' ' + fromY + 
+                           ' L ' + fromX + ' ' + (fromY + 10) +
+                           ' L ' + toX + ' ' + (toY - 10) +
+                           ' L ' + toX + ' ' + toY;
+            path.setAttribute('d', pathData);
+            path.setAttribute('stroke', color);
+            path.setAttribute('stroke-width', '1.5');
+            path.setAttribute('stroke-dasharray', '5,5');
+            path.setAttribute('fill', 'none');
+            svg.appendChild(path);
+            
+            var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', toX);
+            circle.setAttribute('cy', toY);
+            circle.setAttribute('r', '4');
+            circle.setAttribute('fill', color);
+            svg.appendChild(circle);
             return;
         }
 
-        // ============================================================
-// ОБРАБОТКА contains (вложенность)
-// ============================================================
-if (conn.type === 'contains') {
-    var fromX = fromEl.x + fromEl.width / 2;
-    var fromY = fromEl.y + fromEl.height;
-    var toX = toEl.x + toEl.width / 2;
-    var toY = toEl.y;
-    
-    var color = conn.color || '#6B7280';
-    
-    // Пунктирная линия от родителя к дочернему элементу
-    var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    var pathData = 'M ' + fromX + ' ' + fromY + 
-                   ' L ' + fromX + ' ' + (fromY + 10) +
-                   ' L ' + toX + ' ' + (toY - 10) +
-                   ' L ' + toX + ' ' + toY;
-    path.setAttribute('d', pathData);
-    path.setAttribute('stroke', color);
-    path.setAttribute('stroke-width', '1.5');
-    path.setAttribute('stroke-dasharray', '5,5');
-    path.setAttribute('fill', 'none');
-    svg.appendChild(path);
-    
-    // Маленький кружок в конце (вместо стрелки)
-    var circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    circle.setAttribute('cx', toX);
-    circle.setAttribute('cy', toY);
-    circle.setAttribute('r', '4');
-    circle.setAttribute('fill', color);
-    svg.appendChild(circle);
-    
-    // ============================================================
-    // ПОДПИСЬ ДЛЯ contains
-    // ============================================================
-    var labelText = conn.label || 'содержит';
-    
-    // Вычисляем позицию для подписи
-    var midX = (fromX + toX) / 2;
-    var midY = (fromY + toY) / 2 - 10;
-    
-    // Проверяем, не перекрывает ли подпись элементы
-    var isOver = false;
-    for (var ei = 0; ei < elements.length; ei++) {
-        var el = elements[ei];
-        var elCenterX = el.x + el.width / 2;
-        var elCenterY = el.y + el.height / 2;
-        var dist = Math.sqrt(Math.pow(midX - elCenterX, 2) + Math.pow(midY - elCenterY, 2));
-        if (dist < 50) {
-            isOver = true;
-            break;
-        }
-    }
-    
-    // Если подпись перекрывает элемент - смещаем
-    if (isOver) {
-        midX = midX + 20;
-        midY = midY - 15;
-    }
-    
-    // Фон для подписи
-    var labelBg = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    var textWidth = labelText.length * 7;
-    labelBg.setAttribute('x', midX - textWidth / 2 - 6);
-    labelBg.setAttribute('y', midY - 10);
-    labelBg.setAttribute('width', textWidth + 12);
-    labelBg.setAttribute('height', '18');
-    labelBg.setAttribute('rx', '4');
-    labelBg.setAttribute('fill', 'rgba(255, 255, 255, 0.9)');
-    labelBg.setAttribute('stroke', '#E5E7EB');
-    labelBg.setAttribute('stroke-width', '0.5');
-    svg.appendChild(labelBg);
-    
-    // Текст подписи
-    var label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    label.setAttribute('x', midX);
-    label.setAttribute('y', midY + 4);
-    label.setAttribute('fill', '#6B7280');
-    label.setAttribute('font-size', '10');
-    label.setAttribute('font-weight', '500');
-    label.setAttribute('font-family', 'Ubuntu, sans-serif');
-    label.setAttribute('text-anchor', 'middle');
-    label.textContent = labelText;
-    svg.appendChild(label);
-    
-    return;
-}
-
-        // ============================================================
-        // ДИАГРАММА ПОТОКА ДАННЫХ - ПРЯМЫЕ ЛИНИИ
-        // ============================================================
         if (conn.type === 'data-flow') {
             var fromX = conn.fromX || (fromEl.x + fromEl.width);
             var fromY = conn.fromY || (fromEl.y + fromEl.height / 2);
@@ -1488,18 +1287,14 @@ if (conn.type === 'contains') {
                 label.setAttribute('y', midY);
                 label.setAttribute('fill', '#475569');
                 label.setAttribute('font-size', '10');
-                label.setAttribute('font-family', 'Ubuntu, sans-serif');
+                label.setAttribute('font-family', 'Fira Sans, sans-serif');
                 label.setAttribute('text-anchor', 'middle');
                 label.textContent = conn.label;
                 svg.appendChild(label);
             }
-            
             return;
         }
 
-        // ============================================================
-        // СТАНДАРТНАЯ ОТРИСОВКА ДЛЯ ОСТАЛЬНЫХ ТИПОВ (control, call, dependency)
-        // ============================================================
         var fromX = fromEl.x + 120;
         var fromY = fromEl.y + 20;
         var toX = toEl.x;
@@ -1511,7 +1306,6 @@ if (conn.type === 'contains') {
         var dy = toY - fromY;
         var midX = (fromX + toX) / 2;
         var midY = (fromY + toY) / 2;
-        
         var distance = Math.sqrt(dx * dx + dy * dy);
         if (distance < 10) return;
 
@@ -1531,7 +1325,6 @@ if (conn.type === 'contains') {
 
         var angle = Math.atan2(dy, dx);
         var arrowSize = 7;
-        
         var arrow = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
         var arrowPoints = [
             [toX - 10 * Math.cos(angle) - arrowSize * Math.cos(angle - 0.5), 
@@ -1543,141 +1336,16 @@ if (conn.type === 'contains') {
         arrow.setAttribute('points', arrowPoints.map(function(p) { return p.join(','); }).join(' '));
         arrow.setAttribute('fill', color);
         svg.appendChild(arrow);
-
-        if (distance > 60) {
-            var perpAngle = angle + Math.PI / 2;
-            var offset = 16;
-            
-            var textPositions = [
-                { x: midX + offset * Math.cos(perpAngle), y: midY + offset * Math.sin(perpAngle) },
-                { x: midX - offset * Math.cos(perpAngle), y: midY - offset * Math.sin(perpAngle) }
-            ];
-            
-            var finalX = midX + offset * Math.cos(perpAngle);
-            var finalY = midY + offset * Math.sin(perpAngle);
-            
-            for (var ti = 0; ti < textPositions.length; ti++) {
-                var pos = textPositions[ti];
-                var isOver = false;
-                
-                for (var ei = 0; ei < elements.length; ei++) {
-                    var el = elements[ei];
-                    var elCenterX = el.x + 60;
-                    var elCenterY = el.y + 20;
-                    var dist = Math.sqrt(Math.pow(pos.x - elCenterX, 2) + Math.pow(pos.y - elCenterY, 2));
-                    if (dist < 45) {
-                        isOver = true;
-                        break;
-                    }
-                }
-                
-                if (!isOver) {
-                    finalX = pos.x;
-                    finalY = pos.y;
-                    break;
-                }
-            }
-
-            var canvas = document.getElementById('paletteCanvas');
-            var canvasW = canvas.clientWidth || 800;
-            var canvasH = canvas.clientHeight || 500;
-            finalX = Math.max(15, Math.min(finalX, canvasW - 15));
-            finalY = Math.max(15, Math.min(finalY, canvasH - 15));
-
-            var label = conn.label || (conn.type === 'control' ? 'управление' : 'поток данных');
-            
-            var text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            text.setAttribute('x', finalX);
-            text.setAttribute('y', finalY + 3);
-            text.setAttribute('fill', '#374151');
-            text.setAttribute('font-size', '10');
-            text.setAttribute('font-weight', '500');
-            text.setAttribute('font-family', 'Ubuntu, sans-serif');
-            text.setAttribute('text-anchor', 'middle');
-            text.setAttribute('dominant-baseline', 'middle');
-            text.textContent = label;
-            svg.appendChild(text);
-
-            var gearX = midX;
-            var gearY = midY;
-            
-            var gearOver = false;
-            for (var ei = 0; ei < elements.length; ei++) {
-                var el = elements[ei];
-                var elCenterX = el.x + 60;
-                var elCenterY = el.y + 20;
-                var dist = Math.sqrt(Math.pow(gearX - elCenterX, 2) + Math.pow(gearY - elCenterY, 2));
-                if (dist < 40) {
-                    gearOver = true;
-                    break;
-                }
-            }
-            
-            if (gearOver) {
-                gearX = midX + 30 * Math.cos(angle);
-                gearY = midY + 30 * Math.sin(angle);
-            }
-
-            var gearGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            gearGroup.setAttribute('pointer-events', 'all');
-            gearGroup.style.cursor = 'pointer';
-            gearGroup.setAttribute('data-connection-id', conn.id);
-            
-            var clickRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-            clickRect.setAttribute('x', gearX - 18);
-            clickRect.setAttribute('y', gearY - 18);
-            clickRect.setAttribute('width', '36');
-            clickRect.setAttribute('height', '36');
-            clickRect.setAttribute('rx', '18');
-            clickRect.setAttribute('fill', 'transparent');
-            clickRect.setAttribute('stroke', 'none');
-            clickRect.setAttribute('pointer-events', 'all');
-            gearGroup.appendChild(clickRect);
-            
-            var gearBg = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            gearBg.setAttribute('cx', gearX);
-            gearBg.setAttribute('cy', gearY);
-            gearBg.setAttribute('r', '11');
-            gearBg.setAttribute('fill', 'white');
-            gearBg.setAttribute('stroke', color);
-            gearBg.setAttribute('stroke-width', '1.5');
-            gearBg.setAttribute('opacity', '0.95');
-            gearBg.setAttribute('pointer-events', 'none');
-            gearGroup.appendChild(gearBg);
-            
-            var gearIcon = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            gearIcon.setAttribute('x', gearX);
-            gearIcon.setAttribute('y', gearY + 3);
-            gearIcon.setAttribute('fill', color);
-            gearIcon.setAttribute('font-size', '14');
-            gearIcon.setAttribute('font-family', '"Font Awesome 6 Free", "Font Awesome 5 Free", Arial, sans-serif');
-            gearIcon.setAttribute('font-weight', '900');
-            gearIcon.setAttribute('text-anchor', 'middle');
-            gearIcon.setAttribute('dominant-baseline', 'middle');
-            gearIcon.setAttribute('pointer-events', 'none');
-            gearIcon.textContent = '\u2699';
-            gearGroup.appendChild(gearIcon);
-            
-            gearGroup.addEventListener('click', function(e) {
-                e.stopPropagation();
-                e.preventDefault();
-                var connId = parseInt(this.getAttribute('data-connection-id'));
-                window.openConnectionPropsModal(connId);
-            });
-            
-            svg.appendChild(gearGroup);
-        }
     });
 
     connectionsContainer.appendChild(svg);
 };
+
 window.renderElements = function() {
     var elementsContainer = document.getElementById('canvasElements');
     elementsContainer.innerHTML = '';
     
-    // Фильтруем скрытые элементы
     var visibleElements = elements.filter(function(el) {
-        // Если элемент явно скрыт через hidden или isVisible
         if (el.hidden === true) return false;
         if (el.isVisible === false) return false;
         return true;
@@ -1686,9 +1354,6 @@ window.renderElements = function() {
     visibleElements.forEach(function(el) {
         var div = document.createElement('div');
 
-        // ============================================================
-        // КНОПКА РАСКРЫТИЯ ДЛЯ ЗАВИСИМОСТЕЙ И SBOM
-        // ============================================================
         if (el.type === 'package-dependency' || el.type === 'sbom-component' || el.type === 'sbom-root') {
             if (el.hasChildren && el.childNodes && el.childNodes.length > 0) {
                 var toggleBtn = document.createElement('button');
@@ -1710,25 +1375,20 @@ window.renderElements = function() {
                     align-items: center;
                     justify-content: center;
                     z-index: 10;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', sans-serif;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 `;
                 toggleBtn.textContent = el.isExpanded ? '−' : '+';
-                toggleBtn.title = el.isExpanded ? 'Свернуть' : 'Развернуть';
+                toggleBtn.title = el.isExpanded ? 'Collapse' : 'Expand';
                 toggleBtn.onclick = function(e) {
                     e.stopPropagation();
                     e.preventDefault();
-                    if (typeof toggleNodeExpand === 'function') {
-                        toggleNodeExpand(el.id);
-                    }
+                    toggleNodeExpand(el.id);
                 };
                 div.appendChild(toggleBtn);
             }
         }
 
-        // ============================================================
-        // UML КЛАСС
-        // ============================================================
         if (el.type === 'uml-class') {
             var divUml = document.createElement('div');
             divUml.style.cssText = `
@@ -1744,7 +1404,7 @@ window.renderElements = function() {
                 z-index: 6;
                 cursor: grab;
                 overflow: hidden;
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Fira Sans', sans-serif;
                 display: flex;
                 flex-direction: column;
                 user-select: none;
@@ -1766,28 +1426,12 @@ window.renderElements = function() {
                 align-items: center;
             `;
             header.innerHTML = `
-                <span>📦 ${el.name}</span>
+                <span><i class="fas fa-cube"></i> ${el.name}</span>
                 <span style="display: flex; gap: 4px;">
-                    <button class="props-btn" onclick="event.stopPropagation(); openUmlClassModal(${el.id})" title="Свойства" style="
-                        background: none;
-                        border: none;
-                        color: ${el.borderColor || '#8B5CF6'};
-                        cursor: pointer;
-                        font-size: 12px;
-                        padding: 2px 6px;
-                        border-radius: 4px;
-                    ">
+                    <button class="props-btn" onclick="event.stopPropagation(); openUmlClassModal(${el.id})" title="Properties" style="background: none; border: none; color: ${el.borderColor || '#8B5CF6'}; cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 4px;">
                         <i class="fas fa-cog"></i>
                     </button>
-                    <button class="delete-btn" onclick="event.stopPropagation(); deleteElement(${el.id}, event)" title="Удалить" style="
-                        background: none;
-                        border: none;
-                        color: #ef4444;
-                        cursor: pointer;
-                        font-size: 12px;
-                        padding: 2px 6px;
-                        border-radius: 4px;
-                    ">
+                    <button class="delete-btn" onclick="event.stopPropagation(); deleteElement(${el.id}, event)" title="Delete" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 12px; padding: 2px 6px; border-radius: 4px;">
                         <i class="fas fa-times"></i>
                     </button>
                 </span>
@@ -1808,14 +1452,7 @@ window.renderElements = function() {
             if (el.fields && el.fields.length > 0) {
                 el.fields.forEach(function(field) {
                     var fieldDiv = document.createElement('div');
-                    fieldDiv.style.cssText = `
-                        color: #6b7280;
-                        padding: 1px 0;
-                        font-size: 11px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    `;
+                    fieldDiv.style.cssText = `color: #6b7280; padding: 1px 0; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;`;
                     fieldDiv.textContent = '▸ ' + field;
                     bodyContainer.appendChild(fieldDiv);
                 });
@@ -1823,10 +1460,7 @@ window.renderElements = function() {
             
             if (el.fields && el.fields.length > 0 && el.methods && el.methods.length > 0) {
                 var separator = document.createElement('div');
-                separator.style.cssText = `
-                    border-top: 1px solid ${el.borderColor || '#8B5CF6'}40;
-                    margin: 2px 0;
-                `;
+                separator.style.cssText = `border-top: 1px solid ${el.borderColor || '#8B5CF6'}40; margin: 2px 0;`;
                 bodyContainer.appendChild(separator);
             }
             
@@ -1837,14 +1471,7 @@ window.renderElements = function() {
                     var methodColor = method.type === 'function' ? '#3B82F6' : '#10B981';
                     
                     var methodDiv = document.createElement('div');
-                    methodDiv.style.cssText = `
-                        color: ${methodColor};
-                        padding: 1px 0;
-                        font-size: 11px;
-                        white-space: nowrap;
-                        overflow: hidden;
-                        text-overflow: ellipsis;
-                    `;
+                    methodDiv.style.cssText = `color: ${methodColor}; padding: 1px 0; font-size: 11px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;`;
                     methodDiv.textContent = '▸ ' + methodName;
                     bodyContainer.appendChild(methodDiv);
                 });
@@ -1868,16 +1495,9 @@ window.renderElements = function() {
             return;
         }
 
-        // ============================================================
-        // UML ПОЛЕ (СКРЫТО)
-        // ============================================================
         if (el.type === 'uml-field') {
             return;
         }
-
-        // ============================================================
-        // ОБЩАЯ ОТРИСОВКА ДЛЯ ВСЕХ ЭЛЕМЕНТОВ
-        // ============================================================
         
         var typeClass = el.isTool ? 'type-tool' : 'type-' + el.type;
         if (el.type === 'gate-and' || el.type === 'gate-or' || el.type === 'gate-if' || el.type === 'gate-switch') {
@@ -1901,15 +1521,7 @@ window.renderElements = function() {
             div.classList.add('selected');
         }
 
-        var icon;
-        if (el.isTool) {
-            var config = getToolConfig(el.tool);
-            icon = '<i class="fas ' + (config ? config.icon : 'fa-cube') + '"></i>';
-        } else if (el.type === 'sequence-actor') {
-            icon = '<i class="fas fa-user" style="color: #3B82F6;"></i>';
-        } else {
-            icon = getElementIcon(el.type);
-        }
+        var icon = getElementIcon(el.type);
 
         var versionBadge = '';
         if (el.version) {
@@ -1918,7 +1530,7 @@ window.renderElements = function() {
 
         var rightPort = document.createElement('div');
         rightPort.className = 'element-port right';
-        rightPort.title = 'Перетащите для создания связи';
+        rightPort.title = 'Drag to create connection';
         rightPort.addEventListener('mousedown', function(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -1930,15 +1542,15 @@ window.renderElements = function() {
         var leftPort = document.createElement('div');
         leftPort.className = 'element-port left';
         leftPort.style.cssText = 'background: #d1d5db; cursor: default;';
-        leftPort.title = 'Входящий порт';
+        leftPort.title = 'Incoming port';
 
         var actions = document.createElement('span');
         actions.className = 'element-actions';
         actions.innerHTML = `
-            <button class="props-btn" onclick="openElementPropsModal(${el.id})" title="Свойства">
+            <button class="props-btn" onclick="openElementPropsModal(${el.id})" title="Properties">
                 <i class="fas fa-cog"></i>
             </button>
-            <button class="delete-btn" onclick="deleteElement(${el.id}, event)" title="Удалить">
+            <button class="delete-btn" onclick="deleteElement(${el.id}, event)" title="Delete">
                 <i class="fas fa-times"></i>
             </button>
         `;
@@ -2019,55 +1631,6 @@ window.deleteElement = function(id, event) {
 // ДОБАВЛЕНИЕ ЭЛЕМЕНТОВ
 // ============================================================
 
-function addToolElement(tool, x, y) {
-    var config = getToolConfig(tool);
-    var templates = ['web-app', 'api', 'database', 'microservices', 'cloud', 'devops'];
-    
-    if (templates.includes(tool)) {
-        // Это шаблон — загружаем его
-        loadTemplateData(tool);
-        return ;
-    }
-    
-    var id = ++elementIdCounter;
-    var element = {
-        id: id,
-        type: 'tool',
-        tool: tool,
-        name: config.label,
-        x: Math.max(10, x),
-        y: Math.max(10, y),
-        color: config.color || '#6B7280',
-        icon: config.icon || 'fa-cube',
-        width: 120,
-        height: 40,
-        isTool: true,
-        // Добавляем поля для совместимости с раскрытием
-        hasChildren: false,
-        isExpanded: false,
-        childNodes: [],
-        hidden: false,
-        isVisible: true
-    };
-
-    config.fields.forEach(function(field) {
-        if (field.default) {
-            element[field.id] = field.default;
-        }
-    });
-
-    elements.push(element);
-    renderElements();
-    selectElement(id);
-    document.getElementById('paletteEmpty').classList.add('hidden');
-    
-    setTimeout(function() {
-        openElementPropsModal(id);
-    }, 100);
-    
-    return element;
-}
-
 function addElement(type, x, y) {
     var id = ++elementIdCounter;
     var element = {
@@ -2080,7 +1643,6 @@ function addElement(type, x, y) {
         width: 120,
         height: 40,
         isTool: false,
-        // Добавляем поля для совместимости с раскрытием
         hasChildren: false,
         isExpanded: false,
         childNodes: [],
@@ -2098,7 +1660,7 @@ function addElement(type, x, y) {
         element.borderColor = '#8B5CF6';
         element.textColor = '#1a1a2e';
         element.isUmlClass = true;
-        element.name = 'Новый класс';
+        element.name = 'New Class';
     }
 
     elements.push(element);
@@ -2115,25 +1677,25 @@ function addElement(type, x, y) {
 
 function getDefaultName(type) {
     var names = {
-        asset: 'Компонент',
-        threat: 'Угроза',
-        control: 'Контроль',
-        data: 'Данные',
-        actor: 'Субъект',
-        network: 'Сеть',
+        asset: 'Component',
+        threat: 'Threat',
+        control: 'Control',
+        data: 'Data',
+        actor: 'Actor',
+        network: 'Network',
         'gate-and': 'AND',
         'gate-or': 'OR',
         'gate-if': 'IF',
         'gate-switch': 'SWITCH',
-        'event-start': 'Старт',
-        'event-end': 'Финиш',
-        'event-pause': 'Пауза',
-        'event-timeout': 'Таймаут',
-        'event-error': 'Ошибка',
-        'event-interrupt': 'Прерывание',
-        'uml-class': 'Класс'
+        'event-start': 'Start',
+        'event-end': 'End',
+        'event-pause': 'Pause',
+        'event-timeout': 'Timeout',
+        'event-error': 'Error',
+        'event-interrupt': 'Interrupt',
+        'uml-class': 'Class'
     };
-    return names[type] || 'Элемент';
+    return names[type] || 'Element';
 }
 
 function getDefaultColor(type) {
@@ -2166,26 +1728,13 @@ window.exportModel = function() {
     var model = {
         version: '1.0',
         workflow: {
-            name: 'Мой workflow',
+            name: 'My Workflow',
             steps: elements.map(function(el) {
                 var step = {
                     id: el.id,
                     name: el.name,
                     type: el.type
                 };
-                
-                if (el.isTool && el.tool) {
-                    step.tool = el.tool;
-                    step.params = {};
-                    var config = getToolConfig(el.tool);
-                    if (config) {
-                        config.fields.forEach(function(field) {
-                            if (el[field.id]) {
-                                step.params[field.id] = el[field.id];
-                            }
-                        });
-                    }
-                }
                 
                 if (el.type && el.type.startsWith('event-')) {
                     var eventConfig = getEventConfig(el.type);
@@ -2231,10 +1780,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (emptyState) emptyState.classList.remove('hidden');
 
-    // ============================================================
-    // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК (ИСТОЧНИКИ)
-    // ============================================================
-
     var sourceBtns = document.querySelectorAll('.source-btn');
     var sourceContents = {
         empty: document.getElementById('empty-source'),
@@ -2257,10 +1802,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ============================================================
-    // КНОПКА SBOM - ОТКРЫВАЕМ ВКЛАДКУ
-    // ============================================================
-
     var sbomBtn = document.querySelector('.source-btn[data-source="sbom"]');
     if (sbomBtn) {
         sbomBtn.addEventListener('click', function(e) {
@@ -2281,84 +1822,59 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // ============================================================
-// Drag & Drop
-// ============================================================
-
-// === СПИСОК ШАБЛОНОВ ===
-var templateList = ['web-app', 'api', 'database', 'microservices', 'cloud', 'devops'];
-
-document.querySelectorAll('.element-library-item').forEach(function(item) {
-    item.addEventListener('dragstart', function(e) {
-        e.dataTransfer.setData('text/plain', this.dataset.type);
-        e.dataTransfer.effectAllowed = 'copy';
-    });
-});
-
-// === ПЕРЕТАСКИВАНИЕ ДЛЯ ИНСТРУМЕНТОВ ===
-document.querySelectorAll('.flow-tool-item').forEach(function(item) {
-    item.addEventListener('dragstart', function(e) {
-        // Проверяем, есть ли data-template (шаблон)
-        var template = this.dataset.template;
-        if (template) {
-            // Это шаблон
-            e.dataTransfer.setData('text/plain', 'template:' + template);
-        } else {
-            // Это инструмент
-            var tool = this.dataset.tool;
-            e.dataTransfer.setData('text/plain', 'tool:' + tool);
-        }
-        e.dataTransfer.effectAllowed = 'copy';
-    });
-});
-
-if (canvas) {
-    canvas.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy';
+    document.querySelectorAll('.element-library-item').forEach(function(item) {
+        item.addEventListener('dragstart', function(e) {
+            e.dataTransfer.setData('text/plain', this.dataset.type);
+            e.dataTransfer.effectAllowed = 'copy';
+        });
     });
 
-    canvas.addEventListener('drop', function(e) {
-        e.preventDefault();
-        var data = e.dataTransfer.getData('text/plain');
-        if (!data) return;
+    document.querySelectorAll('.flow-tool-item').forEach(function(item) {
+        item.addEventListener('dragstart', function(e) {
+            var template = this.dataset.template;
+            if (template) {
+                e.dataTransfer.setData('text/plain', 'template:' + template);
+                e.dataTransfer.effectAllowed = 'copy';
+            }
+        });
+    });
 
-        var rect = canvas.getBoundingClientRect();
-        var x = e.clientX - rect.left - 60;
-        var y = e.clientY - rect.top - 20;
+    if (canvas) {
+        canvas.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'copy';
+        });
 
-        // === ОБРАБОТКА ШАБЛОНОВ ===
-        if (data.startsWith('template:')) {
-            var templateName = data.replace('template:', '');
-            loadTemplateData(templateName);
+        canvas.addEventListener('drop', function(e) {
+            e.preventDefault();
+            var data = e.dataTransfer.getData('text/plain');
+            if (!data) return;
+
+            var rect = canvas.getBoundingClientRect();
+            var x = e.clientX - rect.left - 60;
+            var y = e.clientY - rect.top - 20;
+
+            if (data.startsWith('template:')) {
+                var templateName = data.replace('template:', '');
+                loadTemplateData(templateName);
+                if (emptyState) emptyState.classList.add('hidden');
+                return;
+            }
+
+            addElement(data, x, y);
             if (emptyState) emptyState.classList.add('hidden');
-            return;
-        }
+        });
 
-        // === ОБРАБОТКА ИНСТРУМЕНТОВ ===
-        if (data.startsWith('tool:')) {
-            var toolName = data.replace('tool:', '');
-            addToolElement(toolName, x, y);
-            if (emptyState) emptyState.classList.add('hidden');
-            return;
-        }
+        canvas.addEventListener('mousemove', function(e) {
+            if (!isConnecting) return;
 
-        // === ОБЫЧНЫЕ ЭЛЕМЕНТЫ ===
-        addElement(data, x, y);
-        if (emptyState) emptyState.classList.add('hidden');
-    });
+            var rect = canvas.getBoundingClientRect();
+            var mouseX = e.clientX - rect.left;
+            var mouseY = e.clientY - rect.top;
+            updateDragLine(mouseX, mouseY);
+        });
+    }
 
-    canvas.addEventListener('mousemove', function(e) {
-        if (!isConnecting) return;
-
-        var rect = canvas.getBoundingClientRect();
-        var mouseX = e.clientX - rect.left;
-        var mouseY = e.clientY - rect.top;
-        updateDragLine(mouseX, mouseY);
-    });
-}
-
-    // Глобальные обработчики
     document.addEventListener('mouseup', function(e) {
         if (!isConnecting) return;
         
@@ -2383,7 +1899,7 @@ if (canvas) {
         var fromEl = elements.find(function(el) { return el.id === connectFromId; });
         var toEl = elements.find(function(el) { return el.id === toId; });
         if (!fromEl || !toEl) {
-            showCustomAlert('Ошибка', 'Элемент не найден', 'error');
+            showCustomAlert('Error', 'Element not found', 'error');
             cancelCurrentConnection();
             return;
         }
@@ -2394,18 +1910,23 @@ if (canvas) {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && isConnecting) {
             cancelCurrentConnection();
-            showCustomAlert('Отмена', 'Создание связи отменено', 'info');
+            showCustomAlert('Cancel', 'Connection creation cancelled', 'info');
         }
     });
 });
 
 // ============================================================
-// ЭКСПОРТ ФУНКЦИЙ ДЛЯ ДРУГИХ СКРИПТОВ
+// ЭКСПОРТ В ГЛОБАЛ
 // ============================================================
 
 window.toggleNodeExpand = toggleNodeExpand;
-window.hideChildrenRecursive = hideChildrenRecursive;
 window.expandNodeFromPalette = expandNodeFromPalette;
 window.collapseNodeFromPalette = collapseNodeFromPalette;
 window.expandAllNodesPalette = expandAllNodesPalette;
 window.collapseAllNodesPalette = collapseAllNodesPalette;
+window.loadTemplateData = loadTemplateData;
+window.addElement = addElement;
+window.renderElements = renderElements;
+window.renderConnections = renderConnections;
+window.getDefaultName = getDefaultName;
+window.getDefaultColor = getDefaultColor;

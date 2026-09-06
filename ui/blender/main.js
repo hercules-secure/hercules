@@ -11,7 +11,6 @@ import {
 } from './utils.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Состояние
     let selectedArchive = null;
     let selectedFolder = null;
     let selectedFolderFiles = [];
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let progressInterval = null;
     let currentOverallProgress = 0;
     
-    // DOM элементы
     const repoInput = document.getElementById('repo');
     const startBtn = document.getElementById('start-btn');
     const branchInput = document.getElementById('branchName');
@@ -36,19 +34,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const overallProgress = document.getElementById('overallProgress');
     const overallPercent = document.getElementById('overallPercent');
     
-    // API базовый URL
     const API_BASE_URL = '/api/blender';
     
-    // Функция получения заголовков авторизации
-    function getAuthHeaders() {
-        const token = localStorage.getItem('licenseToken');
-        if (token) {
-            return { 'Authorization': `Bearer ${token}` };
-        }
-        return {};
-    }
-    
-    // ========== ФУНКЦИИ ДЛЯ ГРАДУСНИКА ==========
+    // ========== THERMOMETER FUNCTIONS ==========
     
     function updateOverallProgress(percent) {
         const overallProgressEl = document.getElementById('overallProgress');
@@ -134,14 +122,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // ========== API ФУНКЦИИ ==========
+    // ========== API FUNCTIONS ==========
     
     async function callAPI(endpoint, method = 'GET', data = null) {
         const url = `${API_BASE_URL}${endpoint}`;
         
         const headers = {
-            'Content-Type': 'application/json',
-            ...getAuthHeaders()
+            'Content-Type': 'application/json'
         };
         
         const options = { 
@@ -155,13 +142,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const response = await fetch(url, options);
-            
-            if (response.status === 401) {
-                if (typeof window.showLicenseModal === 'function') {
-                    window.showLicenseModal();
-                }
-                throw new Error('Требуется активация лицензии');
-            }
             
             if (!response.ok) {
                 const error = await response.json();
@@ -177,8 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     async function analyzeGitRepo(url, branch) {
         const headers = {
-            'Content-Type': 'application/json',
-            ...getAuthHeaders()
+            'Content-Type': 'application/json'
         };
         
         const response = await fetch(`${API_BASE_URL}/git`, {
@@ -186,13 +165,6 @@ document.addEventListener('DOMContentLoaded', () => {
             headers: headers,
             body: JSON.stringify({ url, branch })
         });
-        
-        if (response.status === 403) {
-            if (typeof window.showLicenseModal === 'function') {
-                window.showLicenseModal();
-            }
-            throw new Error('Требуется активация лицензии');
-        }
         
         if (!response.ok) {
             const error = await response.json();
@@ -210,30 +182,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const formData = new FormData();
         formData.append('file', blob, fileName);
         
-        const headers = getAuthHeaders();
-        
         const response = await fetch(`${API_BASE_URL}/analyze/archive/upload`, {
             method: 'POST',
-            headers: headers,
             body: formData
         });
         
-        if (response.status === 403) {
-            //if (typeof window.showLicenseModal === 'function') {
-                showLicenseModal();
-            //}
-            throw new Error('Требуется активация лицензии');
-        }
-        
         if (!response.ok) {
             const error = await response.json();
-            throw new Error(error.error || 'Ошибка загрузки архива');
+            throw new Error(error.error || 'Archive upload error');
         }
         
         return await response.json();
     }
     
-    // ========== ФУНКЦИИ ДЛЯ УПРАВЛЕНИЯ КНОПКАМИ ==========
+    // ========== BUTTON MANAGEMENT ==========
     
     function activateButton(button) {
         if (button) {
@@ -249,7 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // ========== ФУНКЦИИ UI ==========
+    // ========== UI FUNCTIONS ==========
     
     function showAlert(message, type) {
         const alertDiv = document.getElementById('alertMessage');
@@ -292,26 +254,26 @@ document.addEventListener('DOMContentLoaded', () => {
                     for (let i = 1; i <= 7; i++) updateStepStatus(i, 'completed');
                     updateOverallProgress(100);
                     
-                    showAlert('Анализ успешно завершен!', 'success');
+                    showAlert('Analysis completed successfully!', 'success');
                     if (onComplete) onComplete(result);
                 } else if (result.status === 'error') {
                     clearInterval(poll);
                     stopProgressEmulation();
-                    showAlert(`Ошибка: ${result.error}`, 'error');
+                    showAlert(`Error: ${result.error}`, 'error');
                 }
                 
                 if (attempts >= maxAttempts) {
                     clearInterval(poll);
                     stopProgressEmulation();
-                    showAlert('Превышено время ожидания анализа', 'error');
+                    showAlert('Analysis timeout exceeded', 'error');
                 }
             } catch (error) {
-               
+                // Continue polling
             }
         }, 5000);
     }
     
-    // ========== ФУНКЦИИ ДЛЯ РАБОТЫ С ОТЧЁТОМ ==========
+    // ========== REPORT FUNCTIONS ==========
     
     function transformReport(report) {
         let sastIssues = [];
@@ -396,7 +358,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
     
-    // ========== ОТОБРАЖЕНИЕ ОТЧЕТА ==========
+    // ========== DISPLAY REPORT ==========
     
     function displayReport(report) {
         const transformed = transformReport(report);
@@ -420,9 +382,9 @@ document.addEventListener('DOMContentLoaded', () => {
         tabs.forEach(tab => {
             tab.classList.remove('active');
             const tabText = tab.textContent.toLowerCase();
-            if (tabName === 'summary' && tabText.includes('обзор')) tab.classList.add('active');
-            else if (tabName === 'dependencies' && (tabText.includes('зависимости') || tabText.includes('sca'))) tab.classList.add('active');
-            else if (tabName === 'code' && (tabText.includes('код') || tabText.includes('sast'))) tab.classList.add('active');
+            if (tabName === 'summary' && (tabText.includes('overview') || tabText.includes('summary'))) tab.classList.add('active');
+            else if (tabName === 'dependencies' && (tabText.includes('dependencies') || tabText.includes('sca'))) tab.classList.add('active');
+            else if (tabName === 'code' && (tabText.includes('code') || tabText.includes('sast'))) tab.classList.add('active');
         });
         
         try {
@@ -442,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error rendering tab:', error);
-            content.innerHTML = `<div style="padding:20px;color:red;">Ошибка: ${error.message}</div>`;
+            content.innerHTML = `<div style="padding:20px;color:red;">Error: ${error.message}</div>`;
         }
     }
     
@@ -467,7 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // ========== ОСНОВНЫЕ ФУНКЦИИ АНАЛИЗА ==========
+    // ========== MAIN ANALYSIS FUNCTIONS ==========
     
     async function startGitAnalysis() {
         if (!repoInput) return;
@@ -475,82 +437,82 @@ document.addEventListener('DOMContentLoaded', () => {
         const branch = branchInput?.value.trim() || null;
         
         if (!repo) {
-            showAlert('Пожалуйста, введите URL репозитория', 'error');
+            showAlert('Please enter a repository URL', 'error');
             return;
         }
         
         deactivateButton(startBtn);
         resetAllProgress();
-        showAlert('Отправка запроса на анализ...', 'info');
+        showAlert('Sending analysis request...', 'info');
         
         try {
             const result = await analyzeGitRepo(repo, branch);
             
             if (result.success) {
                 startProgressEmulation();
-                showAlert(`Анализ запущен (ID: ${result.taskId})`, 'success');
+                showAlert(`Analysis started (ID: ${result.taskId})`, 'success');
                 pollTaskStatus(result.taskId, (finalResult) => {
                     if (finalResult) displayReport(finalResult);
                     activateButton(startBtn);
                 });
             } else {
                 stopProgressEmulation();
-                showAlert(`Ошибка: ${result.error || 'Неизвестная ошибка'}`, 'error');
+                showAlert(`Error: ${result.error || 'Unknown error'}`, 'error');
                 activateButton(startBtn);
             }
         } catch (error) {
             stopProgressEmulation();
-            showAlert(`Ошибка: ${error.message}`, 'error');
+            showAlert(`Error: ${error.message}`, 'error');
             activateButton(startBtn);
         }
     }
     
     async function startArchiveAnalysis() {
         if (!selectedArchive) {
-            showAlert('Пожалуйста, выберите архив', 'error');
+            showAlert('Please select an archive', 'error');
             return;
         }
         
         deactivateButton(archiveStartBtn);
         resetAllProgress();
-        showAlert(`Отправка архива ${selectedArchive.name} на анализ...`, 'info');
+        showAlert(`Uploading archive ${selectedArchive.name} for analysis...`, 'info');
         
         try {
             const result = await uploadArchive(selectedArchive, selectedArchive.name);
             
             if (result.success) {
                 startProgressEmulation();
-                showAlert(`Анализ архива запущен (ID: ${result.taskId})`, 'success');
+                showAlert(`Archive analysis started (ID: ${result.taskId})`, 'success');
                 pollTaskStatus(result.taskId, (finalResult) => {
                     if (finalResult) displayReport(finalResult);
                     activateButton(archiveStartBtn);
                 });
             } else {
                 stopProgressEmulation();
-                showAlert(`Ошибка: ${result.error}`, 'error');
+                showAlert(`Error: ${result.error}`, 'error');
                 activateButton(archiveStartBtn);
             }
         } catch (error) {
             stopProgressEmulation();
-            showAlert(`Ошибка при загрузке архива: ${error.message}`, 'error');
+            showAlert(`Archive upload error: ${error.message}`, 'error');
             activateButton(archiveStartBtn);
         }
     }
     
     async function startLocalAnalysis() {
         if (!selectedFolderFiles.length) {
-            showAlert('Пожалуйста, выберите папку проекта', 'error');
+            showAlert('Please select a project folder', 'error');
             return;
         }
         
         deactivateButton(localStartBtn);
         resetAllProgress();
-        showAlert(`Подготовка архива из папки ${selectedFolder}...`, 'info');
+        showAlert(`Preparing archive from ${selectedFolder} folder...`, 'info');
         
         try {
             if (!window.JSZip) await loadJSZip();
             
-            showArchiveProgress(0, 'Подготовка файлов');
+            showArchiveProgress(0, 'Preparing files');
             
             const validFiles = [];
             let processedCount = 0, skippedCount = 0;
@@ -558,7 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
             for (const file of selectedFolderFiles) {
                 processedCount++;
                 const percent = Math.round((processedCount / selectedFolderFiles.length) * 50);
-                showArchiveProgress(percent, `Проверка файлов (${processedCount}/${selectedFolderFiles.length})...`);
+                showArchiveProgress(percent, `Checking files (${processedCount}/${selectedFolderFiles.length})...`);
                 
                 try {
                     await file.slice(0, 1).arrayBuffer();
@@ -566,36 +528,36 @@ document.addEventListener('DOMContentLoaded', () => {
                 } catch { skippedCount++; }
             }
             
-            if (validFiles.length === 0) throw new Error('Нет доступных файлов для архивации');
-            if (skippedCount > 0) showAlert(`Пропущено ${skippedCount} недоступных файлов`, 'warning');
+            if (validFiles.length === 0) throw new Error('No accessible files for archiving');
+            if (skippedCount > 0) showAlert(`Skipped ${skippedCount} inaccessible files`, 'warning');
             
-            showArchiveProgress(50, `Создание архива (${validFiles.length} файлов)...`);
+            showArchiveProgress(50, `Creating archive (${validFiles.length} files)...`);
             const zipBlob = await createZipArchive(validFiles, selectedFolder);
-            showArchiveProgress(100, 'Архив создан');
-            showAlert(`Отправка архива ${selectedFolder}.zip на сервер...`, 'info');
+            showArchiveProgress(100, 'Archive created');
+            showAlert(`Uploading archive ${selectedFolder}.zip to server...`, 'info');
             
             const result = await uploadArchive(zipBlob, `${selectedFolder}.zip`);
             
             if (result.success) {
                 startProgressEmulation();
-                showAlert(`Анализ локального проекта запущен (ID: ${result.taskId})`, 'success');
+                showAlert(`Local project analysis started (ID: ${result.taskId})`, 'success');
                 pollTaskStatus(result.taskId, (finalResult) => {
                     if (finalResult) displayReport(finalResult);
                     activateButton(localStartBtn);
                 });
             } else {
                 stopProgressEmulation();
-                showAlert(`Ошибка: ${result.error}`, 'error');
+                showAlert(`Error: ${result.error}`, 'error');
                 activateButton(localStartBtn);
             }
         } catch (error) {
             stopProgressEmulation();
-            showAlert(`Ошибка: ${error.message}`, 'error');
+            showAlert(`Error: ${error.message}`, 'error');
             activateButton(localStartBtn);
         }
     }
     
-    // ========== ОСНОВНЫЕ ФУНКЦИИ UI ==========
+    // ========== UI FUNCTIONS ==========
     
     window.switchSource = function(source) {
         currentSource = source;
@@ -638,7 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
         deactivateButton(localStartBtn);
     };
     
-    // ========== ЗАКРЫТИЕ МОДАЛЬНОГО ОКНА ==========
+    // ========== MODAL CLOSE ==========
     
     window.closeResultModal = function() {
         const modal = document.getElementById('resultModal');
@@ -671,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
         a.download = `analysis_report_${Date.now()}.json`;
         a.click();
         URL.revokeObjectURL(url);
-        showAlert('JSON отчет скачан', 'success');
+        showAlert('JSON report downloaded', 'success');
     };
     
     window.downloadHTML = function() {
@@ -684,10 +646,10 @@ document.addEventListener('DOMContentLoaded', () => {
         a.download = `analysis_report_${Date.now()}.html`;
         a.click();
         URL.revokeObjectURL(url);
-        showAlert('HTML отчет скачан', 'success');
+        showAlert('HTML report downloaded', 'success');
     };
     
-    // ========== ОБРАБОТЧИКИ ==========
+    // ========== EVENT HANDLERS ==========
     
     if (fileInput && archiveStartBtn && archiveFileInfo) {
         fileInput.addEventListener('change', (e) => {
@@ -720,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 
                 if (validFiles === 0) {
-                    showAlert('Выбрана пустая папка или нет доступных файлов', 'error');
+                    showAlert('Empty folder or no accessible files selected', 'error');
                     clearFolder();
                     return;
                 }
@@ -729,7 +691,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="file-details">
                         <i class="fas fa-folder-open"></i>
                         <span class="file-name">${escapeHtml(selectedFolder)}</span>
-                        <span class="file-size">(${validFiles} файлов, ${formatBytes(totalSize)})</span>
+                        <span class="file-size">(${validFiles} files, ${formatBytes(totalSize)})</span>
                         <i class="fas fa-times remove-file" onclick="clearFolder()"></i>
                     </div>
                 `;
@@ -751,7 +713,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 fileInput.files = files;
                 fileInput.dispatchEvent(new Event('change'));
             } else {
-                showAlert('Пожалуйста, выберите архив (ZIP, TAR, GZ, 7Z)', 'error');
+                showAlert('Please select an archive (ZIP, TAR, GZ, 7Z)', 'error');
             }
         });
         uploadArea.addEventListener('click', () => fileInput.click());
@@ -764,12 +726,10 @@ document.addEventListener('DOMContentLoaded', () => {
         localUploadArea.addEventListener('click', () => localFolderInput.click());
     }
     
-    
     if (startBtn) startBtn.addEventListener('click', startGitAnalysis);
     if (archiveStartBtn) archiveStartBtn.addEventListener('click', startArchiveAnalysis);
     if (localStartBtn) localStartBtn.addEventListener('click', startLocalAnalysis);
     if (repoInput) repoInput.addEventListener('input', updateGitButton);
-    
     
     window.updateOverallProgress = updateOverallProgress;
     window.updateStepStatus = updateStepStatus;
@@ -777,9 +737,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.resetAllProgress = resetAllProgress;
     window.startProgressEmulation = startProgressEmulation;
     window.stopProgressEmulation = stopProgressEmulation;
-    window.getAuthHeaders = getAuthHeaders;
-    
-
     
     updateGitButton();
     resetAllProgress();

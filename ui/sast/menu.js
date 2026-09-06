@@ -1,21 +1,18 @@
-
 async function loadMenu() {
     const container = document.getElementById('toolsGrid');
     if (!container) return;
     
-    container.innerHTML = '<div class="tools-loader"><i class="fas fa-spinner fa-spin"></i><br>Загрузка...</div>';
+    container.innerHTML = '<div class="tools-loader"><i class="fas fa-spinner fa-spin"></i><br>Loading...</div>';
     
     try {
-        // Эндпоинт возвращает ТОЛЬКО установленные расширения
         const response = await fetch('/addons/api/extensions/installed');
         const data = await response.json();
         
         let html = '';
         
         if (data.success && data.extensions && data.extensions.length > 0) {
-            // СОРТИРОВКА ПО order (чем меньше число, тем выше в списке)
             const sortedExtensions = [...data.extensions].sort((a, b) => {
-                const orderA = a.order ?? 999;  // если order нет, ставим в конец
+                const orderA = a.order ?? 999;
                 const orderB = b.order ?? 999;
                 return orderA - orderB;
             });
@@ -32,21 +29,21 @@ async function loadMenu() {
                             </div>
                             <div class="tool-info">
                                 <span class="tool-name">${escapeHtml(addon.name)}</span>
-                                <span class="tool-desc">${escapeHtml(addon.description || 'Расширение')}</span>
+                                <span class="tool-desc">${escapeHtml(addon.description || 'Extension')}</span>
                             </div>
                         </div>
                     </a>
                 `;
             });
         } else {
-            html = '<div class="tools-loader">Нет установленных расширений</div>';
+            html = '<div class="tools-loader">No extensions installed</div>';
         }
         
         container.innerHTML = html;
         
     } catch (err) {
-        console.error('Ошибка:', err);
-        container.innerHTML = '<div class="error-message">Ошибка загрузки</div>';
+        console.error('Error:', err);
+        container.innerHTML = '<div class="error-message">Failed to load</div>';
     }
 }
 
@@ -59,6 +56,3 @@ function escapeHtml(str) {
         return m;
     });
 }
-
-// Загружаем меню при старте
-

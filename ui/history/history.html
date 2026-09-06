@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html data-page="construction" data-version="1.27.0" lang="ru">
+<html data-page="construction" data-version="1.27.0" lang="en">
 
 <head>
-    <title>История сканирований</title>
+    <title>Scan History</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -26,9 +26,9 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Инструменты</span>
+                        <span>Tools</span>
                     </div>
-                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 </div>
@@ -37,21 +37,21 @@
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
-                        Загрузка...
+                        Loading...
                     </div>
                 </div>
 
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
-                        <div class="tool-item active">
-                            <div class="tool-icon">
-                                <i class="fas fa-history black-icon"></i>
-                            </div>
-                            <div class="tool-info">
-                                <span class="tool-name">История</span>
-                                <span class="tool-desc">Журнал сканирований</span>
-                            </div>
+                    <div class="tool-item active">
+                        <div class="tool-icon">
+                            <i class="fas fa-history black-icon"></i>
                         </div>
+                        <div class="tool-info">
+                            <span class="tool-name">History</span>
+                            <span class="tool-desc">Scan log</span>
+                        </div>
+                    </div>
                     <div class="tool-divider"></div>
                     <a href="/config">
                         <div class="tool-item">
@@ -59,8 +59,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Настройки</span>
-                                <span class="tool-desc">Управление параметрами</span>
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
                             </div>
                         </div>
                     </a>
@@ -70,13 +70,13 @@
 
         <div id="center">
             <div class="header-row">
-                <h2 class="section-title">История сканирований</h2>
+                <h2 class="section-title">Scan History</h2>
                 <div style="display: flex; gap: 10px;">
                     <button class="header-btn" id="refreshBtn">
-                        <i class="fas fa-sync-alt"></i> Обновить
+                        <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <button class="header-btn" id="clearHistoryBtn">
-                        <i class="fas fa-trash-alt"></i> Очистить
+                        <i class="fas fa-trash-alt"></i> Clear
                     </button>
                 </div>
             </div>
@@ -85,20 +85,20 @@
                 <table class="history-table">
                     <thead>
                         <tr>
-                            <th>Инструмент</th>
-                            <th>Тип источника</th>
-                            <th>Источник</th>
-                            <th>Дата и время</th>
-                            <th>Длительность</th>
-                            <th>Статус</th>
-                            <th>Действия</th>
+                            <th>Tool</th>
+                            <th>Source Type</th>
+                            <th>Source</th>
+                            <th>Date & Time</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
                         <tr>
                             <td colspan="7" class="empty-state">
                                 <i class="fas fa-history"></i>
-                                <p>Загрузка истории...</p>
+                                <p>Loading history...</p>
                             </td>
                         </tr>
                     </tbody>
@@ -112,7 +112,7 @@
     <div id="detailModal" class="settings-modal" style="display: none;">
         <div class="settings-content" style="max-width: 550px;">
             <div class="settings-header">
-                <h3><i class="fas fa-info-circle"></i> Детали сканирования</h3>
+                <h3><i class="fas fa-info-circle"></i> Scan Details</h3>
                 <span class="settings-close" onclick="closeDetailModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -134,7 +134,6 @@
         let currentPage = 1;
         const rowsPerPage = 10;
 
-        // Функция извлечения короткого имени из полного пути
         function getShortName(sourceName, sourceType) {
             if (!sourceName) return '—';
             
@@ -149,7 +148,6 @@
             }
         }
 
-
         async function loadHistory() {
             try {
                 const response = await fetch('/api/history');
@@ -160,15 +158,14 @@
                     renderTable();
                     renderPagination();
                 } else {
-                    showError('Ошибка загрузки истории');
+                    showError('Failed to load history');
                 }
             } catch (error) {
                 console.error('Error loading history:', error);
-                showError('Ошибка соединения');
+                showError('Connection error');
             }
         }
 
-        // Рендер таблицы
         function renderTable() {
             const tbody = document.getElementById('historyTableBody');
             
@@ -177,7 +174,7 @@
                     <tr>
                         <td colspan="7" class="empty-state">
                             <i class="fas fa-history"></i>
-                            <p>История сканирований пуста</p>
+                            <p>Scan history is empty</p>
                         </td>
                     </tr>
                 `;
@@ -189,27 +186,28 @@
             const pageRecords = currentRecords.slice(start, end);
 
             tbody.innerHTML = pageRecords.map(record => {
-
-                
                 const shortName = record.sourceType == 'url' ? record.sourceName : getShortName(record.sourceName, record.sourceType);
-                 const sourceTypeLabel = record.sourceType === 'repository' ? 'Репозиторий' : 
-                        (record.sourceType === 'url' ? 'URL адрес' : 
-                        (record.sourceType === 'network' ? 'Сеть' : 
-                        (record.sourceType === 'workflow' ? 'Цепочка событий' : 
-                        (record.sourceType === 'archive' ? 'Архив' : 'Неизвестно'))));
+                const sourceTypeLabel = record.sourceType === 'repository' ? 'Repository' : 
+                        (record.sourceType === 'url' ? 'URL' : 
+                        (record.sourceType === 'network' ? 'Network' : 
+                        (record.sourceType === 'workflow' ? 'Workflow' : 
+                        (record.sourceType === 'archive' ? 'Archive' : 'Unknown'))));
 
-                 const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 
+                const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 
                         (record.sourceType === 'url' ? 'source-type-url' : 
                         (record.sourceType === 'network' ? 'source-type-network' : 
                         (record.sourceType === 'workflow' ? 'source-type-workflow' : 
                         (record.sourceType === 'archive' ? 'source-type-archive' : 'source-type-unknown'))));
 
-const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : 
+                const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : 
                        (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : 
                        (record.sourceType === 'network' ? '<i class="fas fa-server"></i>' : 
                        (record.sourceType === 'workflow' ? '<i class="fas fa-code-branch"></i>' :
                        (record.sourceType === 'archive' ? '<i class="fas fa-file-archive"></i>' : '<i class="fas fa-question-circle"></i>'))));
-                                return `
+                
+                const statusLabel = record.status === 'success' ? 'Success' : record.status === 'error' ? 'Error' : 'In Progress';
+                
+                return `
                     <tr>
                         <td><strong>${record.tool?.toUpperCase() || '—'}</strong></td>
                         <td>
@@ -224,11 +222,11 @@ const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-gi
                         <td>${formatDuration(record.duration)}</td>
                         <td>
                             <span class="status-badge status-${record.status}">
-                                ${record.status === 'success' ? 'Успешно' : record.status === 'error' ? 'Ошибка' : 'В процессе'}
+                                ${statusLabel}
                             </span>
                         </td>
                         <td>
-                            <button class="action-btn" onclick="viewDetails('${record.tool}', '${record.reportId}')" title="Посмотреть отчет">
+                            <button class="action-btn" onclick="viewDetails('${record.tool}', '${record.reportId}')" title="View report">
                                 <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
                             </button>
                            ${record.sourceType === 'repository' || 'url' ? `
@@ -247,8 +245,8 @@ const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-gi
         function formatDuration(ms) {
             if (!ms && ms !== 0) return '—';
             if (ms < 1000) return `${ms}ms`;
-            if (ms < 60000) return `${(ms / 1000).toFixed(1)}с`;
-            return `${Math.floor(ms / 60000)}м ${Math.floor((ms % 60000) / 1000)}с`;
+            if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
+            return `${Math.floor(ms / 60000)}m ${Math.floor((ms % 60000) / 1000)}s`;
         }
 
         function renderPagination() {
@@ -272,35 +270,34 @@ const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-gi
             renderTable();
         }
 
-            window.viewDetails = function(tool, reportId) {
-                if (!tool || !reportId) {
-                    console.error('Missing parameters');
-                    return;
-                }
-                const url = `${window.location.origin}/api/${tool}/history/${reportId}`;
-                window.open(url, '_blank', 'noopener,noreferrer');
-            };
+        window.viewDetails = function(tool, reportId) {
+            if (!tool || !reportId) {
+                console.error('Missing parameters');
+                return;
+            }
+            const url = `${window.location.origin}/api/${tool}/history/${reportId}`;
+            window.open(url, '_blank', 'noopener,noreferrer');
+        };
 
         window.closeDetailModal = function() {
             document.getElementById('detailModal').style.display = 'none';
         };
 
-        // Очистка истории (DELETE /api/history)
         async function clearHistory() {
-            if (!confirm('Вы уверены, что хотите очистить всю историю сканирований?')) return;
+            if (!confirm('Are you sure you want to clear all scan history?')) return;
             
             try {
                 const response = await fetch('/api/history', { method: 'DELETE' });
                 const data = await response.json();
                 
                 if (data.success) {
-                    showNotification('История очищена', 'success');
+                    showNotification('History cleared', 'success');
                     loadHistory();
                 } else {
-                    showNotification('Ошибка очистки', 'error');
+                    showNotification('Clear failed', 'error');
                 }
             } catch (error) {
-                showNotification('Ошибка очистки', 'error');
+                showNotification('Clear failed', 'error');
             }
         }
 
@@ -345,7 +342,6 @@ const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-gi
             });
         }
 
-        // Обработчики
         document.getElementById('refreshBtn')?.addEventListener('click', () => loadHistory());
         document.getElementById('clearHistoryBtn')?.addEventListener('click', () => clearHistory());
 

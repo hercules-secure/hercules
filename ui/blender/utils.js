@@ -1,6 +1,3 @@
-     // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
-
-// Форматирование байтов
 function formatBytes(bytes) {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -9,12 +6,10 @@ function formatBytes(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Задержка
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Экранирование HTML
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
@@ -22,7 +17,6 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
-// Загрузка библиотеки JSZip
 function loadJSZip() {
     return new Promise((resolve, reject) => {
         if (window.JSZip) {
@@ -33,12 +27,11 @@ function loadJSZip() {
         const script = document.createElement('script');
         script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
         script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Не удалось загрузить JSZip'));
+        script.onerror = () => reject(new Error('Failed to load JSZip'));
         document.head.appendChild(script);
     });
 }
 
-// Создание ZIP архива из файлов
 async function createZipArchive(files, folderName) {
     try {
         if (!window.JSZip) {
@@ -70,9 +63,6 @@ async function createZipArchive(files, folderName) {
     }
 }
 
-// ========== ФУНКЦИИ ДЛЯ ГЕНЕРАЦИИ HTML ==========
-
-// Получение цвета для метода API (оставлено для совместимости, но не используется)
 function getMethodColor(method) {
     switch (method?.toUpperCase()) {
         case 'GET': return '#10b981';
@@ -84,7 +74,6 @@ function getMethodColor(method) {
     }
 }
 
-// Генерация HTML для зависимостей с достижимостью и раскрытием
 export function generateDependenciesHTML(report) {
     let dependencies = [];
     let vulnerabilityStats = {
@@ -123,10 +112,9 @@ export function generateDependenciesHTML(report) {
     }
     
     if (!dependencies?.length) {
-        return '<div class="info-box">Зависимости не найдены</div>';
+        return '<div class="info-box">No dependencies found</div>';
     }
     
-    // Собираем все уязвимости для фильтрации
     let allVulnerabilities = [];
     for (const dep of dependencies) {
         if (dep.vulnerabilities && dep.vulnerabilities.vulnerabilities) {
@@ -169,21 +157,20 @@ export function generateDependenciesHTML(report) {
             </div>
         </div>
         
-        <!-- Строка поиска и фильтры -->
         <div class="filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-            <input type="text" id="vulnSearch" placeholder="Поиск по компоненту или CVE..." class="search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px;">
+            <input type="text" id="vulnSearch" placeholder="Search by component or CVE..." class="search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px;">
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="filter-btn active" data-filter="all">Все (${allVulnerabilities.length})</button>
+                <button class="filter-btn active" data-filter="all">All (${allVulnerabilities.length})</button>
                 <button class="filter-btn" data-filter="critical">Critical (${allVulnerabilities.filter(v => v.severity === 'critical').length})</button>
                 <button class="filter-btn" data-filter="high">High (${allVulnerabilities.filter(v => v.severity === 'high').length})</button>
                 <button class="filter-btn" data-filter="medium">Medium (${allVulnerabilities.filter(v => v.severity === 'medium').length})</button>
                 <button class="filter-btn" data-filter="low">Low (${allVulnerabilities.filter(v => v.severity === 'low').length})</button>
-                <button class="filter-btn" data-filter="reachable">Достижимые (${allVulnerabilities.filter(v => v.reachable === true).length})</button>
+                <button class="filter-btn" data-filter="reachable">Reachable (${allVulnerabilities.filter(v => v.reachable === true).length})</button>
             </div>
         </div>
     `;
     
-    html += `<h4 style="margin-bottom: 16px;">Найдено зависимостей: ${dependencies.length}</h4>`;
+    html += `<h4 style="margin-bottom: 16px;">Dependencies found: ${dependencies.length}</h4>`;
     
     for (const [manager, items] of Object.entries(grouped)) {
         html += `
@@ -198,17 +185,17 @@ export function generateDependenciesHTML(report) {
                         <thead>
                             <tr style="background: #f1f5f9;">
                                 <th style="width: 30px; padding: 10px;"></th>
-                                <th style="padding: 10px; text-align: left;">Пакет</th>
-                                <th style="padding: 10px; text-align: left;">Версия</th>
-                                <th style="padding: 10px; text-align: left;">Источник</th>
-                                <th style="padding: 10px; text-align: center;">Уязвимости</th>
-                                <th style="padding: 10px; text-align: left;">Лицензия</th>
-                                <th style="padding: 10px; text-align: center;">Достижимость</th>
+                                <th style="padding: 10px; text-align: left;">Package</th>
+                                <th style="padding: 10px; text-align: left;">Version</th>
+                                <th style="padding: 10px; text-align: left;">Source</th>
+                                <th style="padding: 10px; text-align: center;">Vulnerabilities</th>
+                                <th style="padding: 10px; text-align: left;">License</th>
+                                <th style="padding: 10px; text-align: center;">Reachable</th>
                             </tr>
                         </thead>
                         <tbody id="vulnTableBody">
                             ${items.map((dep, idx) => {
-                                const reachableText = dep.isReachable === true ? 'Да' : (dep.isReachable === false ? 'Нет' : 'Не определено');
+                                const reachableText = dep.isReachable === true ? 'Yes' : (dep.isReachable === false ? 'No' : 'Unknown');
                                 const reachableClass = dep.isReachable === true ? 'reachable-yes' : (dep.isReachable === false ? 'reachable-no' : 'reachable-unknown');
                                 
                                 return `
@@ -224,7 +211,7 @@ export function generateDependenciesHTML(report) {
                                             <span class="vuln-count" style="background: #f9731620; color: #f97316; padding: 2px 8px; border-radius: 16px; font-weight: 600; font-size: 12px;">
                                                 ${dep.cveCount}
                                             </span>
-                                        ` : `<span style="color: #10b981;">Нет</span>`}
+                                        ` : `<span style="color: #10b981;">None</span>`}
                                     </td>
                                     <td style="padding: 10px;">
                                         <span style="background: #94a3b820; color: #94a3b8; padding: 4px 8px; border-radius: 12px; font-size: 11px;">
@@ -238,31 +225,31 @@ export function generateDependenciesHTML(report) {
                                 <tr class="dep-details-row" data-details-idx="${idx}" data-details-manager="${manager}" style="display: none; background: #f8fafc;">
                                     <td colspan="7" style="padding: 15px 20px;">
                                         <div style="background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
-                                            <div><strong>Детали зависимости</strong></div>
+                                            <div><strong>Dependency Details</strong></div>
                                             <div style="margin-top: 12px;">
-                                                <strong>Лицензия:</strong> ${escapeHtml(dep.license || 'UNKNOWN')}
+                                                <strong>License:</strong> ${escapeHtml(dep.license || 'UNKNOWN')}
                                                 ${dep.licenseInfo ? `<span style="margin-left: 12px; padding: 2px 8px; border-radius: 12px; font-size: 11px; background: ${dep.licenseInfo.risk === 'high' ? '#fee2e2' : '#dcfce7'}; color: ${dep.licenseInfo.risk === 'high' ? '#dc2626' : '#16a34a'};">${dep.licenseInfo.type || 'unknown'}</span>` : ''}
                                             </div>
-                                            ${dep.licenseInfo?.recommendation ? `<div style="margin-top: 8px;"><strong>Рекомендация:</strong> ${escapeHtml(dep.licenseInfo.recommendation)}</div>` : ''}
+                                            ${dep.licenseInfo?.recommendation ? `<div style="margin-top: 8px;"><strong>Recommendation:</strong> ${escapeHtml(dep.licenseInfo.recommendation)}</div>` : ''}
                                             ${dep.usageFiles && dep.usageFiles.length > 0 ? `
                                                 <div style="margin-top: 12px;">
-                                                    <strong>Файлы с использованием (${dep.usageFiles.length}):</strong>
+                                                    <strong>Usage files (${dep.usageFiles.length}):</strong>
                                                     <ul style="margin-top: 8px; margin-left: 8px; list-style: none; padding-left: 0; max-height: 200px; overflow-y: auto;">
                                                         ${dep.usageFiles.map(f => `<li style="font-family: monospace; font-size: 12px; padding: 4px 0;">${escapeHtml(f)}</li>`).join('')}
                                                     </ul>
                                                 </div>
                                                 ` : dep.isReachable === true ? `
                                                 <div style="margin-top: 12px; padding: 8px; background: #fee2e2; border-radius: 6px; color: #dc2626;">
-                                                    <i class="fas fa-exclamation-triangle"></i> Уязвимость достижима, но не найдены конкретные файлы использования
+                                                    <i class="fas fa-exclamation-triangle"></i> Vulnerability is reachable, but no specific usage files found
                                                 </div>
                                                 ` : dep.isReachable === false ? `
                                                 <div style="margin-top: 12px; padding: 8px; background: #dcfce7; border-radius: 6px; color: #16a34a;">
-                                                    <i class="fas fa-check-circle"></i> Уязвимость не достижима - компонент не используется в коде
+                                                    <i class="fas fa-check-circle"></i> Vulnerability is not reachable - component is not used in the code
                                                 </div>
                                                 ` : ''}
                                                 ${dep.vulnerabilities && dep.vulnerabilities.vulnerabilities ? `
                                                 <div style="margin-top: 12px;">
-                                                    <strong>Найденные CVE (${dep.vulnerabilities.vulnerabilities.length}):</strong>
+                                                    <strong>Found CVE (${dep.vulnerabilities.vulnerabilities.length}):</strong>
                                                     <div style="max-height: 300px; overflow-y: auto; margin-top: 8px;">
                                                         ${dep.vulnerabilities.vulnerabilities.map(v => `
                                                             <div style="padding: 6px 0; border-bottom: 1px solid #e2e8f0;">
@@ -286,9 +273,7 @@ export function generateDependenciesHTML(report) {
         `;
     }
     
-    // Добавляем обработчики раскрытия и фильтрации
     setTimeout(() => {
-        // Обработчики раскрытия
         const rows = document.querySelectorAll('.dep-row');
         rows.forEach(row => {
             row.onclick = (e) => {
@@ -306,7 +291,6 @@ export function generateDependenciesHTML(report) {
             };
         });
         
-        // Обработчики фильтрации
         let activeFilter = 'all';
         const searchInput = document.getElementById('vulnSearch');
         const filterBtns = document.querySelectorAll('.filter-btn');
@@ -371,13 +355,11 @@ function generateCodeHTML(report) {
         return `
             <div class="empty-state">
                 <i class="fas fa-check-circle"></i>
-                <h3>Проблем не найдено</h3>
-                <p>SAST анализ не выявил уязвимостей в коде</p>
+                <h3>No issues found</h3>
+                <p>SAST analysis did not find any vulnerabilities in the code</p>
             </div>
         `;
     }
-
-    // ========== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ==========
     
     function getSeverityColorStatic(severity) {
         switch(severity) {
@@ -411,7 +393,6 @@ function generateCodeHTML(report) {
         return path;
     }
 
-    // Получение уникальных правил для фильтра
     function getUniqueRules(issuesList) {
         const rules = new Set();
         issuesList.forEach(issue => {
@@ -421,7 +402,6 @@ function generateCodeHTML(report) {
         return Array.from(rules).sort();
     }
 
-    // Функция проверки test/mock файлов
     function isTestMockFile(filePath) {
         if (!filePath) return false;
         const lowerPath = filePath.toLowerCase();
@@ -429,7 +409,6 @@ function generateCodeHTML(report) {
         return patterns.some(p => lowerPath.includes(p));
     }
 
-    // Нормализация путей файлов
     const normalizedIssues = issues.map((issue, index) => {
         const fullPath = issue.file || 'unknown';
         return {
@@ -441,7 +420,6 @@ function generateCodeHTML(report) {
         };
     });
 
-    // Подсчет статистики
     const statistics = {
         critical: normalizedIssues.filter(i => i.severity === 'CRITICAL').length,
         high: normalizedIssues.filter(i => i.severity === 'HIGH').length,
@@ -453,7 +431,6 @@ function generateCodeHTML(report) {
 
     const uniqueId = 'sast-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 
-    // Функция рендера строк таблицы
     function renderSastTableRowsInline(issuesList, uid) {
         if (!issuesList.length) return '';
         
@@ -462,7 +439,7 @@ function generateCodeHTML(report) {
             const issue = issuesList[i];
             const severityColor = getSeverityColorStatic(issue.severity);
             const ruleName = issue.ruleId || issue.rule || 'unknown';
-            const message = (issue.message || 'Нет описания').substring(0, 80);
+            const message = (issue.message || 'No description').substring(0, 80);
             const file = issue.file;
             const fullPath = issue.fullPath;
             const line = issue.line || '?';
@@ -503,18 +480,18 @@ function generateCodeHTML(report) {
                                 </span>
                             </div>
                             <div style="margin-bottom: 12px;">
-                                <strong>Описание:</strong>
-                                <p style="margin-top: 4px; color: #334155;">${escapeHtmlStatic(issue.message || 'Нет описания')}</p>
+                                <strong>Description:</strong>
+                                <p style="margin-top: 4px; color: #334155;">${escapeHtmlStatic(issue.message || 'No description')}</p>
                             </div>
                             <div style="margin-bottom: 12px;">
-                                <strong>Расположение:</strong>
+                                <strong>Location:</strong>
                                 <div style="margin-top: 4px; font-family: monospace; font-size: 12px; background: #f1f5f9; padding: 6px 10px; border-radius: 4px;">
                                     ${escapeHtmlStatic(fullPath)}:${line}
                                 </div>
                             </div>
                             ${codeBlock && codeBlock.lines ? `
                                 <div style="margin-bottom: 12px;">
-                                    <strong>Блок кода:</strong>
+                                    <strong>Code block:</strong>
                                     <pre style="margin-top: 8px; background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px;">${codeBlock.lines.map(function(l) {
                                         const prefix = l.isVulnerable ? '→' : ' ';
                                         const lineNum = String(l.number).padStart(4, ' ');
@@ -524,13 +501,13 @@ function generateCodeHTML(report) {
                                 </div>
                             ` : issue.snippet ? `
                                 <div style="margin-bottom: 12px;">
-                                    <strong>Фрагмент кода:</strong>
+                                    <strong>Code snippet:</strong>
                                     <pre style="margin-top: 8px; background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px;">${escapeHtmlStatic(issue.snippet)}</pre>
                                 </div>
                             ` : ''}
                             ${issue.recommendation ? `
                                 <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px;">
-                                    <strong><i class="fas fa-lightbulb"></i> Рекомендация:</strong>
+                                    <strong><i class="fas fa-lightbulb"></i> Recommendation:</strong>
                                     <p style="margin-top: 4px; color: #1e40af;">${escapeHtmlStatic(issue.recommendation)}</p>
                                 </div>
                             ` : ''}
@@ -542,35 +519,34 @@ function generateCodeHTML(report) {
         return html;
     }
 
-    // ========== МОДАЛЬНОЕ ОКНО ФИЛЬТРОВ ==========
     const filterModalHtml = `
             <div id="sast-filter-modal-${uniqueId}" class="sast-modal-overlay">
                 <div class="sast-modal">
                     <div class="sast-modal-header">
-                        <h3><i class="fas fa-sliders-h"></i>Расширенные фильтры</h3>
+                        <h3><i class="fas fa-sliders-h"></i>Advanced Filters</h3>
                         <button class="sast-modal-close">&times;</button>
                     </div>
                     <div class="sast-modal-body">
                         <div class="sast-filter-group">
                             <label class="sast-checkbox-label">
                                 <input type="checkbox" id="sast-exclude-test-mock-${uniqueId}">
-                                <span>Исключить test/mock файлы</span>
+                                <span>Exclude test/mock files</span>
                             </label>
                             <div class="sast-filter-hint">
-                                исключает файлы содержащие: test, mock, spec, fixture, __tests__, и т.д.
+                                excludes files containing: test, mock, spec, fixture, __tests__, etc.
                             </div>
                         </div>
                         <div class="sast-filter-group">
-                            <label>Фильтр по правилу:</label>
+                            <label>Filter by rule:</label>
                             <select id="sast-rule-filter-${uniqueId}" class="sast-select">
-                                <option value="all">Все правила</option>
+                                <option value="all">All rules</option>
                                 ${getUniqueRules(normalizedIssues).map(rule => `<option value="${escapeHtmlStatic(rule)}">${escapeHtmlStatic(rule)}</option>`).join('')}
                             </select>
                         </div>
                     </div>
                     <div class="sast-modal-footer">
-                        <button class="sast-btn sast-btn-secondary sast-filter-reset">Сбросить</button>
-                        <button class="sast-btn sast-btn-primary sast-filter-apply">Применить</button>
+                        <button class="sast-btn sast-btn-secondary sast-filter-reset">Reset</button>
+                        <button class="sast-btn sast-btn-primary sast-filter-apply">Apply</button>
                     </div>
                 </div>
             </div>
@@ -578,14 +554,12 @@ function generateCodeHTML(report) {
 
     const filterBarHtml = `
 <button id="sast-filter-btn-${uniqueId}" class="sast-filter-btn-ext">
-    <i class="fas fa-sliders-h"></i> Расширенные фильтры
+    <i class="fas fa-sliders-h"></i> Advanced Filters
 </button>
 `;
 
-    // Генерируем HTML
     let html = `
         <div id="${uniqueId}" class="sast-container">
-            <!-- Статистика -->
             <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
                 <div style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
                     <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${statistics.critical}</div>
@@ -609,11 +583,10 @@ function generateCodeHTML(report) {
                 </div>
             </div>
             
-            <!-- Фильтры -->
             <div class="sast-filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-                <input type="text" id="sast-search-${uniqueId}" placeholder="Поиск по файлу, правилу или описанию..." class="sast-search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px;">
+                <input type="text" id="sast-search-${uniqueId}" placeholder="Search by file, rule or description..." class="sast-search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px;">
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="sast-filter-btn active" data-filter="all">Все (${statistics.total})</button>
+                    <button class="sast-filter-btn active" data-filter="all">All (${statistics.total})</button>
                     <button class="sast-filter-btn" data-filter="critical">Critical (${statistics.critical})</button>
                     <button class="sast-filter-btn" data-filter="high">High (${statistics.high})</button>
                     <button class="sast-filter-btn" data-filter="medium">Medium (${statistics.medium})</button>
@@ -625,17 +598,16 @@ function generateCodeHTML(report) {
             
             ${filterModalHtml}
             
-            <!-- Таблица -->
             <div style="overflow-x: auto;">
                 <table class="sast-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <thead>
                         <tr style="background: #f1f5f9;">
                             <th style="width: 30px; padding: 10px;"></th>
-                            <th style="padding: 10px; text-align: left;">Уровень</th>
-                            <th style="padding: 10px; text-align: left;">Правило</th>
-                            <th style="padding: 10px; text-align: left;">Описание</th>
-                            <th style="padding: 10px; text-align: left;">Файл</th>
-                            <th style="padding: 10px; text-align: center;">Строка</th>
+                            <th style="padding: 10px; text-align: left;">Severity</th>
+                            <th style="padding: 10px; text-align: left;">Rule</th>
+                            <th style="padding: 10px; text-align: left;">Description</th>
+                            <th style="padding: 10px; text-align: left;">File</th>
+                            <th style="padding: 10px; text-align: center;">Line</th>
                         </tr>
                     </thead>
                     <tbody id="sast-table-body-${uniqueId}">
@@ -646,12 +618,10 @@ function generateCodeHTML(report) {
         </div>
     `;
     
-    // Добавляем обработчики через setTimeout
     setTimeout(() => {
         const container = document.getElementById(uniqueId);
         if (!container) return;
         
-        // Обработчики раскрытия
         const rows = container.querySelectorAll('.sast-row');
         rows.forEach(row => {
             const expandIcon = row.querySelector('.sast-expand-icon');
@@ -683,7 +653,6 @@ function generateCodeHTML(report) {
             };
         });
         
-        // Фильтрация по severity и поиску
         const searchInputElem = container.querySelector('.sast-search-box');
         const filterBtnsElem = container.querySelectorAll('.sast-filter-btn');
         let activeFilter = 'all';
@@ -735,10 +704,9 @@ function generateCodeHTML(report) {
             searchInputElem.oninput = filterRows;
         }
         
-        // Модальное окно
         const filterBtn = document.getElementById(`sast-filter-btn-${uniqueId}`);
         const modal = document.getElementById(`sast-filter-modal-${uniqueId}`);
-        const closeBtn = modal?.querySelector('.sast-filter-close');
+        const closeBtn = modal?.querySelector('.sast-modal-close');
         const applyBtn = modal?.querySelector('.sast-filter-apply');
         const resetBtn = modal?.querySelector('.sast-filter-reset');
         const excludeTestMockCheckbox = document.getElementById(`sast-exclude-test-mock-${uniqueId}`);
@@ -753,12 +721,10 @@ function generateCodeHTML(report) {
             };
         }
         
-        // Закрыть по крестику
             modal.querySelector('.sast-modal-close').onclick = () => {
                 modal.style.display = 'none';
             };
 
-            // Закрыть по клику вне окна
             modal.onclick = (e) => {
                 if (e.target === modal) modal.style.display = 'none';
             };
@@ -818,9 +784,7 @@ function generateCodeHTML(report) {
     return html;
 }
 
-// Генерация сводки (Summary)
 function generateSummaryHTML(report) {
-    // SCA статистика
     const scaStats = report.sca?.statistics || {};
     const scaVulnerabilities = report.sca?.vulnerabilities || [];
     const reachability = report.sca?.reachability || {};
@@ -830,7 +794,6 @@ function generateSummaryHTML(report) {
     const scaMedium = scaVulnerabilities.filter(v => v.severity === 'medium').length;
     const scaLow = scaVulnerabilities.filter(v => v.severity === 'low').length;
 
-    // SAST статистика
     const sastIssues = report.sast?.issues || [];
     const sastStats = report.sast?.statistics || {};
 
@@ -839,37 +802,33 @@ function generateSummaryHTML(report) {
     const sastMedium = sastIssues.filter(i => (i.severity || '').toUpperCase() === 'MEDIUM' || i.severity === 'medium').length;
     const sastLow = sastIssues.filter(i => (i.severity || '').toUpperCase() === 'LOW' || i.severity === 'low').length;
 
-    // Общая статистика
     const totalCritical = scaCritical + sastCritical;
     const totalHigh = scaHigh + sastHigh;
 
     return `
-        <!-- Основные метрики -->
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
             <div class="stat-card" style="background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
                 <div class="stat-number" style="font-size: 32px; font-weight: bold; color: #667eea;">${scaStats.totalDependencies || 0}</div>
-                <div class="stat-label" style="font-size: 12px; color: #64748b;">Зависимостей</div>
+                <div class="stat-label" style="font-size: 12px; color: #64748b;">Dependencies</div>
             </div>
             <div class="stat-card" style="background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
                 <div class="stat-number" style="font-size: 32px; font-weight: bold; color: #667eea;">${sastIssues.length}</div>
-                <div class="stat-label" style="font-size: 12px; color: #64748b;">SAST проблем</div>
+                <div class="stat-label" style="font-size: 12px; color: #64748b;">SAST issues</div>
             </div>
         </div>
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
             <div style="color: white; text-align: center;">
-                <div style="font-size: 14px; opacity: 0.9;">Общий риск</div>
+                <div style="font-size: 14px; opacity: 0.9;">Overall risk</div>
                 <div style="font-size: 36px; font-weight: 700;">${totalCritical + totalHigh}</div>
-                <div style="font-size: 12px; opacity: 0.8;">критических и высоких уязвимостей</div>
+                <div style="font-size: 12px; opacity: 0.8;">critical and high vulnerabilities</div>
             </div>
         </div>
-        <!-- Сводка по критическим и высоким уязвимостям -->
         <div style="margin-bottom: 24px;">
-            <h3 style="margin-bottom: 16px; font-size: 18px;">Критические и высокие уязвимости</h3>
+            <h3 style="margin-bottom: 16px; font-size: 18px;">Critical and High Vulnerabilities</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <!-- SCA блок -->
                 <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
                     <div style="padding: 12px 16px; background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%); color: white; font-weight: 600;">
-                        Композиционный анализ
+                        Composition Analysis
                     </div>
                     <div style="padding: 16px;">
                         <div style="display: flex; gap: 16px; margin-bottom: 16px;">
@@ -893,10 +852,9 @@ function generateSummaryHTML(report) {
                     </div>
                 </div>
                 
-                <!-- SAST блок -->
                 <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
                     <div style="padding: 12px 16px; background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%); color: white; font-weight: 600;">
-                        Анализ исходного кода
+                        Source Code Analysis
                     </div>
                     <div style="padding: 16px;">
                         <div style="display: flex; gap: 16px; margin-bottom: 16px;">
@@ -926,25 +884,25 @@ function generateSummaryHTML(report) {
 
 function generateHTMLReport(report) {
     if (!report) {
-        return '<html><body><h1>Нет данных</h1></body></html>';
+        return '<html><body><h1>No data</h1></body></html>';
     }
 
-    // Берем готовые компоненты
     const summaryHtml = generateSummaryHTML(report);
     const scaHtml = generateDependenciesHTML(report);
     const sastHtml = generateCodeHTML(report);
 
     return `<!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Геркулес | Блендер - Отчет о безопасности</title>
+    <title>Hercules | Blender - Security Report</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
      * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; color: #0f172a; }
+body { font-family: 'Fira Sans', sans-serif; background: #f5f5f5; padding: 24px; color: #0f172a; }
 
 :root {
     --primary-color: #2563eb;
@@ -995,7 +953,7 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.2s;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .report-tab:hover { color: var(--accent-color); }
@@ -1022,25 +980,25 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
     text-align: center;
     font-size: 12px;
     color: var(--text-secondary);
+    font-family: 'Fira Sans', sans-serif;
 }
 
-/* ==================== SCA СТИЛИ ==================== */
 .vuln-stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
 .summary-card { flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s; }
 .summary-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.card-value { font-size: 28px; font-weight: 700; }
-.card-label { font-size: 12px; color: #64748b; }
+.card-value { font-size: 28px; font-weight: 700; font-family: 'Fira Code', monospace; }
+.card-label { font-size: 12px; color: #64748b; font-family: 'Fira Sans', sans-serif; }
 
 .filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-.search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 13px; }
+.search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 13px; font-family: 'Fira Sans', sans-serif; }
 .search-box:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
-.filter-btn { font-family: 'Ubuntu'; padding: 6px 14px; background: #f1f5f9; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+.filter-btn { font-family: 'Fira Sans', sans-serif; padding: 6px 14px; background: #f1f5f9; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
 .filter-btn:hover { background: #e2e8f0; }
 .filter-btn.active { background: #667eea; color: white; }
 
 .dep-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.dep-table th { background: #f1f5f9; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #e2e8f0; }
-.dep-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+.dep-table th { background: #f1f5f9; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #e2e8f0; font-family: 'Fira Sans', sans-serif; }
+.dep-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; font-family: 'Fira Sans', sans-serif; }
 .dep-row { cursor: pointer; transition: background 0.2s; }
 .dep-row:hover { background: #f8fafc; }
 .expand-icon { transition: transform 0.2s; display: inline-block; width: 20px; text-align: center; font-size: 12px; color: #667eea; cursor: pointer; }
@@ -1048,11 +1006,10 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
 .dep-details-row { display: none; background: #f8fafc; }
 .dep-details-row.show { display: table-row; }
 
-.reachable-yes { background: #fee2e2; color: #dc2626; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
-.reachable-no { background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
-.reachable-unknown { background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 12px; font-size: 11px; }
+.reachable-yes { background: #fee2e2; color: #dc2626; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: 'Fira Sans', sans-serif; }
+.reachable-no { background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: 'Fira Sans', sans-serif; }
+.reachable-unknown { background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: 'Fira Sans', sans-serif; }
 
-/* ==================== SAST СТИЛИ ==================== */
 .sast-container { width: 100%; }
 .sast-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .sast-row { cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #e2e8f0; }
@@ -1063,15 +1020,14 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
 .sast-expand-icon:hover { color: #2563eb; }
 
 .sast-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-.sast-filter-btn { font-family: 'Ubuntu'; padding: 6px 14px; background: #f1f5f9; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
+.sast-filter-btn { font-family: 'Fira Sans', sans-serif; padding: 6px 14px; background: #f1f5f9; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
 .sast-filter-btn:hover { background: #e2e8f0; }
 .sast-filter-btn.active { background: #667eea; color: white; }
-.sast-filter-btn-ext { padding: 6px 14px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+.sast-filter-btn-ext { padding: 6px 14px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; font-family: 'Fira Sans', sans-serif; }
 .sast-filter-btn-ext:hover { background: #667eea; color: white; border-color: #667eea; }
-.sast-search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 13px; }
+.sast-search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 13px; font-family: 'Fira Sans', sans-serif; }
 .sast-search-box:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
 
-/* Модальное окно SAST */
 .sast-modal-overlay {
     position: fixed;
     top: 0;
@@ -1087,26 +1043,25 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
 }
 .sast-modal-overlay.active { display: flex; }
 .sast-modal { background: white; border-radius: 16px; width: 450px; max-width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-.sast-modal-header { font-family: 'Ubuntu'; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; }
+.sast-modal-header { font-family: 'Fira Sans', sans-serif; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; }
 .sast-modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; }
-.sast-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; padding: 0 8px; font-family: 'Ubuntu';}
+.sast-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; padding: 0 8px; font-family: 'Fira Sans', sans-serif;}
 .sast-modal-close:hover { color: #0f172a; }
 .sast-modal-body { padding: 24px; }
 .sast-filter-group { margin-bottom: 24px; }
-.sast-filter-group label { display: block; margin-bottom: 8px; font-weight: 500; }
+.sast-filter-group label { display: block; margin-bottom: 8px; font-weight: 500; font-family: 'Fira Sans', sans-serif; }
 .sast-checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
 .sast-checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
-.sast-filter-hint { font-size: 11px; color: #64748b; margin-top: 5px; margin-left: 28px; }
-.sast-select { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; background: white; cursor: pointer; }
+.sast-filter-hint { font-size: 11px; color: #64748b; margin-top: 5px; margin-left: 28px; font-family: 'Fira Sans', sans-serif; }
+.sast-select { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; background: white; cursor: pointer; font-family: 'Fira Sans', sans-serif; }
 .sast-select:focus { outline: none; border-color: #667eea; }
 .sast-modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid #e2e8f0; }
-.sast-btn {font-family: 'Ubuntu'; padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; }
+.sast-btn {font-family: 'Fira Sans', sans-serif; padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; }
 .sast-btn-secondary { background: #f1f5f9; color: #475569; }
 .sast-btn-secondary:hover { background: #e2e8f0; }
 .sast-btn-primary { background: #667eea; color: white; }
 .sast-btn-primary:hover { background: #5a67d8; transform: translateY(-1px); }
 
-/* ==================== EMPTY STATE ==================== */
 .empty-state {
     text-align: center;
     padding: 60px 24px;
@@ -1127,14 +1082,15 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
     font-weight: 600;
     color: var(--text-primary, #0f172a);
     margin-bottom: 8px;
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .empty-state p {
     font-size: 14px;
     color: var(--text-secondary, #64748b);
+    font-family: 'Fira Sans', sans-serif;
 }
 
-/* Адаптивность для empty state */
 @media (max-width: 768px) {
     .empty-state {
         padding: 40px 20px;
@@ -1153,15 +1109,13 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
     }
 }
 
-/* ==================== БЕЙДЖИ ==================== */
-.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; font-family: 'Fira Sans', sans-serif; }
 .badge-critical { background: #fee2e2; color: #dc2626; }
 .badge-high { background: #ffedd5; color: #f97316; }
 .badge-medium { background: #fef9c3; color: #ca8a04; }
 .badge-low { background: #dcfce7; color: #16a34a; }
 .badge-info { background: #dbeafe; color: #3b82f6; }
 
-/* ==================== АДАПТИВНОСТЬ ==================== */
 @media (max-width: 768px) {
     body { padding: 12px; }
     .report-header { padding: 24px; }
@@ -1184,16 +1138,16 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
     <div class="report-container">
         <div class="report-header">
             <h1>    
-                Геркулес | Блендер
+                Hercules | Blender
             </h1>
-            <p>Комплексный анализ безопасности</p>
+            <p>Comprehensive security analysis</p>
             <div class="report-meta">
                 <span>${new Date().toLocaleString()}</span>
             </div>
         </div>
         
         <div class="report-tabs">
-            <button class="report-tab active" data-tab="summary">Сводка</button>
+            <button class="report-tab active" data-tab="summary">Summary</button>
             <button class="report-tab" data-tab="sca">SCA (${report.sca?.vulnerabilities?.length || 0})</button>
             <button class="report-tab" data-tab="sast">SAST (${report.sast?.issues?.length || 0})</button>
         </div>
@@ -1211,12 +1165,11 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         </div>
         
         <div class="report-footer">
-            <p>Сгенерировано с помощью Геркулес | Блендер </p>
+            <p>Generated with Hercules | Blender</p>
         </div>
     </div>
     
     <script>
-    // Переключение табов
     const tabs = document.querySelectorAll('.report-tab');
     const panes = document.querySelectorAll('.tab-pane');
     
@@ -1230,7 +1183,6 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         });
     });
     
-    // ==================== РАСКРЫТИЕ СТРОК SCA ====================
     document.querySelectorAll('.dep-row').forEach(row => {
         const icon = row.querySelector('.expand-icon');
         const details = row.nextElementSibling;
@@ -1258,7 +1210,6 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         };
     });
     
-    // ==================== РАСКРЫТИЕ СТРОК SAST ====================
     document.querySelectorAll('.sast-row').forEach(row => {
         const icon = row.querySelector('.sast-expand-icon');
         const details = row.nextElementSibling;
@@ -1286,22 +1237,19 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         };
     });
     
-    // ==================== ФИЛЬТР SCA ====================
     const scaSearch = document.getElementById('vulnSearch');
     const scaBtns = document.querySelectorAll('#tab-sca .filter-btn');
     let currentScaFilter = 'all';
     let currentScaReachable = false;
     
     function getScaSeverityFromRow(row) {
-        // Ищем бейдж с классом reachable-yes, reachable-no, reachable-unknown
         const reachableSpan = row.querySelector('.reachable-yes, .reachable-no, .reachable-unknown');
         if (reachableSpan) {
             const text = reachableSpan.innerText.toLowerCase();
-            if (text === 'да') return 'high'; // Достижимые обычно high
-            if (text === 'нет') return 'low';
+            if (text === 'yes') return 'high';
+            if (text === 'no') return 'low';
         }
         
-        // Ищем по цветным бейджам в колонке Уязвимости
         const vulnSpan = row.querySelector('td:nth-child(5) span');
         if (vulnSpan) {
             const classes = vulnSpan.className;
@@ -1319,15 +1267,12 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         const rows = document.querySelectorAll('#sca-table tbody tr.dep-row');
         
         rows.forEach(row => {
-            // Получаем severity из строки
             let severity = getScaSeverityFromRow(row);
             
-            // Получаем название компонента
             const componentCell = row.querySelector('td:first-child strong, td:first-child');
             let component = componentCell ? componentCell.innerText.toLowerCase() : '';
             component = component.replace(/dev/, '').trim();
             
-            // Достижимость
             const reachable = row.getAttribute('data-reachable') === 'true';
             
             let show = true;
@@ -1381,7 +1326,6 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         scaSearch.oninput = filterSca;
     }
     
-    // ==================== ФИЛЬТР SAST ====================
     const sastSearch = document.querySelector('#tab-sast .sast-search-box');
     const sastBtns = document.querySelectorAll('#tab-sast .sast-filter-btn');
     let currentSastFilter = 'all';
@@ -1433,7 +1377,6 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         sastSearch.oninput = filterSast;
     }
     
-    // ==================== РАСШИРЕННЫЕ ФИЛЬТРЫ SAST ====================
     const filterBtn = document.querySelector('#tab-sast .sast-filter-btn-ext');
     const modal = document.querySelector('#tab-sast .sast-modal-overlay');
     const excludeCheckbox = document.querySelector('#tab-sast .sast-checkbox-label input');
@@ -1495,7 +1438,6 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
         };
     }
     
-    // Запуск фильтров при загрузке
     setTimeout(() => {
         filterSca();
         filterSast();
@@ -1506,55 +1448,53 @@ body { font-family: 'Ubuntu', sans-serif; background: #f5f5f5; padding: 24px; co
 </html>`;
 }
 
-// Функции для обновления прогресса
-    function updateOverallProgress(percent) {
-        const overallProgress = document.getElementById('overallProgress');
-        const overallPercent = document.getElementById('overallPercent');
-        if (overallProgress) {
-            overallProgress.style.width = `${percent}%`;
-        }
-        if (overallPercent) {
-            overallPercent.textContent = `${percent}%`;
+function updateOverallProgress(percent) {
+    const overallProgress = document.getElementById('overallProgress');
+    const overallPercent = document.getElementById('overallPercent');
+    if (overallProgress) {
+        overallProgress.style.width = `${percent}%`;
+    }
+    if (overallPercent) {
+        overallPercent.textContent = `${percent}%`;
+    }
+}
+
+function updateThermometerFill(percent) {
+    const fill = document.getElementById('thermometerFill');
+    if (fill) {
+        fill.style.width = `${percent}%`;
+    }
+}
+
+function updateStepStatus(step, status) {
+    const dot = document.getElementById(`markDot${step}`);
+    const label = document.getElementById(`markLabel${step}`);
+
+    if (dot) {
+        dot.classList.remove('completed', 'active');
+        if (status === 'completed') {
+            dot.classList.add('completed');
+        } else if (status === 'active') {
+            dot.classList.add('active');
         }
     }
 
-    function updateThermometerFill(percent) {
-        const fill = document.getElementById('thermometerFill');
-        if (fill) {
-            fill.style.width = `${percent}%`;
+    if (label) {
+        label.classList.remove('completed', 'active');
+        if (status === 'completed') {
+            label.classList.add('completed');
+        } else if (status === 'active') {
+            label.classList.add('active');
         }
     }
+}
 
-    function updateStepStatus(step, status) {
-        const dot = document.getElementById(`markDot${step}`);
-        const label = document.getElementById(`markLabel${step}`);
-
-        if (dot) {
-            dot.classList.remove('completed', 'active');
-            if (status === 'completed') {
-                dot.classList.add('completed');
-            } else if (status === 'active') {
-                dot.classList.add('active');
-            }
-        }
-
-        if (label) {
-            label.classList.remove('completed', 'active');
-            if (status === 'completed') {
-                label.classList.add('completed');
-            } else if (status === 'active') {
-                label.classList.add('active');
-            }
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    const activateBtn = document.getElementById('activateLicenseBtn');
+    if (activateBtn) {
+        activateBtn.onclick = activateLicense;
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        const activateBtn = document.getElementById('activateLicenseBtn');
-        if (activateBtn) {
-            activateBtn.onclick = activateLicense;
-        }
-
-    });
+});
 
 export {
     formatBytes,
