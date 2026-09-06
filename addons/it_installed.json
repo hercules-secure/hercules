@@ -1,0 +1,713 @@
+[
+  {
+    "id": "sca",
+    "name": "Dependency",
+    "version": "1.0.0",
+    "shortDesc": "Analisi della composizione del software",
+    "description": "Analisi delle dipendenze, sicurezza della supply chain e generazione di SBOM per progetti software moderni",
+    "icon": "fas fa-sitemap",
+    "url": "/sca",
+    "router": "./addons/sca/router.js",
+    "webhookEndpoint": "/api/sca/git",
+    "ui": "./ui/sca/sca.html",
+    "order": 1,
+    "free": true,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-shield-alt",
+          "iconColor": "#EF4444",
+          "name": "Scoperta vulnerabilità"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "Analisi versioni"
+        },
+        {
+          "icon": "fas fa-file-export",
+          "iconColor": "#06B6D4",
+          "name": "Esportazione SBOM (CycloneDX/SPDX)"
+        }
+      ],
+      "ecosystems": [
+        {
+          "icon": "fab fa-npm",
+          "iconColor": "#CB3837",
+          "name": "npm (Node.js)"
+        },
+        {
+          "icon": "fab fa-yarn",
+          "iconColor": "#2C8EBB",
+          "name": "Yarn"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "PyPI (Python)"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go Modules"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "Composer (PHP)"
+        },
+        {
+          "icon": "fas fa-box",
+          "iconColor": "#6B7280",
+          "name": "NuGet (.NET)"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Maven (Java)"
+        },
+        {
+          "icon": "fab fa-android",
+          "iconColor": "#3DDC84",
+          "name": "Gradle"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fab fa-github",
+          "iconColor": "#000000",
+          "name": "GitHub"
+        },
+        {
+          "icon": "fab fa-gitlab",
+          "iconColor": "#fc6d26",
+          "name": "GitLab"
+        },
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Archivio (ZIP/TAR/GZ)"
+        },
+        {
+          "icon": "fas fa-folder-open",
+          "iconColor": "#8e9016",
+          "name": "Progetto locale"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        }
+      ]
+    }
+  },
+  {
+    "id": "sast",
+    "name": "Supervisore",
+    "version": "1.0.0",
+    "shortDesc": "Analisi statica del codice sorgente",
+    "description": "Analisi approfondita della sicurezza del codice sorgente — trova vulnerabilità, segreti e falle di sicurezza prima che arrivino in produzione",
+    "icon": "fas fa-code",
+    "url": "/sast",
+    "webhookEndpoint": "/api/sast/git",
+    "router": "./addons/sast/router.js",
+    "ui": "./ui/sast/sast.html",
+    "order": 2,
+    "free": true,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-shield-alt",
+          "iconColor": "#3B82F6",
+          "name": "Rilevazione vulnerabilità e debolezze"
+        },
+        {
+          "icon": "fas fa-key",
+          "iconColor": "#F59E0B",
+          "name": "Scoperta segreti e credenziali"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#667eea",
+          "name": "Analisi del flusso dei dati"
+        },
+        {
+          "icon": "fas fa-crosshairs",
+          "iconColor": "#EC4899",
+          "name": "Analisi dei dati contaminati (Taint)"
+        }
+      ],
+      "languages": [
+        {
+          "icon": "fab fa-js",
+          "iconColor": "#F7DF1E",
+          "name": "JavaScript"
+        },
+        {
+          "icon": "fab fa-js",
+          "iconColor": "#3178C6",
+          "name": "TypeScript"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "Python"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "PHP"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Java"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go"
+        },
+        {
+          "icon": "fab fa-docker",
+          "iconColor": "#2496ED",
+          "name": "Dockerfile"
+        },
+        {
+          "icon": "fas fa-cloud",
+          "iconColor": "#7B42BC",
+          "name": "Terraform"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fab fa-github",
+          "iconColor": "#000000",
+          "name": "GitHub"
+        },
+        {
+          "icon": "fab fa-gitlab",
+          "iconColor": "#fc6d26",
+          "name": "GitLab"
+        },
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Archivio (ZIP/TAR/GZ)"
+        },
+        {
+          "icon": "fas fa-folder-open",
+          "iconColor": "#8e9016",
+          "name": "Progetto locale"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        }
+      ]
+    }
+  },
+  {
+    "id": "fuzz",
+    "name": "Baba Yaga",
+    "version": "1.0.0",
+    "shortDesc": "Test dinamici e fuzzing",
+    "description": "Potente motore di fuzzing dinamico per applicazioni, servizi web e API — trova crash, casi limite e falle di sicurezza",
+    "icon": "fas fa-radiation",
+    "url": "/fuzz",
+    "router": "./addons/fuzz/router.js",
+    "ui": "./ui/fuzz/fuzz.html",
+    "order": 3,
+    "free": false,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "Analisi sicurezza API"
+        },
+        {
+          "icon": "fas fa-plug",
+          "iconColor": "#3B82F6",
+          "name": "Generazione automatica di test"
+        }
+      ],
+      "protocols": [
+        {
+          "icon": "fas fa-globe",
+          "iconColor": "#3B82F6",
+          "name": "REST API (HTTP/1.1, HTTP/2)"
+        },
+        {
+          "icon": "fas fa-exchange-alt",
+          "iconColor": "#F59E0B",
+          "name": "gRPC (HTTP/2, Protobuf)"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "GraphQL"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#8B5CF6",
+          "name": "SOAP / XML-RPC"
+        },
+        {
+          "icon": "fas fa-network-wired",
+          "iconColor": "#22C55E",
+          "name": "JSON-RPC 2.0"
+        },
+        {
+          "icon": "fas fa-bolt",
+          "iconColor": "#F59E0B",
+          "name": "WebSocket"
+        }
+      ],
+      "specifications": [
+        {
+          "icon": "fas fa-file-alt",
+          "iconColor": "#85EA2D",
+          "name": "OpenAPI / Swagger"
+        },
+        {
+          "icon": "fas fa-project-diagram",
+          "iconColor": "#E10098",
+          "name": "Schema GraphQL"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#8B5CF6",
+          "name": "SOAP / WSDL"
+        },
+        {
+          "icon": "fas fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "gRPC / Protobuf"
+        },
+        {
+          "icon": "fas fa-network-wired",
+          "iconColor": "#22C55E",
+          "name": "AsyncAPI"
+        },
+        {
+          "icon": "fas fa-bolt",
+          "iconColor": "#F59E0B",
+          "name": "WebSocket"
+        },
+        {
+          "icon": "fas fa-exchange-alt",
+          "iconColor": "#F59E0B",
+          "name": "JSON-RPC 2.0"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "File locale"
+        },
+        {
+          "icon": "fas fa-link",
+          "iconColor": "#3B82F6",
+          "name": "URL"
+        }
+      ],
+      "modes": [
+        {
+          "icon": "fas fa-house",
+          "iconColor": "black",
+          "name": "Domovoy",
+          "badge": "bianco",
+          "badgeColor": "#d4edda",
+          "badgeTextColor": "#155724"
+        },
+        {
+          "icon": "fas fa-radiation",
+          "iconColor": "black",
+          "name": "Scopa",
+          "badge": "nero",
+          "badgeColor": "#f8d7da",
+          "badgeTextColor": "#721c24"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        }
+      ]
+    }
+  },
+  {
+    "id": "blender",
+    "name": "Blender",
+    "version": "1.0.0",
+    "shortDesc": "Analisi di sicurezza unificata",
+    "description": "Analizzatore di sicurezza all-in-one che combina SCA e SAST — trova vulnerabilità nel codice e nelle dipendenze da un'unica interfaccia",
+    "icon": "fas fa-flask",
+    "url": "/blender",
+    "webhookEndpoint": "/api/blender/analyze/git",
+    "router": "./addons/blender/router.js",
+    "ui": "./ui/blender/blender.html",
+    "order": 4,
+    "free": false,
+    "features": {
+      "sca": [
+        {
+          "icon": "fas fa-chart-pie",
+          "iconColor": "#F59E0B",
+          "name": "Statistiche dipendenze"
+        },
+        {
+          "icon": "fas fa-gavel",
+          "iconColor": "#8B5CF6",
+          "name": "Conformità licenze"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#667eea",
+          "name": "Analisi raggiungibilità"
+        },
+        {
+          "icon": "fas fa-plug",
+          "iconColor": "#06B6D4",
+          "name": "Integrazione CI/CD"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#10B981",
+          "name": "Analisi versioni"
+        }
+      ],
+      "sast": [
+        {
+          "icon": "fas fa-shield-alt",
+          "iconColor": "#EF4444",
+          "name": "Rilevazione vulnerabilità e debolezze"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#667eea",
+          "name": "Analisi raggiungibilità"
+        },
+        {
+          "icon": "fas fa-diagram-project",
+          "iconColor": "#DC2626",
+          "name": "Analisi flusso dati"
+        },
+        {
+          "icon": "fas fa-chart-line",
+          "iconColor": "#06B6D4",
+          "name": "Analisi call graph"
+        },
+        {
+          "icon": "fas fa-crosshairs",
+          "iconColor": "#EC4899",
+          "name": "Analisi Taint (dati contaminati)"
+        },
+        {
+          "icon": "fas fa-key",
+          "iconColor": "#F59E0B",
+          "name": "Scoperta segreti"
+        }
+      ],
+      "languages": [
+        {
+          "icon": "fab fa-js",
+          "iconColor": "#F7DF1E",
+          "name": "JavaScript/TypeScript"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "Python"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Java"
+        },
+        {
+          "icon": "fas fa-file-alt",
+          "iconColor": "#6B7280",
+          "name": "YAML"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "PHP"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#00599C",
+          "name": "C/C++"
+        },
+        {
+          "icon": "fas fa-cloud",
+          "iconColor": "#7B42BC",
+          "name": "Terraform"
+        },
+        {
+          "icon": "fab fa-docker",
+          "iconColor": "#2496ED",
+          "name": "Dockerfile"
+        },
+        {
+          "icon": "fab fa-rust",
+          "iconColor": "#DEA584",
+          "name": "Rust"
+        }
+      ],
+      "ecosystems": [
+        {
+          "icon": "fab fa-npm",
+          "iconColor": "#CB3837",
+          "name": "npm (Node.js)"
+        },
+        {
+          "icon": "fab fa-python",
+          "iconColor": "#3776AB",
+          "name": "PyPI (Python)"
+        },
+        {
+          "icon": "fab fa-golang",
+          "iconColor": "#00ADD8",
+          "name": "Go Modules"
+        },
+        {
+          "icon": "fab fa-java",
+          "iconColor": "#007396",
+          "name": "Maven (Java)"
+        },
+        {
+          "icon": "fab fa-php",
+          "iconColor": "#777BB4",
+          "name": "Composer (PHP)"
+        },
+        {
+          "icon": "fab fa-rust",
+          "iconColor": "#DEA584",
+          "name": "Cargo (Rust)"
+        },
+        {
+          "icon": "fas fa-gem",
+          "iconColor": "#CC342D",
+          "name": "RubyGems"
+        },
+        {
+          "icon": "fas fa-code-branch",
+          "iconColor": "#00599C",
+          "name": "C/C++ (CMake/Conan)"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fab fa-github",
+          "iconColor": "#000000",
+          "name": "GitHub"
+        },
+        {
+          "icon": "fab fa-gitlab",
+          "iconColor": "#fc6d26",
+          "name": "GitLab"
+        },
+        {
+          "icon": "fab fa-bitbucket",
+          "iconColor": "#0052CC",
+          "name": "Bitbucket"
+        },
+        {
+          "icon": "fas fa-file-archive",
+          "iconColor": "#fc6d26",
+          "name": "Archivio (ZIP/TAR/GZ)"
+        },
+        {
+          "icon": "fas fa-folder-open",
+          "iconColor": "#8e9016",
+          "name": "Progetto locale"
+        },
+        {
+          "icon": "fab fa-git-alt",
+          "iconColor": "#FF6445",
+          "name": "Repository aziendali"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        }
+      ]
+    }
+  },
+  {
+    "id": "palette",
+    "name": "Palette",
+    "version": "1.0.0",
+    "shortDesc": "Modellazione e visualizzazione delle minacce",
+    "description": "Modellazione delle minacce, diagrammi di flusso dati (DFD) e visualizzazione dell'architettura di sicurezza con STRIDE, CIA e analisi dei rischi",
+    "icon": "fas fa-solid fa-palette",
+    "url": "/palette",
+    "router": "./addons/palette/router.js",
+    "ui": "./ui/palette/palette.html",
+    "order": 7,
+    "free": false,
+    "features": {
+      "key": [
+        {
+          "icon": "fas fa-vector-square",
+          "iconColor": "#8B5CF6",
+          "name": "Costruzione diagrammi DFD"
+        },
+        {
+          "icon": "fas fa-shield-virus",
+          "iconColor": "#EF4444",
+          "name": "Modellazione minacce (STRIDE)"
+        },
+        {
+          "icon": "fas fa-arrows-alt-h",
+          "iconColor": "#3B82F6",
+          "name": "Mappatura flussi dati"
+        },
+        {
+          "icon": "fas fa-layer-group",
+          "iconColor": "#10B981",
+          "name": "Livellamento e raggruppamento"
+        }
+      ],
+      "elements": [
+        {
+          "icon": "fas fa-database",
+          "iconColor": "#3B82F6",
+          "name": "Asset (Server, Database)"
+        },
+        {
+          "icon": "fas fa-skull",
+          "iconColor": "#EF4444",
+          "name": "Minacce (Attacchi, Vulnerabilità)"
+        },
+        {
+          "icon": "fas fa-file-alt",
+          "iconColor": "#F59E0B",
+          "name": "Dati (Informazioni, File)"
+        },
+        {
+          "icon": "fas fa-user",
+          "iconColor": "#6366F1",
+          "name": "Attori (Utenti, Attaccanti)"
+        },
+        {
+          "icon": "fas fa-network-wired",
+          "iconColor": "#EC4899",
+          "name": "Rete (Segmenti, Canali)"
+        }
+      ],
+      "analysis": [
+        {
+          "icon": "fas fa-arrow-trend-up",
+          "iconColor": "#8B5CF6",
+          "name": "Analisi superficie d'attacco"
+        },
+        {
+          "icon": "fas fa-triangle-exclamation",
+          "iconColor": "#EF4444",
+          "name": "Valutazione rischi CIA"
+        },
+        {
+          "icon": "fas fa-chart-pie",
+          "iconColor": "#10B981",
+          "name": "Statistiche minacce"
+        },
+        {
+          "icon": "fas fa-download",
+          "iconColor": "#F59E0B",
+          "name": "Esporta modello in JSON"
+        }
+      ],
+      "visual": [
+        {
+          "icon": "fas fa-sitemap",
+          "iconColor": "#8B5CF6",
+          "name": "Grafo delle chiamate"
+        },
+        {
+          "icon": "fas fa-arrows-left-right",
+          "iconColor": "#10B981",
+          "name": "Flussi di dati"
+        },
+        {
+          "icon": "fas fa-cubes",
+          "iconColor": "#3B82F6",
+          "name": "Componenti"
+        },
+        {
+          "icon": "fas fa-layer-group",
+          "iconColor": "#8B5CF6",
+          "name": "Classi"
+        },
+        {
+          "icon": "fas fa-project-diagram",
+          "iconColor": "#F59E0B",
+          "name": "Dipendenze"
+        }
+      ],
+      "sources": [
+        {
+          "icon": "fas fa-file-import",
+          "iconColor": "#3B82F6",
+          "name": "Importa da JSON/YAML"
+        },
+        {
+          "icon": "fas fa-cloud-upload-alt",
+          "iconColor": "#10B981",
+          "name": "Carica modelli"
+        }
+      ],
+      "reports": [
+        {
+          "icon": "fab fa-html5",
+          "iconColor": "#E44D26",
+          "name": "HTML"
+        },
+        {
+          "icon": "far fa-file-code",
+          "iconColor": "#F7DF1E",
+          "name": "JSON"
+        }
+      ]
+    }
+  }
+]

@@ -1,19 +1,11 @@
 // modal.js
 
-// ============================================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ============================================================
-
 function escapeHtml(text) {
     if (!text) return '';
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
-// ============================================================
-// ТАБЛИЦА УЯЗВИМОСТЕЙ
-// ============================================================
 
 function renderVulnerabilitiesTable(vulnerabilities) {
     if (!vulnerabilities || vulnerabilities.length === 0) return '';
@@ -37,23 +29,21 @@ function renderVulnerabilitiesTable(vulnerabilities) {
         info: { bg: '#6c757d', text: 'white', label: 'Info' }
     };
     
-    // Подсчет количества по severity
     const severityCounts = { critical: 0, high: 0, medium: 0, low: 0, info: 0 };
     for (const vuln of vulnerabilities) {
         const sev = (vuln.severity || 'info').toLowerCase();
         if (severityCounts[sev] !== undefined) severityCounts[sev]++;
     }
     
-    // Фильтры
     let html = `
         <div style="margin: 24px 0 16px 0; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-            <h4 style="margin: 0; font-size: 15px; color: #1a1a2e;">Найденные уязвимости</h4>
+            <h4 style="margin: 0; font-size: 15px; color: #1a1a2e;">Found Vulnerabilities</h4>
             <div style="display: flex; gap: 6px; margin-left: auto; flex-wrap: wrap;">
-                <button class="severity-filter-btn active" data-filter="all" onclick="filterVulnerabilities('all')" style="padding: 4px 12px; border: 1px solid #dee2e6; border-radius: 16px; background: #667eea; color: white; cursor: pointer; font-size: 12px; font-family: Ubuntu; transition: all 0.2s;">
-                    Все
+                <button class="severity-filter-btn active" data-filter="all" onclick="filterVulnerabilities('all')" style="padding: 4px 12px; border: 1px solid #dee2e6; border-radius: 16px; background: #667eea; color: white; cursor: pointer; font-size: 12px; font-family: 'Fira Sans', 'Fira Code', sans-serif; transition: all 0.2s;">
+                    All
                 </button>
                 ${Object.entries(severityCounts).filter(([_, count]) => count > 0).map(([sev, count]) => `
-                    <button class="severity-filter-btn" data-filter="${sev}" onclick="filterVulnerabilities('${sev}')" style="padding: 4px 12px; border: 1px solid ${severityColors[sev].bg}; border-radius: 16px; background: transparent; color: ${severityColors[sev].bg}; cursor: pointer; font-size: 12px; font-family: Ubuntu; transition: all 0.2s; font-weight: 500;">
+                    <button class="severity-filter-btn" data-filter="${sev}" onclick="filterVulnerabilities('${sev}')" style="padding: 4px 12px; border: 1px solid ${severityColors[sev].bg}; border-radius: 16px; background: transparent; color: ${severityColors[sev].bg}; cursor: pointer; font-size: 12px; font-family: 'Fira Sans', 'Fira Code', sans-serif; transition: all 0.2s; font-weight: 500;">
                         ${severityColors[sev].label} <span style="font-weight: 600;"></span>
                     </button>
                 `).join('')}
@@ -63,10 +53,10 @@ function renderVulnerabilitiesTable(vulnerabilities) {
             <table class="results-table" style="width: 100%; border-collapse: collapse; font-size: 14px; background: white; border-radius: 12px; overflow: hidden;">
                 <thead>
                     <tr style="background: #f8f9fa; border-bottom: 2px solid #e9ecef;">
-                        <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Метод</th>
-                        <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Тип</th>
+                        <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Method</th>
+                        <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Type</th>
                         <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Severity</th>
-                        <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Эндпоинт</th>
+                        <th style="padding: 14px 16px; text-align: left; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px;">Endpoint</th>
                         <th style="padding: 14px 16px; text-align: center; font-weight: 600; color: #495057; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; width: 50px;"></th>
                     </tr>
                 </thead>
@@ -93,13 +83,13 @@ function renderVulnerabilitiesTable(vulnerabilities) {
                         ${method}
                     </span>
                 </td>
-                <td style="padding: 12px 16px; font-weight: 500; color: #1a1a2e;font-size: 11px; ">${escapeHtml(vuln.type || 'Unknown')}</td>
+                <td style="padding: 12px 16px; font-weight: 500; color: #1a1a2e; font-size: 11px;">${escapeHtml(vuln.type || 'Unknown')}</td>
                 <td style="padding: 12px 16px;">
                     <span class="severity-badge" style="display: inline-block; padding: 2px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; background: ${sColor.bg}; color: ${sColor.text};">
                         ${(vuln.severity || 'INFO').toUpperCase()}
                     </span>
                 </td>
-                <td style="padding: 12px 16px; font-family: monospace; font-size: 13px; color: #495057;">
+                <td style="padding: 12px 16px; font-family: 'Fira Code', monospace; font-size: 13px; color: #495057;">
                     <span style="background: #f1f3f5; padding: 2px 8px; border-radius: 4px;">${escapeHtml(vuln.endpoint || '/')}</span>
                 </td>
                 <td style="padding: 12px 16px; text-align: center;">
@@ -112,21 +102,21 @@ function renderVulnerabilitiesTable(vulnerabilities) {
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px 24px; font-size: 13px;">
                             ${vuln.snippet ? `
                             <div style="grid-column: 1 / -1; padding: 8px 12px; background: #fff3cd; border-radius: 6px; margin-bottom: 4px;">
-                                <strong style="color: #856404;">Детали:</strong>
+                                <strong style="color: #856404;">Details:</strong>
                                 <span style="color: #856404;">${escapeHtml(vuln.snippet)}</span>
                             </div>
                             ` : ''}
                             ${vuln.payload ? `
                             <div style="grid-column: 1 / -1;">
                                 <strong style="color: #495057;">Payload:</strong>
-                                <code style="display: inline-block; margin-top: 4px; background: #1a1a2e; color: #e9ecef; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-family: 'SF Mono', 'Fira Code', monospace; word-break: break-all; max-width: 100%;">
+                                <code style="display: inline-block; margin-top: 4px; background: #1a1a2e; color: #e9ecef; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-family: 'Fira Code', monospace; word-break: break-all; max-width: 100%;">
                                     ${escapeHtml(vuln.payload)}
                                 </code>
                             </div>
                             ` : ''}
                             ${vuln.response_status ? `
                             <div>
-                                <strong style="color: #495057;">Статус ответа:</strong>
+                                <strong style="color: #495057;">Response Status:</strong>
                                 <span style="font-weight: 600; ${vuln.response_status >= 200 && vuln.response_status < 300 ? 'color: #28a745;' : vuln.response_status >= 400 && vuln.response_status < 500 ? 'color: #fd7e14;' : vuln.response_status >= 500 ? 'color: #dc3545;' : 'color: #6c757d;'}">
                                     ${vuln.response_status}
                                 </span>
@@ -134,7 +124,7 @@ function renderVulnerabilitiesTable(vulnerabilities) {
                             ` : ''}
                             ${vuln.category ? `
                             <div>
-                                <strong style="color: #495057;">Категория:</strong>
+                                <strong style="color: #495057;">Category:</strong>
                                 <span style="color: #6c757d;">${escapeHtml(vuln.category)}</span>
                             </div>
                             ` : ''}
@@ -158,7 +148,6 @@ function filterVulnerabilities(filter) {
     const rows = document.querySelectorAll('#vuln-table-body tr');
     const btns = document.querySelectorAll('.severity-filter-btn');
     
-    // Обновляем активную кнопку
     btns.forEach(btn => {
         btn.classList.remove('active');
         btn.style.background = 'transparent';
@@ -170,7 +159,6 @@ function filterVulnerabilities(filter) {
         }
     });
     
-    // Фильтруем строки
     rows.forEach(row => {
         const severity = row.getAttribute('data-severity');
         if (filter === 'all' || severity === filter) {
@@ -196,17 +184,12 @@ function toggleVulnDetail(rowId, detailId) {
     }
 }
 
-// ============================================================
-// ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ (DOMOVOY)
-// ============================================================
-
 function displayResults(report) {
     const modalBody = document.getElementById('fuzzModalBody');
     if (!modalBody) return;
     
     const vulnerabilities = report.vulnerabilities || [];
     
-    // Подсчет severity
     let critical = 0, high = 0, medium = 0, low = 0, info = 0;
     
     for (const vuln of vulnerabilities) {
@@ -221,7 +204,6 @@ function displayResults(report) {
     const vulnCount = vulnerabilities.length || 0;
     
     modalBody.innerHTML = `
-        <!-- Плашки по severity -->
         <div class="fuzz-severity-grid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 20px;">
             <div class="fuzz-severity-card critical" style="text-align: center; padding: 16px; border-radius: 12px; background: #fef2f2; border: 1px solid #fecaca;">
                 <div class="fuzz-severity-number" style="font-size: 32px; font-weight: 700; color: #dc2626;">${critical}</div>
@@ -245,17 +227,11 @@ function displayResults(report) {
             </div>
         </div>
         
-        ${vulnCount > 0 ? renderVulnerabilitiesTable(vulnerabilities) : '<div class="no-vulnerabilities" style="text-align: center; padding: 40px 20px; color: #16a34a;"><i class="fas fa-check-circle" style="font-size: 48px; display: block; margin-bottom: 16px;"></i><h4 style="margin: 0; color: #16a34a;">Уязвимостей не найдено</h4></div>'}
+        ${vulnCount > 0 ? renderVulnerabilitiesTable(vulnerabilities) : '<div class="no-vulnerabilities" style="text-align: center; padding: 40px 20px; color: #16a34a;"><i class="fas fa-check-circle" style="font-size: 48px; display: block; margin-bottom: 16px;"></i><h4 style="margin: 0; color: #16a34a;">No vulnerabilities found</h4></div>'}
     `;
     
     openFuzzModal();
 }
-
-
-
-// ============================================================
-// ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ (METLA) - БЕЗ МОДАЛКИ
-// ============================================================
 
 function renderMetlaTargets(reportData) {
     const area = document.getElementById('metlaTargetsArea');
@@ -266,7 +242,6 @@ function renderMetlaTargets(reportData) {
 
     if (!area) return;
 
-    // Нормализация данных
     let targets = [];
     
     if (reportData?.report?.data && Array.isArray(reportData.report.data)) {
@@ -289,8 +264,8 @@ function renderMetlaTargets(reportData) {
             empty.innerHTML = `
                 <div style="text-align: center; padding: 40px 20px; color: #6c757d;">
                     <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; color: #dee2e6;"></i>
-                    <h4 style="margin: 0; color: #495057;">Нет данных для отображения</h4>
-                    <p style="margin: 8px 0 0 0; font-size: 14px;">Попробуйте запустить анализ заново</p>
+                    <h4 style="margin: 0; color: #495057;">No data to display</h4>
+                    <p style="margin: 8px 0 0 0; font-size: 14px;">Try running the analysis again</p>
                 </div>
             `;
         }
@@ -306,7 +281,6 @@ function renderMetlaTargets(reportData) {
     if (list) list.style.display = 'block';
     if (area) area.classList.add('has-targets');
 
-    // Статистика
     const total = targets.length;
     const auth = targets.filter(t => t.isAuth === true).length;
     const nonAuth = targets.filter(t => t.isAuth === false).length;
@@ -330,9 +304,9 @@ function renderMetlaTargets(reportData) {
     if (stats) {
         stats.innerHTML = `
             <div style="display: flex; gap: 16px; flex-wrap: wrap; padding: 8px 0;">
-                <div class="stat-item" style="font-size: 13px; color: #495057;">Всего запросов <strong style="color: #1a1a2e;">${totalRequests}</strong></div>
+                <div class="stat-item" style="font-size: 13px; color: #495057;">Total requests <strong style="color: #1a1a2e;">${totalRequests}</strong></div>
                 <div class="stat-divider" style="width: 1px; background: #e9ecef;"></div>
-                <div class="stat-item" style="font-size: 13px; color: #495057;">Уникальных эндпоинтов <strong style="color: #1a1a2e;">${uniqueEndpoints}</strong></div>
+                <div class="stat-item" style="font-size: 13px; color: #495057;">Unique endpoints <strong style="color: #1a1a2e;">${uniqueEndpoints}</strong></div>
                 <div class="stat-divider" style="width: 1px; background: #e9ecef;"></div>
                 <div class="stat-item" style="font-size: 13px; color: #495057;">Auth <strong style="color: #dc2626;">${auth}</strong></div>
                 <div class="stat-item" style="font-size: 13px; color: #495057;">Public <strong style="color: #16a34a;">${nonAuth}</strong></div>
@@ -346,7 +320,6 @@ function renderMetlaTargets(reportData) {
         stats.style.display = 'block';
     }
 
-    // Список целей
     const methodColors = {
         GET: '#61affe',
         POST: '#49cc90',
@@ -376,7 +349,7 @@ function renderMetlaTargets(reportData) {
                     <span class="metla-method" style="font-weight: 700; font-size: 12px; color: ${color}; min-width: 50px;">
                         ${method}
                     </span>
-                    <span class="metla-path" style="font-family: monospace; font-size: 13px; color: #1a1a2e; flex: 1; word-break: break-all;">
+                    <span class="metla-path" style="font-family: 'Fira Code', monospace; font-size: 13px; color: #1a1a2e; flex: 1; word-break: break-all;">
                         ${escapeHtml(path)}
                         <span class="metla-badge ${isAuth ? 'auth' : 'public'}" 
                               style="display: inline-block; padding: 1px 10px; border-radius: 12px; font-size: 10px; font-weight: 600; margin-left: 8px; 
@@ -400,14 +373,10 @@ function renderMetlaTargets(reportData) {
     };
 }
 
-// ============================================================
-// МОДАЛЬНОЕ ОКНО
-// ============================================================
-
 function openFuzzModal() {
     const modal = document.getElementById('fuzzModal');
     if (!modal) {
-        console.warn('❌ fuzzModal не найден');
+        console.warn('❌ fuzzModal not found');
         return;
     }
     
@@ -425,7 +394,7 @@ function openFuzzModal() {
     
     document.body.style.overflow = 'hidden';
     
-    console.log('✅ Модальное окно открыто');
+    console.log('✅ Modal opened');
 }
 
 function closeFuzzModal() {
@@ -433,13 +402,9 @@ function closeFuzzModal() {
     if (modal) {
         modal.style.display = 'none';
         document.body.style.overflow = '';
-        console.log('✅ Модальное окно закрыто');
+        console.log('✅ Modal closed');
     }
 }
-
-// ============================================================
-// ФУНКЦИИ ДЛЯ МЕТЛА ДЕТАЛЕЙ (Swagger/Postman стиль)
-// ============================================================
 
 let currentMetlaTarget = null;
 
@@ -466,7 +431,6 @@ function openMetlaDetail(index) {
     const hasBody = target.body !== null && target.body !== undefined;
     const hasHeaders = target.headers && Object.keys(target.headers).length > 0;
 
-    // Заполняем хедер
     const methodEl = document.getElementById('metla-detail-method');
     if (methodEl) {
         methodEl.textContent = method;
@@ -483,13 +447,12 @@ function openMetlaDetail(index) {
         authBadge.className = 'metla-detail-auth-badge ' + (isAuth ? 'auth' : 'public');
     }
 
-    // Заполняем детали
     const urlEl = document.getElementById('metla-detail-url');
     if (urlEl) urlEl.textContent = target.url || '-';
     
     const authEl = document.getElementById('metla-detail-auth');
     if (authEl) {
-        authEl.textContent = isAuth ? 'Требуется' : 'Публичный';
+        authEl.textContent = isAuth ? 'Required' : 'Public';
         authEl.style.color = isAuth ? '#dc2626' : '#16a34a';
     }
     
@@ -499,7 +462,6 @@ function openMetlaDetail(index) {
     const serverEl = document.getElementById('metla-detail-server');
     if (serverEl) serverEl.textContent = target.server || '-';
 
-    // Заголовки
     const headersContent = document.getElementById('metla-detail-headers-content');
     if (headersContent) {
         if (hasHeaders) {
@@ -507,31 +469,28 @@ function openMetlaDetail(index) {
                 .map(([k, v]) => `<span style="color: #61affe;">${escapeHtml(k)}</span>: ${escapeHtml(v)}`)
                 .join('\n');
         } else {
-            headersContent.innerHTML = '<span class="metla-detail-empty" style="color: #6c757d;">Нет заголовков</span>';
+            headersContent.innerHTML = '<span class="metla-detail-empty" style="color: #6c757d;">No headers</span>';
         }
     }
 
-    // Тело
     const bodyContent = document.getElementById('metla-detail-body-content');
     if (bodyContent) {
         if (hasBody) {
             bodyContent.textContent = target.body;
         } else {
-            bodyContent.innerHTML = '<span class="metla-detail-empty" style="color: #6c757d;">Нет тела запроса</span>';
+            bodyContent.innerHTML = '<span class="metla-detail-empty" style="color: #6c757d;">No request body</span>';
         }
     }
 
-    // Схема
     const schemaContent = document.getElementById('metla-detail-schema-content');
     if (schemaContent) {
         if (target.bodySchema) {
             schemaContent.textContent = JSON.stringify(target.bodySchema, null, 2);
         } else {
-            schemaContent.innerHTML = '<span class="metla-detail-empty" style="color: #6c757d;">Нет схемы</span>';
+            schemaContent.innerHTML = '<span class="metla-detail-empty" style="color: #6c757d;">No schema</span>';
         }
     }
 
-    // Показываем первую вкладку
     switchMetlaTab('details');
 
     const modal = document.getElementById('metlaDetailModal');
@@ -542,20 +501,17 @@ function openMetlaDetail(index) {
 }
 
 function switchMetlaTab(tabId) {
-    // Скрываем все панели
     document.querySelectorAll('.metla-detail-panel').forEach(panel => {
         panel.style.display = 'none';
         panel.classList.remove('active');
     });
 
-    // Показываем выбранную
     const panel = document.getElementById('panel-' + tabId);
     if (panel) {
         panel.style.display = 'block';
         panel.classList.add('active');
     }
 
-    // Обновляем табы
     document.querySelectorAll('.metla-detail-tab').forEach(tab => {
         tab.classList.remove('active');
         if (tab.dataset.tab === tabId) {
@@ -572,10 +528,6 @@ function closeMetlaDetail() {
     }
     currentMetlaTarget = null;
 }
-
-// ============================================================
-// ДЕЙСТВИЯ С METLA
-// ============================================================
 
 function copyMetlaRequest() {
     if (!currentMetlaTarget) return;
@@ -595,16 +547,15 @@ function copyMetlaRequest() {
     }
     
     navigator.clipboard.writeText(request).then(() => {
-        showToast('Скопировано', 'Запрос скопирован в буфер обмена', 'success');
+        showToast('Copied', 'Request copied to clipboard', 'success');
     }).catch(() => {
-        // Fallback
         const textarea = document.createElement('textarea');
         textarea.value = request;
         document.body.appendChild(textarea);
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
-        showToast('Скопировано', 'Запрос скопирован в буфер обмена', 'success');
+        showToast('Copied', 'Request copied to clipboard', 'success');
     });
 }
 
@@ -656,7 +607,7 @@ function exportMetlaRequest(format) {
     }
     
     navigator.clipboard.writeText(output).then(() => {
-        showToast('Экспортировано', `Экспорт в ${format.toUpperCase()} выполнен`, 'success');
+        showToast('Exported', `Exported as ${format.toUpperCase()}`, 'success');
     }).catch(() => {
         const textarea = document.createElement('textarea');
         textarea.value = output;
@@ -664,7 +615,7 @@ function exportMetlaRequest(format) {
         textarea.select();
         document.execCommand('copy');
         document.body.removeChild(textarea);
-        showToast('Экспортировано', `Экспорт в ${format.toUpperCase()} выполнен`, 'success');
+        showToast('Exported', `Exported as ${format.toUpperCase()}`, 'success');
     });
 }
 
@@ -678,7 +629,7 @@ function saveMetlaRequest() {
     });
     localStorage.setItem('metlaSavedRequests', JSON.stringify(saved));
     
-    showToast('Сохранено', 'Запрос сохранен в избранное', 'success');
+    showToast('Saved', 'Request saved to favorites', 'success');
 }
 
 function runMetlaAnalysis() {
@@ -688,14 +639,14 @@ function runMetlaAnalysis() {
     const typeLabels = {
         xss: 'XSS',
         sql: 'SQL Injection',
-        headers: 'Заголовки',
-        bruteforce: 'Брутфорс',
-        full: 'Полный'
+        headers: 'Headers',
+        bruteforce: 'Bruteforce',
+        full: 'Full'
     };
     
-    showToast('Запуск анализа', `Запущен ${typeLabels[type] || 'Full'} анализ для ${currentMetlaTarget.path}`, 'info');
+    showToast('Analysis started', `Started ${typeLabels[type] || 'Full'} analysis for ${currentMetlaTarget.path}`, 'info');
     
-    console.log('Запуск анализа:', {
+    console.log('Analysis started:', {
         target: currentMetlaTarget,
         type: type
     });
@@ -722,10 +673,6 @@ function clearMetlaTargets() {
     if (stats) stats.style.display = 'none';
     if (area) area.classList.remove('has-targets');
 }
-
-// ============================================================
-// TOAST УВЕДОМЛЕНИЕ
-// ============================================================
 
 function showToast(title, message, type = 'info') {
     let container = document.getElementById('metlaToastContainer');
@@ -772,8 +719,8 @@ function showToast(title, message, type = 'info') {
             <i class="fas ${color.icon}"></i>
         </div>
         <div style="flex: 1; min-width: 0;">
-            <div style="font-weight: 600; font-size: 13px; color: #1a1a2e; font-family: 'Ubuntu', sans-serif;">${escapeHtml(title)}</div>
-            <div style="font-size: 12px; color: #6c757d; font-family: 'Ubuntu', sans-serif;">${escapeHtml(message)}</div>
+            <div style="font-weight: 600; font-size: 13px; color: #1a1a2e; font-family: 'Fira Sans', 'Fira Code', sans-serif;">${escapeHtml(title)}</div>
+            <div style="font-size: 12px; color: #6c757d; font-family: 'Fira Sans', 'Fira Code', sans-serif;">${escapeHtml(message)}</div>
         </div>
         <button onclick="this.parentElement.remove()" style="border: none; background: none; cursor: pointer; color: #adb5bd; font-size: 14px; flex-shrink: 0;">
             <i class="fas fa-times"></i>
@@ -796,10 +743,6 @@ function showToast(title, message, type = 'info') {
     }, 5000);
 }
 
-// ============================================================
-// ЗАКРЫТИЕ ПО ESC
-// ============================================================
-
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeMetlaDetail();
@@ -807,12 +750,7 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// ============================================================
-// ЗАКРЫТИЕ ПО КЛИКУ НА ФОН
-// ============================================================
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Закрытие fuzzModal по клику на фон
     const fuzzModal = document.getElementById('fuzzModal');
     if (fuzzModal) {
         fuzzModal.addEventListener('click', function(e) {
@@ -822,7 +760,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Закрытие metlaDetailModal по клику на фон
     const metlaModal = document.getElementById('metlaDetailModal');
     if (metlaModal) {
         metlaModal.addEventListener('click', function(e) {
@@ -832,10 +769,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-// ============================================================
-// РЕГИСТРАЦИЯ В WINDOW
-// ============================================================
 
 window.displayResults = displayResults;
 window.renderMetlaTargets = renderMetlaTargets;

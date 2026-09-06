@@ -75,13 +75,13 @@ class FileUploader {
             <div class="uploader-menu-item" data-type="archive">
                 <i class="fas fa-file-archive" style="color: orange"></i>
                 <div>
-                    <div class="uploader-menu-title">Загрузить архив</div>
+                    <div class="uploader-menu-title">Upload archive</div>
                 </div>
             </div>
             <div class="uploader-menu-item" data-type="folder">
                 <i class="fas fa-folder-open" style="color: #8e9016; font-size: 18px"></i>
                 <div>
-                    <div class="uploader-menu-title">Локальный проект</div>
+                    <div class="uploader-menu-title">Local project</div>
                 </div>
             </div>
         `;
@@ -95,7 +95,7 @@ class FileUploader {
             min-width: 280px;
             z-index: 10000;
             border: 1px solid #e2e8f0;
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Fira Sans', sans-serif;
         `;
         
         const rect = targetElement.getBoundingClientRect();
@@ -148,6 +148,7 @@ class FileUploader {
                 padding: 12px 20px;
                 cursor: pointer;
                 transition: background 0.2s;
+                font-family: 'Fira Sans', sans-serif;
             }
             .uploader-menu-item:hover {
                 background: #f8fafc;
@@ -164,6 +165,7 @@ class FileUploader {
                 font-weight: 600;
                 font-size: 14px;
                 color: #1e293b;
+                font-family: 'Fira Sans', sans-serif;
             }
         `;
         document.head.appendChild(style);
@@ -185,20 +187,20 @@ class FileUploader {
             this.folderInput.click();
         } else {
             if (this.options.onError) {
-                this.options.onError('Выбор папки не поддерживается в этом браузере');
+                this.options.onError('Folder selection is not supported in this browser');
             }
         }
     }
 
     handleArchiveSelected(file) {
         if (file.size > this.options.maxSize) {
-            const error = `Файл слишком большой. Максимальный размер: ${this.options.maxSize / 1024 / 1024} MB`;
+            const error = `File too large. Maximum size: ${this.options.maxSize / 1024 / 1024} MB`;
             if (this.options.onError) this.options.onError(error);
             return;
         }
         
         if (this.options.onProgress) {
-            this.options.onProgress('Загрузка архива...', 0);
+            this.options.onProgress('Uploading archive...', 0);
         }
         
         if (this.options.onFileSelected) {
@@ -216,16 +218,16 @@ class FileUploader {
         
         if (this.options.compressOnClient) {
             if (this.options.onProgress) {
-                this.options.onProgress('Подготовка файлов...', 0);
+                this.options.onProgress('Preparing files...', 0);
             }
             
             try {
                 const zipBlob = await this.createZipArchive(folderInfo, (percent) => {
                     if (this.options.onProgress) {
                         if (percent < 100) {
-                            this.options.onProgress(`Архивация папки... ${percent}%`, percent);
+                            this.options.onProgress(`Archiving folder... ${percent}%`, percent);
                         } else {
-                            this.options.onProgress('Архивация завершена', 100);
+                            this.options.onProgress('Archive completed', 100);
                         }
                     }
                 });
@@ -237,7 +239,7 @@ class FileUploader {
                 }
             } catch (error) {
                 if (this.options.onError) {
-                    this.options.onError('Ошибка архивации: ' + error.message);
+                    this.options.onError('Archive error: ' + error.message);
                 }
             }
         } else {
@@ -382,16 +384,14 @@ class FileUploader {
     }
 }
 
-// ========== SAST UPLOADER ==========
-
 function initSASTUploader(herculesApp) {
     const uploadArea = document.getElementById('uploadArea');
     if (!uploadArea) return null;
     
     const formatFileSize = (bytes) => {
-        if (bytes < 1024) return bytes + ' Б';
-        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' КБ';
-        return (bytes / (1024 * 1024)).toFixed(1) + ' МБ';
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     };
     
     const uploader = new FileUploader({
@@ -428,9 +428,9 @@ function initSASTUploader(herculesApp) {
                     app.startButton.classList.add('active');
                 }
                 
-                showToolNotification(`Файл выбран: ${file.name}`, 'success');
+                showToolNotification(`File selected: ${file.name}`, 'success');
             } else {
-                showToolNotification('herculesApp не найден', 'error');
+                showToolNotification('herculesApp not found', 'error');
             }
         },
         onError: (error) => {
@@ -443,8 +443,6 @@ function initSASTUploader(herculesApp) {
     return uploader;
 }
 
-// ========== FUZZ UPLOADER ==========
-
 function initFUZZUploader() {
     const uploadArea = document.getElementById('uploadArea');
     if (!uploadArea) return null;
@@ -456,7 +454,7 @@ function initFUZZUploader() {
         acceptFolder: false,
         button: document.getElementById('start-url-btn'),
         onFileSelected: (file) => {
-            showToolNotification(`Фаззинг тестирование: ${file.name}...`);
+            showToolNotification(`Fuzz testing: ${file.name}...`);
             
             if (window.herculesApp) {
                 window.herculesApp.updateTaskStatus('1.1', 'in-progress');
@@ -492,11 +490,11 @@ function initFUZZUploader() {
                 if (typeof displayFUZZResults === 'function') {
                     displayFUZZResults(result);
                 }
-                showToolNotification('Фаззинг завершен', 'success');
+                showToolNotification('Fuzzing completed', 'success');
                 
             }).catch(error => {
                 if (error.message !== 'RATE_LIMIT_EXCEEDED') {
-                    showToolNotification('Ошибка: ' + error.message, 'error');
+                    showToolNotification('Error: ' + error.message, 'error');
                 }
                 if (window.herculesApp) {
                     window.herculesApp.updateTaskStatus('2.1', 'error');
@@ -510,8 +508,6 @@ function initFUZZUploader() {
     return uploader;
 }
 
-// ========== SCA UPLOADER ==========
-
 function initSCAUploader() {
     const uploadArea = document.getElementById('uploadArea');
     if (!uploadArea) return null;
@@ -520,7 +516,7 @@ function initSCAUploader() {
         compressOnClient: true,
         button: document.getElementById('start-btn'),
         onFileSelected: async (file) => {
-            showToolNotification(`Загрузка и анализ: ${file.name}...`);
+            showToolNotification(`Uploading and analyzing: ${file.name}...`);
             
             if (window.herculesApp) {
                 window.herculesApp.updateTaskStatus('1.1', 'in-progress');
@@ -543,8 +539,8 @@ function initSCAUploader() {
                         window.herculesApp.updateTaskStatus('2.2', 'in-progress');
                         window.herculesApp.animateProgress('2.2', 100, 1500, () => {
                             window.herculesApp.updateTaskStatus('2.2', 'completed');
-                            window.herculesApp.startButton.textContent = 'Анализ завершен';
-                            showToolNotification('Анализ успешно завершен');
+                            window.herculesApp.startButton.textContent = 'Analysis completed';
+                            showToolNotification('Analysis completed successfully');
                         });
                     }
                     
@@ -555,7 +551,7 @@ function initSCAUploader() {
                 
             }).catch(error => {
                 if (error.message !== 'RATE_LIMIT_EXCEEDED') {
-                    showToolNotification('Ошибка: ' + error.message, 'error');
+                    showToolNotification('Error: ' + error.message, 'error');
                 }
                 if (window.herculesApp) {
                     window.herculesApp.updateTaskStatus('2.2', 'error');
@@ -573,7 +569,6 @@ function initSCAUploader() {
     return uploader;
 }
 
-// Экспортируем
 window.initSCAUploader = initSCAUploader;
 window.initSASTUploader = initSASTUploader;
 window.initFUZZUploader = initFUZZUploader;

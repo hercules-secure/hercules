@@ -1,8 +1,4 @@
-// ============================================================
-// VISUALIZATION.JS - ВИЗУАЛИЗАЦИЯ КОДА
-// ============================================================
 
-// Глобальные переменные
 var selectedCodeFile = null;
 var selectedDiagramType = 'dependency';
 var selectedSourceType = 'file';
@@ -20,10 +16,10 @@ function parseCodeForCallGraph(code, ext) {
     var codeWithoutComments = removeComments(code, lang);
     var lines = codeWithoutComments.split('\n');
     
-    // Парсим импорты для всех языков
+
     result.imports = parseImports(code, lang);
     
-    // Выбираем парсер в зависимости от языка
+
     switch(lang) {
         case 'js':
         case 'javascript':
@@ -52,11 +48,7 @@ function parseCodeForCallGraph(code, ext) {
     return result;
 }
 
-// ============================================================
-// 2. УДАЛЕНИЕ КОММЕНТАРИЕВ
-// ============================================================
-// Удаляет комментарии из кода для чистого парсинга
-// ============================================================
+
 
 function removeComments(code, lang) {
     var result = code;

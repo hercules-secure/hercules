@@ -1,17 +1,24 @@
 <!DOCTYPE html>
-<html data-page="construction" data-version="1.27.0" lang="ru">
+<html data-page="construction" data-version="1.27.0" lang="en">
 
 <head>
-    <title>Матрешка</title>
+    <title>Dependency</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+    
+    <!-- ✅ FIRA FONTS — ОДНИ НА ВСЁ -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- ✅ FONT AWESOME -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ✅ STYLES -->
     <link rel="stylesheet" href="../common/main.css">
     <link rel="stylesheet" href="sca.css">
     <link rel="stylesheet" href="../common/sidebar.css">
@@ -20,6 +27,32 @@
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
 
     <style>
+        /* ❌ УБИРАЕМ ALEF — ОН НЕ НУЖЕН */
+        /* ✅ FIRA SANS — ОСНОВНОЙ ШРИФТ ДЛЯ ТЕКСТА */
+        body, html, .tools-section, #center, #left, #box,
+        .tools-title, .tool-name, .tool-desc, .section-title,
+        .header-btn, .start-button, .upload-text, .card-body h4,
+        .task-status, .settings-header h3, .settings-option span,
+        .about-info h3, .version, .description, .modal-content,
+        .header-row, .input-group input, .format-badge span,
+        .supported-format-badge, .upload-text, .tools-loader,
+        .task-status, .card-header, .card-body, .progress-container,
+        .upload-text, .icons-row, .format-badge, .supported-formats {
+            font-family: 'Fira Sans', sans-serif;
+        }
+
+        /* ✅ FIRA CODE — ДЛЯ ВСЕХ ЦИФР И КОДА */
+        .task-id, .task-status, .modal-select, .modal-input,
+        .license-input, .data-structure-preview, .version,
+        .format-badge, .supported-format-badge, .tools-loader i,
+        .progress-container, .start-button, .header-btn,
+        .input-group input, .section-title, .task-status,
+        .card-header, .card-body h4, .upload-text,
+        .supported-format-badge, .format-badge span,
+        .tools-loader, .error-message {
+            font-family: 'Fira Code', monospace;
+        }
+
         .tools-loader {
             text-align: center;
             padding: 20px;
@@ -64,7 +97,7 @@
             align-items: center;
             gap: 8px;
             color: var(--text-primary, #0f172a);
-            font-family: 'Ubuntu', sans-serif;
+            font-family: 'Fira Code', monospace;
         }
 
         .header-btn:hover {
@@ -76,30 +109,35 @@
         .header-btn i {
             font-size: 14px;
         }
+
+        /* ✅ ДЛЯ ФОРМ И ИНПУТОВ */
+        input, select, textarea, button {
+            font-family: 'Fira Code', monospace;
+        }
     </style>
 </head>
 
 <body>
     <div id="box" class="fade-in">
-        <!-- ЛЕВАЯ КОЛОНКА - МЕНЮ ИНСТРУМЕНТОВ -->
+        <!-- LEFT COLUMN - TOOLS MENU -->
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Инструменты</span>
+                        <span>Tools</span>
                     </div>
-                    <button class="collapse-btn" id="collapseBtn" title="Свернуть меню">
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
                     </button>
                 </div>
                 <div class="tool-divider"></div>
 
-                <!-- КОНТЕЙНЕР ДЛЯ ДИНАМИЧЕСКОГО МЕНЮ -->
+                <!-- DYNAMIC MENU CONTAINER -->
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
-                        Загрузка...
+                        Loading...
                     </div>
                 </div>
 
@@ -111,8 +149,8 @@
                                 <i class="fas fa-history black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">История</span>
-                                <span class="tool-desc">Журнал сканирований</span>
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
                             </div>
                         </div>
                     </a>
@@ -123,8 +161,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Настройки</span>
-                                <span class="tool-desc">Управление параметрами</span>
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
                             </div>
                         </div>
                     </a>
@@ -132,20 +170,21 @@
             </div>
         </div>
 
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА - РАБОЧАЯ ОБЛАСТЬ -->
+        <!-- CENTER COLUMN - WORKSPACE -->
         <div id="center">
             <div class="header-row">
-                <h2 class="section-title" id="pageTitle">Выберите источник</h2>
+                <h2 class="section-title" id="pageTitle">Select source</h2>
                 <button class="header-btn" onclick="showToolInfo('sca')">
-                    <i class="fas fa-info-circle"></i> Описание инструмента
+                    <i class="fas fa-info-circle"></i> Tool info
                 </button>
             </div>
 
             <div class="input-group">
-                <input type="text" id="repo" placeholder="Вставьте ссылку на репозиторий"
-                    aria-label="Ссылка на репозиторий github gitlab">
+                <input type="text" id="repo" placeholder="Paste repository link"
+                    aria-label="GitHub or GitLab repository link">
                 <button class="start-button" id="start-btn" type="button" disabled>
-                    <i class="fas fa-play" style="margin-right: 6px;"></i>Начать анализ</button>
+                    <i class="fas fa-play" style="margin-right: 6px;"></i>Start analysis
+                </button>
             </div>
 
             <div class="tech-stack">
@@ -166,13 +205,13 @@
                     <i class="fas fa-cloud-upload-alt black-icon"></i>
                 </div>
                 <div class="upload-text">
-                    Нажмите для выбора архива или локального проекта<br>
+                    Click to select archive or local project<br>
                     <span style="font-size: 9px">
                         <div class="icons-row">
                             <span class="format-badge"><i class="fas fa-file-archive fa-2x" style="color: #FC6D26;"
-                                    title="Загрузить архив"></i></span>
+                                    title="Upload archive"></i></span>
                             <span class="format-badge"><i class="fas fa-folder-open fa-2x" style="color: #8e9016;"
-                                    title="Загрузить локальный проект"></i></span>
+                                    title="Upload local project"></i></span>
                         </div>
                     </span>
                 </div>
@@ -187,15 +226,15 @@
 
             <div class="card-table" style="margin-top: 2vh;">
                 <div class="card-section">
-                    <h2 class="section-title">Подготовка</h2>
+                    <h2 class="section-title">Preparation</h2>
 
                     <div class="card">
                         <div class="card-header">
                             <span class="task-id">1.1</span>
-                            <span class="task-status pending">В ожидании</span>
+                            <span class="task-status pending">Pending</span>
                         </div>
                         <div class="card-body">
-                            <h4>Сбор данных</h4>
+                            <h4>Data collection</h4>
                             <div class="progress-container">
                                 <div class="progress" style="width: 0%"></div>
                             </div>
@@ -204,15 +243,15 @@
                 </div>
 
                 <div class="card-section">
-                    <h3 class="section-title">Анализ композиционной модели</h3>
+                    <h3 class="section-title">Composition analysis</h3>
 
                     <div class="card">
                         <div class="card-header">
                             <span class="task-id">2.1</span>
-                            <span class="task-status pending">В ожидании</span>
+                            <span class="task-status pending">Pending</span>
                         </div>
                         <div class="card-body">
-                            <h4>Формирование списка зависимостей</h4>
+                            <h4>Dependency list generation</h4>
                             <div class="progress-container">
                                 <div class="progress" style="width: 0%"></div>
                             </div>
@@ -222,10 +261,10 @@
                     <div class="card">
                         <div class="card-header">
                             <span class="task-id">2.2</span>
-                            <span class="task-status pending">В ожидании</span>
+                            <span class="task-status pending">Pending</span>
                         </div>
                         <div class="card-body">
-                            <h4>Анализ зависимостей</h4>
+                            <h4>Dependency analysis</h4>
                             <div class="progress-container">
                                 <div class="progress" style="width: 0%"></div>
                             </div>
@@ -239,7 +278,7 @@
 <div id="unifiedModal" class="settings-modal">
     <div class="settings-content">
         <div class="settings-header">
-            <h3><i class="fas fa-list" style="color: black;"></i>Ключевые возможности</h3>
+            <h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>
             <span class="settings-close" onclick="closeToolModal()">&times;</span>
         </div>
         <div class="unified-layout">
@@ -257,11 +296,9 @@
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="../common/modal.js"></script>
     <script>
-        // Инициализация для SCA
+        // SCA initialization
         loadMenu();
         const scaUploader = initSCAUploader();
-
-
     </script>
 </body>
 

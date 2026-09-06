@@ -530,3 +530,251 @@
     background: var(--input-bg, white);
     font-family: 'Ubuntu';
 }
+
+ .badge-beta-gradient {
+            display: inline-block;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6);
+            background-size: 200% 200%;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            animation: gradient 3s ease infinite;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .integration-select {
+            padding: 6px 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            font-size: 13px;
+            font-family: 'Ubuntu', sans-serif;
+            min-width: 140px;
+        }
+
+        .integration-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .sub-settings {
+            margin-left: 40px;
+            padding-left: 16px;
+            border-left: 2px solid #e2e8f0;
+        }
+
+        /* ===== ПРОГРЕСС-БАР ===== */
+
+.update-progress {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: #f7f7f7;
+    border-radius: 10px;
+    border: 1px solid #e5e5e5;
+}
+
+.update-progress-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.update-progress-icon {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.update-progress-text {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111111;
+}
+
+.update-progress-bar-track {
+    width: 100%;
+    height: 6px;
+    background: #e5e5e5;
+    border-radius: 99px;
+    overflow: hidden;
+}
+
+.update-progress-bar-fill {
+    height: 100%;
+    background: #111111;
+    border-radius: 99px;
+    transition: width 0.4s ease;
+    width: 0%;
+}
+
+.update-progress-percent {
+    text-align: right;
+    font-size: 13px;
+    font-weight: 600;
+    color: #111111;
+    margin-top: 6px;
+}
+
+.update-progress-detail {
+    font-size: 12px;
+    color: #888888;
+    text-align: center;
+    margin-top: 6px;
+    font-style: italic;
+    min-height: 18px;
+}
+
+/* Анимация для иконки загрузки */
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.update-progress-icon.spin {
+    display: inline-block;
+    animation: spin 1s linear infinite;
+}
+
+/* Блок изменений скрыт во время обновления */
+.update-changelog.hidden {
+    display: none;
+}
+    .lang-select-modern {
+        appearance: none;
+        -webkit-appearance: none;
+        background: #1e1e2e;
+        border: 1px solid #3a3a4a;
+        border-radius: 8px;
+        padding: 8px 40px 8px 14px;
+        color: #e0e0e0;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        outline: none;
+        transition: all 0.2s ease;
+        min-width: 160px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238a8a9a' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+    }
+    .lang-select-modern:hover {
+        border-color: #6a6a7a;
+        background-color: #262636;
+    }
+    .lang-select-modern:focus {
+        border-color: #4a9eff;
+        box-shadow: 0 0 0 3px rgba(74, 158, 255, 0.15);
+    }
+    .lang-select-modern option {
+        background: #1e1e2e;
+        color: #e0e0e0;
+    }
+    .lang-select-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    /* Модальное окно */
+.lang-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Ubuntu';
+}
+
+.lang-modal-overlay.active {
+    display: flex;
+}
+
+.lang-modal-box {
+    background: #1e1e2e;
+    border: 1px solid #3a3a4a;
+    border-radius: 12px;
+    padding: 24px 28px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    animation: fadeInUp 0.25s ease;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.lang-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #e0e0e0;
+    margin-bottom: 8px;
+}
+
+.lang-modal-desc {
+    font-size: 14px;
+    color: #a0a0b0;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.lang-modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.lang-modal-btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'Ubuntu';
+}
+
+.lang-modal-btn.cancel {
+    background: transparent;
+    color: #a0a0b0;
+    border: 1px solid #3a3a4a;
+}
+
+.lang-modal-btn.cancel:hover {
+    background: #2a2a3a;
+    color: #e0e0e0;
+}
+
+.lang-modal-btn.confirm {
+    background: #4a9eff;
+    color: #fff;
+}
+
+.lang-modal-btn.confirm:hover {
+    background: #6ab0ff;
+    transform: scale(1.02);
+}

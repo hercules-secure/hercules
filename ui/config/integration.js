@@ -1,9 +1,5 @@
-// ==================== ИНИЦИАЛИЗАЦИЯ ИНТЕГРАЦИЙ ====================
-
-// Ждем полной загрузки DOM
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Функция генерации случайного секрета
     function generateWebhookSecret() {
         const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
         let secret = '';
@@ -13,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return secret;
     }
     
-    // Показать/скрыть дополнительные настройки Git
+
     const gitEnabled = document.getElementById('gitIntegrationEnabled');
     if (gitEnabled) {
         gitEnabled.addEventListener('change', (e) => {
@@ -22,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Показать/скрыть дополнительные настройки Mattermost
     const mattermostEnabled = document.getElementById('mattermostEnabled');
     if (mattermostEnabled) {
         mattermostEnabled.addEventListener('change', (e) => {
@@ -31,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Показать/скрыть дополнительные настройки Email
+
     const emailEnabled = document.getElementById('emailEnabled');
     if (emailEnabled) {
         emailEnabled.addEventListener('change', (e) => {
@@ -40,13 +35,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Предупреждение о localhost для webhook
     if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         const warning = document.getElementById('webhookLocalhostWarning');
         if (warning) warning.style.display = 'block';
     }
     
-    // Копирование Webhook URL
+
     window.copyWebhookUrl = function() {
         const url = window.location.origin + '/api/webhook';
         if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -72,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
         showNotification('URL скопирован', 'success');
     }
     
-    // Генерация секрета
+
     const generateSecretBtn = document.getElementById('generateSecretBtn');
     if (generateSecretBtn) {
         generateSecretBtn.addEventListener('click', () => {
@@ -85,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Копирование секрета
+
     const copySecretBtn = document.getElementById('copySecretBtn');
     if (copySecretBtn) {
         copySecretBtn.addEventListener('click', () => {
@@ -104,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Тестовое письмо
     window.sendTestEmail = async function() {
         try {
             const response = await fetch('/api/integrations/email/test', {
@@ -122,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Тест Mattermost
+
     window.testMattermostConnection = async function() {
         const webhookUrl = document.getElementById('mattermostWebhook')?.value;
         const channel = document.getElementById('mattermostChannel')?.value;
@@ -151,7 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Тест Jira
+
     window.testJiraConnection = async function() {
         const url = document.getElementById('jiraUrl')?.value;
         const email = document.getElementById('jiraEmail')?.value;
@@ -189,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Тест Yandex Tracker
     window.testYandexConnection = async function() {
         const orgId = document.getElementById('yandexOrgId')?.value;
         const token = document.getElementById('yandexToken')?.value;
@@ -222,12 +214,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
     
-    // Экспорт функций в глобальную область
+
     window.generateWebhookSecret = generateWebhookSecret;
     
 });
 
-// Функция showNotification (если её нет)
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     const bgColor = type === 'success' ? '#10b981' : (type === 'error' ? '#ef4444' : (type === 'warning' ? '#f59e0b' : '#3b82f6'));

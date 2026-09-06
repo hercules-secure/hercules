@@ -1,5 +1,5 @@
 /**
- * Основной класс приложения
+ * Main application class
  */
 
 import { fetchArchiveFromUrl, uploadArchive, runSASTAnalysis } from './api.js';
@@ -53,13 +53,13 @@ export class HerculesMainApp {
         const url = this.repoInput?.value.trim();
         
         if (!url || !isValidRepositoryUrl(url)) {
-            this.showValidationMessage('Введите корректную ссылку на репозиторий', 'invalid');
+            this.showValidationMessage('Enter a valid repository link', 'invalid');
             return;
         }
 
         if (this.fetchRepoBtn) {
             this.fetchRepoBtn.disabled = true;
-            this.fetchRepoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Загрузка...';
+            this.fetchRepoBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
         }
 
         try {
@@ -88,13 +88,13 @@ export class HerculesMainApp {
             this.currentArchiveId = archiveData.id;
             this.selectedFile = null;
             
-            showToolNotification('Архив успешно загружен', 'success');
+            showToolNotification('Archive loaded successfully', 'success');
         } catch (error) {
             showRepositoryUnavailableMessage(url, () => {});
         } finally {
             if (this.fetchRepoBtn) {
                 this.fetchRepoBtn.disabled = false;
-                this.fetchRepoBtn.innerHTML = 'Скачать архив';
+                this.fetchRepoBtn.innerHTML = 'Download archive';
             }
         }
     }
@@ -114,10 +114,10 @@ export class HerculesMainApp {
         
         if (!isValid) {
             this.setButtonState(false);
-            this.showValidationMessage('Введите корректную ссылку на Git репозиторий', 'invalid');
+            this.showValidationMessage('Enter a valid Git repository link', 'invalid');
         } else {
             this.setButtonState(true);
-            this.showValidationMessage('Ссылка корректна', 'valid');
+            this.showValidationMessage('Link is valid', 'valid');
         }
     }
 
@@ -160,9 +160,9 @@ export class HerculesMainApp {
 
     updateTaskStatus(taskId, status) {
         const statusMap = {
-            'pending': 'В ожидании',
-            'in-progress': 'В работе',
-            'completed': 'Завершено'
+            'pending': 'Pending',
+            'in-progress': 'In progress',
+            'completed': 'Completed'
         };
         
         const taskElement = this.findTaskElement(taskId);
@@ -221,12 +221,12 @@ export class HerculesMainApp {
         }
 
         if (!this.selectedFile && !this.currentArchiveId && !this.repoInput?.value.trim()) {
-            showToolNotification('Выберите файл или укажите ссылку на репозиторий', 'error');
+            showToolNotification('Select a file or specify a repository link', 'error');
             return;
         }
 
         const originalText = this.startButton.textContent;
-        this.startButton.textContent = 'Анализ запущен...';
+        this.startButton.textContent = 'Analysis running...';
         this.startButton.disabled = true;
 
         try {
@@ -252,12 +252,12 @@ export class HerculesMainApp {
                         this.currentArchiveId = archiveId;
                         this.animateProgress('1.1', 100, 500, () => {});
                     } else {
-                        throw new Error('Выберите архив или укажите ссылку на репозиторий');
+                        throw new Error('Select an archive or specify a repository link');
                     }
                 }
 
                 if (!archiveId) {
-                    throw new Error('Не удалось получить ID архива');
+                    throw new Error('Failed to get archive ID');
                 }
 
                 this.updateTaskStatus('1.1', 'completed');
@@ -269,21 +269,21 @@ export class HerculesMainApp {
                 this.animateProgress('2.1', 100, 500, () => {});
                 this.updateTaskStatus('2.1', 'completed');
                 this.updateTaskStatus('2.2', 'completed');
-                this.startButton.textContent = 'Анализ завершен';
+                this.startButton.textContent = 'Analysis completed';
                 
                 showResultsModal(sastResults, () => this.fullReset());
-                showToolNotification('Анализ успешно завершен', 'success');
+                showToolNotification('Analysis completed successfully', 'success');
 
             } catch (error) {
                 this.updateTaskStatus('1.1', 'pending');
                 this.updateTaskStatus('2.1', 'pending');
                 this.updateTaskStatus('2.2', 'pending');
-                showToolNotification(error.message || 'Ошибка при анализе', 'error');
+                showToolNotification(error.message || 'Analysis error', 'error');
                 this.resetButton(originalText);
             }
 
         } catch (error) {
-            showToolNotification('Ошибка при анализе', 'error');
+            showToolNotification('Analysis error', 'error');
             this.resetButton(originalText);
         }
     }
@@ -348,7 +348,7 @@ export class HerculesMainApp {
         });
         
         if (this.startButton) {
-            this.startButton.textContent = 'Начать анализ';
+            this.startButton.textContent = 'Start analysis';
             this.startButton.disabled = true;
             this.startButton.classList.remove('active');
         }
@@ -377,14 +377,13 @@ export class HerculesMainApp {
     }
 
     clearResults() {
-        if (confirm('Очистить сохраненные результаты?')) {
+        if (confirm('Clear saved results?')) {
             localStorage.removeItem('sast-results');
-            showToolNotification('Результаты очищены', 'success');
+            showToolNotification('Results cleared', 'success');
         }
     }
 }
 
-// Глобальные функции
 window.removeFile = function() {
     const fileInfo = document.getElementById('fileInfo');
     const startBtn = document.getElementById('start-btn');

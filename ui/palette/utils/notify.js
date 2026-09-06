@@ -44,9 +44,9 @@ function showCustomAlert(title, message, type = 'info', confirmText = 'OK', onCo
         <div style="text-align: center; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
                 <i class="fas ${color.icon}" style="font-size: 28px; color: ${color.iconColor};"></i>
-                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Ubuntu', sans-serif;">${title}</h3>
+                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Fira Sans', 'Fira Code', sans-serif;">${title}</h3>
             </div>
-            <p style="font-size: 14px; color: #4b5563; margin: 0; line-height: 1.6; font-family: 'Ubuntu', sans-serif;">${message}</p>
+            <p style="font-size: 14px; color: #4b5563; margin: 0; line-height: 1.6; font-family: 'Fira Sans', 'Fira Code', sans-serif;">${message}</p>
         </div>
         <div style="display: flex; justify-content: center;">
             <button class="alert-confirm-btn" style="
@@ -55,7 +55,7 @@ function showCustomAlert(title, message, type = 'info', confirmText = 'OK', onCo
                 border-radius: 8px;
                 background: ${color.border};
                 color: white;
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 font-size: 14px;
                 font-weight: 500;
                 cursor: pointer;
