@@ -1,7 +1,3 @@
-// ============================================================
-// УНИВЕРСАЛЬНАЯ ЗАГРУЗКА ФАЙЛА С ЗАВИСИМОСТЯМИ
-// ============================================================
-
 function loadDependencyFile() {
     var input = document.createElement('input');
     input.type = 'file';
@@ -22,22 +18,18 @@ function loadDependencyFile() {
                 
                 if (deps && Object.keys(deps).length > 0) {
                     buildDependencyTree(deps, fileName, fileType);
-                    showCustomAlert('Успешно', 'Зависимости загружены: ' + Object.keys(deps).length + ' пакетов', 'success');
+                    showCustomAlert('Success', 'Dependencies loaded: ' + Object.keys(deps).length + ' packages', 'success');
                 } else {
-                    showCustomAlert('Ошибка', 'Не найдены зависимости в файле', 'warning');
+                    showCustomAlert('Error', 'No dependencies found in file', 'warning');
                 }
             } catch (err) {
-                showCustomAlert('Ошибка', 'Не удалось распарсить файл: ' + err.message, 'error');
+                showCustomAlert('Error', 'Failed to parse file: ' + err.message, 'error');
             }
         };
         reader.readAsText(file);
     };
     input.click();
 }
-
-// ============================================================
-// ОПРЕДЕЛЕНИЕ ТИПА ФАЙЛА
-// ============================================================
 
 function detectDependencyFileType(content, fileName) {
     var ext = fileName.split('.').pop().toLowerCase();
@@ -83,10 +75,6 @@ function detectDependencyFileType(content, fileName) {
     
     return 'unknown';
 }
-
-// ============================================================
-// УНИВЕРСАЛЬНЫЙ ПАРСИНГ ЗАВИСИМОСТЕЙ
-// ============================================================
 
 function parseDependencies(content, fileType) {
     var deps = {};
@@ -244,10 +232,6 @@ function extractXmlTag(content, tag) {
     return match ? match[1].trim() : null;
 }
 
-// ============================================================
-// ПОСТРОЕНИЕ ДЕРЕВА ЗАВИСИМОСТЕЙ С РАСКРЫТИЕМ
-// ============================================================
-
 function buildDependencyTree(deps, fileName, fileType) {
     elements = [];
     connections = [];
@@ -256,7 +240,6 @@ function buildDependencyTree(deps, fileName, fileType) {
     var depNames = Object.keys(deps);
     var projectName = fileName.replace(/\.[^.]+$/, '');
     
-    // Центральный узел
     var projectId = ++elementIdCounter;
     var projectNode = {
         id: projectId,
@@ -278,7 +261,6 @@ function buildDependencyTree(deps, fileName, fileType) {
     };
     elements.push(projectNode);
     
-    // Узлы зависимостей 1-го уровня
     var nodeIds = {};
     var spacingX = 200;
     var startX = 150;
@@ -322,13 +304,12 @@ function buildDependencyTree(deps, fileName, fileType) {
             children: [],
             parentId: projectId,
             isRoot: false,
-            hasChildren: Math.random() > 0.6 // Для демонстрации
+            hasChildren: Math.random() > 0.6
         };
         elements.push(element);
         projectNode.children.push(element.id);
     });
     
-    // Связи от проекта
     depNames.forEach(function(name) {
         var toId = nodeIds[name];
         if (toId) {
@@ -348,12 +329,8 @@ function buildDependencyTree(deps, fileName, fileType) {
     renderConnections();
     setTimeout(autoFitCanvas, 100);
     
-    showCustomAlert('Успешно', 'Дерево зависимостей: ' + depNames.length + ' пакетов. Кликните ⊕ для раскрытия', 'success');
+    showCustomAlert('Success', 'Dependency tree: ' + depNames.length + ' packages. Click ⊕ to expand', 'success');
 }
-
-// ============================================================
-// РАСКРЫТИЕ/СВОРАЧИВАНИЕ
-// ============================================================
 
 function toggleNodeExpand(elementId) {
     var el = elements.find(function(e) { return e.id === elementId; });
@@ -361,17 +338,14 @@ function toggleNodeExpand(elementId) {
     
     el.isExpanded = !el.isExpanded;
     
-    // Находим дочерние элементы
     var children = elements.filter(function(e) { 
         return e.parentId === elementId; 
     });
     
     if (el.isExpanded) {
-        // Раскрываем
         children.forEach(function(child) {
             child.hidden = false;
         });
-        // Добавляем дочерние связи
         children.forEach(function(child) {
             if (!connections.some(function(c) { return c.from === elementId && c.to === child.id; })) {
                 connections.push({
@@ -385,9 +359,7 @@ function toggleNodeExpand(elementId) {
             }
         });
     } else {
-        // Сворачиваем
         hideChildrenRecursive(elementId);
-        // Удаляем дочерние связи
         connections = connections.filter(function(c) {
             return !children.some(function(child) { return c.from === elementId && c.to === child.id; });
         });
@@ -406,12 +378,6 @@ function hideChildrenRecursive(parentId) {
         hideChildrenRecursive(child.id);
     });
 }
-
-
-
-// ============================================================
-// ЭКСПОРТ
-// ============================================================
 
 window.loadDependencyFile = loadDependencyFile;
 window.detectDependencyFileType = detectDependencyFileType;

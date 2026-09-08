@@ -41,13 +41,13 @@ function showWorkflowProgressModal(title, totalSteps) {
         <div style="margin-bottom: 20px;">
             <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 12px;">
                 <i class="fas fa-play-circle" style="font-size: 28px; color: #3B82F6;"></i>
-                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Ubuntu', sans-serif;" id="progressModalTitle">${title || 'Выполнение workflow'}</h3>
+                <h3 style="font-size: 18px; font-weight: 600; color: #1a1a2e; margin: 0; font-family: 'Fira Sans', 'Fira Code', sans-serif;" id="progressModalTitle">${title || 'Выполнение workflow'}</h3>
             </div>
-            <p style="font-size: 14px; color: #6b7280; margin: 0; font-family: 'Ubuntu', sans-serif;" id="progressModalStatus">Подготовка...</p>
+            <p style="font-size: 14px; color: #6b7280; margin: 0; font-family: 'Fira Sans', 'Fira Code', sans-serif;" id="progressModalStatus">Подготовка...</p>
         </div>
         
         <div style="margin-bottom: 16px;">
-            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #6b7280; margin-bottom: 6px; font-family: 'Ubuntu', sans-serif;">
+            <div style="display: flex; justify-content: space-between; font-size: 13px; color: #6b7280; margin-bottom: 6px; font-family: 'Fira Sans', 'Fira Code', sans-serif;">
                 <span id="progressModalSteps">0 / ${totalSteps}</span>
                 <span id="progressModalPercent">0%</span>
             </div>
@@ -57,7 +57,7 @@ function showWorkflowProgressModal(title, totalSteps) {
         </div>
         
         <div style="margin-bottom: 20px; padding: 12px; background: #f8fafc; border-radius: 8px; min-height: 40px; display: flex; align-items: center; justify-content: center;">
-            <span style="font-size: 13px; color: #374151; font-family: 'Ubuntu', sans-serif;" id="progressModalCurrentStep">Ожидание начала...</span>
+            <span style="font-size: 13px; color: #374151; font-family: 'Fira Sans', 'Fira Code', sans-serif;" id="progressModalCurrentStep">Ожидание начала...</span>
         </div>
         
         <div style="display: flex; justify-content: center; gap: 10px;">
@@ -67,7 +67,7 @@ function showWorkflowProgressModal(title, totalSteps) {
                 border-radius: 8px;
                 background: #EF4444;
                 color: white;
-                font-family: 'Ubuntu', sans-serif;
+                font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 font-size: 13px;
                 font-weight: 500;
                 cursor: pointer;

@@ -273,41 +273,6 @@ if (playBtn) {
     });
 }
 
-// ============================================================
-// TEMPLATES — LOAD ON CLICK
-// ============================================================
-
-// var loadTemplateBtn = document.getElementById('loadTemplateBtn');
-// var templateSelect = document.getElementById('templateSelect');
-
-// if (loadTemplateBtn && templateSelect) {
-//     loadTemplateBtn.addEventListener('click', function() {
-//         var template = templateSelect.value;
-//         if (!template) {
-//             showCustomAlert('Error', 'Select a template from the list', 'warning');
-//             return;
-//         }
-//         loadTemplateData(template);
-//     });
-
-//     templateSelect.addEventListener('change', function() {
-//         if (this.value !== '') {
-//             loadTemplateBtn.style.background = '#3B82F6';
-//             loadTemplateBtn.style.color = 'white';
-//             loadTemplateBtn.style.opacity = '1';
-//             loadTemplateBtn.style.cursor = 'pointer';
-//         } else {
-//             loadTemplateBtn.style.background = '#e5e7eb';
-//             loadTemplateBtn.style.color = '#9ca3af';
-//             loadTemplateBtn.style.opacity = '0.6';
-//             loadTemplateBtn.style.cursor = 'not-allowed';
-//         }
-//     });
-// }
-
-// ============================================================
-// TEMPLATES — DRAG & DROP ON CANVAS
-// ============================================================
 
 // 1. Setup drag for templates
 document.querySelectorAll('.flow-tool-item[draggable="true"]').forEach(function(item) {

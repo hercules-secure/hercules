@@ -1,139 +1,116 @@
-# Геркулес
+# Hercules
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
 
-## Установка и запуск
+## Installation & Setup
 
-
-### Способ 1: Клонирование через Git
+### Method 1: Clone via Git
 
 ```bash
 git clone https://github.com/hercules-secure/hercules.git
 cd hercules
 
-# Сделать исполняемым
+# Make executable
 chmod +x hercules.sh
 
-# Установка зависимостей
+# Install dependencies
 ./hercules.sh install
 
-# Запуск сервера
+# Start server
 ./hercules.sh start
-```
 
-## Дополнительные команды
-```bash
-
-# Запуск с другим портом
+# Start on custom port
 PORT=3000 ./hercules.sh start
 
-# Обновление сервера (остановка, git pull, установка зависимостей, запуск)
+# Update server (stop, git pull, install dependencies, start)
 ./hercules.sh update
 
-# Статус сервера
+# Server status
 ./hercules.sh status
 
-# Показать все логи (оба файла)
+# Show all logs (both files)
 ./hercules.sh logs
 
-# Показать только combined.log
+# Show only combined.log
 ./hercules.sh logs-combined
 
-# Показать только errors.log
+# Show only errors.log
 ./hercules.sh logs-errors
 
-# Логи в реальном времени (combined.log)
+# Follow combined.log in real-time
 ./hercules.sh logs-follow
 
-# Логи ошибок в реальном времени
+# Follow errors.log in real-time
 ./hercules.sh logs-follow-errors
 
-# Очистить логи
+# Clear logs
 ./hercules.sh logs-clear
 
-# Показать размер логов
+# Show log size
 ./hercules.sh logs-size
 
-# Перезапуск сервера
+# Restart server
 ./hercules.sh restart
 
-# Остановка сервера
+# Stop server
 ./hercules.sh stop
 
-# Очистка временных файлов
+# Clean temporary files
 ./hercules.sh clean
 
-# Помощь
+# Help
 ./hercules.sh help
 ```
 
-## Возможности
+## Features
 
-```
-Композиционный анализ
+Composition Analysis
 
-- Статистика зависимостей
-- Проверка лицензий
-- Анализ достижимости
-- Анализ версий
+- Dependency statistics
+- License compliance checking
+- Reachability analysis
+- Version analysis
 
-Анализ исходного кода
+Source Code Analysis
 
-- Поиск уязвимостей и слабостей
-- Поиск секретов
-- Анализ потока данных
-- Taint Analysis
-- Call Graph анализ
-- Анализ достижимости
+- Vulnerability and weakness detection
+- Secret detection
+- Data flow analysis
+- Taint analysis
+- Call graph analysis
+- Reachability analysis
 
-Фаззинг API
+API Fuzzing
 
-- Анализ безопасности API
-- Автоматическая генерация тестов
-- Replay атаки
+- API security analysis
+- Automated test generation
+- Attack replay
 - REST API (OpenAPI / Swagger)
 - gRPC (HTTP/2, Protobuf)
 - GraphQL
 - SOAP / XML-RPC
 
-Сканирование сайтов и веб-приложений
+Threat Modeling
 
-- Сканирование на OWASP Top 10
-- Сканирование на CWE Top 25
-- Поиск известных CVE
-- Анализ форм и параметров URL
-- Анализ заголовков безопасности (HSTS, CSP)
-- Проверка SSL/TLS сертификатов
-- Анализ Cookie (HttpOnly, Secure)
-- SPA (React / Vue / Angular)
-- Поиск скрытых директорий
-- Анализ субдоменов
+- Data flow diagrams (DFD)
+- STRIDE threat library
+- Ready-to-use strategy library
 
-Моделирование угроз
+Integrations
 
-- Диаграммы потоков данных
-- Библиотека угроз STRIDE
-- Библиотека готовых стратегий
+- CI/CD integration
+- Issue trackers
+- Notifications
 
-Интеграции
-
-- CI/CD интеграция
-- Трекеры задач
-- Уведомления
-
-Форматы отчетов
+Report Formats
 
 - HTML
 - JSON
 - PDF
 
-Поддерживаемые источники
+Supported Sources
 
 - GitHub / GitLab
-- Архив / Локальный проект
-- Bitbucket / Корпоративные репозитории
-
-```
-
-
+- Archive / Local project
+- Bitbucket / Enterprise repositories

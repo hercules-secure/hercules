@@ -65,7 +65,7 @@ function openToolSelectionModal() {
         justify-content: center;
         align-items: center;
         animation: alertFadeIn 0.3s ease;
-        font-family: 'Ubuntu', sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     `;
     
     var targetName = analysisTargetElement ? (analysisTargetElement.name || 'Unknown') : '—';
@@ -266,7 +266,7 @@ function openToolSelectionModal() {
                     background: white;
                     color: #6c757d;
                     cursor: pointer;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     font-size: 14px;
                     font-weight: 500;
                     transition: all 0.2s;
@@ -281,7 +281,7 @@ function openToolSelectionModal() {
                     background: #8B5CF6;
                     color: white;
                     cursor: not-allowed;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     font-size: 14px;
                     font-weight: 500;
                     transition: all 0.2s;
@@ -542,7 +542,7 @@ function showAnalysisResultsModal(results) {
         justify-content: center;
         align-items: center;
         animation: alertFadeIn 0.3s ease;
-        font-family: 'Ubuntu', sans-serif;
+        font-family: 'Fira Sans', 'Fira Code', sans-serif;
     `;
     
     var findingsHtml = '';
@@ -648,7 +648,7 @@ function showAnalysisResultsModal(results) {
                     background: white;
                     color: #4b5563;
                     cursor: pointer;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     font-size: 14px;
                     font-weight: 500;
                     transition: all 0.2s;
@@ -662,7 +662,7 @@ function showAnalysisResultsModal(results) {
                     background: #8B5CF6;
                     color: white;
                     cursor: pointer;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     font-size: 14px;
                     font-weight: 500;
                     transition: all 0.2s;
