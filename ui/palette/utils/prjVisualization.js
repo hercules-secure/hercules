@@ -3,14 +3,9 @@ var projectFilesMap = {};
 var selectedDiagramType = 'structure';
 var isProjectLoaded = false;
 
-// ============================================================
-// 0. AST ПАРСЕР ДЛЯ ВСЕХ ЯЗЫКОВ
-// ============================================================
-
 function parseCodeWithAST(code, ext) {
     var lang = ext.toLowerCase();
     
-    // Пытаемся использовать улучшенный парсер
     try {
         switch(lang) {
             case 'js':
@@ -32,17 +27,12 @@ function parseCodeWithAST(code, ext) {
         }
     } catch (e) {
         console.warn('Enhanced parser failed, using fallback:', e);
-        // Fallback на существующий парсер
         if (typeof parseCodeForCallGraph === 'function') {
             return parseCodeForCallGraph(code, ext);
         }
         return { functions: [], calls: [], imports: [], exports: [] };
     }
 }
-
-// ============================================================
-// 0.1 УЛУЧШЕННЫЙ ПАРСЕР JAVASCRIPT
-// ============================================================
 
 function parseJavaScriptEnhanced(code) {
     var result = {
@@ -53,7 +43,6 @@ function parseJavaScriptEnhanced(code) {
         classes: []
     };
     
-    // Поиск функций с контекстом
     var funcRegex = /function\s+(\w+)\s*\(([^)]*)\)/g;
     var arrowRegex = /(?:const|let|var)\s+(\w+)\s*=\s*(?:\(([^)]*)\)\s*=>|([^=]+)\s*=>)/g;
     var classRegex = /class\s+(\w+)/g;
@@ -65,7 +54,6 @@ function parseJavaScriptEnhanced(code) {
     var match;
     var currentClass = null;
     
-    // Собираем классы
     while ((match = classRegex.exec(code)) !== null) {
         result.classes.push({
             name: match[1],
@@ -73,7 +61,6 @@ function parseJavaScriptEnhanced(code) {
         });
     }
     
-    // Собираем функции
     while ((match = funcRegex.exec(code)) !== null) {
         var params = match[2] ? match[2].split(',').map(function(p) { return p.trim(); }) : [];
         result.functions.push({
@@ -85,7 +72,6 @@ function parseJavaScriptEnhanced(code) {
         });
     }
     
-    // Собираем стрелочные функции
     while ((match = arrowRegex.exec(code)) !== null) {
         var name = match[1] || match[3];
         if (name) {
@@ -103,12 +89,10 @@ function parseJavaScriptEnhanced(code) {
         }
     }
     
-    // Собираем методы
     var reservedMethods = ['if', 'for', 'while', 'switch', 'catch', 'try', 'else', 'case', 'default', 'with'];
     while ((match = methodRegex.exec(code)) !== null) {
         var methodName = match[1];
         if (reservedMethods.indexOf(methodName) === -1) {
-            // Проверяем, принадлежит ли метод классу
             var parentClass = findParentClass(code, match.index, result.classes);
             result.functions.push({
                 name: methodName,
@@ -120,7 +104,6 @@ function parseJavaScriptEnhanced(code) {
         }
     }
     
-    // Собираем вызовы с определением контекста
     var reserved = ['if', 'for', 'while', 'switch', 'return', 'console', 'require', 'import', 'export', 'new', 'throw', 'catch', 'finally', 'typeof', 'instanceof', 'void', 'delete', 'yield', 'await', 'async', 'try', 'else', 'case', 'default', 'break', 'continue', 'debugger', 'function', 'class', 'interface', 'extends', 'implements', 'package', 'private', 'protected', 'public', 'static', 'this', 'super', 'with', 'let', 'var', 'const', 'get', 'set', 'of', 'from', 'as', 'in', 'is'];
     
     while ((match = callRegex.exec(code)) !== null) {
@@ -135,7 +118,6 @@ function parseJavaScriptEnhanced(code) {
         }
     }
     
-    // Собираем импорты
     while ((match = importRegex.exec(code)) !== null) {
         var items = [];
         if (match[1]) {
@@ -150,7 +132,6 @@ function parseJavaScriptEnhanced(code) {
         });
     }
     
-    // Собираем экспорты
     while ((match = exportRegex.exec(code)) !== null) {
         if (match[1]) {
             var items = match[1].split(',').map(function(i) { return i.trim(); });
@@ -170,10 +151,6 @@ function parseJavaScriptEnhanced(code) {
     
     return result;
 }
-
-// ============================================================
-// 0.2 УЛУЧШЕННЫЙ ПАРСЕР PYTHON
-// ============================================================
 
 function parsePythonEnhanced(code) {
     var result = {
@@ -233,10 +210,6 @@ function parsePythonEnhanced(code) {
     
     return result;
 }
-
-// ============================================================
-// 0.3 УЛУЧШЕННЫЙ ПАРСЕР GO
-// ============================================================
 
 function parseGoEnhanced(code) {
     var result = {
@@ -305,10 +278,6 @@ function parseGoEnhanced(code) {
     return result;
 }
 
-// ============================================================
-// 0.4 УЛУЧШЕННЫЙ ПАРСЕР JAVA
-// ============================================================
-
 function parseJavaEnhanced(code) {
     var result = {
         functions: [],
@@ -366,10 +335,6 @@ function parseJavaEnhanced(code) {
     return result;
 }
 
-// ============================================================
-// 0.5 УНИВЕРСАЛЬНЫЙ ПАРСЕР (FALLBACK)
-// ============================================================
-
 function parseGenericEnhanced(code) {
     var result = {
         functions: [],
@@ -410,10 +375,6 @@ function parseGenericEnhanced(code) {
     return result;
 }
 
-// ============================================================
-// 0.6 ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-// ============================================================
-
 function getLineNumber(code, index) {
     var before = code.substring(0, index);
     return before.split('\n').length;
@@ -430,7 +391,6 @@ function findCallingFunctionEnhanced(code, index, functions) {
     for (var i = 0; i < functions.length; i++) {
         var fn = functions[i];
         if (fn.line < currentLine) {
-            // Упрощенная проверка - функция должна быть выше текущей строки
             if (fn.line > bestLine) {
                 bestLine = fn.line;
                 bestMatch = fn.name;
@@ -457,10 +417,6 @@ function findParentClass(code, index, classes) {
     return lastClass;
 }
 
-// ============================================================
-// 1. ВЫБОР ПАПКИ ПРОЕКТА
-// ============================================================
-
 window.selectProjectFolder = function() {
     var input = document.createElement('input');
     input.type = 'file';
@@ -471,13 +427,13 @@ window.selectProjectFolder = function() {
         var files = e.target.files;
         if (!files || files.length === 0) {
             if (typeof showCustomAlert === 'function') {
-                showCustomAlert('Ошибка', 'Папка не выбрана', 'warning');
+                showCustomAlert('Error', 'No folder selected', 'warning');
             }
             return;
         }
         
         var tree = {
-            name: 'Проект',
+            name: 'Project',
             type: 'folder',
             children: {},
             files: []
@@ -540,7 +496,7 @@ window.selectProjectFolder = function() {
         
         if (fileCount === 0) {
             if (typeof showCustomAlert === 'function') {
-                showCustomAlert('Ошибка', 'В папке не найдены файлы с кодом', 'warning');
+                showCustomAlert('Error', 'No code files found in folder', 'warning');
             }
             return;
         }
@@ -551,12 +507,12 @@ window.selectProjectFolder = function() {
         updateProjectInfo();
         
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Успешно', 'Найдено ' + countFiles(tree) + ' файлов в проекте', 'success');
+            showCustomAlert('Success', 'Found ' + countFiles(tree) + ' files in project', 'success');
         }
         
         var selectBtn = document.querySelector('#projectInfoModal button[onclick="selectProjectFolder()"]');
         if (selectBtn) {
-            selectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Проект загружен (' + countFiles(tree) + ' файлов)';
+            selectBtn.innerHTML = '<i class="fas fa-check-circle"></i> Project loaded (' + countFiles(tree) + ' files)';
             selectBtn.style.background = '#10B981';
             selectBtn.style.cursor = 'default';
             selectBtn.onmouseover = null;
@@ -567,10 +523,6 @@ window.selectProjectFolder = function() {
     
     input.click();
 };
-
-// ============================================================
-// 2. ПОСТРОЕНИЕ HTML ДЕРЕВА ДЛЯ ПРЕВЬЮ
-// ============================================================
 
 function buildTreeHTML(node, level) {
     var html = '';
@@ -626,10 +578,6 @@ function countFiles(node) {
     return count;
 }
 
-// ============================================================
-// 3. ОТРИСОВКА ДЕРЕВА НА ХОЛСТЕ
-// ============================================================
-
 function renderProjectTree(tree) {
     if (typeof elements !== 'undefined') {
         elements = [];
@@ -643,7 +591,7 @@ function renderProjectTree(tree) {
     
     if (!tree || countFiles(tree) === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Информация', 'Нет файлов для отображения', 'info');
+            showCustomAlert('Info', 'No files to display', 'info');
         }
         return;
     }
@@ -652,7 +600,7 @@ function renderProjectTree(tree) {
     elements.push({
         id: rootId,
         type: 'project-root',
-        name: '📁 ' + (tree.name || 'Проект'),
+        name: '📁 ' + (tree.name || 'Project'),
         x: 50,
         y: 50,
         color: '#8B5CF6',
@@ -785,13 +733,9 @@ function renderProjectTree(tree) {
     }, 200);
     
     if (typeof showCustomAlert === 'function') {
-        showCustomAlert('Успешно', 'Построено дерево проекта: ' + countFiles(tree) + ' файлов', 'success');
+        showCustomAlert('Success', 'Project tree built: ' + countFiles(tree) + ' files', 'success');
     }
 }
-
-// ============================================================
-// 4. УПРАВЛЕНИЕ МОДАЛЬНЫМ ОКНОМ
-// ============================================================
 
 function openProjectModal() {
     var modal = document.getElementById('projectInfoModal');
@@ -824,7 +768,7 @@ function openProjectModal() {
     
     var selectBtn = document.querySelector('#projectInfoModal button[onclick="selectProjectFolder()"]');
     if (selectBtn) {
-        selectBtn.innerHTML = '<i class="fas fa-folder-open"></i> Выбрать папку проекта';
+        selectBtn.innerHTML = '<i class="fas fa-folder-open"></i> Select project folder';
         selectBtn.style.background = '#8B5CF6';
         selectBtn.style.cursor = 'pointer';
         selectBtn.onmouseover = function() { this.style.background = '#7C3AED'; };
@@ -848,7 +792,7 @@ function openProjectModal() {
     if (countEl) countEl.textContent = '0';
     
     var nameEl = document.getElementById('projectNameText');
-    if (nameEl) nameEl.textContent = 'Проект';
+    if (nameEl) nameEl.textContent = 'Project';
     
     modal.style.display = 'flex';
 }
@@ -870,7 +814,7 @@ function updateProjectInfo() {
     if (infoBlock) infoBlock.style.display = 'block';
     
     if (nameEl && projectTreeData) {
-        var rootName = projectTreeData.name || 'Проект';
+        var rootName = projectTreeData.name || 'Project';
         nameEl.textContent = rootName;
     }
     
@@ -891,10 +835,6 @@ function updateProjectInfo() {
     }
 }
 
-// ============================================================
-// 5. ВЫБОР ТИПА ДИАГРАММЫ
-// ============================================================
-
 function selectDiagramTypeCard(type) {
     selectedDiagramType = type;
     
@@ -908,14 +848,10 @@ function selectDiagramTypeCard(type) {
     }
 }
 
-// ============================================================
-// 6. ПОСТРОЕНИЕ ВЫБРАННОЙ ДИАГРАММЫ
-// ============================================================
-
 function buildSelectedDiagram() {
     if (!projectTreeData || !isProjectLoaded) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Сначала выберите папку проекта', 'warning');
+            showCustomAlert('Error', 'Select project folder first', 'warning');
         }
         return;
     }
@@ -943,7 +879,7 @@ function buildSelectedDiagram() {
             renderProjectTree(projectTreeData);
             
             if (typeof showCustomAlert === 'function') {
-                showCustomAlert('Успешно', 'Построена структура проекта', 'success');
+                showCustomAlert('Success', 'Project structure built', 'success');
             }
         }
     } else if (selectedDiagramType === 'dataflow') {
@@ -955,14 +891,10 @@ function buildSelectedDiagram() {
     closeProjectModal();
 }
 
-// ============================================================
-// 7. АНАЛИЗ ПОТОКОВ ДАННЫХ
-// ============================================================
-
 function analyzeProjectDataFlow(options) {
     if (!projectTreeData || !isProjectLoaded) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Сначала выберите папку проекта', 'warning');
+            showCustomAlert('Error', 'Select project folder first', 'warning');
         }
         return;
     }
@@ -981,13 +913,13 @@ function analyzeProjectDataFlow(options) {
     
     if (allFiles.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Нет файлов для анализа', 'warning');
+            showCustomAlert('Error', 'No files to analyze', 'warning');
         }
         return;
     }
     
     if (typeof showCustomAlert === 'function') {
-        showCustomAlert('Анализ потоков данных', 'Анализ ' + allFiles.length + ' файлов...', 'info');
+        showCustomAlert('Data Flow Analysis', 'Analyzing ' + allFiles.length + ' files...', 'info');
     }
     
     var processed = 0;
@@ -1001,7 +933,6 @@ function analyzeProjectDataFlow(options) {
                 var content = e.target.result;
                 var ext = fileData.ext;
                 
-                // Используем AST парсер
                 var parseResult = parseCodeWithAST(content, ext);
                 
                 if (options.showFunctions && parseResult.functions) {
@@ -1024,21 +955,17 @@ function analyzeProjectDataFlow(options) {
                 buildDataFlowDiagram({
                     functions: allFunctions,
                     calls: allCalls
-                }, 'проект');
+                }, 'project');
             }
         };
         reader.readAsText(fileData.file);
     });
 }
 
-// ============================================================
-// 8. АНАЛИЗ ГРАФА ВЫЗОВОВ
-// ============================================================
-
 function analyzeProjectCallGraph(options) {
     if (!projectTreeData || !isProjectLoaded) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Сначала выберите папку проекта', 'warning');
+            showCustomAlert('Error', 'Select project folder first', 'warning');
         }
         return;
     }
@@ -1057,13 +984,13 @@ function analyzeProjectCallGraph(options) {
     
     if (allFiles.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Нет файлов для анализа', 'warning');
+            showCustomAlert('Error', 'No files to analyze', 'warning');
         }
         return;
     }
     
     if (typeof showCustomAlert === 'function') {
-        showCustomAlert('Построение графа вызовов', 'Анализ ' + allFiles.length + ' файлов...', 'info');
+        showCustomAlert('Call Graph', 'Analyzing ' + allFiles.length + ' files...', 'info');
     }
     
     var processed = 0;
@@ -1099,16 +1026,12 @@ function analyzeProjectCallGraph(options) {
                 buildCallGraph({
                     functions: allFunctions,
                     calls: allCalls
-                }, 'проект');
+                }, 'project');
             }
         };
         reader.readAsText(fileData.file);
     });
 }
-
-// ============================================================
-// 9. ПОСТРОЕНИЕ ДИАГРАММЫ ПОТОКОВ ДАННЫХ
-// ============================================================
 
 function buildDataFlowDiagram(parseResult, fileName) {
     var functions = parseResult.functions || [];
@@ -1116,7 +1039,7 @@ function buildDataFlowDiagram(parseResult, fileName) {
     
     if (functions.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Информация', 'Не найдены функции для построения диаграммы потоков данных', 'info');
+            showCustomAlert('Info', 'No functions found for data flow diagram', 'info');
         }
         return;
     }
@@ -1131,7 +1054,6 @@ function buildDataFlowDiagram(parseResult, fileName) {
         selectedElement = null;
     }
     
-    // Создаем карту функций
     var functionMap = {};
     functions.forEach(function(fn) {
         if (!functionMap[fn.name]) {
@@ -1146,7 +1068,6 @@ function buildDataFlowDiagram(parseResult, fileName) {
     
     var functionNames = Object.keys(functionMap);
     
-    // Создаем узлы
     var nodeIds = {};
     var cols = Math.ceil(Math.sqrt(functionNames.length)) || 1;
     var spacingX = 220;
@@ -1188,7 +1109,6 @@ function buildDataFlowDiagram(parseResult, fileName) {
         });
     });
     
-    // Создаем связи
     var flowSet = new Set();
     
     calls.forEach(function(call) {
@@ -1205,7 +1125,7 @@ function buildDataFlowDiagram(parseResult, fileName) {
         
         var toFn = functionMap[toName];
         var params = toFn && toFn.params ? toFn.params : [];
-        var label = params.length > 0 ? params.join(', ') : 'данные';
+        var label = params.length > 0 ? params.join(', ') : 'data';
         
         connections.push({
             id: connections.length + 1,
@@ -1219,14 +1139,13 @@ function buildDataFlowDiagram(parseResult, fileName) {
         });
     });
     
-    // Если связей нет - создаем поток по порядку
     if (connections.length === 0 && functionNames.length > 1) {
         for (var i = 0; i < functionNames.length - 1; i++) {
             var fromName = functionNames[i];
             var toName = functionNames[i + 1];
             var toFn = functionMap[toName];
             var params = toFn && toFn.params ? toFn.params : [];
-            var label = params.length > 0 ? params.join(', ') : 'данные';
+            var label = params.length > 0 ? params.join(', ') : 'data';
             
             connections.push({
                 id: connections.length + 1,
@@ -1255,18 +1174,14 @@ function buildDataFlowDiagram(parseResult, fileName) {
     }, 100);
     
     if (typeof showCustomAlert === 'function') {
-        showCustomAlert('Успешно', 
-            'Построена диаграмма потоков данных:\n' +
-            '🔧 ' + functionNames.length + ' функций\n' +
-            '🔗 ' + connections.length + ' потоков', 
+        showCustomAlert('Success', 
+            'Data flow diagram built:\n' +
+            '🔧 ' + functionNames.length + ' functions\n' +
+            '🔗 ' + connections.length + ' flows', 
             'success'
         );
     }
 }
-
-// ============================================================
-// 10. ПОСТРОЕНИЕ ГРАФА ВЫЗОВОВ
-// ============================================================
 
 function buildCallGraph(parseResult, fileName) {
     var functions = parseResult.functions || [];
@@ -1274,7 +1189,7 @@ function buildCallGraph(parseResult, fileName) {
     
     if (functions.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Информация', 'В файле не найдены функции для построения графа вызовов', 'info');
+            showCustomAlert('Info', 'No functions found for call graph', 'info');
         }
         return;
     }
@@ -1289,7 +1204,6 @@ function buildCallGraph(parseResult, fileName) {
         selectedElement = null;
     }
     
-    // Создаем карту функций
     var functionMap = {};
     var functionNames = [];
     
@@ -1306,7 +1220,6 @@ function buildCallGraph(parseResult, fileName) {
         }
     });
     
-    // Анализируем вызовы
     calls.forEach(function(call) {
         var from = call.from;
         var to = call.to;
@@ -1318,7 +1231,6 @@ function buildCallGraph(parseResult, fileName) {
         }
     });
     
-    // Находим точки входа
     var calledFunctions = {};
     for (var name in functionMap) {
         var fn = functionMap[name];
@@ -1335,7 +1247,6 @@ function buildCallGraph(parseResult, fileName) {
         entryPoints = functionNames;
     }
     
-    // Располагаем функции на холсте
     var spacingX = 180;
     var spacingY = 60;
     var cols = 4;
@@ -1401,7 +1312,6 @@ function buildCallGraph(parseResult, fileName) {
         });
     });
     
-    // Создаем связи
     var connectionSet = {};
     
     for (var fromName in functionMap) {
@@ -1425,19 +1335,18 @@ function buildCallGraph(parseResult, fileName) {
                 from: fromId,
                 to: toId,
                 type: 'call',
-                label: 'вызов',
+                label: 'call',
                 color: color,
                 arrow: true
             });
         });
     }
     
-    // Легенда
     var legendId = ++elementIdCounter;
     elements.push({
         id: legendId,
         type: 'legend',
-        name: 'Легенда',
+        name: 'Legend',
         x: 20,
         y: 20,
         color: '#FFFFFF',
@@ -1468,26 +1377,22 @@ function buildCallGraph(parseResult, fileName) {
     
     if (typeof showCustomAlert === 'function') {
         var hasCalls = Object.keys(connectionSet).length > 0;
-        var msg = '📊 ' + functionNames.length + ' функций\n';
-        msg += '⭐ ' + entryPoints.length + ' точек входа\n';
-        msg += '🔗 ' + Object.keys(connectionSet).length + ' связей';
+        var msg = '📊 ' + functionNames.length + ' functions\n';
+        msg += '⭐ ' + entryPoints.length + ' entry points\n';
+        msg += '🔗 ' + Object.keys(connectionSet).length + ' connections';
         
         if (!hasCalls) {
-            msg += '\n\n⚠️ Связи не найдены. Функции могут не вызывать друг друга.';
+            msg += '\n\n⚠️ No connections found. Functions may not call each other.';
         }
         
-        showCustomAlert('Граф вызовов построен', msg, 'success');
+        showCustomAlert('Call Graph Built', msg, 'success');
     }
 }
-
-// ============================================================
-// 11. АНАЛИЗ ПРОЕКТА
-// ============================================================
 
 window.analyzeProject = function() {
     if (!projectTreeData) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Сначала выберите папку проекта', 'warning');
+            showCustomAlert('Error', 'Select project folder first', 'warning');
         }
         return;
     }
@@ -1506,13 +1411,13 @@ window.analyzeProject = function() {
     
     if (allFiles.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Нет файлов для анализа', 'warning');
+            showCustomAlert('Error', 'No files to analyze', 'warning');
         }
         return;
     }
     
     if (typeof showCustomAlert === 'function') {
-        showCustomAlert('Анализ', 'Анализ ' + allFiles.length + ' файлов...', 'info');
+        showCustomAlert('Analysis', 'Analyzing ' + allFiles.length + ' files...', 'info');
     }
     
     if (typeof closeCodeFileModal === 'function') {
@@ -1557,12 +1462,12 @@ window.analyzeProject = function() {
             
             processed++;
             if (processed === allFiles.length) {
-                var msg = '🔧 ' + allFunctions.length + ' функций\n' +
-                         '🔗 ' + allCalls.length + ' вызовов\n' +
-                         '📦 ' + allImports.length + ' импортов';
+                var msg = '🔧 ' + allFunctions.length + ' functions\n' +
+                         '🔗 ' + allCalls.length + ' calls\n' +
+                         '📦 ' + allImports.length + ' imports';
                 
                 if (typeof showCustomAlert === 'function') {
-                    showCustomAlert('Анализ завершен', msg, 'success');
+                    showCustomAlert('Analysis Complete', msg, 'success');
                 }
                 
                 buildProjectCallGraph(allFunctions, allCalls);
@@ -1572,19 +1477,15 @@ window.analyzeProject = function() {
     });
 };
 
-// ============================================================
-// 12. ГРАФ ВЫЗОВОВ ПРОЕКТА
-// ============================================================
-
 function buildProjectCallGraph(functions, calls) {
     if (functions.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Информация', 'В проекте не найдены функции', 'info');
+            showCustomAlert('Info', 'No functions found in project', 'info');
         }
         return;
     }
     
-    var choice = confirm('Построить граф вызовов? (ОК - очистить холст, Отмена - добавить к дереву)');
+    var choice = confirm('Build call graph? (OK - clear canvas, Cancel - add to tree)');
     
     if (choice) {
         if (typeof elements !== 'undefined') {
@@ -1667,7 +1568,7 @@ function buildProjectCallGraph(functions, calls) {
             from: nodeIds[fromName],
             to: nodeIds[toName],
             type: 'control',
-            label: 'вызов',
+            label: 'call',
             color: '#8B5CF6'
         });
     });
@@ -1686,14 +1587,10 @@ function buildProjectCallGraph(functions, calls) {
     }, 200);
 }
 
-// ============================================================
-// 13. АНАЛИЗ ПРОЕКТА С ОПЦИЯМИ
-// ============================================================
-
 function analyzeProjectWithOptions(options) {
     if (!projectTreeData || !isProjectLoaded) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Сначала выберите папку проекта', 'warning');
+            showCustomAlert('Error', 'Select project folder first', 'warning');
         }
         return;
     }
@@ -1712,13 +1609,13 @@ function analyzeProjectWithOptions(options) {
     
     if (allFiles.length === 0) {
         if (typeof showCustomAlert === 'function') {
-            showCustomAlert('Ошибка', 'Нет файлов для анализа', 'warning');
+            showCustomAlert('Error', 'No files to analyze', 'warning');
         }
         return;
     }
     
     if (typeof showCustomAlert === 'function') {
-        showCustomAlert('Анализ', 'Анализ ' + allFiles.length + ' файлов...', 'info');
+        showCustomAlert('Analysis', 'Analyzing ' + allFiles.length + ' files...', 'info');
     }
     
     var processed = 0;
@@ -1771,12 +1668,12 @@ function analyzeProjectWithOptions(options) {
                         functions: allFunctions,
                         calls: allCalls,
                         imports: allImports
-                    }, 'проект');
+                    }, 'project');
                 } else if (options.type === 'callgraph') {
                     buildCallGraph({
                         functions: allFunctions,
                         calls: allCalls
-                    }, 'проект');
+                    }, 'project');
                 }
             }
         };
@@ -1784,17 +1681,9 @@ function analyzeProjectWithOptions(options) {
     });
 }
 
-// ============================================================
-// 14. ЗАГРУЗКА ПРОЕКТА
-// ============================================================
-
 window.loadProject = function() {
     window.analyzeProject();
 };
-
-// ============================================================
-// 15. РЕГИСТРАЦИЯ ФУНКЦИЙ
-// ============================================================
 
 window.openProjectModal = openProjectModal;
 window.closeProjectModal = closeProjectModal;

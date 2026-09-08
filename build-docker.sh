@@ -32,7 +32,7 @@ EXCLUDE_FILES=(
     "installer.iss"
     "build-docker.sh"
     ".Dockerfile"
-    ".env.example"   # <--- ДОБАВЬТЕ ЭТУ СТРОКУ!
+    ".env.example"
 )
 
 # Папки для исключения
@@ -250,8 +250,8 @@ for item in "${SCRIPT_DIR}"/*; do
     [[ "$name" == "ui" ]] && continue
     [[ "$name" == "package.json" ]] && continue
     [[ "$name" == "check-env.js" ]] && continue
-    [[ "$name" == ".gitignore" ]] && continue  # <-- ДОБАВЛЕНО
-    [[ "$name" == ".dockerignore" ]] && continue # <-- ДОБАВЛЕНО
+    [[ "$name" == ".gitignore" ]] && continue
+    [[ "$name" == ".dockerignore" ]] && continue
     
     should_exclude "$item" && continue
     
@@ -323,7 +323,7 @@ EOF
     echo "  hercules/config.json создан из шаблона"
 fi
 
-# ========== 11. СОЗДАЁМ .env ПРИМЕР ==========
+# ========== 11. СОЗДАЁМ .env ==========
 echo "[INFO] Создание .env"
     cat > "${TEMP_DIR}/.env" << 'EOF'
 # Hercules Server Configuration
@@ -334,7 +334,7 @@ NODE_ENV=production
 # Logging
 LOG_DIR=./logs
 EOF
-    echo "  .env.example создан"
+    echo "  .env создан"
 
 # ========== 12. СОЗДАЁМ DOCKERFILE ==========
 
@@ -363,32 +363,47 @@ EOF
 
 echo "  Dockerfile создан"
 
-# ========== 13. DOCKER BUILD И PUSH ==========
+# ========== 13. УДАЛЕНИЕ СТАРОГО LATEST ==========
+echo "[INFO] Удаление старого latest образа (если существует)..."
+docker rmi "${DOCKER_USER}/${IMAGE_NAME}:latest" 2>/dev/null || true
+
+# ========== 14. DOCKER BUILD И PUSH ==========
 echo "[INFO] Сборка Docker образа..."
 cd "${TEMP_DIR}"
 
 FULL_TAG="${DOCKER_USER}/${IMAGE_NAME}:${VERSION}"
 LATEST_TAG="${DOCKER_USER}/${IMAGE_NAME}:latest"
 
+echo "[INFO] Сборка образа: ${FULL_TAG}"
 docker build -t "${FULL_TAG}" .
+
+echo "[INFO] Тегирование как latest: ${LATEST_TAG}"
 docker tag "${FULL_TAG}" "${LATEST_TAG}"
 
-echo "[INFO] Отправка образа в Docker Hub..."
+echo "[INFO] Отправка образа ${FULL_TAG} в Docker Hub..."
 docker push "${FULL_TAG}"
+
+echo "[INFO] Отправка образа ${LATEST_TAG} в Docker Hub..."
 docker push "${LATEST_TAG}"
 
 cd "${SCRIPT_DIR}"
 rm -rf "${TEMP_DIR}"
 
+echo ""
+echo "=========================================="
 echo "[SUCCESS] Docker образ ${FULL_TAG} успешно собран и отправлен!"
+echo "[SUCCESS] Docker образ ${LATEST_TAG} успешно обновлён!"
+echo "=========================================="
 echo ""
 echo "Статистика:"
 echo "  - package.json: обновлён"
 echo "  - hercules/config.json: создан из шаблона"
-echo "  - .env.example: создан"
+echo "  - .env: создан"
 echo "  - check-env.js: обфусцирован"
 echo "  - server.js: обфусцирован"
 echo "  - hercules/**/*.js: ${HERCULES_JS_COUNT} файлов обфусцировано"
 echo "  - addons/**/*.js: ${ADDON_JS_COUNT} файлов обфусцировано (включая modules)"
 echo "  - ui/**/*.js: ${UI_JS_COUNT} файлов (БЕЗ ОБФУСКАЦИИ)"
 echo "  - Всего JS файлов: ${JS_COUNT}"
+echo ""
+echo "Проверьте в Docker Hub: https://hub.docker.com/r/${DOCKER_USER}/${IMAGE_NAME}/tags"

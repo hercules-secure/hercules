@@ -1,13 +1,5 @@
-// ============================================================
-// CI-VIZ.JS - ВИЗУАЛИЗАЦИЯ CI/CD ПАЙПЛАЙНОВ ИЗ YAML
-// ============================================================
-
 var ciNodeMap = {};
 var ciSelectedFile = null;
-
-// ============================================================
-// ПАРСЕР YAML
-// ============================================================
 
 function parseYamlSimple(yamlText) {
     var result = {};
@@ -76,10 +68,6 @@ function parseYamlSimple(yamlText) {
     return result;
 }
 
-// ============================================================
-// ОПРЕДЕЛЕНИЕ ТИПА CI
-// ============================================================
-
 function detectCIType(data, fileName, rawText) {
     var name = fileName ? fileName.toLowerCase() : '';
     if (name === 'jenkinsfile' || name === 'jenkins' || (rawText && rawText.indexOf('pipeline {') !== -1)) return 'jenkins';
@@ -93,10 +81,6 @@ function detectCIType(data, fileName, rawText) {
     if (data.stages || data.include) return 'gitlab';
     return 'unknown';
 }
-
-// ============================================================
-// ПАРСЕР JENKINSFILE
-// ============================================================
 
 function parseJenkinsfile(text) {
     var result = { type: 'jenkins', stages: [], environment: {}, post: {} };
@@ -182,10 +166,6 @@ function parseJenkinsfile(text) {
     return result;
 }
 
-// ============================================================
-// ПОСТРОЕНИЕ GITLAB CI ГРАФА
-// ============================================================
-
 function buildGitLabGraph(data) {
     var rootId = ++elementIdCounter;
     var rootElement = {
@@ -264,7 +244,7 @@ function buildGitLabGraph(data) {
     if (stages.length === 0) stages = ['build', 'test', 'deploy'];
     
     if (Object.keys(jobs).length === 0) {
-        showCustomAlert('Ошибка', 'Не найдены jobs в YAML файле', 'error');
+        showCustomAlert('Error', 'No jobs found in YAML file', 'error');
         return;
     }
     
@@ -524,10 +504,6 @@ function buildGitLabGraph(data) {
     }
 }
 
-// ============================================================
-// ПОСТРОЕНИЕ GITHUB ACTIONS ГРАФА
-// ============================================================
-
 function buildGitHubGraph(data) {
     var rootId = ++elementIdCounter;
     var rootElement = {
@@ -556,7 +532,7 @@ function buildGitHubGraph(data) {
     var jobNames = Object.keys(jobs);
     
     if (jobNames.length === 0) {
-        showCustomAlert('Ошибка', 'Не найдены jobs в GitHub Actions', 'error');
+        showCustomAlert('Error', 'No jobs found in GitHub Actions', 'error');
         return;
     }
     
@@ -700,10 +676,6 @@ function buildGitHubGraph(data) {
     }
 }
 
-// ============================================================
-// ПОСТРОЕНИЕ JENKINS ГРАФА
-// ============================================================
-
 function buildJenkinsGraph(data) {
     var rootId = ++elementIdCounter;
     var rootElement = {
@@ -733,7 +705,7 @@ function buildJenkinsGraph(data) {
     var post = data.post || {};
     
     if (stages.length === 0) {
-        showCustomAlert('Ошибка', 'Не найдены stages в Jenkinsfile', 'error');
+        showCustomAlert('Error', 'No stages found in Jenkinsfile', 'error');
         return;
     }
     
@@ -960,10 +932,6 @@ function buildJenkinsGraph(data) {
     }
 }
 
-// ============================================================
-// УНИВЕРСАЛЬНЫЙ ГРАФ
-// ============================================================
-
 function buildGenericGraph(data) {
     var rootId = ++elementIdCounter;
     var rootElement = {
@@ -1035,10 +1003,6 @@ function buildGenericGraph(data) {
     }
 }
 
-// ============================================================
-// ПОСТРОЕНИЕ ГРАФА (ГЛАВНАЯ ФУНКЦИЯ)
-// ============================================================
-
 function buildCIGraphFromYAML(yamlText, fileName) {
     var isJenkins = false;
     if (fileName && (fileName.toLowerCase() === 'jenkinsfile' || fileName.toLowerCase() === 'jenkins')) {
@@ -1058,7 +1022,7 @@ function buildCIGraphFromYAML(yamlText, fileName) {
         try {
             data = parseYamlSimple(yamlText);
         } catch (err) {
-            showCustomAlert('Ошибка', 'Не удалось распарсить файл: ' + err.message, 'error');
+            showCustomAlert('Error', 'Failed to parse file: ' + err.message, 'error');
             return;
         }
         ciType = detectCIType(data, fileName, yamlText);
@@ -1072,7 +1036,7 @@ function buildCIGraphFromYAML(yamlText, fileName) {
         }
     }
     if (!hasData) {
-        showCustomAlert('Ошибка', 'Файл пуст или неверного формата', 'error');
+        showCustomAlert('Error', 'File is empty or invalid format', 'error');
         return;
     }
     
@@ -1105,12 +1069,8 @@ function buildCIGraphFromYAML(yamlText, fileName) {
     var count = elements.filter(function(e) { 
         return e.type === 'ci-stage' || e.type === 'ci-job' || e.type === 'ci-root'; 
     }).length;
-    showCustomAlert('Успешно', 'CI граф построен: ' + count + ' элементов', 'success');
+    showCustomAlert('Success', 'CI graph built: ' + count + ' elements', 'success');
 }
-
-// ============================================================
-// УПРАВЛЕНИЕ
-// ============================================================
 
 function toggleCINode(nodeId) {
     var element = elements.find(function(e) { return e.id === nodeId; });
@@ -1132,21 +1092,6 @@ function toggleCINode(nodeId) {
     renderElements();
     renderConnections();
 }
-
-// function addCIControls() {
-//     var container = document.getElementById('paletteCanvas') || document.getElementById('canvasContainer');
-//     if (!container) return;
-//     var oldControls = container.querySelector('.ci-controls');
-//     if (oldControls) oldControls.remove();
-//     var controls = document.createElement('div');
-//     controls.className = 'ci-controls';
-//     controls.style.cssText = 'position:absolute;top:10px;right:10px;z-index:1000;display:flex;gap:8px;flex-direction:column;background:rgba(255,255,255,0.95);padding:8px 10px;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.15);font-family:Ubuntu,sans-serif;width:auto;flex-shrink:0;';
-//     controls.innerHTML = `
-//         <button onclick="expandAllCI()" style="padding:6px 14px;background:#3B82F6;color:white;border:none;border-radius:6px;cursor:pointer;font-family:Ubuntu,sans-serif;font-size:12px;font-weight:500;transition:background .2s;white-space:nowrap;width:100%" onmouseenter="this.style.background='#2563EB'" onmouseleave="this.style.background='#3B82F6'">Развернуть все</button>
-//         <button onclick="collapseAllCI()" style="padding:6px 14px;background:#6B7280;color:white;border:none;border-radius:6px;cursor:pointer;font-family:Ubuntu,sans-serif;font-size:12px;font-weight:500;transition:background .2s;white-space:nowrap;width:100%" onmouseenter="this.style.background='#4B5563'" onmouseleave="this.style.background='#6B7280'">Свернуть все</button>
-//     `;
-//     container.appendChild(controls);
-// }
 
 function expandAllCI() {
     var ciNodes = elements.filter(function(e) { return e.type === 'ci-stage' || e.type === 'ci-job'; });
@@ -1182,12 +1127,7 @@ function collapseAllCI() {
     renderConnections();
 }
 
-// ============================================================
-// МОДАЛКА
-// ============================================================
-
 function openYAMLModal() {
-
     clearCanvas();
     var modal = document.getElementById('yamlModal');
     if (!modal) { createYAMLModal(); modal = document.getElementById('yamlModal'); }
@@ -1215,28 +1155,28 @@ function createYAMLModal() {
         <div id="yamlModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:100000;align-items:center;justify-content:center">
             <div style="background:white;border-radius:16px;padding:28px 32px;max-width:550px;width:90%;box-shadow:0 25px 50px rgba(0,0,0,0.25);display:flex;flex-direction:column">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-shrink:0">
-                    <h3 style="margin:0;font-size:18px;font-weight:600;color:#1a1a2e;font-family:'Ubuntu',sans-serif"><i class="fas fa-code-branch" style="color:#FC6D26;"></i> Load CI/CD</h3>
+                    <h3 style="margin:0;font-size:18px;font-weight:600;color:#1a1a2e;font-family: 'Fira Sans', 'Fira Code', sans-serif;"><i class="fas fa-code-branch" style="color:#FC6D26;"></i> Load CI/CD</h3>
                     <button onclick="closeYAMLModal()" style="background:none;border:none;font-size:24px;cursor:pointer;color:#9ca3af;padding:0 8px">&times;</button>
                 </div>
                 <div style="margin-bottom:20px">
-                    <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:8px;font-family:'Ubuntu',sans-serif"><i class="fas fa-file-code" style="color:#FC6D26;margin-right:6px"></i>Select CI/CD file</label>
+                    <label style="display:block;font-size:13px;font-weight:500;color:#374151;margin-bottom:8px;font-family: 'Fira Sans', 'Fira Code', sans-serif;"><i class="fas fa-file-code" style="color:#FC6D26;margin-right:6px"></i>Select CI/CD file</label>
                     <div id="ciDropZone" style="border:2px dashed #d1d5db;border-radius:12px;padding:30px 20px;text-align:center;cursor:pointer;transition:all .3s ease;background:#fafafa;position:relative">
                         <input type="file" id="ciFileInputModal" accept=".yml,.yaml,.groovy" style="position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer">
                         <div style="width:56px;height:56px;margin:0 auto 10px;background:#f3f4f6;border-radius:50%;display:flex;align-items:center;justify-content:center"><i class="fas fa-code-branch" style="font-size:24px;color:#FC6D26"></i></div>
-                        <p style="margin:0;font-size:14px;font-weight:500;color:#374151;font-family:'Ubuntu',sans-serif" id="ciStatusText">Drop file or click to select</p>
-                        <p style="margin:6px 0 0 0;font-size:12px;color:#9ca3af;font-family:'Ubuntu',sans-serif">Supported: GitLab CI, GitHub Actions, Jenkinsfile</p>
+                        <p style="margin:0;font-size:14px;font-weight:500;color:#374151;font-family: 'Fira Sans', 'Fira Code', sans-serif;" id="ciStatusText">Drop file or click to select</p>
+                        <p style="margin:6px 0 0 0;font-size:12px;color:#9ca3af;font-family: 'Fira Sans', 'Fira Code', sans-serif;">Supported: GitLab CI, GitHub Actions, Jenkinsfile</p>
                         <div id="ciFileInfoModal" style="display:none;margin-top:12px;padding:10px 14px;background:#ecfdf5;border-radius:8px;border:1px solid #10B981">
-                            <span id="ciFileNameModal" style="font-size:13px;font-weight:500;color:#065f46;font-family:'Ubuntu',sans-serif"></span>
+                            <span id="ciFileNameModal" style="font-size:13px;font-weight:500;color:#065f46;font-family: 'Fira Sans', 'Fira Code', sans-serif;"></span>
                             <span style="margin:0 8px;color:#6b7280">|</span>
-                            <span id="ciFileSizeModal" style="font-size:12px;color:#6b7280;font-family:'Ubuntu',sans-serif"></span>
+                            <span id="ciFileSizeModal" style="font-size:12px;color:#6b7280;font-family: 'Fira Sans', 'Fira Code', sans-serif;"></span>
                             <span style="margin:0 8px;color:#6b7280">|</span>
-                            <span id="ciFileTypeModal" style="font-size:12px;color:#6b7280;font-family:'Ubuntu',sans-serif"></span>
+                            <span id="ciFileTypeModal" style="font-size:12px;color:#6b7280;font-family: 'Fira Sans', 'Fira Code', sans-serif;"></span>
                         </div>
                     </div>
                 </div>
                 <div style="display:flex;gap:10px;justify-content:flex-end;flex-shrink:0">
-                    <button onclick="closeYAMLModal()" style="padding:8px 20px;background:#e5e7eb;border:none;border-radius:8px;cursor:pointer;font-family:'Ubuntu',sans-serif;font-size:13px;color:#374151;transition:background .2s" onmouseenter="this.style.background='#d1d5db'" onmouseleave="this.style.background='#e5e7eb'">Cancel</button>
-                    <button id="loadCiFileBtn" disabled onclick="loadCIFromModal()" style="padding:8px 24px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:8px;cursor:not-allowed;font-family:'Ubuntu',sans-serif;font-size:13px;font-weight:500;transition:all .2s">Build Graph</button>
+                    <button onclick="closeYAMLModal()" style="padding:8px 20px;background:#e5e7eb;border:none;border-radius:8px;cursor:pointer;font-family: 'Fira Sans', 'Fira Code', sans-serif;;font-size:13px;color:#374151;transition:background .2s" onmouseenter="this.style.background='#d1d5db'" onmouseleave="this.style.background='#e5e7eb'">Cancel</button>
+                    <button id="loadCiFileBtn" disabled onclick="loadCIFromModal()" style="padding:8px 24px;background:#e5e7eb;color:#9ca3af;border:none;border-radius:8px;cursor:not-allowed;font-family: 'Fira Sans', 'Fira Code', sans-serif;;font-size:13px;font-weight:500;transition:all .2s">Build Graph</button>
                 </div>
             </div>
         </div>
@@ -1286,7 +1226,7 @@ function handleCIFile(file) {
 
 function loadCIFromModal() {
     var file = window._ciFile;
-    if (!file) { showCustomAlert('Ошибка', 'Select CI/CD file', 'warning'); return; }
+    if (!file) { showCustomAlert('Error', 'Select CI/CD file', 'warning'); return; }
     var reader = new FileReader();
     reader.onload = function(e) {
         try {
@@ -1294,17 +1234,13 @@ function loadCIFromModal() {
             buildCIGraphFromYAML(text, file.name);
             closeYAMLModal();
         } catch (err) {
-            showCustomAlert('Ошибка', 'Failed to process file: ' + err.message, 'error');
+            showCustomAlert('Error', 'Failed to process file: ' + err.message, 'error');
         }
     };
     reader.readAsText(file);
 }
 
 function loadYAMLFile() { openYAMLModal(); }
-
-// ============================================================
-// ЭКСПОРТЫ
-// ============================================================
 
 window.buildCIGraphFromYAML = buildCIGraphFromYAML;
 window.openYAMLModal = openYAMLModal;

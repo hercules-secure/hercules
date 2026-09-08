@@ -1,11 +1,3 @@
-// ============================================================
-// SBOM.JS - ПОСТРОЕНИЕ ГРАФА ЗАВИСИМОСТЕЙ ИЗ SBOM
-// ============================================================
-
-// ============================================================
-// ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ
-// ============================================================
-
 var expandedNodes = {};
 var hiddenNodes = {};
 var nodeElementsMap = {};
@@ -14,16 +6,9 @@ var allConnections = [];
 var selectedSbomFile = null;
 var vulnerabilitiesMap = {};
 
-// ============================================================
-// ПОСТРОЕНИЕ ГРАФА ЗАВИСИМОСТЕЙ ИЗ SBOM
-// ============================================================
-
 function buildDependencyGraphFromSBOM(sbomData, fileName) {
+    clearCanvas();
     
-    clearCanvas(); 
-    // Распаковываем
-
-
     if (sbomData.sbom) {
         sbomData = sbomData.sbom;
     }
@@ -33,7 +18,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
     var metadata = {};
     var vulnerabilities = [];
     
-    // Парсим CycloneDX
     if (sbomData.bomFormat && sbomData.bomFormat === 'CycloneDX') {
         components = sbomData.components || [];
         dependencies = sbomData.dependencies || [];
@@ -63,13 +47,9 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
     }
     
     if (components.length === 0) {
-        showCustomAlert('Ошибка', 'Не найдены компоненты в SBOM', 'error');
+        showCustomAlert('Error', 'No components found in SBOM', 'error');
         return;
     }
-    
-    // ============================================================
-    // СОХРАНЯЕМ УЯЗВИМОСТИ В ГЛОБАЛЬНУЮ КАРТУ
-    // ============================================================
     
     vulnerabilitiesMap = {};
     for (var vi = 0; vi < vulnerabilities.length; vi++) {
@@ -82,10 +62,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
             vulnerabilitiesMap[bomRef].push(vuln);
         }
     }
-    
-    // ============================================================
-    // ОЧИЩАЕМ ХОЛСТ
-    // ============================================================
     
     var existingElements = [];
     for (var ei = 0; ei < elements.length; ei++) {
@@ -102,10 +78,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
     hiddenNodes = {};
     nodeElementsMap = {};
     connectionMap = {};
-    
-    // ============================================================
-    // СОЗДАЕМ КАРТУ КОМПОНЕНТОВ
-    // ============================================================
     
     var componentMap = {};
     var bomRefMap = {};
@@ -131,7 +103,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
             key = key + '-' + Object.keys(componentMap).length;
         }
         
-        // Проверяем есть ли уязвимости
         var hasVuln = vulnerabilitiesMap[bomRef] && vulnerabilitiesMap[bomRef].length > 0;
         var vulnCount = hasVuln ? vulnerabilitiesMap[bomRef].length : 0;
         
@@ -176,10 +147,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
     if (!rootKey && componentKeys.length > 0) {
         rootKey = componentKeys[0];
     }
-    
-    // ============================================================
-    // СТРОИМ ГРАФ ЗАВИСИМОСТЕЙ
-    // ============================================================
     
     for (var di = 0; di < dependencies.length; di++) {
         var dep = dependencies[di];
@@ -250,10 +217,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
         }
     }
     
-    // ============================================================
-    // СОБИРАЕМ ТОЛЬКО УЯЗВИМЫЕ КОМПОНЕНТЫ
-    // ============================================================
-    
     var vulnerableKeys = [];
     for (var vk in componentMap) {
         if (componentMap[vk].hasVulnerabilities) {
@@ -261,15 +224,10 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
         }
     }
     
-    // Если уязвимых компонентов нет - показываем сообщение
     if (vulnerableKeys.length === 0) {
-        showCustomAlert('Информация', 'Уязвимостей не найдено', 'info');
+        showCustomAlert('Info', 'No vulnerabilities found', 'info');
         return;
     }
-    
-    // ============================================================
-    // СОЗДАЕМ КОРНЕВОЙ УЗЕЛ
-    // ============================================================
     
     var rootIdNode = ++elementIdCounter;
     
@@ -319,10 +277,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
     elements.push(rootElement);
     nodeElementsMap[rootIdNode] = rootElement;
     
-    // ============================================================
-    // СОЗДАЕМ УЗЛЫ ДЛЯ УЯЗВИМЫХ КОМПОНЕНТОВ
-    // ============================================================
-    
     var cols = Math.min(Math.ceil(Math.sqrt(vulnerableKeys.length)) || 1, 5);
     var spacingX = 240;
     var spacingY = 140;
@@ -347,7 +301,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
             displayName += ' (latest)';
         }
         
-        // Проверяем есть ли связь с корнем
         var hasConnectionToRoot = false;
         for (var di2 = 0; di2 < allDeps.length; di2++) {
             if (allDeps[di2].to === key && allDeps[di2].from === rootKey) {
@@ -358,7 +311,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
         
         var parentKey = null;
         if (!hasConnectionToRoot) {
-            // Ищем родителя среди уязвимых компонентов
             for (var di3 = 0; di3 < allDeps.length; di3++) {
                 if (allDeps[di3].to === key) {
                     var potentialParent = allDeps[di3].from;
@@ -401,7 +353,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
         elements.push(element);
         nodeElementsMap[id] = element;
         
-        // Добавляем в childNodes родителя если есть
         if (parentKey && nodeIds[parentKey]) {
             var parentEl = nodeElementsMap[nodeIds[parentKey]];
             if (parentEl && parentEl.childNodes.indexOf(id) === -1) {
@@ -410,16 +361,11 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
         }
     }
     
-    // ============================================================
-    // СОЗДАЕМ СВЯЗИ
-    // ============================================================
-    
     for (var vi3 = 0; vi3 < vulnerableKeys.length; vi3++) {
         var key = vulnerableKeys[vi3];
         var compId = nodeIds[key];
         if (!compId) continue;
         
-        // Проверяем есть ли уже связь
         var hasConnection = false;
         for (var ci2 = 0; ci2 < connections.length; ci2++) {
             if (connections[ci2].to === compId) {
@@ -429,10 +375,8 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
         }
         
         if (!hasConnection) {
-            // Ищем родителя для связи
             var parentId = null;
             
-            // Проверяем прямую связь с корнем
             var hasDirect = false;
             for (var di4 = 0; di4 < allDeps.length; di4++) {
                 if (allDeps[di4].to === key && allDeps[di4].from === rootKey) {
@@ -444,7 +388,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
             if (hasDirect) {
                 parentId = rootIdNode;
             } else {
-                // Ищем родителя среди уязвимых
                 for (var di5 = 0; di5 < allDeps.length; di5++) {
                     if (allDeps[di5].to === key) {
                         var potentialParent = allDeps[di5].from;
@@ -456,7 +399,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
                 }
             }
             
-            // Если родитель не найден - привязываем к корню
             if (!parentId) {
                 parentId = rootIdNode;
             }
@@ -467,7 +409,7 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
                     from: parentId,
                     to: compId,
                     type: 'control',
-                    label: 'зависит',
+                    label: 'depends',
                     color: '#8B5CF6',
                     isVisible: true
                 };
@@ -475,10 +417,6 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
             }
         }
     }
-    
-    // ============================================================
-    // ОТРИСОВКА
-    // ============================================================
     
     if (typeof renderElements === 'function') {
         renderElements();
@@ -490,16 +428,11 @@ function buildDependencyGraphFromSBOM(sbomData, fileName) {
     setTimeout(autoFitCanvas, 100);
     setTimeout(addGraphControls, 200);
     
-    // Экспортируем для контекстного меню
     window.vulnerabilitiesMap = vulnerabilitiesMap;
     window.nodeElementsMap = nodeElementsMap;
     
-    showCustomAlert('Успешно', 'Найдено ' + vulnerableKeys.length + ' компонентов с уязвимостями', 'warning');
+    showCustomAlert('Success', 'Found ' + vulnerableKeys.length + ' components with vulnerabilities', 'warning');
 }
-
-// ============================================================
-// ОСТАЛЬНЫЕ ФУНКЦИИ (БЕЗ ИЗМЕНЕНИЙ)
-// ============================================================
 
 function expandNode(nodeId) {
     var element = nodeElementsMap[nodeId];
@@ -671,15 +604,10 @@ function findComponentKey(componentMap, search) {
     return null;
 }
 
-
-// ============================================================
-// МОДАЛКА SBOM
-// ============================================================
-
 function openSbomFileModal() {
     var modal = document.getElementById('sbomFileModal');
     if (!modal) {
-        showCustomAlert('Ошибка', 'Модалка SBOM не найдена в HTML', 'error');
+        showCustomAlert('Error', 'SBOM modal not found in HTML', 'error');
         return;
     }
     
@@ -713,7 +641,7 @@ function closeSbomFileModal() {
 
 function loadSbomFileFromModal() {
     if (!selectedSbomFile) {
-        showCustomAlert('Ошибка', 'Выберите SBOM файл', 'warning');
+        showCustomAlert('Error', 'Please select an SBOM file', 'warning');
         return;
     }
     
@@ -725,12 +653,12 @@ function loadSbomFileFromModal() {
             if (typeof buildDependencyGraphFromSBOM === 'function') {
                 buildDependencyGraphFromSBOM(data, selectedSbomFile.name);
                 closeSbomFileModal();
-                showCustomAlert('Успешно', 'SBOM загружен и визуализирован', 'success');
+                showCustomAlert('Success', 'SBOM loaded and visualized', 'success');
             } else {
-                showCustomAlert('Ошибка', 'Функция buildDependencyGraphFromSBOM не найдена', 'error');
+                showCustomAlert('Error', 'Function buildDependencyGraphFromSBOM not found', 'error');
             }
         } catch (err) {
-            showCustomAlert('Ошибка', 'Не удалось распарсить SBOM: ' + err.message, 'error');
+            showCustomAlert('Error', 'Failed to parse SBOM: ' + err.message, 'error');
         }
     };
     reader.readAsText(selectedSbomFile);
@@ -755,7 +683,7 @@ function handleSbomFile(file) {
     
     if (fileNameEl) fileNameEl.textContent = file.name;
     if (fileSizeEl) fileSizeEl.textContent = size + ' KB';
-    if (fileComponentsEl) fileComponentsEl.textContent = 'подсчет...';
+    if (fileComponentsEl) fileComponentsEl.textContent = 'counting...';
     if (infoModal) infoModal.style.display = 'block';
     
     if (loadBtn) {
@@ -772,9 +700,9 @@ function handleSbomFile(file) {
             var components = data.components || data.packages || [];
             var sbomData = data.sbom || data;
             var comps = sbomData.components || components || [];
-            if (fileComponentsEl) fileComponentsEl.textContent = comps.length + ' компонентов';
+            if (fileComponentsEl) fileComponentsEl.textContent = comps.length + ' components';
         } catch (err) {
-            if (fileComponentsEl) fileComponentsEl.textContent = 'ошибка парсинга';
+            if (fileComponentsEl) fileComponentsEl.textContent = 'parse error';
         }
     };
     reader.readAsText(file);
@@ -838,22 +766,18 @@ function loadSBOMFile() {
                 var data = JSON.parse(ev.target.result);
                 if (typeof buildDependencyGraphFromSBOM === 'function') {
                     buildDependencyGraphFromSBOM(data, file.name);
-                    showCustomAlert('Успешно', 'SBOM загружен и визуализирован', 'success');
+                    showCustomAlert('Success', 'SBOM loaded and visualized', 'success');
                 } else {
-                    showCustomAlert('Ошибка', 'Функция buildDependencyGraphFromSBOM не найдена', 'error');
+                    showCustomAlert('Error', 'Function buildDependencyGraphFromSBOM not found', 'error');
                 }
             } catch (err) {
-                showCustomAlert('Ошибка', 'Не удалось распарсить SBOM: ' + err.message, 'error');
+                showCustomAlert('Error', 'Failed to parse SBOM: ' + err.message, 'error');
             }
         };
         reader.readAsText(file);
     };
     input.click();
 }
-
-// ============================================================
-// ЭКСПОРТЫ
-// ============================================================
 
 window.openSbomFileModal = openSbomFileModal;
 window.closeSbomFileModal = closeSbomFileModal;

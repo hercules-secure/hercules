@@ -44,7 +44,7 @@ function renderUmlFields(el) {
     
     var fields = el.fields || [];
     if (fields.length === 0) {
-        container.innerHTML = `<div style="color: #9ca3af; text-align: center; padding: 20px; font-size: 13px; font-family: 'Ubuntu', sans-serif;">Нет полей. Нажмите "Добавить поле"</div>`;
+        container.innerHTML = `<div style="color: #9ca3af; text-align: center; padding: 20px; font-size: 13px; font-family: 'Fira Sans', 'Fira Code', sans-serif;">Нет полей. Нажмите "Добавить поле"</div>`;
         return;
     }
     
@@ -68,7 +68,7 @@ function renderUmlFields(el) {
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
                     font-size: 11px;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     background: white;
                 ">
                     <option value="public" ${visibility === 'public' ? 'selected' : ''}>+ public</option>
@@ -81,7 +81,7 @@ function renderUmlFields(el) {
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
                     font-size: 12px;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 ">
                 <input type="text" class="uml-field-type" data-index="${index}" value="${fieldType}" placeholder="тип" style="
                     width: 80px;
@@ -89,7 +89,7 @@ function renderUmlFields(el) {
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
                     font-size: 12px;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 ">
                 <button onclick="removeUmlFieldModal(${index})" style="
                     background: none;
@@ -114,7 +114,7 @@ function renderUmlMethods(el) {
     
     var methods = el.methods || [];
     if (methods.length === 0) {
-        container.innerHTML = `<div style="color: #9ca3af; text-align: center; padding: 20px; font-size: 13px; font-family: 'Ubuntu', sans-serif;">Нет методов. Нажмите "Добавить метод"</div>`;
+        container.innerHTML = `<div style="color: #9ca3af; text-align: center; padding: 20px; font-size: 13px; font-family: 'Fira Sans', 'Fira Code', sans-serif;">Нет методов. Нажмите "Добавить метод"</div>`;
         return;
     }
     
@@ -136,7 +136,7 @@ function renderUmlMethods(el) {
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
                     font-size: 11px;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                     background: white;
                 ">
                     <option value="public" ${visibility === 'public' ? 'selected' : ''}>+ public</option>
@@ -149,7 +149,7 @@ function renderUmlMethods(el) {
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
                     font-size: 12px;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 ">
                 <input type="text" class="uml-method-params" data-index="${index}" value="${params}" placeholder="параметры" style="
                     width: 100px;
@@ -157,7 +157,7 @@ function renderUmlMethods(el) {
                     border: 1px solid #d1d5db;
                     border-radius: 4px;
                     font-size: 12px;
-                    font-family: 'Ubuntu', sans-serif;
+                    font-family: 'Fira Sans', 'Fira Code', sans-serif;
                 ">
                 <button onclick="removeUmlMethodModal(${index})" style="
                     background: none;
