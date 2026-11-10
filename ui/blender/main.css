@@ -1,28 +1,98 @@
-/* CSS Reset и базовые настройки */
+/* ============================================================
+   CSS Reset и базовые настройки
+   ============================================================ */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
+/* ============================================================
+   ЕДИНЫЕ CSS-ПЕРЕМЕННЫЕ (тёмная тема по умолчанию)
+   ============================================================ */
+:root,
+[data-theme="dark"] {
+    /* Акценты */
     --primary-color: #2563eb;
     --primary-hover: #1d4ed8;
     --secondary-color: #64748b;
-    --accent-color: #667eea;
-    --bg-color: #f8fafc;
-    --bg-secondary: #f1f5f9;
-    --card-bg: #ffffff;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --border-color: #e2e8f0;
+    --accent-color: #22d3ee;
+    --accent-color-2: #a855f7;
+    --accent-ink: #06141a;
+    --accent: #22d3ee;
+
+    /* Фоны */
+    --bg: #0a0c14;
+    --bg-color: #0a0c14;
+    --bg-secondary: #131722;
+    --bg-card: rgba(13, 16, 24, 0.85);
+    --card-bg: rgba(13, 16, 24, 0.85);
+    --bg-input: #131722;
+    --bg-input-focus: #161b28;
+
+    /* Границы */
+    --border: #1e2433;
+    --border-color: #1e2433;
+    --border-hover: #2a3142;
+
+    /* Текст */
+    --text: #e6edf7;
+    --text-primary: #e6edf7;
+    --text-dim: #6b7280;
+    --text-secondary: #6b7280;
+    --text-faint: #4a536b;
+
+    /* Радиусы и тени */
     --border-radius: 12px;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
     --gap-sm: 1rem;
     --gap-md: 1.5rem;
     --gap-lg: 2rem;
+
+    /* Служебные */
+    --logo-bg: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(168, 85, 247, 0.10));
+    --logo-border: rgba(34, 211, 238, 0.35);
+    --logo-glow: rgba(34, 211, 238, 0.25);
+    --logo-glow-strong: rgba(34, 211, 238, 0.45);
+}
+
+[data-theme="light"] {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --secondary-color: #64748b;
+    --accent-color: #0891b2;
+    --accent-color-2: #7c3aed;
+    --accent-ink: #ffffff;
+    --accent: #0891b2;
+
+    --bg: #f4f6fb;
+    --bg-color: #f4f6fb;
+    --bg-secondary: #f1f5f9;
+    --bg-card: #ffffff;
+    --card-bg: #ffffff;
+    --bg-input: #ffffff;
+    --bg-input-focus: #ffffff;
+
+    --border: #e2e8f0;
+    --border-color: #e2e8f0;
+    --border-hover: #d0d7e3;
+
+    --text: #0f172a;
+    --text-primary: #0f172a;
+    --text-dim: #64748b;
+    --text-secondary: #64748b;
+    --text-faint: #94a3b8;
+
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+
+    --logo-bg: linear-gradient(135deg, rgba(8, 145, 178, 0.12), rgba(124, 58, 237, 0.06));
+    --logo-border: rgba(8, 145, 178, 0.30);
+    --logo-glow: rgba(8, 145, 178, 0.15);
+    --logo-glow-strong: rgba(8, 145, 178, 0.30);
 }
 
 html {
@@ -32,28 +102,20 @@ html {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Для букв и текста */
-@font-face {
-    font-family: 'Ubuntu';
-    src: local('Ubuntu');
-    unicode-range: U+0000-024F;
-}
-
-/* Для цифр */
-@font-face {
-    font-family: 'Alef';
-    src: local('Alef');
-    unicode-range: U+0030-0039;
-}
-
 body {
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 13px;
     line-height: 1.5;
-    color: var(--text-primary);
-    background-color: var(--bg-color);
+    color: var(--text);
+    background-color: var(--bg);
     min-height: 100vh;
     overflow-x: hidden;
+    transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* Код и цифры — Fira Code */
+code, pre, .stat-number, .sast-rule-name, .sast-filepath {
+    font-family: 'Fira Code', ui-monospace, monospace;
 }
 
 a {
@@ -73,8 +135,8 @@ a {
 #left {
     flex: 0 0 220px;
     min-width: 300px;
-    background: white;
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: var(--border-radius);
     padding: var(--gap-md);
     display: flex;
@@ -91,7 +153,7 @@ a {
 .tools-title {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -113,24 +175,24 @@ a {
     align-items: center;
     gap: 12px;
     padding: 10px 12px;
-    background: white;
-    border: 1px solid var(--border-color);
+    background: var(--card-bg);
+    border: 1px solid var(--border);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
     width: 100%;
+    color: var(--text);
 }
 
 .tool-item:hover {
-    background: white;
     border-color: var(--primary-color);
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
 
 .tool-item.active {
-    background: white;
     border-color: var(--primary-color);
+    background: var(--logo-bg);
 }
 
 .tool-icon {
@@ -152,18 +214,18 @@ a {
 .tool-name {
     font-weight: 500;
     font-size: 0.9rem;
-    color: var(--text-primary);
+    color: var(--text);
     border: none;
 }
 
 .tool-desc {
     font-size: 0.7rem;
-    color: var(--text-secondary);
+    color: var(--text-dim);
 }
 
 .tool-divider {
     height: 1px;
-    background: var(--border-color);
+    background: var(--border);
     margin: 8px 0;
 }
 
@@ -171,8 +233,8 @@ a {
 #center {
     flex: 1;
     min-width: 300px;
-    background: white;
-    border: 2px solid var(--border-color);
+    background: var(--card-bg);
+    border: 2px solid var(--border);
     border-radius: var(--border-radius);
     padding: var(--gap-md);
     display: flex;
@@ -188,13 +250,19 @@ a {
 #repo {
     flex: 1;
     padding: 12px 16px;
-    font: 14px 'Ubuntu';
-    border: 1px solid var(--border-color);
+    font: 14px 'Fira Sans', sans-serif;
+    background: var(--bg-input);
+    color: var(--text);
+    border: 1px solid var(--border);
     border-radius: 8px;
     outline: none;
     transition: all 0.3s ease;
     margin-top: 2vh;
     width: 100%;
+}
+
+#repo::placeholder {
+    color: var(--text-faint);
 }
 
 #repo:focus {
@@ -204,10 +272,10 @@ a {
 
 .start-button {
     padding: 12px 24px;
-    font: 14px 'Ubuntu';
+    font: 14px 'Fira Sans', sans-serif;
     font-weight: 500;
-    background: #e2e8f0;
-    color: #94a3b8;
+    background: var(--border);
+    color: var(--text-faint);
     border: none;
     border-radius: 8px;
     cursor: not-allowed;
@@ -230,7 +298,7 @@ a {
 
 .url-validation {
     font-size: 12px;
-    color: #64748b;
+    color: var(--text-dim);
     display: flex;
     align-items: center;
     gap: 4px;
@@ -245,13 +313,12 @@ a {
     color: #ef4444;
 }
 
-/* Upload Area */
 .upload-area {
-    border: 2px dashed var(--border-color);
+    border: 2px dashed var(--border);
     border-radius: 12px;
     padding: 40px 20px;
     text-align: center;
-    background: white;
+    background: var(--bg-input);
     cursor: pointer;
     transition: all 0.3s ease;
     margin-bottom: 10px;
@@ -259,23 +326,23 @@ a {
 
 .upload-area:hover {
     border-color: var(--accent-color);
-    background: rgba(99, 102, 241, 0.05);
+    background: var(--logo-bg);
 }
 
 .upload-area.dragover {
     border-color: var(--accent-color);
-    background: rgba(99, 102, 241, 0.1);
+    background: var(--logo-bg);
     transform: scale(1.02);
 }
 
 .upload-icon {
     font-size: 48px;
-    color: var(--text-secondary);
+    color: var(--text-dim);
     margin-bottom: 15px;
 }
 
 .upload-text {
-    color: var(--text-primary);
+    color: var(--text);
     font-weight: 500;
     margin-bottom: 8px;
 }
@@ -287,6 +354,7 @@ a {
     background: var(--bg-secondary);
     border-radius: 8px;
     font-size: 13px;
+    color: var(--text);
 }
 
 .file-info.active {
@@ -320,7 +388,7 @@ a {
     border: none;
     background: transparent;
     border-radius: 6px;
-    color: var(--text-secondary);
+    color: var(--text-dim);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s;
@@ -328,11 +396,11 @@ a {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .source-btn.active {
-    background: white;
+    background: var(--card-bg);
     color: var(--accent-color);
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
@@ -373,7 +441,6 @@ a {
     color: #ef4444;
 }
 
-/* Градусник прогресса */
 .thermometer-progress {
     margin: 20px 0 30px 0;
 }
@@ -391,7 +458,7 @@ a {
     margin-bottom: 10px;
     font-size: 13px;
     font-weight: 500;
-    color: var(--text-primary);
+    color: var(--text);
 }
 
 .overall-percent {
@@ -401,14 +468,14 @@ a {
 
 .overall-progress-container {
     height: 8px;
-    background: #e5e7eb;
+    background: var(--border);
     border-radius: 10px;
     overflow: hidden;
 }
 
 .overall-progress {
     height: 100%;
-    background: linear-gradient(90deg, #667eea, #764ba2);
+    background: linear-gradient(90deg, var(--accent-color), var(--accent-color-2));
     width: 0%;
     transition: width 0.3s ease;
     border-radius: 10px;
@@ -430,7 +497,7 @@ a {
 .mark-dot {
     width: 10px;
     height: 10px;
-    background: #d1d5db;
+    background: var(--border);
     border-radius: 50%;
     margin: 0 auto 6px auto;
     transition: all 0.3s ease;
@@ -442,14 +509,14 @@ a {
 }
 
 .mark-dot.active {
-    background: #667eea;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.3);
+    background: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--logo-glow);
 }
 
 .mark-label {
     font-size: 11px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--text-dim);
     transition: color 0.3s ease;
 }
 
@@ -458,13 +525,13 @@ a {
 }
 
 .mark-label.active {
-    color: #667eea;
+    color: var(--accent-color);
     font-weight: 600;
 }
 
 .mark-desc {
     font-size: 9px;
-    color: #9ca3af;
+    color: var(--text-faint);
     margin-top: 2px;
 }
 
@@ -472,7 +539,9 @@ a {
     display: none;
 }
 
-/* ==================== МОДАЛЬНОЕ ОКНО РЕЗУЛЬТАТОВ ==================== */
+/* ============================================================
+   МОДАЛКА РЕЗУЛЬТАТА
+   ============================================================ */
 .result-modal-overlay {
     position: fixed;
     top: 0;
@@ -508,6 +577,7 @@ a {
     overflow: hidden;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
     animation: resultModalFadeIn 0.3s ease;
+    color: var(--text);
 }
 
 @keyframes resultModalFadeIn {
@@ -517,8 +587,9 @@ a {
 
 .result-modal-header {
     padding: 20px 24px;
-    background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%);
-    color: white;
+    background: var(--bg-input);
+    color: var(--text);
+    border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -531,12 +602,13 @@ a {
     display: flex;
     align-items: center;
     gap: 10px;
+    color: var(--text);
 }
 
 .result-modal-close {
     background: none;
     border: none;
-    color: white;
+    color: var(--text-dim);
     font-size: 28px;
     cursor: pointer;
     padding: 0;
@@ -546,35 +618,35 @@ a {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
 }
 
 .result-modal-close:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-secondary);
+    color: var(--text);
 }
 
 .result-modal-body {
     padding: 24px;
     overflow-y: auto;
     flex: 1;
-    background: var(--bg-color);
+    background: var(--bg);
 }
 
 .result-modal-footer {
     padding: 16px 24px;
     background: var(--card-bg);
-    border-top: 1px solid var(--border-color);
+    border-top: 1px solid var(--border);
     display: flex;
     justify-content: flex-end;
     gap: 12px;
 }
 
-/* Вкладки */
 .result-tabs {
     display: flex;
     gap: 10px;
     margin-bottom: 20px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
     padding-bottom: 10px;
     flex-wrap: wrap;
 }
@@ -584,31 +656,34 @@ a {
     border: none;
     padding: 8px 16px;
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--text-dim);
     font-weight: 500;
     transition: all 0.2s;
     border-radius: 8px;
     font-size: 14px;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .result-tab:hover {
     background: var(--bg-secondary);
-    color: var(--text-primary);
+    color: var(--text);
 }
 
 .result-tab.active {
     background: var(--accent-color);
-    color: white;
+    color: var(--accent-ink);
 }
 
 .result-content {
     min-height: 300px;
     max-height: 500px;
     overflow-y: auto;
+    color: var(--text);
 }
 
-/* Статистика */
+/* ============================================================
+   СТАТИСТИКА
+   ============================================================ */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -622,27 +697,31 @@ a {
     padding: 16px;
     text-align: center;
     box-shadow: var(--shadow-sm);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
+    color: var(--text);
 }
 
 .stat-number {
     font-size: 32px;
     font-weight: bold;
     color: var(--accent-color);
-    font-family: 'Alef';
+    font-family: 'Fira Code', monospace;
 }
 
 .stat-label {
     font-size: 13px;
-    color: var(--text-secondary);
+    color: var(--text-dim);
     margin-top: 8px;
 }
 
-/* Таблица уязвимостей */
+/* ============================================================
+   ТАБЛИЦЫ
+   ============================================================ */
 .vuln-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    color: var(--text);
 }
 
 .vuln-table th {
@@ -650,14 +729,15 @@ a {
     padding: 12px;
     text-align: left;
     font-weight: 600;
-    border-bottom: 2px solid var(--border-color);
+    border-bottom: 2px solid var(--border);
     position: sticky;
     top: 0;
+    color: var(--text);
 }
 
 .vuln-table td {
     padding: 10px 12px;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border);
     vertical-align: top;
 }
 
@@ -670,7 +750,6 @@ a {
     background: var(--bg-secondary);
 }
 
-/* Общие стили для expand-icon */
 .expand-icon {
     transition: transform 0.2s;
     display: inline-block;
@@ -689,7 +768,6 @@ a {
     color: var(--primary-color);
 }
 
-/* SCA стили */
 .dep-row {
     cursor: pointer;
     transition: background 0.2s;
@@ -709,9 +787,9 @@ a {
     display: table-row;
 }
 
-
-
-/* Бейджи */
+/* ============================================================
+   БЕЙДЖИ И СЕВЕРИТИ
+   ============================================================ */
 .badge {
     display: inline-block;
     padding: 4px 10px;
@@ -726,12 +804,13 @@ a {
 .badge-medium { background: #fef9c3; color: #ca8a04; }
 .badge-low { background: #dcfce7; color: #16a34a; }
 
-/* Достижимость */
 .reachable-yes { color: #dc2626; font-weight: bold; }
 .reachable-no { color: #16a34a; font-weight: bold; }
 .reachable-unknown { color: #6c757d; font-weight: bold; }
 
-/* Фильтры */
+/* ============================================================
+   ФИЛЬТРЫ
+   ============================================================ */
 .filter-bar {
     display: flex;
     gap: 10px;
@@ -743,37 +822,49 @@ a {
 .filter-btn {
     padding: 6px 14px;
     background: var(--bg-secondary);
+    color: var(--text-dim);
     border: none;
     border-radius: 20px;
     cursor: pointer;
     font-size: 13px;
     transition: all 0.2s;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', sans-serif;
 }
 
 .filter-btn.active {
     background: var(--accent-color);
-    color: white;
+    color: var(--accent-ink);
 }
 
 .filter-btn:hover {
     background: var(--accent-color);
-    color: white;
+    color: var(--accent-ink);
 }
 
 .search-box {
     flex: 1;
     padding: 8px 12px;
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: 20px;
     font-size: 13px;
     min-width: 200px;
-    font-family: 'Ubuntu';
-    background: var(--card-bg);
-    color: var(--text-primary);
+    font-family: 'Fira Sans', sans-serif;
+    background: var(--bg-input);
+    color: var(--text);
 }
 
-/* Кнопки скачивания */
+.search-box::placeholder {
+    color: var(--text-faint);
+}
+
+.search-box:focus {
+    outline: none;
+    border-color: var(--accent-color);
+}
+
+/* ============================================================
+   КНОПКИ СКАЧИВАНИЯ
+   ============================================================ */
 .btn-download, .btn-download-html {
     padding: 10px 20px;
     border: none;
@@ -781,7 +872,7 @@ a {
     cursor: pointer;
     font-weight: 500;
     transition: all 0.2s;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', sans-serif;
     font-size: 14px;
 }
 
@@ -805,15 +896,18 @@ a {
     transform: translateY(-1px);
 }
 
-/* SAST отчет */
+/* ============================================================
+   SAST ОТЧЁТ
+   ============================================================ */
 .sast-issue-item {
     background: var(--card-bg);
-    border: 1px solid var(--border-color);
+    border: 1px solid var(--border);
     border-radius: 10px;
     padding: 16px;
     margin-top: 12px;
     margin-bottom: 12px;
     transition: all 0.2s ease;
+    color: var(--text);
 }
 
 .sast-issue-header {
@@ -843,12 +937,12 @@ a {
     font-size: 14px;
     font-weight: 500;
     margin-bottom: 10px;
-    color: var(--text-primary);
+    color: var(--text);
 }
 
 .sast-issue-location {
     font-size: 12px;
-    color: var(--text-secondary);
+    color: var(--text-dim);
     margin-bottom: 10px;
     display: flex;
     align-items: center;
@@ -865,10 +959,10 @@ a {
 }
 
 .sast-issue-snippet code {
-    font-family: 'Ubuntu';
+    font-family: 'Fira Code', monospace;
     font-size: 11px;
     line-height: 1.5;
-    color: var(--text-primary);
+    color: var(--text);
     background: transparent;
     white-space: pre-wrap;
     word-break: break-all;
@@ -886,14 +980,14 @@ a {
     background: #0f172a;
     color: #94a3b8;
     font-size: 11px;
-    font-family: monospace;
+    font-family: 'Fira Code', monospace;
     border-bottom: 1px solid #334155;
 }
 
 .sast-code-snippet {
     margin: 0;
     padding: 12px;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Code', monospace;
     font-size: 12px;
     line-height: 1.5;
     white-space: pre;
@@ -905,10 +999,11 @@ a {
 .sast-issue-recommendation {
     margin-top: 12px;
     padding: 8px 12px;
-    background: #eff6ff;
+    background: var(--bg-input);
+    border-left: 3px solid var(--accent-color);
     border-radius: 6px;
     font-size: 12px;
-    color: #1e40af;
+    color: var(--text);
 }
 
 .sast-issue-recommendation i {
@@ -918,7 +1013,7 @@ a {
 .empty-state {
     text-align: center;
     padding: 48px 24px;
-    color: var(--text-secondary);
+    color: var(--text-dim);
 }
 
 .empty-state i {
@@ -929,33 +1024,35 @@ a {
 
 .empty-state h3 {
     margin-bottom: 8px;
-    color: var(--text-primary);
+    color: var(--text);
 }
 
-/* Адаптивность */
+/* ============================================================
+   Адаптивность
+   ============================================================ */
 @media (max-width: 768px) {
     body { font-size: 14px; }
-    
+
     #box {
         flex-direction: column;
         padding: 0.5rem;
         gap: 0.75rem;
     }
-    
+
     #left, #center {
         width: 100%;
         min-width: 100%;
     }
-    
+
     .input-group { flex-direction: column; }
     .start-button { width: 100%; padding: 14px; }
     .tool-item { flex: 1 1 calc(50% - 6px); }
-    
+
     .result-modal-container {
         width: 95%;
         max-height: 95vh;
     }
-    
+
     .result-modal-body { padding: 16px; }
     .vuln-table { font-size: 12px; }
     .vuln-table th, .vuln-table td { padding: 8px; }
@@ -969,13 +1066,15 @@ a {
     .stats-grid { grid-template-columns: 1fr; }
 }
 
-
-/* Улучшения скролла */
+/* ============================================================
+   Скроллбар
+   ============================================================ */
 .result-content,
 .dependencies-list,
 .endpoints-list {
     -webkit-overflow-scrolling: touch;
     scrollbar-width: thin;
+    scrollbar-color: var(--text-faint) transparent;
 }
 
 .result-content::-webkit-scrollbar,
@@ -993,15 +1092,17 @@ a {
 .result-content::-webkit-scrollbar-thumb,
 .dependencies-list::-webkit-scrollbar-thumb,
 .endpoints-list::-webkit-scrollbar-thumb {
-    background-color: var(--secondary-color);
+    background-color: var(--text-faint);
     border-radius: 3px;
 }
 
 .black-icon {
-    color: black;
+    color: var(--text);
 }
 
-/* Tech stack бейджи */
+/* ============================================================
+   Tech stack
+   ============================================================ */
 .tech-stack {
     display: flex;
     flex-direction: column;
@@ -1022,11 +1123,11 @@ a {
     align-items: center;
     gap: 6px;
     padding: 4px 10px;
-    background: var(--bg-secondary, #f1f5f9);
+    background: var(--bg-secondary);
     border-radius: 20px;
     font-size: 12px;
-    color: var(--text-primary, #0f172a);
-    border: 1px solid var(--border-color, #e2e8f0);
+    color: var(--text);
+    border: 1px solid var(--border);
     margin-top: 8px;
 }
 
@@ -1043,11 +1144,11 @@ a {
 
 .supported-format-badge {
     padding: 4px 8px;
-    background: var(--bg-secondary, #f1f5f9);
+    background: var(--bg-secondary);
     border-radius: 4px;
     font-size: 10px;
-    color: var(--text-secondary, #475569);
-    font-family: monospace;
+    color: var(--text-dim);
+    font-family: 'Fira Code', monospace;
 }
 
 .icons-row {
@@ -1056,172 +1157,107 @@ a {
     justify-content: center;
 }
 
-
-/* ==================== SAST ТАБЛИЧНЫЕ СТИЛИ ==================== */
-/* Эти классы используются в generateCodeHTML */
-
-/* Контейнер SAST */
+/* ============================================================
+   SAST ТАБЛИЧНЫЕ СТИЛИ
+   ============================================================ */
 .sast-container {
     width: 100%;
+    color: var(--text);
 }
 
-/* Таблица SAST */
 .sast-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
 }
 
-/* Строка таблицы SAST */
 .sast-row {
     cursor: pointer;
     transition: background 0.2s;
-    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    border-bottom: 1px solid var(--border);
 }
 
 .sast-row:hover {
-    background: var(--bg-secondary, #f1f5f9);
+    background: var(--bg-secondary);
 }
 
-/* Детали строки SAST */
 .sast-details-row {
     display: none;
-    background: var(--bg-secondary, #f8fafc);
+    background: var(--bg-secondary);
 }
 
 .sast-details-row.show {
     display: table-row;
 }
 
-/* Иконка раскрытия SAST */
 .sast-expand-icon {
     transition: transform 0.2s;
     display: inline-block;
     width: 20px;
     text-align: center;
     font-size: 12px;
-    color: var(--accent-color, #667eea);
+    color: var(--accent-color);
     cursor: pointer;
 }
 
 .sast-expand-icon:hover {
-    color: var(--primary-color, #2563eb);
+    color: var(--primary-color);
 }
 
 .sast-expand-icon.expanded {
     transform: rotate(90deg);
 }
 
-/* Панель фильтров SAST */
-.sast-filter-bar {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    align-items: center;
+.sast-rule-name,
+.sast-filepath {
+    font-family: 'Fira Code', monospace;
+    font-size: 12px;
+    color: var(--text);
 }
 
-/* Кнопка фильтра SAST */
-.sast-filter-btn {
-    padding: 6px 14px;
-    background: var(--bg-secondary, #f1f5f9);
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 13px;
-    transition: all 0.2s;
-    font-family: 'Ubuntu';
+.sast-filepath {
+    color: var(--text-dim);
 }
 
-.sast-filter-btn.active {
-    background: var(--accent-color, #667eea);
-    color: white;
-}
-
-.sast-filter-btn:hover {
-    background: var(--accent-color, #667eea);
-    color: white;
-}
-
-/* Поле поиска SAST */
-.sast-search-box {
-    flex: 1;
-    min-width: 200px;
-    padding: 8px 12px;
-    border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 5px;
-    font-size: 13px;
-    font-family: 'Ubuntu';
-    background: var(--card-bg, white);
-    color: var(--text-primary, #0f172a);
-}
-
-.sast-search-box:focus {
-    outline: none;
-    border-color: var(--accent-color, #667eea);
-    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
-}
-
-/* ==================== SAST МОДАЛЬНОЕ ОКНО ==================== */
-
-/* Кнопка расширенных фильтров */
-.sast-filter-btn-ext {
-    padding: 8px 12px;
-    background: var(--bg-secondary, #f1f5f9);
-    border: 1px solid var(--border-color, #e2e8f0);
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 13px;
-    font-family: 'Ubuntu';
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sast-filter-btn-ext:hover {
-    background: var(--accent-color, #667eea);
-    border-color: var(--accent-color, #667eea);
-    color: white;
-}
-
-/* Модальное окно */
+/* ============================================================
+   SAST МОДАЛКА
+   ============================================================ */
 .sast-modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    z-index: 10000;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 21000;
     display: none;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
-.sast-modal-overlay.active {
+.sast-modal-overlay.active,
+.sast-modal-overlay.show {
     display: flex;
 }
 
 .sast-modal {
-    background: var(--card-bg, white);
-    border-radius: 16px;
-    width: 450px;
-    max-width: 90%;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    background: var(--card-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    width: 520px;
+    max-width: 96%;
+    max-height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    color: var(--text);
     animation: sastModalFadeIn 0.2s ease;
 }
 
 @keyframes sastModalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.95) translateY(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
+    from { opacity: 0; transform: scale(.96) translateY(-10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
 }
 
 .sast-modal-header {
@@ -1229,17 +1265,22 @@ a {
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid var(--border-color, #e2e8f0);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
 }
 
 .sast-modal-header h3 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
-    color: var(--text-primary, #0f172a);
+    color: var(--text);
     display: flex;
     align-items: center;
     gap: 8px;
+}
+
+.sast-modal-header h3 i {
+    color: var(--accent-color);
 }
 
 .sast-modal-close {
@@ -1247,23 +1288,30 @@ a {
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-dim);
     transition: all 0.2s;
     padding: 4px 8px;
     border-radius: 8px;
+    line-height: 1;
 }
 
 .sast-modal-close:hover {
-    background: var(--bg-secondary, #f1f5f9);
-    color: var(--text-primary, #0f172a);
+    background: var(--bg-secondary);
+    color: var(--text);
 }
 
 .sast-modal-body {
     padding: 24px;
+    overflow-y: auto;
+    flex: 1;
 }
 
 .sast-filter-group {
     margin-bottom: 24px;
+}
+
+.sast-filter-group:last-child {
+    margin-bottom: 0;
 }
 
 .sast-filter-group label {
@@ -1271,7 +1319,7 @@ a {
     margin-bottom: 8px;
     font-weight: 500;
     font-size: 14px;
-    color: var(--text-primary, #0f172a);
+    color: var(--text);
 }
 
 .sast-checkbox-label {
@@ -1279,13 +1327,14 @@ a {
     align-items: center;
     gap: 12px;
     cursor: pointer;
+    color: var(--text);
 }
 
 .sast-checkbox-label input {
     width: 15px;
     height: 15px;
     cursor: pointer;
-    accent-color: var(--accent-color, #667eea);
+    accent-color: var(--accent-color);
 }
 
 .sast-checkbox-label span {
@@ -1294,7 +1343,7 @@ a {
 
 .sast-filter-hint {
     font-size: 11px;
-    color: var(--text-secondary, #64748b);
+    color: var(--text-dim);
     margin-top: 6px;
     margin-left: 30px;
 }
@@ -1302,24 +1351,24 @@ a {
 .sast-select {
     width: 100%;
     padding: 10px 12px;
-    border: 1px solid var(--border-color, #e2e8f0);
+    border: 1px solid var(--border);
     border-radius: 8px;
     font-size: 14px;
-    font-family: 'Ubuntu';
-    background: var(--card-bg, white);
-    color: var(--text-primary, #0f172a);
+    font-family: 'Fira Sans', sans-serif;
+    background: var(--bg-input);
+    color: var(--text);
     cursor: pointer;
     transition: all 0.2s;
 }
 
 .sast-select:hover {
-    border-color: var(--accent-color, #667eea);
+    border-color: var(--accent-color);
 }
 
 .sast-select:focus {
     outline: none;
-    border-color: var(--accent-color, #667eea);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px var(--logo-glow);
 }
 
 .sast-modal-footer {
@@ -1327,7 +1376,10 @@ a {
     justify-content: flex-end;
     gap: 12px;
     padding: 16px 24px;
-    border-top: 1px solid var(--border-color, #e2e8f0);
+    border-top: 1px solid var(--border);
+    background: var(--bg-input);
+    border-radius: 0 0 12px 12px;
+    flex-shrink: 0;
 }
 
 .sast-btn {
@@ -1335,79 +1387,29 @@ a {
     border-radius: 8px;
     font-size: 13px;
     font-weight: 500;
-    font-family: 'Ubuntu';
+    font-family: 'Fira Sans', sans-serif;
     cursor: pointer;
     transition: all 0.2s;
     border: none;
 }
 
 .sast-btn-secondary {
-    background: var(--bg-secondary, #f1f5f9);
-    color: var(--text-secondary, #475569);
+    background: var(--bg-secondary);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
 }
 
 .sast-btn-secondary:hover {
-    background: var(--border-color, #e2e8f0);
-    color: var(--text-primary, #0f172a);
+    background: var(--border);
+    color: var(--text);
 }
 
 .sast-btn-primary {
-    background: var(--accent-color, #667eea);
-    color: white;
+    background: var(--accent-color);
+    color: var(--accent-ink);
 }
 
 .sast-btn-primary:hover {
-    background: #5a67d8;
+    background: var(--accent-color-2);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
-
-.btn-primary {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s;
-    font-family: 'Ubuntu';
-}
-        .activate-licence-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 20px;
-            background: white;
-            border: 1px solid black;
-            color: black;
-            font-family: 'Ubuntu';
-            font-size: 11px;
-            cursor: pointer;
-            
-            
-        }
-
-        .license-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 1px black;
-        }
-
-        .license-badge.premium {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-
-        #licenseMessage.success {
-            background: #dcfce7;
-            color: #16a34a;
-            border: 1px solid #bbf7d0;
-        }
-
-        #licenseMessage.error {
-            background: #fee2e2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }

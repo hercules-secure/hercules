@@ -1,89 +1,1392 @@
 <!DOCTYPE html>
 <html data-page="construction" data-version="1.0.0" lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Palette</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="palette.css">
-    <link rel="stylesheet" href="../common/main.css">
-    <link rel="stylesheet" href="../common/modal.css">
-    <link rel="stylesheet" href="../common/sidebar.css">  
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
-    <style>
 
-    
-    .tools-title,
-    .tool-name,
-    .tool-desc,
-    .section-title,
-    .header-btn,
-    .source-btn,
-    .element-library-item,
-    .action-btn,
-    .card-title,
-    .tool-name,
-    .hint,
-    .settings-option,
-    .modal-content,
-    .modal-header h3,
-    .settings-header h3,
-    .about-info h3,
-    .version,
-    .description,
-    label,
-    input,
-    select,
-    button,
-    .palette-empty h3,
-    .palette-empty p {
-        font-family: 'Fira Sans', sans-serif !important;
+    <link rel="stylesheet" href="palette.css">
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+
+    <script>
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
+    <style>
+        :root,
+        [data-theme="dark"] {
+            --bg: #0a0c14;
+            --bg-card: rgba(13, 16, 24, 0.85);
+            --bg-input: #131722;
+            --bg-input-focus: #161b28;
+            --border: #1e2433;
+            --border-hover: #2a3142;
+            --accent: #22d3ee;
+            --accent-2: #a855f7;
+            --accent-ink: #06141a;
+            --text: #e6edf7;
+            --text-dim: #6b7280;
+            --text-faint: #4a536b;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-border: rgba(239, 68, 68, 0.25);
+            --error-text: #fca5a5;
+            --success-bg: rgba(16, 185, 129, 0.10);
+            --success-border: rgba(16, 185, 129, 0.30);
+            --success-text: #6ee7b7;
+            --warning-bg: rgba(245, 158, 11, 0.10);
+            --warning-border: rgba(245, 158, 11, 0.30);
+            --warning-text: #fcd34d;
+            --logo-bg: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(168, 85, 247, 0.10));
+            --logo-border: rgba(34, 211, 238, 0.35);
+            --logo-glow: rgba(34, 211, 238, 0.25);
+            --logo-glow-strong: rgba(34, 211, 238, 0.45);
+            --card-shadow:
+                0 0 0 1px rgba(34, 211, 238, 0.05),
+                0 24px 60px rgba(0, 0, 0, 0.7),
+                0 0 80px rgba(34, 211, 238, 0.06);
+            --toggle-bg: rgba(255, 255, 255, 0.05);
+            --toggle-hover: rgba(255, 255, 255, 0.10);
+            --toggle-color: #6b7280;
+            --toggle-color-hover: #22d3ee;
+            --grid-line: rgba(34, 211, 238, 0.05);
+            --canvas-bg: #0d1018;
+            --canvas-dot: rgba(34, 211, 238, 0.10);
+        }
+
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-input: #ffffff;
+            --bg-input-focus: #ffffff;
+            --border: #e3e8f0;
+            --border-hover: #d0d7e3;
+            --accent: #0891b2;
+            --accent-2: #7c3aed;
+            --accent-ink: #ffffff;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --text-faint: #94a3b8;
+            --error-bg: rgba(239, 68, 68, 0.06);
+            --error-border: rgba(239, 68, 68, 0.20);
+            --error-text: #b91c1c;
+            --success-bg: rgba(16, 185, 129, 0.08);
+            --success-border: rgba(16, 185, 129, 0.25);
+            --success-text: #047857;
+            --warning-bg: rgba(245, 158, 11, 0.08);
+            --warning-border: rgba(245, 158, 11, 0.25);
+            --warning-text: #b45309;
+            --logo-bg: linear-gradient(135deg, rgba(8, 145, 178, 0.12), rgba(124, 58, 237, 0.06));
+            --logo-border: rgba(8, 145, 178, 0.30);
+            --logo-glow: rgba(8, 145, 178, 0.15);
+            --logo-glow-strong: rgba(8, 145, 178, 0.30);
+            --card-shadow:
+                0 0 0 1px rgba(8, 145, 178, 0.04),
+                0 20px 50px rgba(15, 23, 42, 0.10),
+                0 0 60px rgba(8, 145, 178, 0.04);
+            --toggle-bg: rgba(0, 0, 0, 0.04);
+            --toggle-hover: rgba(0, 0, 0, 0.08);
+            --toggle-color: #94a3b8;
+            --toggle-color-hover: #0891b2;
+            --grid-line: rgba(8, 145, 178, 0.06);
+            --canvas-bg: #fafbff;
+            --canvas-dot: rgba(8, 145, 178, 0.10);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            min-height: 100%;
+            transition: background 0.35s ease, color 0.35s ease;
+        }
+
+        body {
+            font-family: 'Fira Code', ui-monospace, monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 50% 0%, var(--logo-glow), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 100%, var(--logo-glow), transparent 60%),
+                radial-gradient(ellipse 40% 30% at 10% 80%, var(--logo-glow), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.35s ease;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background-image 0.35s ease;
+        }
+
+        #box {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            width: 100%;
+            margin: 0;
+            align-items: flex-start;
+        }
+
+        #left {
+            flex: 0 0 300px;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: flex-basis 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #left.collapsed {
+            flex-basis: 0;
+            padding: 0;
+            border: none;
+            opacity: 0;
+            transform: translateX(-20px);
+            pointer-events: none;
+        }
+
+        #center {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+
+.top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    position: relative;
+    flex-wrap: nowrap;
+    overflow: visible;
+    min-height: 50px;
+    width: 100%;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+.top-bar::before {
+    display: none;
+}
+
+/* Заголовок */
+.top-bar .top-bar-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Fira Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.top-bar .top-bar-title i {
+    color: var(--accent) !important;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    filter: none;
+}
+
+.top-bar .top-bar-title > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+}
+
+/* Правая часть — без скролла, элементы не сжимаются */
+.top-bar .palette-topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-wrap: nowrap;
+    overflow: visible;
+    padding: 0;
+    height: 32px;
+    justify-content: center;
+}
+
+.top-bar .palette-elements-group {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.top-bar .palette-elements-divider {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+    flex-shrink: 0;
+    margin: 0 3px;
+    opacity: 0.5;
+}
+
+.top-bar .elements-label {
+    font-size: 0.58rem;
+    font-weight: 700;
+    color: var(--text-dim);
+    font-family: 'Fira Sans', sans-serif;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
+    margin-right: 2px;
+    height: 24px;
+}
+
+/* Элементы — плоские */
+.top-bar .element-library-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.62rem;
+    font-weight: 600;
+    font-family: 'Fira Sans', sans-serif;
+    cursor: grab;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text);
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    height: 24px;
+    user-select: none;
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: none;
+}
+
+.top-bar .element-library-item:hover {
+    background: transparent;
+    border-color: transparent;
+    color: var(--accent);
+    box-shadow: none;
+}
+
+.top-bar .element-library-item:active {
+    cursor: grabbing;
+    opacity: 0.7;
+    transform: none;
+}
+
+/* Source/Action кнопки — плоские */
+.top-bar .source-btn,
+.top-bar .action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: color 0.15s, background 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+    height: 24px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-dim);
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-shadow: none;
+}
+
+.top-bar .source-btn:hover,
+.top-bar .action-btn:hover {
+    background: transparent;
+    border-color: transparent;
+    color: var(--accent);
+    box-shadow: none;
+}
+
+.top-bar .source-btn.active {
+    background: transparent;
+    border-color: transparent;
+    color: var(--accent);
+    box-shadow: none;
+    position: relative;
+}
+
+.top-bar .source-btn.active::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: -1px;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 0;
+}
+
+.top-bar .source-btn .lib-icon,
+.top-bar .action-btn i {
+    font-size: 10px;
+    color: inherit;
+    flex-shrink: 0;
+    filter: none;
+}
+
+.top-bar .action-btn.primary {
+    background: transparent;
+    color: var(--accent);
+    border-color: transparent;
+    box-shadow: none;
+    font-weight: 700;
+}
+
+.top-bar .action-btn.primary:hover {
+    background: transparent;
+    color: var(--accent-2);
+    transform: none;
+    box-shadow: none;
+}
+
+.top-bar .action-btn.danger {
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+}
+
+.top-bar .action-btn.danger:hover {
+    background: transparent;
+    color: var(--error-text);
+    border-color: transparent;
+}
+
+.top-bar .palette-topbar-right > span:not([class]) {
+    color: var(--border-hover);
+    font-size: 0.75rem;
+    user-select: none;
+    flex-shrink: 0;
+    margin: 0 1px;
+    font-family: 'Fira Code', monospace;
+    line-height: 1;
+    opacity: 0.6;
+}
+
+/* Top bar actions */
+.top-bar .top-bar-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    margin-left: 6px;
+}
+
+.top-bar .top-bar-actions .header-btn {
+    height: 26px;
+    padding: 0 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.62rem;
+    white-space: nowrap;
+    border-radius: 4px;
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+    box-shadow: none;
+}
+
+.top-bar .top-bar-actions .header-btn:hover {
+    background: transparent;
+    color: var(--accent);
+    border-color: transparent;
+}
+
+.top-bar .top-bar-actions .theme-toggle {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+    box-shadow: none;
+}
+
+.top-bar .top-bar-actions .theme-toggle:hover {
+    background: transparent;
+    color: var(--accent);
+    border-color: transparent;
+    transform: none;
+}
+
+/* Beta badge — плоский */
+.badge-beta-gradient {
+    display: inline-block;
+    padding: 1px 6px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-family: 'Fira Code', monospace;
+    font-size: 0.55rem;
+    font-weight: 700;
+    border-radius: 3px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    animation: none;
+    vertical-align: middle;
+    box-shadow: none;
+}
+
+/* ============================================================
+   АДАПТИВ — скрытие второстепенного
+   ============================================================ */
+
+@media (max-width: 1600px) {
+    .top-bar .elements-label {
+        display: none;
     }
-    
-    .palette-empty h3 {
-        font-family: 'Fira Sans', sans-serif !important;
-        font-weight: 600;
+}
+
+@media (max-width: 1400px) {
+    .top-bar .element-library-item.gate[data-type="render"],
+    .top-bar .element-library-item.gate[data-type="report"],
+    .top-bar .element-library-item.gate[data-type="alert"] {
+        display: none;
     }
-    
-    .palette-empty p {
-        font-family: 'Fira Sans', sans-serif !important;
-        font-weight: 400;
+}
+
+@media (max-width: 1250px) {
+    .top-bar .element-library-item[data-type="actor"],
+    .top-bar .element-library-item[data-type="class"] {
+        display: none;
     }
-    
-    .task-id,
-    .task-status,
-    .progress-container,
-    .modal-select,
-    .modal-input,
-    .version,
-    .badge-beta-gradient,
-    .format-badge,
-    .supported-format-badge,
-    .license-input,
-    .field-row input,
-    .field-row select {
-        font-family: 'Fira Code', monospace !important;
+    .top-bar .source-btn[data-source="sbom"],
+    .top-bar .source-btn[data-source="ci"] {
+        display: none;
     }
-    
-    /* Fira Code для кода */
-    .code-editor,
-    .file-details,
-    .data-structure-preview,
-    .subdomain-item .name,
-    .subdomain-item .ip,
-    .domain-name,
-    .source-name,
-    .metric-value,
-    .score-ring .inner,
-    .report-audit-card .row .value,
-    .report-status-item .value {
-        font-family: 'Fira Code', monospace !important;
+}
+
+@media (max-width: 1100px) {
+    .top-bar .element-library-item[data-type="threat"],
+    .top-bar .element-library-item[data-type="data"] {
+        display: none;
     }
+    .top-bar .action-btn#exportModelBtn {
+        display: none;
+    }
+}
+
+@media (max-width: 950px) {
+    .top-bar .element-library-item[data-type="asset"] {
+        display: none;
+    }
+    .top-bar .source-btn[data-source="project"] {
+        display: none;
+    }
+}
+
+@media (max-width: 800px) {
+    .top-bar .palette-topbar-right {
+        display: none;
+    }
+    .top-bar .top-bar-title {
+        max-width: none;
+    }
+}
+
+        .theme-toggle {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            color: var(--toggle-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.25s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--toggle-hover);
+            color: var(--toggle-color-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
+        }
+
+        .theme-toggle .icon-sun  { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+        [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+        .header-btn {
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: var(--toggle-bg);
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .header-btn:hover {
+            background: var(--toggle-hover);
+            border-color: var(--border-hover);
+            color: var(--accent);
+        }
+
+        /* ============================================================
+           ЛЕВЫЙ САЙДБАР
+           ============================================================ */
+
+        .tools-section {
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .tools-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            margin-bottom: 14px;
+        }
+
+        .tools-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
+
+        .tools-title i {
+            color: var(--accent) !important;
+            filter: drop-shadow(0 0 6px var(--logo-glow-strong));
+        }
+
+        .collapse-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            color: var(--toggle-color);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collapse-btn:hover {
+            background: var(--toggle-hover);
+            color: var(--accent);
+            border-color: var(--border-hover);
+        }
+
+        .tool-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 10px 4px;
+        }
+
+        .tools-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .tool-item:hover {
+            background: var(--toggle-bg);
+            border-color: var(--border);
+        }
+
+        .tool-item.active {
+            background: var(--logo-bg);
+            border-color: var(--logo-border);
+            box-shadow: 0 0 20px var(--logo-glow);
+        }
+
+        .tool-item.active .tool-icon i {
+            color: var(--accent) !important;
+            filter: drop-shadow(0 0 6px var(--logo-glow-strong));
+        }
+
+        .tool-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tool-icon i {
+            font-size: 0.9rem;
+            color: var(--accent);
+            transition: color 0.25s ease;
+        }
+
+        .tool-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .tool-name {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .tool-desc {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+        }
+
+        .black-icon { color: var(--accent) !important; }
+
+        a { text-decoration: none; color: inherit; }
+        a:hover, a:focus, a:active, a:visited { text-decoration: none; color: inherit; }
+        .tools-grid a { display: block; width: 100%; }
+
+        /* ============================================================
+           PALETTE CONTAINER
+           ============================================================ */
+
+        .palette-container {
+            display: flex;
+            gap: 20px;
+            align-items: stretch;
+        }
+
+        .palette-canvas-wrapper {
+            flex: 1;
+            min-width: 0;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            padding: 12px;
+            position: relative;
+        }
+
+        .palette-canvas {
+            position: relative;
+            width: 100%;
+            min-height: 600px;
+            background: var(--canvas-bg);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: background 0.35s ease, border-color 0.35s ease;
+        }
+
+        .palette-canvas-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(var(--canvas-dot) 1px, transparent 1px);
+            background-size: 22px 22px;
+            pointer-events: none;
+        }
+
+        .palette-empty {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: var(--text-dim);
+            font-family: 'Fira Sans', sans-serif;
+            pointer-events: none;
+        }
+
+        .palette-empty i {
+            font-size: 3rem;
+            color: var(--accent);
+            filter: drop-shadow(0 0 12px var(--logo-glow));
+            margin-bottom: 14px;
+        }
+
+        .palette-empty h3 {
+            font-family: 'Fira Sans', sans-serif !important;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+
+        .palette-empty p {
+            font-family: 'Fira Sans', sans-serif !important;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .palette-tool-card {
+            flex: 0 0 280px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            padding: 20px 16px;
+            transition: background 0.35s ease, border-color 0.35s ease;
+            position: relative;
+        }
+
+        .palette-tool-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 1px;
+            opacity: 0.7;
+        }
+
+        .palette-tool-card .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .palette-tool-card .card-title i {
+            color: var(--accent);
+            filter: drop-shadow(0 0 6px var(--logo-glow));
+        }
+
+        .flow-tools-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .flow-tool-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            cursor: grab;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .flow-tool-item:hover {
+            border-color: var(--accent);
+            background: var(--bg-input-focus);
+            box-shadow: 0 0 12px var(--logo-glow);
+            transform: translateX(2px);
+        }
+
+        .flow-tool-item .tool-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: var(--logo-bg);
+            border: 1px solid var(--logo-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .flow-tool-item .tool-icon i {
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+
+        .flow-tool-item .tool-name {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .palette-tool-card .hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding: 10px 12px;
+            background: var(--logo-bg);
+            border: 1px solid var(--logo-border);
+            border-radius: 10px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .palette-tool-card .hint i {
+            color: var(--accent);
+        }
+
+        .badge-beta-gradient {
+            display: inline-block;
+            padding: 2px 8px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            background-size: 200% 200%;
+            color: var(--accent-ink);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem;
+            font-weight: 700;
+            border-radius: 20px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            animation: gradientShift 3s ease infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ============================================================
+           MODALS
+           ============================================================ */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 100000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active { display: flex !important; }
+
+        .modal-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            color: var(--text);
+            box-shadow: var(--card-shadow);
+            border-radius: 14px;
+            padding: 24px 28px;
+        }
+
+        .modal-content h3 {
+            color: var(--text);
+            font-family: 'Fira Sans', sans-serif;
+        }
+
+        .connection-type-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 10px;
+        }
+
+        .connection-type-option:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--logo-glow);
+            transform: translateX(2px);
+        }
+
+        .connection-type-option .option-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .connection-type-option .option-icon.control {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+        }
+
+        .connection-type-option .option-icon.data {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+        }
+
+        .connection-type-option .option-name {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .connection-type-option .option-desc {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+        }
+
+        .btn-cancel {
+            padding: 8px 18px;
+            border: 1px solid var(--border);
+            background: var(--toggle-bg);
+            color: var(--text);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background: var(--toggle-hover);
+            border-color: var(--border-hover);
+            color: var(--accent);
+        }
+
+        /* Data structure modal */
+        .data-structure-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 100000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .data-structure-modal.show { display: flex; }
+
+        .data-structure-modal-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 24px 28px;
+            max-width: 520px;
+            width: 92%;
+            color: var(--text);
+            box-shadow: var(--card-shadow);
+        }
+
+        .data-structure-modal-content h3 {
+            color: var(--text);
+            font-family: 'Fira Sans', sans-serif;
+            margin-bottom: 6px;
+        }
+
+        .data-structure-modal-content .subtitle {
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            margin-bottom: 16px;
+            font-family: 'Fira Sans', sans-serif;
+        }
+
+        .field-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .field-row input,
+        .field-row select {
+            padding: 8px 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            outline: none;
+        }
+
+        .field-row input { flex: 1; }
+
+        .field-row input:focus,
+        .field-row select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--logo-glow);
+        }
+
+        .field-row .remove-field {
+            width: 36px;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .field-row .remove-field:hover {
+            background: var(--error-border);
+            color: #fff;
+        }
+
+        .add-field-btn {
+            padding: 8px 14px;
+            background: var(--toggle-bg);
+            border: 1px dashed var(--accent);
+            color: var(--accent);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .add-field-btn:hover {
+            background: var(--logo-bg);
+            box-shadow: 0 0 12px var(--logo-glow);
+        }
+
+        .data-structure-preview {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            line-height: 1.6;
+            white-space: pre;
+            overflow-x: auto;
+        }
+
+        .data-structure-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 18px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+        }
+
+        .data-structure-modal-footer .btn-save {
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: var(--accent-ink);
+            border: none;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 0 16px var(--logo-glow);
+            transition: all 0.2s;
+        }
+
+        .data-structure-modal-footer .btn-save:hover {
+            box-shadow: 0 0 24px var(--logo-glow-strong);
+            transform: translateY(-1px);
+        }
+
+        /* Settings modal */
+        .settings-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .settings-modal.show { display: flex; }
+
+        .settings-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--card-shadow);
+            animation: fadeInUp 0.25s ease;
+            color: var(--text);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-header h3 {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-header h3 i {
+            color: var(--accent) !important;
+            filter: drop-shadow(0 0 6px var(--logo-glow));
+        }
+
+        .settings-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .settings-close:hover {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
+
+        .unified-layout {
+            display: flex;
+            gap: 16px;
+        }
+
+        .unified-left,
+        .unified-right {
+            flex: 1;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .tools-loader {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+        }
+
+        .tools-loader i {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            color: var(--accent);
+        }
+
+        /* Diagram type cards */
+        .diagram-type-card {
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+        }
+
+        .diagram-type-card div {
+            color: var(--text);
+        }
+
+        .diagram-type-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 12px var(--logo-glow);
+        }
+
+        .diagram-type-card.selected {
+            border-color: var(--accent);
+            background: var(--logo-bg);
+            box-shadow: 0 0 0 4px var(--logo-glow);
+        }
+
+        .diagram-type-option {
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .diagram-type-option:hover {
+            border-color: var(--accent);
+        }
+
+        .diagram-type-option.active {
+            border-color: var(--accent);
+            background: var(--logo-bg);
+            box-shadow: 0 0 0 3px var(--logo-glow);
+        }
+
+        .diagram-type-option span {
+            color: var(--text);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+
+        @media (max-width: 1100px) {
+            #box { gap: 16px; padding: 16px; }
+            #left { flex-basis: 260px; top: 16px; max-height: calc(100vh - 32px); }
+            .palette-tool-card { flex-basis: 240px; }
+        }
+
+        @media (max-width: 900px) {
+            #box { flex-direction: column; padding: 16px; }
+            #left {
+                flex: 0 0 auto;
+                width: 100%;
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+            #left.collapsed { display: none; }
+            .top-bar { padding: 12px 16px; }
+            .top-bar .top-bar-title { font-size: 0.9rem; max-width: 180px; }
+            .palette-container { flex-direction: column; }
+            .palette-tool-card { flex: 0 0 auto; }
+            .palette-canvas { min-height: 400px; }
+        }
     </style>
 </head>
+
 <body>
     <div id="box" class="fade-in">
         <div id="left">
@@ -127,119 +1430,79 @@
                         </div>
                     </a>
                 </div>
+                 <div class="tool-divider"></div>
             </div>
         </div>
 
         <div id="center">
-            <div class="page-header">
-                <h2 class="section-title" id="pageTitle">Threat Modeling &amp; Visualization <span class="badge-beta-gradient">Beta</span></h2>
-                
-                <div class="header-buttons">
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <i class="fas fa-palette black-icon"></i>
+                    <span id="pageTitle">Threat Modeling &amp; Visualization <span class="badge-beta-gradient">Beta</span></span>
+                </div>
+                <div class="palette-topbar-right">
+                    <div class="palette-elements-group">
+                        <div class="element-library-item event" draggable="true" data-type="event-start">
+                            <i class="fas fa-play-circle lib-icon"></i>
+                            Start
+                        </div>
+                        <div class="element-library-item event" draggable="true" data-type="event-end">
+                            <span class="lib-icon"><i class="fas fa-stop-circle"></i></span>
+                            End
+                        </div>
+                        <div class="palette-elements-divider"></div>
+                        <div class="element-library-item" draggable="true" data-type="asset">
+                            <span class="lib-icon"><i class="fas fa-puzzle-piece"></i></span>
+                            Component
+                        </div>
+                   
+                        <div class="palette-elements-divider"></div>
+                        <div class="element-library-item gate" draggable="true" data-type="gate-or">
+                            <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
+                            OR
+                        </div>
+                        <div class="element-library-item gate" draggable="true" data-type="gate-if">
+                            <span class="lib-icon"><i class="fas fa-question-circle"></i></span>
+                            IF
+                        </div>
+                        
+                        <div class="palette-elements-divider"></div>
+                        <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
+                            <i class="fas fa-code lib-icon"></i><span>Code</span>
+                        </button>
+                        <button onclick="openProjectModal()" class="source-btn" data-source="project">
+                            <i class="fas fa-folder lib-icon"></i> <span>Project</span>
+                        </button>
+                        <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
+                            <i class="fas fa-file-code lib-icon"></i> <span>SBOM</span>
+                        </button>
+                        <button class="source-btn" data-source="ci" onclick="openYAMLModal()">
+                            <i class="fas fa-code-branch lib-icon"></i><span>CI/CD</span>
+                        </button>
+                        <div class="palette-elements-divider"></div>
+                        <button class="action-btn" id="exportModelBtn">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                        <button class="action-btn primary" id="importModelBtn">
+                            <i class="fas fa-upload"></i> Import
+                        </button>
+                        <button class="action-btn danger" id="clearCanvasBtn">
+                            <i class="fas fa-trash"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                <div class="top-bar-actions">
                     <button class="header-btn" onclick="showToolInfo('palette')">
                         <i class="fas fa-info-circle"></i> Tool info
                     </button>
-                </div>
-            </div>
-
-            <!-- TOP BAR -->
-            <div class="palette-topbar">
-                <div class="palette-topbar-left">
-                    <div class="palette-elements-bar">
-                     <span class="elements-label">Import:</span>
-                     <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
-                        <i class="fas fa-code lib-icon"></i><span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Code</span>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+                        <i class="fas fa-sun icon-sun"></i>
+                        <i class="fas fa-moon icon-moon"></i>
                     </button>
-                    <button onclick="openProjectModal()" class="source-btn" data-source="project">
-                       <i class="fas fa-folder lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">Project</span>
-                     </button>
-                    <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
-                        <i class="fas fa-file-code lib-icon"></i> <span class="element-library-item" style="cursor: pointer;padding-left: 1px;">SBOM</span>
-                    </button>
-                    <button class="source-btn" data-source="ci" onclick="openYAMLModal()">
-                        <i class="fas fa-code-branch lib-icon"></i><span class="element-library-item" style="cursor: pointer;padding-left: 1px;">CI/CD</span>
-                    </button>
-                    </div>
-                </div>
-                <div class="palette-topbar-right">
-                    <button class="action-btn" id="exportModelBtn">
-                        <i class="fas fa-download"></i> Export
-                    </button>
-                    <button class="action-btn primary" id="importModelBtn">
-                        <i class="fas fa-upload"></i> Import
-                    </button>
-                    <button class="action-btn danger" id="clearCanvasBtn">
-                        <i class="fas fa-trash"></i> Clear
-                    </button>
-                </div>
-            </div>
-
-            <!-- ELEMENTS ABOVE CANVAS -->
-            <div class="palette-elements-bar">
-                <span class="elements-label">Modeling:</span>
-                <div class="palette-elements-group">
-                    <div class="palette-elements-group">
-                    <div class="element-library-item event" draggable="true" data-type="event-start">
-                        <span class="lib-icon"><i class="fas fa-play-circle"></i></span>
-                        Start
-                    </div>
-                    <div class="element-library-item event" draggable="true" data-type="event-end">
-                        <span class="lib-icon"><i class="fas fa-stop-circle"></i></span>
-                        End
-                    </div>
-                <div class="palette-elements-divider"></div>
-                </div>
-                    <div class="element-library-item" draggable="true" data-type="asset">
-                        <span class="lib-icon"><i class="fas fa-puzzle-piece"></i></span>
-                        Component
-                    </div>
-                    <div class="element-library-item" draggable="true" data-type="threat">
-                        <span class="lib-icon"><i class="fas fa-skull"></i></span>
-                        Threat
-                    </div>
-                    <div class="element-library-item" draggable="true" data-type="data">
-                        <span class="lib-icon"><i class="fas fa-file-alt"></i></span>
-                        Data
-                    </div>
-                    <div class="element-library-item" draggable="true" data-type="actor">
-                        <span class="lib-icon"><i class="fas fa-user"></i></span>
-                        Actor
-                    </div>
-                    <div class="element-library-item" draggable="true" data-type="class">
-                        <span class="lib-icon"><i class="fas fa-cube"></i></span>
-                        Class
-                    </div>
-                </div>
-                <div class="palette-elements-divider"></div>
-                <div class="palette-elements-group">
-                    <div class="element-library-item gate" draggable="true" data-type="gate-or">
-                        <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
-                        OR
-                    </div>
-                    <div class="element-library-item gate" draggable="true" data-type="gate-if">
-                        <span class="lib-icon"><i class="fas fa-question-circle"></i></span>
-                        IF
-                    </div>
-                </div>
-                <div class="palette-elements-divider"></div>
-                <div class="palette-elements-group">
-                    <div class="element-library-item gate" draggable="true" data-type="render">
-                        <span class="lib-icon"><i class="fas fa-paint-brush"></i></span>
-                        Render
-                    </div>
-                    <div class="element-library-item gate" draggable="true" data-type="report">
-                        <span class="lib-icon"><i class="fas fa-file-alt"></i></span>
-                        Report
-                    </div>
-                    <div class="element-library-item gate" draggable="true" data-type="alert">
-                        <span class="lib-icon"><i class="fas fa-bell"></i></span>
-                        Alert
-                    </div>
                 </div>
             </div>
 
             <div class="palette-container">
-
-                <!-- LEFT PANEL: CANVAS -->
                 <div class="palette-canvas-wrapper">
                     <div class="palette-canvas" id="paletteCanvas">
                         <div class="palette-canvas-grid"></div>
@@ -253,52 +1516,52 @@
                         <div id="dragLine"></div>
                     </div>
                 </div>
-                    <div class="palette-tool-card">
-    <div class="card-title">
-        <i class="fas fa-copy"></i> Templates
-    </div>
-            <div class="flow-tools-list">
-                <div class="flow-tool-item" draggable="true" data-template="web-app">
-                    <div class="tool-icon"><i class="fas fa-globe"></i></div>
-                    <div class="tool">
-                        <div class="tool-name">Web Application</div>
+
+                <div class="palette-tool-card">
+                    <div class="card-title">
+                        <i class="fas fa-copy"></i> Templates
                     </div>
-                </div>
-                <div class="flow-tool-item" draggable="true" data-template="api">
-                    <div class="tool-icon"><i class="fas fa-plug"></i></div>
-                    <div class="tool">
-                        <div class="tool-name">API Service</div>
+                    <div class="flow-tools-list">
+                        <div class="flow-tool-item" draggable="true" data-template="web-app">
+                            <div class="tool-icon"><i class="fas fa-globe"></i></div>
+                            <div class="tool">
+                                <div class="tool-name">Web Application</div>
+                            </div>
+                        </div>
+                        <div class="flow-tool-item" draggable="true" data-template="api">
+                            <div class="tool-icon"><i class="fas fa-plug"></i></div>
+                            <div class="tool">
+                                <div class="tool-name">API Service</div>
+                            </div>
+                        </div>
+                        <div class="flow-tool-item" draggable="true" data-template="database">
+                            <div class="tool-icon"><i class="fas fa-database"></i></div>
+                            <div class="tool">
+                                <div class="tool-name">Database</div>
+                            </div>
+                        </div>
+                        <div class="flow-tool-item" draggable="true" data-template="microservices">
+                            <div class="tool-icon"><i class="fas fa-cubes"></i></div>
+                            <div class="tool">
+                                <div class="tool-name">Microservices</div>
+                            </div>
+                        </div>
+                        <div class="flow-tool-item" draggable="true" data-template="cloud">
+                            <div class="tool-icon"><i class="fas fa-cloud"></i></div>
+                            <div class="tool">
+                                <div class="tool-name">Cloud Infrastructure</div>
+                            </div>
+                        </div>
+                        <div class="flow-tool-item" draggable="true" data-template="devops">
+                            <div class="tool-icon"><i class="fas fa-code-branch"></i></div>
+                            <div class="tool">
+                                <div class="tool-name">CI/CD Pipeline</div>
+                            </div>
+                        </div>
+                        <div class="hint">
+                            <i class="fas fa-info-circle"></i> Drag to canvas to build flow
+                        </div>
                     </div>
-                </div>
-                <div class="flow-tool-item" draggable="true" data-template="database">
-                    <div class="tool-icon"><i class="fas fa-database"></i></div>
-                    <div class="tool">
-                        <div class="tool-name">Database</div>
-                    </div>
-                </div>
-                <div class="flow-tool-item" draggable="true" data-template="microservices">
-                    <div class="tool-icon"><i class="fas fa-cubes"></i></div>
-                    <div class="tool">
-                        <div class="tool-name">Microservices</div>
-                    </div>
-                </div>
-                <div class="flow-tool-item" draggable="true" data-template="cloud">
-                    <div class="tool-icon"><i class="fas fa-cloud"></i></div>
-                    <div class="tool">
-                        <div class="tool-name">Cloud Infrastructure</div>
-                    </div>
-                </div>
-                <div class="flow-tool-item" draggable="true" data-template="devops">
-                    <div class="tool-icon"><i class="fas fa-code-branch"></i></div>
-                    <div class="tool">
-                        <div class="tool-name">CI/CD Pipeline</div>
-                    </div>
-                </div>
-                <div class="hint">
-                    <i class="fas fa-info-circle"></i> Drag to canvas to build flow
-                </div>
-            </div>
-</div>
                 </div>
             </div>
         </div>
@@ -308,8 +1571,8 @@
     <div id="connectionTypeModal" class="modal">
         <div class="modal-content">
             <h3><i class="fas fa-link"></i> Select connection type</h3>
-            <p style="font-size: 13px; color: #6c757d; margin-bottom: 20px;">Define how elements will interact</p>
-            
+            <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 20px;">Define how elements will interact</p>
+
             <div class="connection-type-option" onclick="selectConnectionType('control')">
                 <div class="option-icon control"><i class="fas fa-arrow-right"></i></div>
                 <div class="option-info">
@@ -317,7 +1580,7 @@
                     <div class="option-desc">Transfer control to the next element</div>
                 </div>
             </div>
-            
+
             <div class="connection-type-option" onclick="selectConnectionType('data')">
                 <div class="option-icon data"><i class="fas fa-database"></i></div>
                 <div class="option-info">
@@ -325,7 +1588,7 @@
                     <div class="option-desc">Data transfer with structure description</div>
                 </div>
             </div>
-            
+
             <div class="modal-footer">
                 <button class="btn-cancel" onclick="cancelConnectionType()">Cancel</button>
             </div>
@@ -337,7 +1600,7 @@
         <div class="data-structure-modal-content">
             <h3><i class="fas fa-database"></i> Data Structure</h3>
             <p class="subtitle">Define fields and data types transferred through this flow</p>
-            
+
             <div id="dataFieldsContainer">
                 <div class="field-row">
                     <input type="text" placeholder="Field name" value="id">
@@ -376,18 +1639,18 @@
                     <button class="remove-field" onclick="removeField(this)"><i class="fas fa-times"></i></button>
                 </div>
             </div>
-            
+
             <button class="add-field-btn" onclick="addField()"><i class="fas fa-plus"></i> Add field</button>
-            
+
             <div style="margin-top: 12px;">
-                <label style="font-size: 12px; color: #6c757d;">Structure preview:</label>
+                <label style="font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;">Structure preview:</label>
                 <div class="data-structure-preview" id="dataStructurePreview">{
     "id": 123,
     "name": "John",
     "email": "john@example.com"
 }</div>
             </div>
-            
+
             <div class="data-structure-modal-footer">
                 <button class="btn-cancel" onclick="closeDataStructureModal()">Cancel</button>
                 <button class="btn-save" onclick="saveDataStructure()">Save</button>
@@ -396,18 +1659,18 @@
     </div>
 
     <!-- ELEMENT PROPERTIES MODAL -->
-    <div id="elementPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25); max-height: 90vh; overflow-y: auto;">
+    <div id="elementPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: var(--card-shadow); max-height: 90vh; overflow-y: auto; border: 1px solid var(--border);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-cog" style="color: #3B82F6;"></i> <span class="modal-title">Element Properties</span>
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-cog" style="color: var(--accent);"></i> <span class="modal-title">Element Properties</span>
                 </h3>
-                <button onclick="window.closeElementPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+                <button onclick="window.closeElementPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">&times;</button>
             </div>
             <div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Type</label>
-                    <select id="propType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: white;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Type</label>
+                    <select id="propType" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: var(--bg-input); color: var(--text);">
                         <option value="uml-class">UML Class</option>
                         <option value="event-start">Event - Start</option>
                         <option value="event-end">Event - End</option>
@@ -425,79 +1688,77 @@
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Name</label>
-                    <input id="propName" type="text" placeholder="e.g. Nginx" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Name</label>
+                    <input id="propName" type="text" placeholder="e.g. Nginx" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: var(--bg-input); color: var(--text);">
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Color</label>
-                    <input id="propColor" type="color" value="#3B82F6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Color</label>
+                    <input id="propColor" type="color" value="#3B82F6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: var(--bg-input);">
                 </div>
                 <div id="dynamicFieldsContainer"></div>
-                <div id="eventPropsContainer" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-clock"></i> Event Properties
-                </h4>
-                <div id="eventPropsFields"></div>
+                <div id="eventPropsContainer" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                    <h4 style="margin: 0 0 12px 0; font-size: 14px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-clock"></i> Event Properties
+                    </h4>
+                    <div id="eventPropsFields"></div>
+                </div>
             </div>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
-            <button onclick="window.closeElementPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Cancel</button>
-            <button onclick="window.saveElementProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Save</button>
-        </div>
-    </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px;">
+                <button onclick="window.closeElementPropsModal()" style="padding: 8px 20px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--toggle-bg); color: var(--text);">Cancel</button>
+                <button onclick="window.saveElementProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink); box-shadow: 0 0 16px var(--logo-glow);">Save</button>
             </div>
         </div>
     </div>
 
     <!-- CONNECTION PROPERTIES MODAL -->
-    <div id="connectionPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 420px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+    <div id="connectionPropsModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 28px 32px; max-width: 420px; width: 90%; box-shadow: var(--card-shadow); border: 1px solid var(--border);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-link" style="color: #8B5CF6;"></i> Connection Properties
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-link" style="color: var(--accent-2);"></i> Connection Properties
                 </h3>
-                <button onclick="window.closeConnectionPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+                <button onclick="window.closeConnectionPropsModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">&times;</button>
             </div>
             <div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Connection Type</label>
-                    <select id="connPropType" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: white;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Connection Type</label>
+                    <select id="connPropType" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: var(--bg-input); color: var(--text);">
                         <option value="control">Control</option>
                         <option value="data">Data Flow</option>
                     </select>
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Color</label>
-                    <input type="color" id="connPropColor" value="#8B5CF6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid #d1d5db; border-radius: 6px; cursor: pointer;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Color</label>
+                    <input type="color" id="connPropColor" value="#8B5CF6" style="width: 100%; height: 40px; padding: 4px; border: 1px solid var(--border); border-radius: 6px; cursor: pointer; background: var(--bg-input);">
                 </div>
                 <div style="margin-bottom: 14px;">
-                    <label style="display: block; font-size: 12px; font-weight: 500; color: #6b7280; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Label</label>
-                    <input type="text" id="connPropLabel" placeholder="Label on the line" style="width: 100%; padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif;">
+                    <label style="display: block; font-size: 12px; font-weight: 500; color: var(--text-dim); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Label</label>
+                    <input type="text" id="connPropLabel" placeholder="Label on the line" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: 'Fira Sans', sans-serif; background: var(--bg-input); color: var(--text);">
                 </div>
             </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
-                <button onclick="window.closeConnectionPropsModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Cancel</button>
-                <button onclick="window.saveConnectionProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #3B82F6; color: white;">Save</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px;">
+                <button onclick="window.closeConnectionPropsModal()" style="padding: 8px 20px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--toggle-bg); color: var(--text);">Cancel</button>
+                <button onclick="window.saveConnectionProps()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink); box-shadow: 0 0 16px var(--logo-glow);">Save</button>
             </div>
         </div>
     </div>
 
     <!-- CONDITION MODAL -->
-    <div id="conditionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100001; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+    <div id="conditionModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100001; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 28px 32px; max-width: 480px; width: 90%; box-shadow: var(--card-shadow); border: 1px solid var(--border);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-code-branch" style="color: #8B5CF6;"></i> Select Condition
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-code-branch" style="color: var(--accent-2);"></i> Select Condition
                 </h3>
-                <button onclick="closeConditionModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+                <button onclick="closeConditionModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">&times;</button>
             </div>
-            <p style="font-size: 13px; color: #6b7280; margin-bottom: 16px; font-family: 'Fira Sans', sans-serif;">
+            <p style="font-size: 13px; color: var(--text-dim); margin-bottom: 16px; font-family: 'Fira Sans', sans-serif;">
                 Under what condition should control be passed further?
             </p>
             <div id="conditionList"></div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px;">
-                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #e5e7eb; color: #374151;">Cancel</button>
-                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #8B5CF6; color: white;">Skip condition</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px;">
+                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--toggle-bg); color: var(--text);">Cancel</button>
+                <button onclick="closeConditionModal()" style="padding: 8px 20px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink); box-shadow: 0 0 16px var(--logo-glow);">Skip condition</button>
             </div>
         </div>
     </div>
@@ -505,7 +1766,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>
+                <h3><i class="fas fa-list"></i>Key features</h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -516,187 +1777,124 @@
     </div>
 
     <!-- PROJECT DIAGRAM TYPE SELECTION MODAL -->
-    <div id="projectInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 50000; justify-content: center; align-items: center;">
-        <div style="background: white; border-radius: 16px; max-width: 600px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: alertScaleIn 0.3s ease; max-height: 90vh; overflow-y: auto;">
-            
-            <!-- HEADER -->
-            <div style="padding: 24px 28px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; border-radius: 16px 16px 0 0;">
+    <div id="projectInfoModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 50000; justify-content: center; align-items: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; max-width: 600px; width: 90%; box-shadow: var(--card-shadow); animation: fadeInUp 0.3s ease; max-height: 90vh; overflow-y: auto; border: 1px solid var(--border); color: var(--text);">
+
+            <div style="padding: 24px 28px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-input); border-radius: 16px 16px 0 0;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <i class="fas fa-project-diagram" style="color: #8B5CF6; font-size: 22px;"></i>
-                    <h3 style="margin: 0; font-size: 18px; color: #1a1a2e; font-weight: 600; font-family: 'Fira Sans', sans-serif;">Diagram Builder</h3>
+                    <i class="fas fa-project-diagram" style="color: var(--accent-2); font-size: 22px;"></i>
+                    <h3 style="margin: 0; font-size: 18px; color: var(--text); font-weight: 600; font-family: 'Fira Sans', sans-serif;">Diagram Builder</h3>
                 </div>
-                <button onclick="closeProjectModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">
+                <button onclick="closeProjectModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
-            
-            <!-- BODY -->
+
             <div style="padding: 24px 28px;">
-                
-                <!-- SELECT FOLDER BUTTON -->
                 <div style="margin-bottom: 20px;">
                     <button onclick="selectProjectFolder()" style="
                         width: 100%;
                         padding: 14px 20px;
-                        background: #8B5CF6;
-                        color: white;
+                        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+                        color: var(--accent-ink);
                         border: none;
                         border-radius: 10px;
                         cursor: pointer;
                         font-family: 'Fira Sans', sans-serif;
                         font-size: 15px;
-                        font-weight: 500;
+                        font-weight: 600;
                         transition: all 0.2s;
                         display: flex;
                         align-items: center;
                         justify-content: center;
                         gap: 10px;
-                        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-                    " 
-                    onmouseover="this.style.background='#7C3AED'"
-                    onmouseout="this.style.background='#8B5CF6'">
+                        box-shadow: 0 0 20px var(--logo-glow);
+                    ">
                         <i class="fas fa-folder-open"></i>
                         Select Project Folder
                     </button>
-                    <div style="font-size: 11px; color: #6c757d; margin-top: 6px; text-align: center;">
+                    <div style="font-size: 11px; color: var(--text-dim); margin-top: 6px; text-align: center; font-family: 'Fira Sans', sans-serif;">
                         <i class="fas fa-info-circle"></i> Select a folder with project source code
                     </div>
                 </div>
-                
-                <!-- Project Information -->
-                <div id="projectInfoBlock" style="margin-bottom: 20px; background: #f8f9fa; border-radius: 10px; padding: 16px; display: none;">
-                    <div id="projectNameModal" style="font-weight: 600; font-size: 15px; color: #1a1a2e; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-family: 'Fira Sans', sans-serif;">
-                        <i class="fas fa-folder-open" style="color: #F59E0B;"></i>
+
+                <div id="projectInfoBlock" style="margin-bottom: 20px; background: var(--bg-input); border-radius: 10px; padding: 16px; display: none; border: 1px solid var(--border);">
+                    <div id="projectNameModal" style="font-weight: 600; font-size: 15px; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 8px; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-folder-open" style="color: var(--warning-text);"></i>
                         <span id="projectNameText">Project</span>
                     </div>
-                    <div id="projectFilesModal" style="max-height: 80px; overflow-y: auto; font-size: 12px; color: #4b5563; background: white; padding: 8px 12px; border-radius: 6px; font-family: 'Fira Code', monospace; border: 1px solid #e5e7eb;"></div>
-                    <div id="projectSizeModal" style="margin-top: 8px; font-size: 13px; color: #6c757d; display: flex; align-items: center; gap: 6px; font-family: 'Fira Sans', sans-serif;">
-                        <i class="fas fa-file-alt" style="color: #3B82F6;"></i>
+                    <div id="projectFilesModal" style="max-height: 80px; overflow-y: auto; font-size: 12px; color: var(--text); background: var(--bg-input-focus); padding: 8px 12px; border-radius: 6px; font-family: 'Fira Code', monospace; border: 1px solid var(--border);"></div>
+                    <div id="projectSizeModal" style="margin-top: 8px; font-size: 13px; color: var(--text-dim); display: flex; align-items: center; gap: 6px; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-file-alt" style="color: var(--accent);"></i>
                         <span>Files: <strong id="projectFileCount">0</strong></span>
                     </div>
                 </div>
-                
-                <!-- DIVIDER -->
-                <div style="border-top: 1px dashed #e5e7eb; margin: 16px 0 20px 0;"></div>
-                
-                <!-- DIAGRAM TYPE SELECTION -->
+
+                <div style="border-top: 1px dashed var(--border); margin: 16px 0 20px 0;"></div>
+
                 <div style="margin-bottom: 22px;">
-                    <label style="display: block; font-size: 14px; font-weight: 600; color: #1a1a2e; margin-bottom: 12px; font-family: 'Fira Sans', sans-serif;">
-                        <i class="fas fa-sliders-h" style="color: #6c757d; margin-right: 6px;"></i>
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-sliders-h" style="color: var(--text-dim); margin-right: 6px;"></i>
                         Select diagram type:
                     </label>
-                    
+
                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
-                        <!-- Structure -->
-                        <div class="diagram-type-card" data-type="structure" onclick="selectDiagramTypeCard('structure')" style="
-                            border: 2px solid #e5e7eb;
-                            border-radius: 12px;
-                            padding: 16px 12px;
-                            text-align: center;
-                            cursor: pointer;
-                            transition: all 0.25s ease;
-                            background: white;
-                        ">
-                            <div style="font-size: 28px; color: #F59E0B; margin-bottom: 6px;">
+                        <div class="diagram-type-card" data-type="structure" onclick="selectDiagramTypeCard('structure')" style="border: 2px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.25s ease; background: var(--bg-input);">
+                            <div style="font-size: 28px; color: var(--warning-text); margin-bottom: 6px;">
                                 <i class="fas fa-sitemap"></i>
                             </div>
-                            <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">Structure</div>
-                            <div style="font-size: 10px; color: #6c757d; margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Project tree</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">Structure</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Project tree</div>
                         </div>
-                        
-                        <!-- Data Flow -->
-                        <div class="diagram-type-card" data-type="dataflow" onclick="selectDiagramTypeCard('dataflow')" style="
-                            border: 2px solid #e5e7eb;
-                            border-radius: 12px;
-                            padding: 16px 12px;
-                            text-align: center;
-                            cursor: pointer;
-                            transition: all 0.25s ease;
-                            background: white;
-                        ">
-                            <div style="font-size: 28px; color: #10B981; margin-bottom: 6px;">
+
+                        <div class="diagram-type-card" data-type="dataflow" onclick="selectDiagramTypeCard('dataflow')" style="border: 2px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.25s ease; background: var(--bg-input);">
+                            <div style="font-size: 28px; color: var(--success-text); margin-bottom: 6px;">
                                 <i class="fas fa-arrow-right-arrow-left"></i>
                             </div>
-                            <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">Data Flow</div>
-                            <div style="font-size: 10px; color: #6c757d; margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Data transfer</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">Data Flow</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Data transfer</div>
                         </div>
-                        
-                        <!-- Call Graph -->
-                        <div class="diagram-type-card" data-type="callgraph" onclick="selectDiagramTypeCard('callgraph')" style="
-                            border: 2px solid #e5e7eb;
-                            border-radius: 12px;
-                            padding: 16px 12px;
-                            text-align: center;
-                            cursor: pointer;
-                            transition: all 0.25s ease;
-                            background: white;
-                        ">
-                            <div style="font-size: 28px; color: #8B5CF6; margin-bottom: 6px;">
+
+                        <div class="diagram-type-card" data-type="callgraph" onclick="selectDiagramTypeCard('callgraph')" style="border: 2px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.25s ease; background: var(--bg-input);">
+                            <div style="font-size: 28px; color: var(--accent-2); margin-bottom: 6px;">
                                 <i class="fas fa-code-branch"></i>
                             </div>
-                            <div style="font-size: 13px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">Call Graph</div>
-                            <div style="font-size: 10px; color: #6c757d; margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Functions & connections</div>
+                            <div style="font-size: 13px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">Call Graph</div>
+                            <div style="font-size: 10px; color: var(--text-dim); margin-top: 2px; font-family: 'Fira Sans', sans-serif;">Functions &amp; connections</div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- ADDITIONAL SETTINGS -->
-                <div style="margin-bottom: 20px; padding: 16px; background: #f8f9fa; border-radius: 10px; border: 1px dashed #e5e7eb;">
+
+                <div style="margin-bottom: 20px; padding: 16px; background: var(--bg-input); border-radius: 10px; border: 1px dashed var(--border);">
                     <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                        <span style="font-size: 13px; color: #4b5563; display: flex; align-items: center; gap: 4px; font-family: 'Fira Sans', sans-serif;">
-                            <i class="fas fa-tag" style="color: #6c757d;"></i>
+                        <span style="font-size: 13px; color: var(--text); display: flex; align-items: center; gap: 4px; font-family: 'Fira Sans', sans-serif;">
+                            <i class="fas fa-tag" style="color: var(--text-dim);"></i>
                             <span>Show:</span>
                         </span>
-                        
-                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer; font-family: 'Fira Sans', sans-serif;">
-                            <input type="checkbox" id="showFunctions" checked style="accent-color: #8B5CF6;">
+
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text); cursor: pointer; font-family: 'Fira Sans', sans-serif;">
+                            <input type="checkbox" id="showFunctions" checked style="accent-color: var(--accent);">
                             <i class="fas fa-code"></i> Functions
                         </label>
-                        
-                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer; font-family: 'Fira Sans', sans-serif;">
-                            <input type="checkbox" id="showImports" checked style="accent-color: #8B5CF6;">
+
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text); cursor: pointer; font-family: 'Fira Sans', sans-serif;">
+                            <input type="checkbox" id="showImports" checked style="accent-color: var(--accent);">
                             <i class="fas fa-boxes"></i> Imports
                         </label>
-                        
-                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: #4b5563; cursor: pointer; font-family: 'Fira Sans', sans-serif;">
-                            <input type="checkbox" id="showCalls" checked style="accent-color: #8B5CF6;">
+
+                        <label style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--text); cursor: pointer; font-family: 'Fira Sans', sans-serif;">
+                            <input type="checkbox" id="showCalls" checked style="accent-color: var(--accent);">
                             <i class="fas fa-arrow-right"></i> Calls
                         </label>
                     </div>
                 </div>
-                
-                <!-- BUTTONS -->
-                <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                    <button onclick="closeProjectModal()" style="
-                        padding: 10px 24px;
-                        border: 1px solid #e5e7eb;
-                        border-radius: 8px;
-                        background: white;
-                        color: #6c757d;
-                        cursor: pointer;
-                        font-family: 'Fira Sans', sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        transition: all 0.2s;
-                    ">
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; padding-top: 16px; border-top: 1px solid var(--border);">
+                    <button onclick="closeProjectModal()" style="padding: 10px 24px; border: 1px solid var(--border); border-radius: 8px; background: var(--toggle-bg); color: var(--text); cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 14px; font-weight: 500; transition: all 0.2s;">
                         <i class="fas fa-times"></i> Cancel
                     </button>
-                    
-                    <button id="buildDiagramBtn" onclick="buildSelectedDiagram()" style="
-                        padding: 10px 28px;
-                        border: none;
-                        border-radius: 8px;
-                        background: #8B5CF6;
-                        color: white;
-                        cursor: pointer;
-                        font-family: 'Fira Sans', sans-serif;
-                        font-size: 14px;
-                        font-weight: 500;
-                        transition: all 0.2s;
-                        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
-                    " 
-                    onmouseover="this.style.background='#7C3AED'"
-                    onmouseout="this.style.background='#8B5CF6'">
+
+                    <button id="buildDiagramBtn" onclick="buildSelectedDiagram()" style="padding: 10px 28px; border: none; border-radius: 8px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink); cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 14px; font-weight: 600; transition: all 0.2s; box-shadow: 0 0 20px var(--logo-glow);">
                         <i class="fas fa-play"></i> Build
                     </button>
                 </div>
@@ -704,42 +1902,17 @@
         </div>
     </div>
 
-    <style>
-        .diagram-type-card:hover {
-            border-color: #8B5CF6 !important;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
-        }
-        
-        .diagram-type-card.selected {
-            border-color: #8B5CF6 !important;
-            background: #f5f3ff !important;
-            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2);
-        }
-        
-        @keyframes alertScaleIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95) translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-    </style>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="utils/sbom.js"></script>
     <script src="utils/cicd.js"></script>
     <script src="utils/dependency.js"></script>
-    <script src="utils/progress.js"></script>    
+    <script src="utils/progress.js"></script>
     <script src="utils/contextMenu.js"></script>
-    <script src="utils/actions.js"></script>    
-    <script src="utils/visualization.js"></script> 
+    <script src="utils/actions.js"></script>
+    <script src="utils/visualization.js"></script>
     <script src="utils/prjVisualization.js"></script>
-    <script src="utils/notify.js"></script>   
-    <script src="utils/uml.js"></script>  
+    <script src="utils/notify.js"></script>
+    <script src="utils/uml.js"></script>
     <script src="palette.js"></script>
     <script src="client.js"></script>
     <script src="utils/utils.js"></script>
@@ -747,306 +1920,210 @@
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
     <script src="../common/info.js"></script>
-    <script> loadMenu(); </script>
 
-    <div id="workflowProgressBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #e5e7eb; z-index: 100000; padding: 12px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); font-family: 'Fira Sans', sans-serif;">
+    <script>
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const root = document.documentElement;
+
+            function applyTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('hercules_theme', theme);
+            }
+
+            function toggleTheme() {
+                const current = root.getAttribute('data-theme') || 'dark';
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            }
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            if (window.matchMedia) {
+                const mq = window.matchMedia('(prefers-color-scheme: dark)');
+                mq.addEventListener('change', (e) => {
+                    if (!localStorage.getItem('hercules_theme')) {
+                        applyTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+        })();
+
+        loadMenu();
+    </script>
+
+    <div id="workflowProgressBar" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--bg-card); backdrop-filter: blur(20px); border-top: 2px solid var(--border); z-index: 100000; padding: 12px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.3); font-family: 'Fira Sans', sans-serif;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; max-width: 1200px; margin-left: auto; margin-right: auto;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-weight: 600; font-size: 14px; color: #1a1a2e;" id="progressTitle">Workflow execution</span>
-                <span style="font-size: 12px; color: #6b7280;" id="progressSteps">0 / 0</span>
+                <span style="font-weight: 600; font-size: 14px; color: var(--text);" id="progressTitle">Workflow execution</span>
+                <span style="font-size: 12px; color: var(--text-dim);" id="progressSteps">0 / 0</span>
             </div>
             <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 12px; color: #6b7280;" id="progressStatus">Waiting...</span>
-                <button onclick="cancelWorkflow()" style="padding: 4px 16px; border: none; border-radius: 6px; background: #EF4444; color: white; cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 12px; font-weight: 500;">Cancel</button>
+                <span style="font-size: 12px; color: var(--text-dim);" id="progressStatus">Waiting...</span>
+                <button onclick="cancelWorkflow()" style="padding: 4px 16px; border: none; border-radius: 6px; background: var(--error-bg); color: var(--error-text); border: 1px solid var(--error-border); cursor: pointer; font-family: 'Fira Sans', sans-serif; font-size: 12px; font-weight: 600;">Cancel</button>
             </div>
         </div>
-        <div style="max-width: 1200px; margin-left: auto; margin-right: auto; background: #f3f4f6; border-radius: 8px; height: 8px; overflow: hidden;">
-            <div id="progressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, #3B82F6, #10B981); transition: width 0.5s ease; border-radius: 8px;"></div>
+        <div style="max-width: 1200px; margin-left: auto; margin-right: auto; background: var(--border); border-radius: 8px; height: 8px; overflow: hidden;">
+            <div id="progressFill" style="width: 0%; height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width 0.5s ease; border-radius: 8px; box-shadow: 0 0 12px var(--logo-glow);"></div>
         </div>
-        <div style="max-width: 1200px; margin-left: auto; margin-right: auto; display: flex; justify-content: space-between; font-size: 10px; color: #9ca3af; margin-top: 4px;">
-            <span id="currentStepName">—</span>
+        <div style="max-width: 1200px; margin-left: auto; margin-right: auto; display: flex; justify-content: space-between; font-size: 10px; color: var(--text-faint); margin-top: 4px;">
+            <span id="currentStepName">-</span>
             <span id="progressPercent">0%</span>
         </div>
     </div>
 
-    <div id="codeFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+    <div id="codeFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: var(--card-shadow); border: 1px solid var(--border);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
                     <i class="fas fa-code"></i> Upload Code
                 </h3>
-                <button onclick="closeCodeFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">&times;</button>
+                <button onclick="closeCodeFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">&times;</button>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">Visualization Type</label>
+                <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">Visualization Type</label>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
                     <div class="diagram-type-option active" data-diagram="dependency" onclick="selectDiagramType('dependency')">
-                        <i class="fas fa-project-diagram" style="font-size: 20px; color:  #3B82F6; display: block; margin-bottom: 4px;"></i>
-                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Dependencies</span>
+                        <i class="fas fa-project-diagram" style="font-size: 20px; color: var(--accent); display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: var(--text);">Dependencies</span>
                     </div>
                     <div class="diagram-type-option" data-diagram="dataflow" onclick="selectDiagramType('dataflow')">
-                        <i class="fas fa-arrows-left-right" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Data Flows</span>
+                        <i class="fas fa-arrows-left-right" style="font-size: 20px; color: var(--text-dim); display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: var(--text);">Data Flows</span>
                     </div>
-                     <div class="diagram-type-option" data-diagram="class" onclick="selectDiagramType('class')">
-                        <i class="fas fa-layer-group" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Classes</span>
+                    <div class="diagram-type-option" data-diagram="class" onclick="selectDiagramType('class')">
+                        <i class="fas fa-layer-group" style="font-size: 20px; color: var(--text-dim); display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: var(--text);">Classes</span>
                     </div>
                     <div class="diagram-type-option" data-diagram="callgraph" onclick="selectDiagramType('callgraph')">
-                        <i class="fas fa-sitemap" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Call Graph</span>
+                        <i class="fas fa-sitemap" style="font-size: 20px; color: var(--text-dim); display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: var(--text);">Call Graph</span>
                     </div>
                     <div class="diagram-type-option" data-diagram="component" onclick="selectDiagramType('component')">
-                        <i class="fas fa-cubes" style="font-size: 20px; color: #6c757d; display: block; margin-bottom: 4px;"></i>
-                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: #1a1a2e;">Components</span>
+                        <i class="fas fa-cubes" style="font-size: 20px; color: var(--text-dim); display: block; margin-bottom: 4px;"></i>
+                        <span style="font-size: 11px; font-family: 'Fira Sans', sans-serif; font-weight: 500; color: var(--text);">Components</span>
                     </div>
                 </div>
             </div>
 
             <div style="margin-bottom: 20px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Select File
+                <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-file-code" style="color: var(--accent); margin-right: 6px;"></i>Select File
                 </label>
-                
 
-                <div id="dropZone" style="
-                    border: 2px dashed #d1d5db;
-                    border-radius: 12px;
-                    padding: 30px 20px;
-                    text-align: center;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    background: #fafafa;
-                    position: relative;
-                ">
-                    <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc, .ts, .tsx" style="
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        opacity: 0;
-                        cursor: pointer;
-                    ">
-                    
+                <div id="dropZone" style="border: 2px dashed var(--border); border-radius: 12px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--bg-input); position: relative;">
+                    <input type="file" id="codeFileInputModal" accept=".js,.py,.java,.go,.rs,.cpp,.c,.h,.cs,.php,.rb,.pl,.sh,.bash,.txt,.json,.xml,.yaml,.yml,.toml,.ini,.cfg,.conf,.md,.rst,.adoc, .ts, .tsx" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
 
-                    <div style="
-                        width: 56px;
-                        height: 56px;
-                        margin: 0 auto 10px;
-                        background: #f3f4f6;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        transition: all 0.3s ease;
-                    " id="dropIcon">
-                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+                    <div style="width: 56px; height: 56px; margin: 0 auto 10px; background: var(--logo-bg); border: 1px solid var(--logo-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;" id="dropIcon">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: var(--accent);"></i>
                     </div>
-                    
 
-                    <p style="
-                        margin: 0;
-                        font-size: 14px;
-                        font-weight: 500;
-                        color: #374151;
-                        font-family: 'Fira Sans', sans-serif;
-                    " id="fileStatusText">Drag & drop file or click to select</p>
-                    
-                    <p style="
-                        margin: 6px 0 0 0;
-                        font-size: 12px;
-                        color: #9ca3af;
-                        font-family: 'Fira Sans', sans-serif;
-                    " id="fileInfoText">Supported: .js, .py, .java, .go, .rs, .cpp, .c, .h, .cs, .php, .rb, .pl, .sh, .bash, .txt, .json, .xml, .yaml, .yml, .toml, .ini, .cfg, .conf, .md, .rst, .adoc</p>
-                    
-                    <div id="codeFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
-                        <span id="codeFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Fira Sans', sans-serif;"></span>
-                        <span style="margin: 0 8px; color: #6b7280;">|</span>
-                        <span id="codeFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
-                        <span style="margin: 0 8px; color: #6b7280;">|</span>
-                        <span id="codeFileLinesModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
+                    <p style="margin: 0; font-size: 14px; font-weight: 500; color: var(--text); font-family: 'Fira Sans', sans-serif;" id="fileStatusText">Drag &amp; drop file or click to select</p>
+
+                    <p style="margin: 6px 0 0 0; font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;" id="fileInfoText">Supported: .js, .py, .java, .go, .rs, .cpp, .c, .h, .cs, .php, .rb, .pl, .sh, .bash, .txt, .json, .xml, .yaml, .yml, .toml, .ini, .cfg, .conf, .md, .rst, .adoc</p>
+
+                    <div id="codeFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: var(--success-bg); border-radius: 8px; border: 1px solid var(--success-border);">
+                        <span id="codeFileNameModal" style="font-size: 13px; font-weight: 500; color: var(--success-text); font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: var(--text-dim);">|</span>
+                        <span id="codeFileSizeModal" style="font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: var(--text-dim);">|</span>
+                        <span id="codeFileLinesModal" style="font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;"></span>
                     </div>
                 </div>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <button onclick="closeCodeFileModal()" style="
-                    padding: 10px 24px;
-                    border: none;
-                    border-radius: 8px;
-                    font-family: 'Fira Sans', sans-serif;
-                    font-size: 13px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    background: #f3f4f6;
-                    color: #374151;
-                    transition: all 0.2s;
-                ">Cancel</button>
-                <button id="loadCodeFileBtn" style="
-                    padding: 10px 24px;
-                    border: none;
-                    border-radius: 8px;
-                    font-family: 'Fira Sans', sans-serif;
-                    font-size: 13px;
-                    font-weight: 500;
-                    cursor: not-allowed;
-                    background: #e5e7eb;
-                    color: #9ca3af;
-                    transition: all 0.2s;
-                ">Upload</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <button onclick="closeCodeFileModal()" style="padding: 10px 24px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--toggle-bg); color: var(--text); transition: all 0.2s;">Cancel</button>
+                <button id="loadCodeFileBtn" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: not-allowed; background: var(--border); color: var(--text-faint); transition: all 0.2s;">Upload</button>
             </div>
-            
         </div>
     </div>
 
-    <div id="umlClassModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 700px; width: 95%; max-height: 85vh; box-shadow: 0 25px 50px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden;">
-            
+    <div id="umlClassModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 32px; max-width: 700px; width: 95%; max-height: 85vh; box-shadow: var(--card-shadow); display: flex; flex-direction: column; overflow: hidden; border: 1px solid var(--border);">
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0;">
-                <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-cube" style="color: #8B5CF6;"></i> 
+                <h3 style="margin: 0; font-size: 20px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-cube" style="color: var(--accent-2);"></i>
                     <span id="umlModalTitle">Class Editor</span>
                 </h3>
-                <button onclick="closeUmlClassModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
+                <button onclick="closeUmlClassModal()" style="background: none; border: none; font-size: 28px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">&times;</button>
             </div>
-            
+
             <div style="margin-bottom: 16px; flex-shrink: 0;">
-                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Class Name</label>
-                <input id="umlClassName" type="text" placeholder="MyClass" style="width: 100%; padding: 8px 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 14px; font-family: 'Fira Sans', sans-serif; outline: none;">
+                <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 4px; font-family: 'Fira Sans', sans-serif;">Class Name</label>
+                <input id="umlClassName" type="text" placeholder="MyClass" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Fira Sans', sans-serif; outline: none; background: var(--bg-input); color: var(--text);">
             </div>
-            
+
             <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
-                    <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Fira Sans', sans-serif;">
-                        <i class="fas fa-list" style="color: #6b7280;"></i> Properties (Fields)
+                    <label style="font-size: 13px; font-weight: 500; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-list" style="color: var(--text-dim);"></i> Properties (Fields)
                     </label>
-                    <button onclick="addUmlFieldModal()" style="
-                        padding: 4px 12px;
-                        border: 1px dashed #8B5CF6;
-                        border-radius: 4px;
-                        background: none;
-                        color: #8B5CF6;
-                        cursor: pointer;
-                        font-size: 12px;
-                        font-family: 'Fira Sans', sans-serif;
-                    ">+ Add Field</button>
+                    <button onclick="addUmlFieldModal()" style="padding: 4px 12px; border: 1px dashed var(--accent); border-radius: 4px; background: none; color: var(--accent); cursor: pointer; font-size: 12px; font-family: 'Fira Sans', sans-serif;">+ Add Field</button>
                 </div>
-                <div id="umlFieldsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
-
-                </div>
+                <div id="umlFieldsList" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px; background: var(--bg-input);"></div>
             </div>
-            
 
             <div style="flex: 1; overflow: hidden; display: flex; flex-direction: column; min-height: 0; margin-top: 12px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0;">
-                    <label style="font-size: 13px; font-weight: 500; color: #374151; font-family: 'Fira Sans', sans-serif;">
-                        <i class="fas fa-code" style="color: #6b7280;"></i> Methods
+                    <label style="font-size: 13px; font-weight: 500; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                        <i class="fas fa-code" style="color: var(--text-dim);"></i> Methods
                     </label>
-                    <button onclick="addUmlMethodModal()" style="
-                        padding: 4px 12px;
-                        border: 1px dashed #10B981;
-                        border-radius: 4px;
-                        background: none;
-                        color: #10B981;
-                        cursor: pointer;
-                        font-size: 12px;
-                        font-family: 'Fira Sans', sans-serif;
-                    ">+ Add Method</button>
+                    <button onclick="addUmlMethodModal()" style="padding: 4px 12px; border: 1px dashed var(--success-text); border-radius: 4px; background: none; color: var(--success-text); cursor: pointer; font-size: 12px; font-family: 'Fira Sans', sans-serif;">+ Add Method</button>
                 </div>
-                <div id="umlMethodsList" style="flex: 1; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px;">
-                </div>
+                <div id="umlMethodsList" style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 8px; min-height: 60px; max-height: 200px; background: var(--bg-input);"></div>
             </div>
-            
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb; margin-top: 16px; flex-shrink: 0;">
-                <button onclick="closeUmlClassModal()" style="
-                    padding: 10px 24px;
-                    border: none;
-                    border-radius: 8px;
-                    font-family: 'Fira Sans', sans-serif;
-                    font-size: 13px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    background: #f3f4f6;
-                    color: #374151;
-                    transition: all 0.2s;
-                ">Cancel</button>
-                <button onclick="saveUmlClass()" style="
-                    padding: 10px 24px;
-                    border: none;
-                    border-radius: 8px;
-                    font-family: 'Fira Sans', sans-serif;
-                    font-size: 13px;
-                    font-weight: 500;
-                    cursor: pointer;
-                    background: #8B5CF6;
-                    color: white;
-                    transition: all 0.2s;
-                ">Save</button>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border); margin-top: 16px; flex-shrink: 0;">
+                <button onclick="closeUmlClassModal()" style="padding: 10px 24px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--toggle-bg); color: var(--text); transition: all 0.2s;">Cancel</button>
+                <button onclick="saveUmlClass()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: var(--accent-ink); box-shadow: 0 0 16px var(--logo-glow); transition: all 0.2s;">Save</button>
             </div>
         </div>
     </div>
 
-    <div id="sbomFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
-        <div style="background: white; border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25);">
+    <div id="sbomFileModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100000; align-items: center; justify-content: center;">
+        <div style="background: var(--bg-card); border-radius: 16px; padding: 32px; max-width: 550px; width: 90%; box-shadow: var(--card-shadow); border: 1px solid var(--border);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: #1a1a2e; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-sitemap" style="color: #8B5CF6;"></i> Upload SBOM
+                <h3 style="margin: 0; font-size: 18px; font-weight: 600; color: var(--text); font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-sitemap" style="color: var(--accent-2);"></i> Upload SBOM
                 </h3>
-                <button onclick="closeSbomFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #9ca3af; padding: 0 8px;">×</button>
+                <button onclick="closeSbomFileModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: var(--text-dim); padding: 0 8px;">&times;</button>
             </div>
-            
 
             <div style="margin-bottom: 20px;">
-                <label style="display: block; font-size: 13px; font-weight: 500; color: #374151; margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">
-                    <i class="fas fa-file-code" style="color: #8B5CF6; margin-right: 6px;"></i>Select SBOM File
+                <label style="display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 8px; font-family: 'Fira Sans', sans-serif;">
+                    <i class="fas fa-file-code" style="color: var(--accent); margin-right: 6px;"></i>Select SBOM File
                 </label>
-                
-                <div id="sbomDropZone" style="
-                    border: 2px dashed #d1d5db;
-                    border-radius: 12px;
-                    padding: 30px 20px;
-                    text-align: center;
-                    cursor: pointer;
-                    transition: all 0.3s ease;
-                    background: #fafafa;
-                    position: relative;
-                ">
-                    <input type="file" id="sbomFileInputModal" accept=".json,.xml,.sbom" style="
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        opacity: 0;
-                        cursor: pointer;
-                    ">
-                    
-                    <div style="width: 56px; height: 56px; margin: 0 auto 10px; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #9ca3af;"></i>
+
+                <div id="sbomDropZone" style="border: 2px dashed var(--border); border-radius: 12px; padding: 30px 20px; text-align: center; cursor: pointer; transition: all 0.3s ease; background: var(--bg-input); position: relative;">
+                    <input type="file" id="sbomFileInputModal" accept=".json,.xml,.sbom" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+
+                    <div style="width: 56px; height: 56px; margin: 0 auto 10px; background: var(--logo-bg); border: 1px solid var(--logo-border); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: var(--accent);"></i>
                     </div>
-                    
-                    <p style="margin: 0; font-size: 14px; font-weight: 500; color: #374151; font-family: 'Fira Sans', sans-serif;" id="sbomStatusText">Drag & drop SBOM file or click to select</p>
-                    <p style="margin: 6px 0 0 0; font-size: 12px; color: #9ca3af; font-family: 'Fira Sans', sans-serif;">Supported: CycloneDX, SPDX (JSON format)</p>
-                    
-                    <div id="sbomFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: #ecfdf5; border-radius: 8px; border: 1px solid #10B981;">
-                        <span id="sbomFileNameModal" style="font-size: 13px; font-weight: 500; color: #065f46; font-family: 'Fira Sans', sans-serif;"></span>
-                        <span style="margin: 0 8px; color: #6b7280;">|</span>
-                        <span id="sbomFileSizeModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
-                        <span style="margin: 0 8px; color: #6b7280;">|</span>
-                        <span id="sbomFileComponentsModal" style="font-size: 12px; color: #6b7280; font-family: 'Fira Sans', sans-serif;"></span>
+
+                    <p style="margin: 0; font-size: 14px; font-weight: 500; color: var(--text); font-family: 'Fira Sans', sans-serif;" id="sbomStatusText">Drag &amp; drop SBOM file or click to select</p>
+                    <p style="margin: 6px 0 0 0; font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;">Supported: CycloneDX, SPDX (JSON format)</p>
+
+                    <div id="sbomFileInfoModal" style="display: none; margin-top: 12px; padding: 10px 14px; background: var(--success-bg); border-radius: 8px; border: 1px solid var(--success-border);">
+                        <span id="sbomFileNameModal" style="font-size: 13px; font-weight: 500; color: var(--success-text); font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: var(--text-dim);">|</span>
+                        <span id="sbomFileSizeModal" style="font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;"></span>
+                        <span style="margin: 0 8px; color: var(--text-dim);">|</span>
+                        <span id="sbomFileComponentsModal" style="font-size: 12px; color: var(--text-dim); font-family: 'Fira Sans', sans-serif;"></span>
                     </div>
                 </div>
             </div>
-            
-            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid #e5e7eb;">
-                <button onclick="closeSbomFileModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: #f3f4f6; color: #374151;">Cancel</button>
-                <button id="loadSbomFileBtn" onclick="loadSbomFileFromModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: not-allowed; background: #e5e7eb; color: #9ca3af;">Upload</button>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; padding-top: 16px; border-top: 1px solid var(--border);">
+                <button onclick="closeSbomFileModal()" style="padding: 10px 24px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; background: var(--toggle-bg); color: var(--text);">Cancel</button>
+                <button id="loadSbomFileBtn" onclick="loadSbomFileFromModal()" style="padding: 10px 24px; border: none; border-radius: 8px; font-family: 'Fira Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: not-allowed; background: var(--border); color: var(--text-faint);">Upload</button>
             </div>
         </div>
     </div>
 </body>
+
 </html>

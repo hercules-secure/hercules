@@ -1,298 +1,587 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <title>Вход</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <title>Hercules — Sign in</title>
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
+
+    <script>
+        // Применяем тему ДО отрисовки — чтобы не было «мигания»
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ============================================================
+           ТЁМНАЯ ТЕМА (по умолчанию)
+           ============================================================ */
+        :root,
+        [data-theme="dark"] {
+            --bg: #0a0c14;
+            --bg-card: rgba(13, 16, 24, 0.85);
+            --bg-input: #131722;
+            --bg-input-focus: #161b28;
+            --border: #1e2433;
+            --border-hover: #2a3142;
+            --accent: #22d3ee;
+            --accent-2: #a855f7;
+            --accent-ink: #06141a;
+            --text: #e6edf7;
+            --text-dim: #6b7280;
+            --text-faint: #4a536b;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-border: rgba(239, 68, 68, 0.25);
+            --error-text: #fca5a5;
+            --logo-bg: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(168, 85, 247, 0.10));
+            --logo-border: rgba(34, 211, 238, 0.35);
+            --logo-glow: rgba(34, 211, 238, 0.25);
+            --logo-glow-strong: rgba(34, 211, 238, 0.45);
+            --card-shadow:
+                0 0 0 1px rgba(34, 211, 238, 0.05),
+                0 24px 60px rgba(0, 0, 0, 0.7),
+                0 0 80px rgba(34, 211, 238, 0.06);
+            --toggle-bg: rgba(255, 255, 255, 0.05);
+            --toggle-hover: rgba(255, 255, 255, 0.10);
+            --toggle-color: #6b7280;
+            --toggle-color-hover: #22d3ee;
+            --grid-line: rgba(34, 211, 238, 0.05);
+        }
+
+        /* ============================================================
+           СВЕТЛАЯ ТЕМА
+           ============================================================ */
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-input: #ffffff;
+            --bg-input-focus: #ffffff;
+            --border: #e3e8f0;
+            --border-hover: #d0d7e3;
+            --accent: #0891b2;
+            --accent-2: #7c3aed;
+            --accent-ink: #ffffff;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --text-faint: #94a3b8;
+            --error-bg: rgba(239, 68, 68, 0.06);
+            --error-border: rgba(239, 68, 68, 0.20);
+            --error-text: #b91c1c;
+            --logo-bg: linear-gradient(135deg, rgba(8, 145, 178, 0.12), rgba(124, 58, 237, 0.06));
+            --logo-border: rgba(8, 145, 178, 0.30);
+            --logo-glow: rgba(8, 145, 178, 0.15);
+            --logo-glow-strong: rgba(8, 145, 178, 0.30);
+            --card-shadow:
+                0 0 0 1px rgba(8, 145, 178, 0.04),
+                0 20px 50px rgba(15, 23, 42, 0.10),
+                0 0 60px rgba(8, 145, 178, 0.04);
+            --toggle-bg: rgba(0, 0, 0, 0.04);
+            --toggle-hover: rgba(0, 0, 0, 0.08);
+            --toggle-color: #94a3b8;
+            --toggle-color-hover: #0891b2;
+            --grid-line: rgba(8, 145, 178, 0.06);
+        }
+
+        html, body { height: 100%; }
+
         body {
-            font-family: 'Ubuntu';
-            background: white;
+            font-family: 'Fira Code', ui-monospace, monospace;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
+            position: relative;
+            transition: background 0.35s ease, color 0.35s ease;
         }
-        input{
-            font-family: 'Ubuntu';
-            font-size: 11px;
+
+        /* ===== Фон: неоновые пятна ===== */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 50% 0%, var(--logo-glow), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 100%, var(--logo-glow), transparent 60%),
+                radial-gradient(ellipse 40% 30% at 10% 80%, var(--logo-glow), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.35s ease;
         }
-        .login-container { width: 100%; max-width: 400px; padding: 20px; }
+
+        /* ===== Сетка ===== */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background-image 0.35s ease;
+        }
+
+        /* ===== Карточка ===== */
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+        }
+
         .login-card {
-            background: white;
-            border-radius: 16px;
-            padding: 32px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 40px 36px 32px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
         }
-        .login-header { 
-            text-align: center; 
-            margin-bottom: 20px;
+
+        .login-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 15%; right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 1px;
+            opacity: 0.7;
+        }
+
+        /* ===== Переключатель темы ===== */
+        .theme-toggle {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            color: var(--toggle-color);
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 12px;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+            z-index: 10;
         }
-        .login-header i { 
-            font-size: 36px; 
-            color: #667eea;
+
+        .theme-toggle:hover {
+            background: var(--toggle-hover);
+            color: var(--toggle-color-hover);
+            border-color: var(--border-hover);
+            transform: translateY(-1px);
         }
-        .login-header h2 { 
-            color: #333; 
-            font-size: 28px;
-            margin: 0;
+
+        /* Иконки: в тёмной показываем солнце (переключить на светлую), в светлой — луну */
+        .theme-toggle .icon-sun  { display: none; }
+        .theme-toggle .icon-moon { display: block; }
+        [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+        [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+        /* ===== Шапка ===== */
+        .login-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin-bottom: 6px;
         }
+
+        .logo-icon {
+            position: relative;
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--logo-bg);
+            border: 1px solid var(--logo-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow:
+                0 0 20px var(--logo-glow),
+                inset 0 0 14px var(--logo-glow);
+            animation: logoPulse 3s ease-in-out infinite;
+            transition: background 0.35s ease, border-color 0.35s ease;
+        }
+
+        .logo-icon i {
+            font-size: 1.3rem;
+            color: var(--accent);
+            transform: rotate(-45deg);
+            filter:
+                drop-shadow(0 0 4px var(--accent))
+                drop-shadow(0 0 10px var(--logo-glow-strong));
+            transition: color 0.35s ease, filter 0.35s ease;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% {
+                box-shadow:
+                    0 0 20px var(--logo-glow),
+                    inset 0 0 14px var(--logo-glow);
+            }
+            50% {
+                box-shadow:
+                    0 0 32px var(--logo-glow-strong),
+                    inset 0 0 20px var(--logo-glow-strong);
+            }
+        }
+
+        .login-header h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, var(--text), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transition: background 0.35s ease;
+        }
+
         .login-subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 32px;
-            font-size: 14px;
+            color: var(--text-dim);
+            font-size: 0.55rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            margin-bottom: 30px;
         }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            color: #555; 
+
+        /* ===== Форма ===== */
+        .form-group { margin-bottom: 18px; }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.65rem;
             font-weight: 500;
-            font-size: 14px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
+
         .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-            transition: all 0.3s;
+            padding: 13px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
         }
-        .form-group input:focus { 
-            outline: none; 
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+
+        .form-group input::placeholder {
+            color: var(--text-faint);
         }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent);
+            background: var(--bg-input-focus);
+            box-shadow:
+                0 0 0 3px var(--logo-glow),
+                0 0 20px var(--logo-glow);
+        }
+
+        /* ===== Кнопка ===== */
         .login-btn {
             width: 100%;
-            padding: 12px;
-            background: black;
-            color: white;
+            padding: 13px 16px;
+            margin-top: 6px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: var(--accent-ink);
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: all 0.25s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            font-family: 'Ubuntu';
-            font-size: 11px;
+            box-shadow: 0 0 24px var(--logo-glow-strong);
         }
-        .login-btn:hover { background: #5a67d8; }
+
+        .login-btn:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 0 32px var(--logo-glow-strong);
+        }
+
+        .login-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
         .login-btn:disabled {
-            background: #ccc;
+            background: var(--border);
+            color: var(--text-faint);
             cursor: not-allowed;
+            box-shadow: none;
         }
+
+        /* ===== Ошибка ===== */
         .error-message {
-            background: #fee;
-            color: #c33;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            text-align: center;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 11px 14px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 0.75rem;
             display: none;
-            font-size: 14px;
         }
+
+        /* ===== Спиннер ===== */
         .spinner {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: white;
+            width: 14px;
+            height: 14px;
+            border: 2px solid var(--logo-glow);
+            border-top-color: var(--accent-ink);
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
+            animation: spin 0.7s linear infinite;
         }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ===== Футер карточки ===== */
+        .login-footer {
+            margin-top: 22px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            font-size: 0.6rem;
+            color: var(--text-faint);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+        }
+
+        .login-footer span {
+            color: var(--accent);
+            text-shadow: 0 0 8px var(--logo-glow-strong);
+        }
+
+        /* ===== Мобильный ===== */
+        @media (max-width: 480px) {
+            .login-card { padding: 32px 24px 26px; border-radius: 16px; }
+            .login-header h2 { font-size: 1.15rem; }
+            .logo-icon { width: 42px; height: 42px; border-radius: 12px; }
+            .logo-icon i { font-size: 1.1rem; }
+            .theme-toggle { top: 10px; right: 10px; width: 32px; height: 32px; }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
         <div class="login-card">
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+                <i class="fas fa-sun icon-sun"></i>
+                <i class="fas fa-moon icon-moon"></i>
+            </button>
+
             <div class="login-header">
-                <i class="fas fa-rocket" style="color:black"></i>
-                <h2>Геркулес</h2>
+                <div class="logo-icon">
+                    <i class="fas fa-rocket"></i>
+                </div>
+                <h2>Hercules</h2>
             </div>
-            <div class="login-subtitle">
-                Вход в систему
-            </div>
+
+            <div class="login-subtitle">AppSec / DevSecOps Platform</div>
+
             <div id="errorMessage" class="error-message"></div>
+
             <div class="form-group">
-                <label>Логин</label>
-                <input type="text" id="username" placeholder="Введите логин" autocomplete="username">
+                <label for="username">Username</label>
+                <input type="text" id="username" placeholder="your.login" autocomplete="username">
             </div>
+
             <div class="form-group">
-                <label>Пароль</label>
-                <input type="password" id="password" placeholder="Введите пароль" autocomplete="current-password">
+                <label for="password">Password</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
             </div>
+
             <button class="login-btn" id="loginBtn">
                 <i class="fas fa-sign-in-alt"></i>
-                <span>Войти</span>
+                <span>Sign in</span>
             </button>
+
+            <div class="login-footer">Secure access · <span>v1.0</span></div>
         </div>
     </div>
+
     <script>
-        // Получаем элементы
+        // ============================================================
+        // ТЕМА
+        // ============================================================
+        const themeToggle = document.getElementById('themeToggle');
+        const root = document.documentElement;
+
+        function applyTheme(theme) {
+            root.setAttribute('data-theme', theme);
+            localStorage.setItem('hercules_theme', theme);
+        }
+
+        function toggleTheme() {
+            const current = root.getAttribute('data-theme') || 'dark';
+            applyTheme(current === 'dark' ? 'light' : 'dark');
+        }
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', toggleTheme);
+        }
+
+        // Следим за системной темой, если пользователь не выбирал вручную
+        if (window.matchMedia) {
+            const mq = window.matchMedia('(prefers-color-scheme: dark)');
+            mq.addEventListener('change', (e) => {
+                if (!localStorage.getItem('hercules_theme')) {
+                    applyTheme(e.matches ? 'dark' : 'light');
+                }
+            });
+        }
+
+        // ============================================================
+        // ЛОГИКА ВХОДА
+        // ============================================================
         const loginBtn = document.getElementById('loginBtn');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const errorDiv = document.getElementById('errorMessage');
-        
-        // Функция показа ошибки
+
         function showError(message) {
             if (errorDiv) {
                 errorDiv.textContent = message;
                 errorDiv.style.display = 'block';
-                setTimeout(() => {
-                    if (errorDiv) errorDiv.style.display = 'none';
-                }, 3000);
+                setTimeout(() => { if (errorDiv) errorDiv.style.display = 'none'; }, 3000);
             } else {
                 alert(message);
             }
         }
-        
-        // Функция показа загрузки
+
         function showLoading(isLoading) {
             if (!loginBtn) return;
-            
             if (isLoading) {
                 loginBtn.disabled = true;
-                loginBtn.innerHTML = '<div class="spinner"></div><span>Вход...</span>';
+                loginBtn.innerHTML = '<div class="spinner"></div><span>Signing in...</span>';
             } else {
                 loginBtn.disabled = false;
-                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Войти</span>';
+                loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Sign in</span>';
             }
         }
-        
-        // Валидация
+
         function validateInputs() {
             const username = usernameInput ? usernameInput.value.trim() : '';
             const password = passwordInput ? passwordInput.value : '';
-            
-            if (!username) {
-                showError('Введите логин');
-                return false;
-            }
-            
-            if (!password) {
-                showError('Введите пароль');
-                return false;
-            }
-            
-            if (password.length < 4) {
-                showError('Пароль должен быть не менее 4 символов');
-                return false;
-            }
-            
+
+            if (!username) { showError('Enter your username'); return false; }
+            if (!password) { showError('Enter your password'); return false; }
+            if (password.length < 4) { showError('Password must be at least 4 characters'); return false; }
+
             return true;
         }
-        
-        // Логин
+
         async function login() {
-            // Скрываем предыдущие ошибки
             if (errorDiv) errorDiv.style.display = 'none';
-            
-            // Клиентская валидация
-            if (!validateInputs()) {
-                return;
-            }
-            
+            if (!validateInputs()) return;
+
             const username = usernameInput.value.trim();
             const password = passwordInput.value;
-            
+
             showLoading(true);
-            
+
             try {
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     credentials: 'include',
                     body: JSON.stringify({ username, password })
                 });
-                
+
                 const data = await response.json();
-                
+
                 if (response.ok && data.success) {
-                    // Успешный вход
                     localStorage.setItem('hercules_auth', JSON.stringify({
                         authenticated: true,
-                        username: username,
+                        username,
                         loginTime: Date.now()
                     }));
-                    
-                    // Перенаправляем
+
                     const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
                     localStorage.removeItem('redirectAfterLogin');
                     window.location.href = redirectUrl;
                 } else {
-                    showError(data.message || data.error || 'Неверный логин или пароль');
+                    showError(data.message || data.error || 'Invalid username or password');
                     showLoading(false);
                 }
             } catch (err) {
                 console.error('Login error:', err);
-                showError('Ошибка соединения с сервером');
+                showError('Server connection error');
                 showLoading(false);
             }
         }
-        
-        // Обработчики событий (проверяем существование элементов)
-        if (loginBtn) {
-            loginBtn.addEventListener('click', login);
-        }
-        
+
+        if (loginBtn) loginBtn.addEventListener('click', login);
+
         if (passwordInput) {
             passwordInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    login();
-                }
+                if (e.key === 'Enter') login();
             });
         }
-        
+
         if (usernameInput) {
             usernameInput.addEventListener('input', () => {
                 if (errorDiv) errorDiv.style.display = 'none';
             });
         }
-        
+
         if (passwordInput) {
             passwordInput.addEventListener('input', () => {
                 if (errorDiv) errorDiv.style.display = 'none';
             });
         }
-        
-        // Проверяем существующую сессию
+
         async function checkExistingSession() {
             try {
-                const response = await fetch('/api/auth/check', {
-                    credentials: 'include'
-                });
+                const response = await fetch('/api/auth/check', { credentials: 'include' });
                 const data = await response.json();
-                
+
                 if (data.authenticated) {
                     const redirectUrl = localStorage.getItem('redirectAfterLogin') || '/';
                     localStorage.removeItem('redirectAfterLogin');
                     window.location.href = redirectUrl;
                 }
             } catch (err) {
-                // Ошибка, ничего не делаем
+                // ignore
             }
         }
-        
-        // Запускаем проверку сессии
+
         checkExistingSession();
     </script>
 </body>

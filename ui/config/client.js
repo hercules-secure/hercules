@@ -89,6 +89,7 @@ async function loadSettingsFromServer() {
 
 
 async function patchConfig(items) {
+    console.log(items)
     try {
         
         const response = await fetch('/api/config', {

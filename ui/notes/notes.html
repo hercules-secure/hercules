@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notes | Engineering notebook</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="notes.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="stylesheet" href="../common/scroll.css">
+    <link rel="icon" type="image/x-icon" href="../../rocket.ico">
+    <script>
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
+</head>
+<body>
+    <div id="box">
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title"><i class="fas fa-tools black-icon"></i><span>Tools</span></div>
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu"><i class="fas fa-chevron-left"></i></button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader"><i class="fas fa-spinner fa-spin"></i><br>Loading...</div>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-info"><span class="tool-name">History</span><span class="tool-desc">Scan log</span></div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
+                            <div class="tool-info"><span class="tool-name">Settings</span><span class="tool-desc">Manage parameters</span></div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tool-divider"></div>
+            </div>
+        </div>
+
+        <div id="center">
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <i class="fas fa-note-sticky black-icon"></i>
+                    <span>Notes &amp; Tasks</span>
+                </div>
+                <div class="top-bar-actions">
+                    <div class="segmented" id="kindToggle">
+                        <button class="segment active" data-kind="note">Note</button>
+                        <button class="segment" data-kind="task">Task</button>
+                    </div>
+                    <button class="header-btn" id="newBtn" style="cursor: pointer;">
+                        <i class="fas fa-plus"></i> New
+                    </button>
+                    <button class="theme-toggle btn btn-secondary" id="themeToggle">
+                        <i class="fas fa-sun icon-sun"></i>
+                        <i class="fas fa-moon icon-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="notes-layout">
+                <div class="notes-sidebar">
+                    <div class="notes-tabs">
+                        <button class="notes-tab active" data-filter="all">All</button>
+                        <button class="notes-tab" data-filter="task">Tasks</button>
+                        <button class="notes-tab" data-filter="note">Notes</button>
+                    </div>
+                    <div class="notes-list" id="notesList">
+                        <div class="notes-empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                    </div>
+                </div>
+
+                <div class="notes-editor" id="notesEditor">
+                    <div class="editor-empty" id="editorEmpty">
+                        <i class="fas fa-note-sticky"></i>
+                        <p>Select an item or create a new one</p>
+                    </div>
+
+                    <div class="editor-active" id="editorActive" style="display:none;">
+                        <div class="editor-head">
+                            <span class="editor-kind" id="editorKind">Note</span>
+                            <span class="editor-status-badge" id="editorStatusBadge" style="display:none;"></span>
+                        </div>
+
+                        <input type="text" id="noteTitle" class="title-input" placeholder="Title...">
+
+                        <div class="task-fields" id="taskFields" style="display:none;">
+                            <div class="task-field-row">
+                                <div class="task-field">
+                                    <label>Status</label>
+                                    <select id="taskStatus">
+                                        <option value="todo">To do</option>
+                                        <option value="in_progress">In progress</option>
+                                        <option value="done">Done</option>
+                                        <option value="cancelled">Cancelled</option>
+                                    </select>
+                                </div>
+                                <div class="task-field">
+                                    <label>Priority</label>
+                                    <select id="taskPriority">
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="critical">Critical</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="task-field-row">
+                                <div class="task-field">
+                                    <label>Assignee</label>
+                                    <input type="text" id="taskAssignee" placeholder="Who is responsible">
+                                </div>
+                                <div class="task-field">
+                                    <label>Due date</label>
+                                    <input type="date" id="taskDue">
+                                </div>
+                            </div>
+                        </div>
+
+                        <textarea id="noteBody" placeholder="Write in Markdown...&#10;&#10;# Heading&#10;- list item&#10;`code`"></textarea>
+
+                        <div class="toolbar">
+                            <button class="btn btn-secondary" id="deleteBtn"><i class="fas fa-trash-can"></i> Delete</button>
+                            <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i> Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <!-- ===== UI CONFIRM MODAL ===== -->
+    <div class="modal-overlay ui-modal" id="uiConfirm">
+        <div class="modal ui-modal-card">
+            <div class="ui-modal-icon ui-modal-icon--danger">
+                <i class="fas fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="ui-modal-title" id="uiConfirmTitle">Are you sure?</h3>
+            <p class="ui-modal-text" id="uiConfirmText">This action cannot be undone.</p>
+            <div class="ui-modal-actions">
+                <button class="btn btn-secondary" id="uiConfirmCancel">Cancel</button>
+                <button class="btn btn-primary btn-danger" id="uiConfirmOk">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== UI PROMPT MODAL ===== -->
+    <div class="modal-overlay ui-modal" id="uiPrompt">
+        <div class="modal ui-modal-card">
+            <div class="ui-modal-icon">
+                <i class="fas fa-pen"></i>
+            </div>
+            <h3 class="ui-modal-title" id="uiPromptTitle">Enter value</h3>
+            <p class="ui-modal-text" id="uiPromptText" style="display:none;"></p>
+            <input type="text" id="uiPromptInput" class="ui-modal-input" placeholder="">
+            <div class="ui-modal-actions">
+                <button class="btn btn-secondary" id="uiPromptCancel">Cancel</button>
+                <button class="btn btn-primary" id="uiPromptOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="../common/preloader.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script type="text/javascript" src="../common/modal.js"></script>
+    <script type="text/javascript" src="modals.js"></script>
+    <script type="text/javascript" src="notes.js"></script>
+</body>
+</html>

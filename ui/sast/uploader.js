@@ -12,7 +12,7 @@ class FileUploader {
             errorHandler: null,
             ...options
         };
-        
+
         this.initializeInputs();
     }
 
@@ -22,7 +22,7 @@ class FileUploader {
         this.archiveInput.accept = this.options.acceptArchive;
         this.archiveInput.style.display = 'none';
         document.body.appendChild(this.archiveInput);
-        
+
         if (this.options.acceptFolder) {
             this.folderInput = document.createElement('input');
             this.folderInput.type = 'file';
@@ -31,7 +31,7 @@ class FileUploader {
             this.folderInput.style.display = 'none';
             document.body.appendChild(this.folderInput);
         }
-        
+
         this.bindEvents();
     }
 
@@ -42,7 +42,7 @@ class FileUploader {
             }
             this.archiveInput.value = '';
         });
-        
+
         if (this.folderInput) {
             this.folderInput.addEventListener('change', (e) => {
                 if (e.target.files && e.target.files.length) {
@@ -55,20 +55,20 @@ class FileUploader {
 
     attachToElement(element, options = {}) {
         if (!element) return;
-        
+
         const menuPosition = options.menuPosition || 'bottom';
-        
+
         element.addEventListener('click', (e) => {
             e.stopPropagation();
             this.showMenu(element, menuPosition);
         });
-        
+
         this.attachedElement = element;
     }
 
     showMenu(targetElement, position = 'bottom') {
         this.removeMenu();
-        
+
         this.menu = document.createElement('div');
         this.menu.className = 'file-uploader-menu';
         this.menu.innerHTML = `
@@ -85,7 +85,7 @@ class FileUploader {
                 </div>
             </div>
         `;
-        
+
         this.menu.style.cssText = `
             position: absolute;
             background: white;
@@ -97,40 +97,40 @@ class FileUploader {
             border: 1px solid #e2e8f0;
             font-family: 'Fira Sans', sans-serif;
         `;
-        
+
         const rect = targetElement.getBoundingClientRect();
         this.menu.style.top = rect.bottom + 8 + 'px';
         this.menu.style.left = rect.left + 'px';
-        
+
         this.addMenuStyles();
-        
+
         this.menu.querySelector('[data-type="archive"]').addEventListener('click', () => {
             this.selectArchive();
             this.removeMenu();
         });
-        
+
         this.menu.querySelector('[data-type="folder"]').addEventListener('click', () => {
             this.selectFolder();
             this.removeMenu();
         });
-        
+
         const closeHandler = (e) => {
             if (this.menu && !this.menu.contains(e.target) && e.target !== targetElement) {
                 this.removeMenu();
                 document.removeEventListener('click', closeHandler);
             }
         };
-        
+
         setTimeout(() => {
             document.addEventListener('click', closeHandler);
         }, 10);
-        
+
         document.body.appendChild(this.menu);
     }
 
     addMenuStyles() {
         if (document.getElementById('uploader-menu-styles')) return;
-        
+
         const style = document.createElement('style');
         style.id = 'uploader-menu-styles';
         style.textContent = `
@@ -198,11 +198,11 @@ class FileUploader {
             if (this.options.onError) this.options.onError(error);
             return;
         }
-        
+
         if (this.options.onProgress) {
             this.options.onProgress('Uploading archive...', 0);
         }
-        
+
         if (this.options.onFileSelected) {
             this.options.onFileSelected(file);
         }
@@ -215,12 +215,12 @@ class FileUploader {
             files: Array.from(files),
             fileCount: files.length
         };
-        
+
         if (this.options.compressOnClient) {
             if (this.options.onProgress) {
                 this.options.onProgress('Preparing files...', 0);
             }
-            
+
             try {
                 const zipBlob = await this.createZipArchive(folderInfo, (percent) => {
                     if (this.options.onProgress) {
@@ -231,9 +231,17 @@ class FileUploader {
                         }
                     }
                 });
-                
+
                 const archiveFile = new File([zipBlob], `${folderName}.zip`, { type: 'application/zip' });
-                
+
+                // [FIX] Проверка размера после архивации — ZIP может превысить maxSize,
+                // даже если отдельные файлы проходили.
+                if (archiveFile.size > this.options.maxSize) {
+                    const error = `Archive too large: ${(archiveFile.size / 1024 / 1024).toFixed(1)} MB (max: ${(this.options.maxSize / 1024 / 1024).toFixed(1)} MB)`;
+                    if (this.options.onError) this.options.onError(error);
+                    return;
+                }
+
                 if (this.options.onFileSelected) {
                     this.options.onFileSelected(archiveFile);
                 }
@@ -251,44 +259,91 @@ class FileUploader {
 
     async createZipArchive(folderInfo, onProgress) {
         const zip = new JSZip();
-        
-        const ignoredNames = ['node_modules', '.git', '.DS_Store', 'Thumbs.db', '__pycache__', '.idea', '.vscode'];
-        const ignoredExtensions = ['.log', '.tmp', '.swp', '.cache'];
-        
+
+        // [FIX] Расширенный список папок/файлов, которые не попадают в ZIP.
+        // build/dist/vendor/target — артефакты; .next/.nuxt — кэши; __pycache__/.venv — Python.
+        const ignoredNames = [
+            'node_modules',
+            '.git', '.svn', '.hg',
+            '.DS_Store', 'Thumbs.db',
+            '__pycache__', '.pytest_cache', '.mypy_cache',
+            '.idea', '.vscode',
+            '.next', '.nuxt', '.cache', '.parcel-cache', '.turbo',
+            'dist', 'build', 'out', 'coverage',
+            'vendor', 'target', 'obj', 'bin',
+            '.venv', 'venv', 'env',
+            'bower_components',
+            // [FIX] Секреты — точное имя. Для .env.* — ignoredPrefixes ниже.
+            '.env'
+        ];
+
+        // [FIX] Префиксы, отсекающие .env, .env.local, .env.production и т.д.
+        const ignoredPrefixes = ['.env'];
+
+        // [FIX] Расширения файлов, которые не попадают в ZIP. '.cache' убран —
+        // это папка (в ignoredNames), а не расширение.
+        const ignoredExtensions = [
+            '.log', '.tmp', '.swp', '.swo', '.pid',
+            '.lock', '.DS_Store'
+        ];
+
         let processed = 0;
         const total = folderInfo.files.length;
-        
+
         for (const file of folderInfo.files) {
+            // [FIX] Файл без webkitRelativePath (программно добавленный) — пропускаем,
+            // иначе zip.file('', content) сломает архив.
+            if (!file.webkitRelativePath) {
+                processed++;
+                if (onProgress) onProgress(Math.round((processed / total) * 50));
+                continue;
+            }
+
             const pathParts = file.webkitRelativePath.split('/');
+
+            // [FIX] pathParts[0] — корневая папка. Её НЕ проверяем, иначе выбор
+            // папки с именем node_modules/dist отбросит все файлы.
+            const innerParts = pathParts.slice(1);
+
             let shouldSkip = false;
-            
-            for (const part of pathParts) {
+
+            for (const part of innerParts) {
                 if (ignoredNames.includes(part)) {
                     shouldSkip = true;
                     break;
                 }
+                if (ignoredPrefixes.some(prefix => part.startsWith(prefix))) {
+                    shouldSkip = true;
+                    break;
+                }
             }
-            
-            const ext = file.name.split('.').pop().toLowerCase();
-            if (ignoredExtensions.includes(`.${ext}`)) {
-                shouldSkip = true;
+
+            // [FIX] Проверка расширения только для файлов с точкой в имени.
+            if (!shouldSkip) {
+                const nameParts = file.name.split('.');
+                if (nameParts.length > 1) {
+                    const ext = '.' + nameParts.pop().toLowerCase();
+                    if (ignoredExtensions.includes(ext)) {
+                        shouldSkip = true;
+                    }
+                }
             }
-            
+
             if (!shouldSkip) {
                 const content = await file.arrayBuffer();
                 zip.file(file.webkitRelativePath, content);
             }
-            
+
             processed++;
             if (onProgress) {
                 const stagePercent = Math.round((processed / total) * 50);
                 onProgress(stagePercent);
             }
         }
-        
+
         if (onProgress) onProgress(50);
-        
-        const zipBlob = await zip.generateAsync({ 
+
+        const zipBlob = await zip.generateAsync({
             type: 'blob',
             compression: 'DEFLATE',
             compressionOptions: { level: 6 },
@@ -299,32 +354,32 @@ class FileUploader {
                 }
             }
         });
-        
+
         if (onProgress) onProgress(100);
-        
+
         return zipBlob;
     }
 
     getArchiveFormData(file, additionalData = {}) {
         const formData = new FormData();
         formData.append('archive', file);
-        
+
         for (const [key, value] of Object.entries(additionalData)) {
             formData.append(key, value);
         }
-        
+
         return formData;
     }
 
     async uploadToServer(url, formData, onProgress = null) {
         const errorHandler = this.options.errorHandler;
         const button = this.options.button;
-        
+
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
-            
+
             xhr.open('POST', url);
-            
+
             if (onProgress) {
                 xhr.upload.addEventListener('progress', (e) => {
                     if (e.lengthComputable) {
@@ -333,16 +388,18 @@ class FileUploader {
                     }
                 });
             }
-            
+
             xhr.onload = async () => {
                 if (xhr.status === 429 && errorHandler) {
-                    const errorData = JSON.parse(xhr.responseText);
+                    let errorData;
+                    try { errorData = JSON.parse(xhr.responseText); } catch (e) { errorData = {}; }
                     await errorHandler.handleRateLimit(errorData, { button });
                     reject(new Error('RATE_LIMIT_EXCEEDED'));
                     return;
                 }
-                
-                if (xhr.status === 200) {
+
+                // [FIX] Принимаем любой 2xx, а не только 200.
+                if (xhr.status >= 200 && xhr.status < 300) {
                     if (onProgress) onProgress(100);
                     try {
                         const response = JSON.parse(xhr.response);
@@ -351,32 +408,32 @@ class FileUploader {
                         reject(new Error('Invalid JSON response'));
                     }
                 } else {
-                    let errorMsg = `HTTP ${xhr.status}: ${xhr.statusText}`;
-                    if (errorHandler) {
+                    const errorMsg = `HTTP ${xhr.status}: ${xhr.statusText}`;
+                    if (errorHandler && errorHandler.showNotification) {
                         errorHandler.showNotification(errorMsg, 'error');
                     }
                     reject(new Error(errorMsg));
                 }
             };
-            
+
             xhr.onerror = () => {
                 const errorMsg = 'Network error';
-                if (errorHandler) {
+                if (errorHandler && errorHandler.showNotification) {
                     errorHandler.showNotification(errorMsg, 'error');
                 }
                 reject(new Error(errorMsg));
             };
-            
+
             xhr.send(formData);
         });
     }
 
     destroy() {
         this.removeMenu();
-        
+
         if (this.archiveInput) this.archiveInput.remove();
         if (this.folderInput) this.folderInput.remove();
-        
+
         this.archiveInput = null;
         this.folderInput = null;
         this.attachedElement = null;
@@ -387,25 +444,25 @@ class FileUploader {
 function initSASTUploader(herculesApp) {
     const uploadArea = document.getElementById('uploadArea');
     if (!uploadArea) return null;
-    
+
     const formatFileSize = (bytes) => {
         if (bytes < 1024) return bytes + ' B';
         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
         return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     };
-    
+
     const uploader = new FileUploader({
         acceptArchive: '.zip,.tar,.gz,.tgz,.7z',
         maxSize: 2000 * 1024 * 1024,
         compressOnClient: true,
         onFileSelected: (file) => {
             const app = herculesApp || window.herculesApp;
-            
+
             if (app) {
                 app.selectedFile = file;
                 app.selectedProject = null;
                 app.currentArchiveId = null;
-                
+
                 if (app.repoInput) {
                     app.repoInput.value = '';
                     if (app.showValidationMessage) app.showValidationMessage('', '');
@@ -414,162 +471,184 @@ function initSASTUploader(herculesApp) {
                     app.repoInput.style.backgroundColor = '';
                     app.repoInput.style.opacity = '';
                 }
-                
+
                 const fileName = document.getElementById('fileName');
                 const fileSize = document.getElementById('fileSize');
                 const fileInfo = document.getElementById('fileInfo');
-                
+
                 if (fileName) fileName.textContent = file.name;
                 if (fileSize) fileSize.textContent = formatFileSize(file.size);
                 if (fileInfo) fileInfo.classList.add('active');
-                
+
                 if (app.startButton) {
                     app.startButton.disabled = false;
                     app.startButton.classList.add('active');
                 }
-                
-                showToolNotification(`File selected: ${file.name}`, 'success');
-            } else {
+
+                if (typeof showToolNotification === 'function') {
+                    showToolNotification(`File selected: ${file.name}`, 'success');
+                }
+            } else if (typeof showToolNotification === 'function') {
                 showToolNotification('herculesApp not found', 'error');
             }
         },
         onError: (error) => {
-            showToolNotification(error, 'error');
-        }
-    });
-    
-    uploader.attachToElement(uploadArea, { menuPosition: 'bottom' });
-    
-    return uploader;
-}
-
-function initFUZZUploader() {
-    const uploadArea = document.getElementById('uploadArea');
-    if (!uploadArea) return null;
-    
-    const errorHandler = new HerculesErrorHandler('fuzz');
-    
-    const uploader = new FileUploader({
-        acceptArchive: '.json,.yaml,.yml',
-        acceptFolder: false,
-        button: document.getElementById('start-url-btn'),
-        onFileSelected: (file) => {
-            showToolNotification(`Fuzz testing: ${file.name}...`);
-            
-            if (window.herculesApp) {
-                window.herculesApp.updateTaskStatus('1.1', 'in-progress');
-                window.herculesApp.animateProgress('1.1', 100, 800, () => {
-                    window.herculesApp.updateTaskStatus('1.1', 'completed');
-                });
+            if (typeof showToolNotification === 'function') {
+                showToolNotification(error, 'error');
+            } else {
+                console.error('[FileUploader]', error);
             }
-            
-            const formData = new FormData();
-            formData.append('spec', file);
-            formData.append('baseUrl', document.getElementById('baseUrl')?.value || '');
-            
-            fetch('/api/fuzz', {
-                method: 'POST',
-                body: formData
-            }).then(async res => {
-                if (res.status === 429) {
-                    const data = await res.json();
-                    await errorHandler.handleRateLimit(data, { button: document.getElementById('start-url-btn') });
-                    throw new Error('RATE_LIMIT_EXCEEDED');
-                }
-                if (!res.ok) throw new Error(`HTTP ${res.status}`);
-                return res.json();
-            }).then(result => {
-                if (window.herculesApp) {
-                    window.herculesApp.updateTaskStatus('2.1', 'in-progress');
-                    window.herculesApp.animateProgress('2.1', 100, 2000, () => {
-                        window.herculesApp.updateTaskStatus('2.1', 'completed');
-                        window.herculesApp.updateTaskStatus('2.2', 'completed');
-                    });
-                }
-                
-                if (typeof displayFUZZResults === 'function') {
-                    displayFUZZResults(result);
-                }
-                showToolNotification('Fuzzing completed', 'success');
-                
-            }).catch(error => {
-                if (error.message !== 'RATE_LIMIT_EXCEEDED') {
-                    showToolNotification('Error: ' + error.message, 'error');
-                }
-                if (window.herculesApp) {
-                    window.herculesApp.updateTaskStatus('2.1', 'error');
-                }
-            });
         }
     });
-    
-    uploader.attachToElement(uploadArea);
-    
-    return uploader;
-}
 
-function initSCAUploader() {
-    const uploadArea = document.getElementById('uploadArea');
-    if (!uploadArea) return null;
-    
-    const uploader = new FileUploader({
-        compressOnClient: true,
-        button: document.getElementById('start-btn'),
-        onFileSelected: async (file) => {
-            showToolNotification(`Uploading and analyzing: ${file.name}...`);
-            
-            if (window.herculesApp) {
-                window.herculesApp.updateTaskStatus('1.1', 'in-progress');
-                window.herculesApp.animateProgress('1.1', 100, 800, () => {
-                    window.herculesApp.updateTaskStatus('1.1', 'completed');
-                });
-            }
-            
-            const formData = uploader.getArchiveFormData(file, { type: 'sca' });
-            uploader.uploadToServer('/api/sca/upload', formData).then(result => {
-                if (window.herculesApp) {
-                    window.herculesApp.updateTaskStatus('2.1', 'in-progress');
-                    window.herculesApp.animateProgress('2.1', 100, 1500, () => {
-                        window.herculesApp.updateTaskStatus('2.1', 'completed');
-                    });
-                }
-                
-                setTimeout(() => {
-                    if (window.herculesApp) {
-                        window.herculesApp.updateTaskStatus('2.2', 'in-progress');
-                        window.herculesApp.animateProgress('2.2', 100, 1500, () => {
-                            window.herculesApp.updateTaskStatus('2.2', 'completed');
-                            window.herculesApp.startButton.textContent = 'Analysis completed';
-                            showToolNotification('Analysis completed successfully');
-                        });
-                    }
-                    
-                    if (typeof handleReportData === 'function') {
-                        handleReportData(result);
-                    }
-                }, 500);
-                
-            }).catch(error => {
-                if (error.message !== 'RATE_LIMIT_EXCEEDED') {
-                    showToolNotification('Error: ' + error.message, 'error');
-                }
-                if (window.herculesApp) {
-                    window.herculesApp.updateTaskStatus('2.2', 'error');
-                    window.herculesApp.resetButton();
-                }
-            });
-        },
-        onError: (error) => {
-            showToolNotification(error, 'error');
-        }
-    });
-    
     uploader.attachToElement(uploadArea, { menuPosition: 'bottom' });
-    
+
     return uploader;
 }
 
-window.initSCAUploader = initSCAUploader;
+// function initFUZZUploader() {
+//     const uploadArea = document.getElementById('uploadArea');
+//     if (!uploadArea) return null;
+
+//     const errorHandler = new HerculesErrorHandler('fuzz');
+
+//     const uploader = new FileUploader({
+//         acceptArchive: '.json,.yaml,.yml',
+//         acceptFolder: false,
+//         button: document.getElementById('start-url-btn'),
+//         onFileSelected: (file) => {
+//             if (typeof showToolNotification === 'function') {
+//                 showToolNotification(`Fuzz testing: ${file.name}...`);
+//             }
+
+//             if (window.herculesApp) {
+//                 window.herculesApp.updateTaskStatus('1.1', 'in-progress');
+//                 window.herculesApp.animateProgress('1.1', 100, 800, () => {
+//                     window.herculesApp.updateTaskStatus('1.1', 'completed');
+//                 });
+//             }
+
+//             const formData = new FormData();
+//             formData.append('spec', file);
+//             formData.append('baseUrl', document.getElementById('baseUrl')?.value || '');
+
+//             fetch('/api/fuzz', {
+//                 method: 'POST',
+//                 body: formData
+//             }).then(async res => {
+//                 if (res.status === 429) {
+//                     const data = await res.json();
+//                     await errorHandler.handleRateLimit(data, { button: document.getElementById('start-url-btn') });
+//                     throw new Error('RATE_LIMIT_EXCEEDED');
+//                 }
+//                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
+//                 return res.json();
+//             }).then(result => {
+//                 if (window.herculesApp) {
+//                     window.herculesApp.updateTaskStatus('2.1', 'in-progress');
+//                     window.herculesApp.animateProgress('2.1', 100, 2000, () => {
+//                         window.herculesApp.updateTaskStatus('2.1', 'completed');
+//                         window.herculesApp.updateTaskStatus('2.2', 'completed');
+//                     });
+//                 }
+
+//                 if (typeof displayFUZZResults === 'function') {
+//                     displayFUZZResults(result);
+//                 }
+//                 if (typeof showToolNotification === 'function') {
+//                     showToolNotification('Fuzzing completed', 'success');
+//                 }
+
+//             }).catch(error => {
+//                 if (error.message !== 'RATE_LIMIT_EXCEEDED') {
+//                     if (typeof showToolNotification === 'function') {
+//                         showToolNotification('Error: ' + error.message, 'error');
+//                     }
+//                 }
+//                 if (window.herculesApp) {
+//                     window.herculesApp.updateTaskStatus('2.1', 'error');
+//                 }
+//             });
+//         }
+//     });
+
+//     uploader.attachToElement(uploadArea);
+
+//     return uploader;
+// }
+
+// function initSCAUploader() {
+//     const uploadArea = document.getElementById('uploadArea');
+//     if (!uploadArea) return null;
+
+//     const uploader = new FileUploader({
+//         compressOnClient: true,
+//         button: document.getElementById('start-btn'),
+//         onFileSelected: async (file) => {
+//             if (typeof showToolNotification === 'function') {
+//                 showToolNotification(`Uploading and analyzing: ${file.name}...`);
+//             }
+
+//             if (window.herculesApp) {
+//                 window.herculesApp.updateTaskStatus('1.1', 'in-progress');
+//                 window.herculesApp.animateProgress('1.1', 100, 800, () => {
+//                     window.herculesApp.updateTaskStatus('1.1', 'completed');
+//                 });
+//             }
+
+//             const formData = uploader.getArchiveFormData(file, { type: 'sca' });
+//             uploader.uploadToServer('/api/sca/upload', formData).then(result => {
+//                 if (window.herculesApp) {
+//                     window.herculesApp.updateTaskStatus('2.1', 'in-progress');
+//                     window.herculesApp.animateProgress('2.1', 100, 1500, () => {
+//                         window.herculesApp.updateTaskStatus('2.1', 'completed');
+//                     });
+//                 }
+
+//                 setTimeout(() => {
+//                     if (window.herculesApp) {
+//                         window.herculesApp.updateTaskStatus('2.2', 'in-progress');
+//                         window.herculesApp.animateProgress('2.2', 100, 1500, () => {
+//                             window.herculesApp.updateTaskStatus('2.2', 'completed');
+//                             window.herculesApp.startButton.textContent = 'Analysis completed';
+//                             if (typeof showToolNotification === 'function') {
+//                                 showToolNotification('Analysis completed successfully');
+//                             }
+//                         });
+//                     }
+
+//                     if (typeof handleReportData === 'function') {
+//                         handleReportData(result);
+//                     }
+//                 }, 500);
+
+//             }).catch(error => {
+//                 if (error.message !== 'RATE_LIMIT_EXCEEDED') {
+//                     if (typeof showToolNotification === 'function') {
+//                         showToolNotification('Error: ' + error.message, 'error');
+//                     }
+//                 }
+//                 if (window.herculesApp) {
+//                     window.herculesApp.updateTaskStatus('2.2', 'error');
+//                     window.herculesApp.resetButton();
+//                 }
+//             });
+//         },
+//         onError: (error) => {
+//             if (typeof showToolNotification === 'function') {
+//                 showToolNotification(error, 'error');
+//             } else {
+//                 console.error('[FileUploader]', error);
+//             }
+//         }
+//     });
+
+//     uploader.attachToElement(uploadArea, { menuPosition: 'bottom' });
+
+//     return uploader;
+// }
+
+// window.initSCAUploader = initSCAUploader;
 window.initSASTUploader = initSASTUploader;
-window.initFUZZUploader = initFUZZUploader;
+// window.initFUZZUploader = initFUZZUploader;
 window.FileUploader = FileUploader;

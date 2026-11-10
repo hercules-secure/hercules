@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Data Donors | Source registry</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../../rocket.ico">
+  <link rel="stylesheet" href="../common/sidebar.css">
+  <link rel="stylesheet" href="base.css">
+  <script>
+    (function() {
+      const saved = localStorage.getItem('hercules_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+    })();
+  </script>
+  
+</head>
+<body>
+  <div id="box">
+    <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title" id="toolsTitle">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Tools</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Loading...
+                    </div>
+                </div>
+
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                 <div class="tool-divider"></div>
+            </div>
+        </div>
+
+    <div id="center">
+      <div class="top-bar">
+        <div class="top-bar-title"><i class="fas fa-database black-icon"></i><span>Data Donors</span></div>
+        <div class="top-bar-actions">
+          <button class="header-btn" style="cursor: pointer;" id="addBtn"><i class="fas fa-plus"></i> Add source</button>
+          <button class="theme-toggle btn btn-secondary" id="themeToggle" style="width:34px;height:34px;padding:0;justify-content:center;">
+            <i class="fas fa-sun icon-sun" style="display:none;"></i>
+            <i class="fas fa-moon icon-moon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Provider</th>
+              <th>Type</th>
+              <th>Format</th>
+              <th>Destination</th>
+              <th style="text-align:right;">Actions</th>
+          </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="7" class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">
+                <i class="fas fa-plus-circle"></i> Add data source
+            </div>
+            <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <input type="hidden" id="fId">
+
+            <!-- Identification -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fName">Name <span class="required">*</span></label>
+                    <input type="text" id="fName" placeholder="NVD">
+                </div>
+                <div class="form-group">
+                    <label for="fProvider">Provider</label>
+                    <input type="text" id="fProvider" placeholder="NIST">
+                </div>
+            </div>
+
+            <!-- Method + Endpoint -->
+            <div class="form-row" style="display: grid; grid-template-columns: 100px 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="fMethod">Method</label>
+                    <select id="fMethod">
+                        <option value="GET">GET</option>
+                        <option value="POST">POST</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fEndpoint">API endpoint <span class="required">*</span></label>
+                    <input type="text" id="fEndpoint" placeholder="https://services.nvd.nist.gov/rest/json/cves/2.0">
+                </div>
+            </div>
+
+            <!-- Body — только для POST -->
+            <div class="form-group" id="bodyBlock" style="display:none;">
+                <label for="fBody">Request body <span class="hint">(JSON)</span></label>
+                <textarea id="fBody" rows="4" placeholder='{"key": "value"}'></textarea>
+            </div>
+
+            <!-- Type / Format / Status — в одну строку -->
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label for="fType">Source type</label>
+                    <select id="fType">
+                        <option value="api">API</option>
+                        <option value="database">Database</option>
+                        <option value="log">Log feed</option>
+                        <option value="file_export">File export</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fFormat">Response format</label>
+                    <select id="fFormat">
+                        <option value="json">JSON</option>
+                        <option value="csv">CSV</option>
+                        <option value="parquet">Parquet</option>
+                        <option value="xml">XML</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fStatus">Status</label>
+                    <select id="fStatus">
+                        <option value="active">Active</option>
+                        <option value="paused">Paused</option>
+                        <option value="error">Error</option>
+                        <option value="deprecated">Deprecated</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Auth -->
+            <div class="form-group">
+                <label for="fAuth">Authentication</label>
+                <select id="fAuth">
+                    <option value="in">Public — no credentials required</option>
+                    <option value="out">Requires credentials</option>
+                </select>
+            </div>
+
+            <div id="authBlock" style="display:none;">
+                <div class="form-group">
+                    <label for="fAuthMethod">Auth method</label>
+                    <select id="fAuthMethod">
+                        <option value="api_key">API Key</option>
+                        <option value="login">Login + Password</option>
+                    </select>
+                </div>
+
+                <div id="authApiKey">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fApiKeyHeader">Header name</label>
+                            <input type="text" id="fApiKeyHeader" placeholder="X-Api-Key" value="X-Api-Key">
+                        </div>
+                        <div class="form-group">
+                            <label for="fApiKey">Key</label>
+                            <input type="password" id="fApiKey" placeholder="sk-...">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row" id="authLogin" style="display:none;">
+                    <div class="form-group">
+                        <label for="fLogin">Login</label>
+                        <input type="text" id="fLogin" autocomplete="off">
+                    </div>
+                    <div class="form-group">
+                        <label for="fPassword">Password</label>
+                        <input type="password" id="fPassword" autocomplete="new-password">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" type="button" id="saveBtn">
+                <i class="fas fa-save"></i> Save
+            </button>
+        </div>
+    </div>
+</div>
+<!-- Delete confirm modal -->
+<div class="modal-overlay modal-danger" id="deleteModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <i class="fas fa-trash-can"></i> Delete source
+            </div>
+            <button class="modal-close" type="button" onclick="closeDeleteModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-text">
+                <i class="fas fa-exclamation-triangle"></i>
+                Are you sure you want to delete source <strong id="deleteDonorName"></strong>?
+            </div>
+            <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;">
+                This action is irreversible.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn btn-primary" type="button" id="deleteConfirmBtn">
+                <i class="fas fa-trash-can"></i> Delete
+            </button>
+        </div>
+    </div>
+</div>
+  <div id="toast" class="toast"></div>
+    <script type="text/javascript" src="../common/preloader.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <!-- <script type="text/javascript" src="../common/modal.js"></script> -->
+  <script>
+    (function themeToggle() {
+      const t = document.getElementById('themeToggle'); const root = document.documentElement;
+      function apply(v){ root.setAttribute('data-theme', v); localStorage.setItem('hercules_theme', v); }
+      t.addEventListener('click', () => apply(root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+    })();
+
+ const API = '/api/donor';
+let donors = [];
+let meta = { source_types: [], formats: [], destinations: [], statuses: [] };
+
+const $ = (id) => document.getElementById(id);
+const tbody = $('tbody');
+
+// ─────────────────────────────────────────────
+// helpers
+// ─────────────────────────────────────────────
+const val   = (id) => { const el = $(id); return el ? el.value.trim() : ''; };
+const sel   = (id) => { const el = $(id); return el ? el.value : ''; };
+const multi = (id) => {
+    const el = $(id);
+    return el ? Array.from(el.selectedOptions).map(o => o.value) : [];
+};
+
+function toast(msg, isErr) {
+    const t = $('toast');
+    if (!t) { console.log(isErr ? 'ERR' : 'OK', msg); return; }
+    t.textContent = msg;
+    t.style.borderColor = isErr ? 'var(--error-border)' : 'var(--border)';
+    t.style.color = isErr ? 'var(--error-text)' : 'var(--text)';
+    t.classList.add('show');
+    clearTimeout(t._t);
+    t._t = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function escapeHtml(s) {
+    return String(s || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+// ─────────────────────────────────────────────
+// visibility: auth
+// ─────────────────────────────────────────────
+function updateAuthVisibility() {
+    const auth   = $('fAuth')?.value || 'in';
+    const method = $('fAuthMethod')?.value || 'api_key';
+
+    const authBlock = $('authBlock');
+    const apiKeyBox = $('authApiKey');
+    const loginBox  = $('authLogin');
+
+    if (!authBlock || !apiKeyBox || !loginBox) return;
+
+    authBlock.style.display = auth === 'out' ? '' : 'none';
+
+    if (auth === 'out') {
+        apiKeyBox.style.display = method === 'api_key' ? '' : 'none';
+        loginBox.style.display  = method === 'login'   ? '' : 'none';
+    } else {
+        if ($('fApiKey'))   $('fApiKey').value   = '';
+        if ($('fLogin'))    $('fLogin').value    = '';
+        if ($('fPassword')) $('fPassword').value = '';
+    }
+}
+
+// ─────────────────────────────────────────────
+// visibility: body (только для POST)
+// ─────────────────────────────────────────────
+function updateBodyVisibility() {
+    const method = $('fMethod')?.value || 'GET';
+    const bodyBlock = $('bodyBlock');
+    if (!bodyBlock) return;
+
+    const isPost = method === 'POST';
+    bodyBlock.style.display = isPost ? '' : 'none';
+
+    if (!isPost && $('fBody')) $('fBody').value = '';
+}
+
+// ─────────────────────────────────────────────
+// meta
+// ─────────────────────────────────────────────
+async function loadMeta() {
+    try {
+        const r = await fetch(`${API}/meta/types`);
+        if (!r.ok) return;
+        meta = await r.json();
+
+        fillSelect('fType',   meta.source_types);
+        fillSelect('fFormat', meta.formats);
+        fillSelect('fStatus', meta.statuses);
+        fillSelect('fDest',   meta.destinations, true);
+    } catch (e) {
+        console.warn('meta load failed', e);
+    }
+}
+
+function fillSelect(id, values, multiple = false) {
+    const el = $(id);
+    if (!el || !Array.isArray(values)) return;
+    el.innerHTML = values.map(v => `<option value="${v}">${v}</option>`).join('');
+    if (multiple) el.multiple = true;
+}
+
+// ─────────────────────────────────────────────
+// load + render
+// ─────────────────────────────────────────────
+async function load() {
+    try {
+        const r = await fetch(API);
+        if (!r.ok) throw new Error('Load error');
+        donors = await r.json();
+        render();
+    } catch (e) {
+        toast(e.message, true);
+    }
+}
+
+function badgeClass(type) {
+    switch (type) {
+        case 'api':         return 'api';
+        case 'database':    return 'db';
+        case 'log':         return 'log';
+        case 'file_export': return 'file';
+        default:            return 'file';
+    }
+}
+
+function render() {
+    if (!donors.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">
+            <i class="fas fa-database" style="font-size:2rem;opacity:.3;display:block;margin-bottom:8px;"></i>
+            No data sources yet
+        </td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = donors.map(d => `
+        <tr>
+            <td><strong>${escapeHtml(d.name)}</strong></td>
+            <td>${escapeHtml(d.provider || '—')}</td>
+            <td>
+                <span class="badge badge-${badgeClass(d.source_type)}">
+                    ${escapeHtml(d.source_type || '—')}
+                </span>
+            </td>
+            <td>${escapeHtml(d.format || '—')}</td>
+            <td>${escapeHtml((d.destinations || []).join(', ') || '—')}</td>
+            <td class="actions-cell">
+                <i class="fas fa-pen" title="Edit" onclick="openEdit(${d.id})"></i>
+                <i class="fas fa-trash-can" title="Delete" onclick="del(${d.id})"></i>
+            </td>
+        </tr>
+    `).join('');
+}
+
+// ─────────────────────────────────────────────
+// open modals
+// ─────────────────────────────────────────────
+window.openAdd = function () {
+    const setVal = (elId, v) => {
+        const el = $(elId);
+        if (el) el.value = v;
+    };
+
+    $('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add source';
+
+    ['fName','fProvider','fEndpoint','fBody','fDescription','fContact','fOwner',
+     'fApiKey','fLogin','fPassword'].forEach(id => setVal(id, ''));
+
+    setVal('fMethod',       'GET');
+    setVal('fType',         'api');
+    setVal('fFormat',       'json');
+    setVal('fStatus',       'active');
+    setVal('fAuth',         'in');
+    setVal('fAuthMethod',   'api_key');
+    setVal('fApiKeyHeader', 'X-Api-Key');
+
+    const dest = $('fDest');
+    if (dest) Array.from(dest.options).forEach(o => o.selected = false);
+
+    $('fId').value = '';
+
+    updateBodyVisibility();
+    updateAuthVisibility();
+    $('modal').classList.add('active');
+};
+
+window.openEdit = function (id) {
+    const d = donors.find(x => x.id === id);
+    if (!d) return;
+
+    const setVal = (elId, v) => {
+        const el = $(elId);
+        if (el) el.value = v;
+    };
+
+    $('modalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit source';
+
+    setVal('fName',        d.name || '');
+    setVal('fProvider',    d.provider || '');
+    setVal('fEndpoint',    d.endpoint || '');
+    setVal('fDescription', d.description || '');
+    setVal('fContact',     d.contact || '');
+    setVal('fOwner',       d.owner || '');
+
+    setVal('fMethod',      d.method || 'GET');
+    setVal('fBody',        d.body || '');
+    setVal('fType',        d.source_type || 'api');
+    setVal('fFormat',      d.format || 'json');
+    setVal('fStatus',      d.status || 'active');
+
+    setVal('fAuth',        d.auth_type || 'in');
+    setVal('fAuthMethod',  d.auth_method || 'api_key');
+    setVal('fApiKeyHeader',d.api_key_header || 'X-Api-Key');
+    setVal('fApiKey',      d.api_key || '');
+    setVal('fLogin',       d.login || '');
+    setVal('fPassword',    d.password || '');
+
+    const dest = $('fDest');
+    if (dest) {
+        const selected = d.destinations || [];
+        Array.from(dest.options).forEach(o => {
+            o.selected = selected.includes(o.value);
+        });
+    }
+
+    $('fId').value = id;
+
+    updateBodyVisibility();
+    updateAuthVisibility();
+    $('modal').classList.add('active');
+};
+
+window.closeModal = function () {
+    $('modal').classList.remove('active');
+};
+
+// открытие модалки удаления
+window.del = function (id) {
+    const d = donors.find(x => x.id === id);
+    if (!d) return;
+
+    $('deleteDonorName').textContent = `"${d.name}"`;
+    $('deleteModal').dataset.id = id;
+    $('deleteModal').classList.add('active');
+};
+
+// закрытие
+window.closeDeleteModal = function () {
+    $('deleteModal').classList.remove('active');
+};
+
+// подтверждение
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = $('deleteConfirmBtn');
+    if (!btn) return;
+
+    btn.addEventListener('click', async () => {
+        const modal = $('deleteModal');
+        const id = parseInt(modal.dataset.id);
+        if (!id) return;
+
+        btn.disabled = true;
+        try {
+            const r = await fetch(`${API}/${id}`, { method: 'DELETE' });
+            if (!r.ok && r.status !== 204) throw new Error('Delete error');
+
+            donors = donors.filter(x => x.id !== id);
+            render();
+            toast('Deleted');
+            closeDeleteModal();
+        } catch (e) {
+            toast(e.message, true);
+        } finally {
+            btn.disabled = false;
+        }
+    });
+});
+
+// ─────────────────────────────────────────────
+// save
+// ─────────────────────────────────────────────
+$('saveBtn').addEventListener('click', async () => {
+    const id = $('fId').value;
+
+    const name     = val('fName');
+    const provider = val('fProvider');
+    const endpoint = val('fEndpoint');
+    const method   = sel('fMethod') || 'GET';
+
+    if (!name)     { toast('Name is required', true); return; }
+    if (!provider) { toast('Provider is required', true); return; }
+    if (!endpoint) { toast('Endpoint is required', true); return; }
+
+    // body для POST
+    let body = '';
+    if (method === 'POST') {
+        body = val('fBody');
+        if (body) {
+            try { JSON.parse(body); }
+            catch { toast('Request body must be valid JSON', true); return; }
+        }
+    }
+
+    // auth
+    const auth   = sel('fAuth') || 'in';
+    const authMethod = sel('fAuthMethod') || 'api_key';
+
+    const authData = { auth_type: auth };
+    if (auth === 'out') {
+        authData.auth_method = authMethod;
+        if (authMethod === 'api_key') {
+            const key = val('fApiKey');
+            if (!key) { toast('API Key is required', true); return; }
+            authData.api_key        = key;
+            authData.api_key_header = val('fApiKeyHeader') || 'X-Api-Key';
+        } else {
+            const login    = val('fLogin');
+            const password = val('fPassword');
+            if (!login || !password) {
+                toast('Login and password are required', true);
+                return;
+            }
+            authData.login    = login;
+            authData.password = password;
+        }
+    }
+
+    const data = {
+        name,
+        provider,
+        method,
+        endpoint,
+        ...(method === 'POST' && body ? { body } : {}),
+        source_type:  sel('fType') || 'api',
+        format:       sel('fFormat') || 'json',
+        destinations: multi('fDest'),
+        status:       sel('fStatus') || 'active',
+        description:  val('fDescription'),
+        contact:      val('fContact'),
+        owner:        val('fOwner'),
+        ...authData
+    };
+
+    try {
+        const url        = id ? `${API}/${id}` : API;
+        const httpMethod = id ? 'PUT' : 'POST';
+
+        const r = await fetch(url, {
+            method: httpMethod,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!r.ok) {
+            const err = await r.json().catch(() => ({}));
+            throw new Error(err.error || 'Save error');
+        }
+
+        const saved = await r.json();
+
+        if (id) {
+            const i = donors.findIndex(x => x.id === parseInt(id));
+            if (i !== -1) donors[i] = saved;
+        } else {
+            donors.push(saved);
+        }
+
+        render();
+        closeModal();
+        toast(id ? 'Updated' : 'Added');
+    } catch (e) {
+        toast(e.message, true);
+    }
+});
+
+// ─────────────────────────────────────────────
+// listeners
+// ─────────────────────────────────────────────
+$('addBtn')?.addEventListener('click', openAdd);
+$('modal')?.addEventListener('click', (e) => {
+    if (e.target === $('modal')) closeModal();
+});
+$('fAuth')?.addEventListener('change', updateAuthVisibility);
+$('fAuthMethod')?.addEventListener('change', updateAuthVisibility);
+$('fMethod')?.addEventListener('change', updateBodyVisibility);
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $('modal')?.classList.contains('active')) {
+        closeModal();
+    }
+});
+
+// init
+loadMeta().then(load);
+
+// ─────────────────────────────────────────────
+// init
+// ─────────────────────────────────────────────
+$('addBtn').addEventListener('click', openAdd);
+$('modal').addEventListener('click', (e) => { if (e.target === $('modal')) closeModal(); });
+
+// закрытие по Esc
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $('modal').classList.contains('active')) closeModal();
+});
+
+loadMeta().then(load);
+    loadMenu();
+  </script>
+</body>
+</html>

@@ -9,7 +9,7 @@ export function showResultsModal(results, onClose) {
     const issues = results.issues || results.results || [];
     const stats = results.statistics || results.summary || {};
     const metadata = results.metadata || {};
-    
+
     const normalizeSeverity = (sev) => {
         if (!sev) return 'info';
         const lower = sev.toLowerCase();
@@ -18,39 +18,15 @@ export function showResultsModal(results, onClose) {
         }
         return 'info';
     };
-    
+
     const criticalHigh = issues.filter(r => {
         const sev = normalizeSeverity(r.severity);
         return sev === 'critical' || sev === 'high';
     });
-    
+
     const escapeHtml = (str) => {
         if (!str) return '';
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-    };
-    
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.7);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        backdrop-filter: blur(5px);
-    `;
-
-    const severityColors = {
-        critical: '#dc3545',
-        high: '#fd7e14',
-        medium: '#ffc107',
-        low: '#28a745',
-        info: '#6c757d'
+        return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
     };
 
     const severityNames = {
@@ -66,40 +42,32 @@ export function showResultsModal(results, onClose) {
             const maxLineNumber = Math.max(...item.codeBlock.lines.map(l => l.number));
             const lineNumberWidth = String(maxLineNumber).length;
             const hasVulnerableLine = item.codeBlock.lines.some(line => line.isVulnerable === true);
-            
-            return `
-                <div class="code-block" style="background: #0d1117; color: #e6edf3; padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; margin-bottom: 14px; overflow-x: auto; border: 1px solid #30363d; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-                    ${item.codeBlock.lines.map(line => `
-                        <div style="display: flex; align-items: center; min-height: 22px; ${line.isVulnerable ? 'background: rgba(239, 68, 68, 0.15); border-left: 3px solid #ef4444; padding-left: 4px;' : 'padding-left: 7px;'}">
-                            <span style="color: #484f58; display: inline-block; width: ${lineNumberWidth * 8 + 8}px; text-align: right; padding-right: 12px; user-select: none; font-size: 12px; flex-shrink: 0;">${String(line.number).padStart(lineNumberWidth, ' ')}</span>
-                            <span style="${line.isVulnerable ? 'color: #f85149; font-weight: 500;' : 'color: #e6edf3;'} white-space: pre;">${escapeHtml(line.code)}</span>
-                        </div>
-                    `).join('')}
-                    ${hasVulnerableLine ? `
-                        <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #30363d; display: flex; gap: 12px; font-size: 11px; color: #8b949e;">
-                            <span>Vulnerable line</span>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
+
+            const linesHtml = item.codeBlock.lines.map(line => {
+                const num = String(line.number).padStart(lineNumberWidth, ' ');
+                const cls = line.isVulnerable ? 'code-line vulnerable-line' : 'code-line';
+                const textCls = line.isVulnerable ? 'code-line-text is-vulnerable' : 'code-line-text';
+                return `<div class="${cls}">` +
+                       `<span class="code-line-number">${num}</span>` +
+                       `<span class="${textCls}">${escapeHtml(line.code)}</span>` +
+                       `</div>`;
+            }).join('');
+
+            return `<div class="code-block">` +
+                   `<div class="code-header"><i class="fas fa-code"></i><span>Vulnerable code</span></div>` +
+                   `<pre>${linesHtml}</pre>` +
+                   `${hasVulnerableLine ? '<div class="code-legend"><span class="legend-dot"></span> Vulnerable line</div>' : ''}` +
+                   `</div>`;
         } else if (item.snippet) {
-            return `
-                <div class="code-block" style="background: #0d1117; color: #e6edf3; padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; margin-bottom: 14px; overflow-x: auto; border: 1px solid #30363d; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-                    <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word; color: #f85149;">${escapeHtml(item.snippet)}</pre>
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #30363d; font-size: 11px; color: #8b949e;">
-                        Suspicious fragment detected
-                    </div>
-                </div>
-            `;
+            return `<div class="code-block">` +
+                   `<div class="code-header"><i class="fas fa-code"></i><span>Suspicious fragment</span></div>` +
+                   `<pre><code class="code-line-text is-vulnerable">${escapeHtml(item.snippet)}</code></pre>` +
+                   `</div>`;
         } else if (item.code) {
-            return `
-                <div class="code-block" style="background: #0d1117; color: #e6edf3; padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; margin-bottom: 14px; overflow-x: auto; border: 1px solid #30363d; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
-                    <pre style="margin: 0; white-space: pre-wrap; word-wrap: break-word; color: #e6edf3;">${escapeHtml(item.code)}</pre>
-                    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #30363d; font-size: 11px; color: #8b949e;">
-                        Suspicious code
-                    </div>
-                </div>
-            `;
+            return `<div class="code-block">` +
+                   `<div class="code-header"><i class="fas fa-code"></i><span>Suspicious code</span></div>` +
+                   `<pre><code class="code-line-text">${escapeHtml(item.code)}</code></pre>` +
+                   `</div>`;
         }
         return '';
     };
@@ -111,93 +79,304 @@ export function showResultsModal(results, onClose) {
     const lowCount = stats.low || 0;
     const infoCount = stats.info || 0;
 
-    const criticalHighHtml = criticalHigh.length > 0 ? criticalHigh.map((item) => {
-        const shortPath = getShortPath(item.file);
-        const severity = normalizeSeverity(item.severity);
-        
-        return `
-        <div style="background: #f8f9fa; padding: 16px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #e9ecef;">
-            <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 10px;">
-                <div>
-                    <span class="method-badge" style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; color: white; background: ${severityColors[severity] || '#6c757d'};">
-                        ${severityNames[severity] || severity}
-                    </span>
-                    <code style="background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-size: 12px;">
-                        ${shortPath}:${item.line || '?'}
-                    </code>
+    const criticalHighHtml = criticalHigh.length > 0
+        ? criticalHigh.map((item) => {
+            const shortPath = getShortPath(item.file);
+            const severity = normalizeSeverity(item.severity);
+            const severityName = severityNames[severity] || severity;
+
+            return `
+                <div class="vuln-item" data-severity="${severity}">
+                    <div class="vuln-header">
+                        <div class="vuln-header-left">
+                            <span class="severity-badge badge-${severity}">${severityName}</span>
+                            <code class="file-path">${escapeHtml(shortPath)}:${item.line || '?'}</code>
+                        </div>
+                        <span class="rule-id">${escapeHtml(item.ruleId || 'unknown')}</span>
+                    </div>
+                    <p class="vuln-message">${escapeHtml(item.message)}</p>
+                    ${renderCodeBlock(item)}
+                    ${item.recommendation ? `
+                        <div class="recommendation">
+                            <i class="fas fa-lightbulb"></i>
+                            <div>
+                                <div class="recommendation-title">Recommendation</div>
+                                <div class="recommendation-text">${escapeHtml(item.recommendation)}</div>
+                            </div>
+                        </div>
+                    ` : ''}
                 </div>
-                <span style="color: #6c757d; font-size: 11px;">${item.ruleId || 'unknown'}</span>
-            </div>
-            <p style="margin: 0 0 12px 0; font-weight: 500; color: #212529;">${escapeHtml(item.message)}</p>
-            ${renderCodeBlock(item)}
-            ${item.recommendation ? `
-                <div style="background: rgba(40, 167, 69, 0.1); padding: 10px; border-radius: 6px; font-size: 12px; color: #28a745;">
-                    <strong>Recommendation:</strong> ${escapeHtml(item.recommendation)}
-                </div>
-            ` : ''}
-        </div>
-    `}).join('') : '<div style="text-align: center; padding: 40px; color: #28a745;">No critical or high vulnerabilities found</div>';
+            `;
+        }).join('')
+        : `<div class="empty-state">
+               <i class="fas fa-check-circle"></i>
+               <h3>No critical or high vulnerabilities found</h3>
+               <p>Analysis completed successfully.</p>
+           </div>`;
 
     const metadataHtml = metadata.archiveName ? `
-        <div style="display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: #495057; background: #e9ecef; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px;">
-            <span><strong>Archive:</strong> ${escapeHtml(metadata.archiveName)}</span>
-            ${metadata.fileCount ? `<span><strong>Files:</strong> ${metadata.fileCount}</span>` : ''}
-            ${metadata.scanTime ? `<span><strong>Scan:</strong> ${new Date(metadata.scanTime).toLocaleString()}</span>` : ''}
+        <div class="file-info">
+            <span><i class="fas fa-archive"></i> <strong>Archive:</strong> ${escapeHtml(metadata.archiveName)}</span>
+            ${metadata.fileCount ? `<span><i class="fas fa-file-code"></i> <strong>Files:</strong> ${metadata.fileCount}</span>` : ''}
+            ${metadata.scanTime ? `<span><i class="fas fa-calendar"></i> <strong>Scan:</strong> ${new Date(metadata.scanTime).toLocaleString()}</span>` : ''}
         </div>
     ` : '';
 
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+
     overlay.innerHTML = `
-        <div class="modal-container" style="background: white; border-radius: 16px; width: 90%; max-width: 1000px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); animation: modalFadeIn 0.3s ease;">
-            <div class="modal-header" style="padding: 20px 24px; background: #0a0a12; display: flex; justify-content: space-between; align-items: center; color: white; border-bottom: 2px solid #00ffc8;">
-                <h3 style="margin: 0; font-size: 18px; font-weight: 600;">SAST Analysis Results</h3>
-                <span class="modal-close" style="cursor: pointer; font-size: 24px; color: white; line-height: 1; opacity: 0.7; transition: opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'">&times;</span>
+        <style>
+            .modal-overlay{
+                position:fixed;inset:0;background:rgba(15,23,42,0.65);
+                display:flex;justify-content:center;align-items:center;
+                z-index:10000;padding:16px;
+                font-family:'Fira Sans',sans-serif;
+                backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+                animation:modalOverlayFadeIn .2s ease;
+            }
+            @keyframes modalOverlayFadeIn{from{opacity:0}to{opacity:1}}
+
+            .modal-container{
+                background:#fff;border-radius:12px;border:1px solid #e3e8f0;
+                width:96vw;max-width:1600px;max-height:92vh;
+                display:flex;flex-direction:column;overflow:hidden;
+                box-shadow:0 24px 60px rgba(15,23,42,0.35);
+                animation:modalFadeIn .25s ease;
+            }
+            @keyframes modalFadeIn{
+                from{opacity:0;transform:scale(.97) translateY(-12px)}
+                to{opacity:1;transform:scale(1) translateY(0)}
+            }
+
+            .modal-header{
+                padding:18px 24px;background:#fff;color:#0f172a;
+                display:flex;justify-content:space-between;align-items:center;
+                border-bottom:1px solid #e3e8f0;flex-shrink:0;
+            }
+            .modal-header h3{
+                margin:0;font-size:18px;font-weight:700;letter-spacing:-0.01em;
+                display:flex;align-items:center;gap:10px;color:#0f172a;
+            }
+            .modal-header h3 i{color:#0891b2;font-size:18px;}
+            .modal-header h3 .sub{color:#64748b;font-weight:400;font-size:13px;margin-left:8px;}
+            .modal-close{
+                background:none;border:none;color:#64748b;font-size:18px;cursor:pointer;
+                width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+                border-radius:6px;transition:all .15s;
+            }
+            .modal-close:hover{background:#f1f5f9;color:#0f172a;}
+
+            .modal-body{
+                padding:24px 28px;overflow-y:auto;flex:1;background:#f4f6fb;
+            }
+
+            .file-info{
+                display:flex;gap:22px;flex-wrap:wrap;font-size:12px;color:#64748b;
+                background:#fff;padding:12px 16px;border-radius:10px;
+                border:1px solid #e3e8f0;margin-bottom:20px;
+            }
+            .file-info span{display:flex;align-items:center;gap:6px;}
+            .file-info i{color:#0891b2;font-size:12px;}
+            .file-info strong{color:#0f172a;font-weight:600;}
+
+            .stats-grid{
+                display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:24px;
+            }
+            .stat-card{
+                background:#fff;padding:16px;border-radius:10px;
+                border:1px solid #e3e8f0;text-align:center;
+                transition:border-color .15s;
+            }
+            .stat-card:hover{border-color:#0891b2;}
+            .stat-number{
+                font-size:28px;font-weight:700;font-family:'Fira Code',monospace;
+                color:#0f172a;line-height:1;
+            }
+            .stat-number.c-total{color:#0891b2;}
+            .stat-number.c-critical{color:#dc3545;}
+            .stat-number.c-high{color:#fd7e14;}
+            .stat-number.c-medium{color:#d97706;}
+            .stat-number.c-low{color:#16a34a;}
+            .stat-number.c-info{color:#64748b;}
+            .stat-label{font-size:12px;color:#64748b;margin-top:8px;}
+
+            .section-title{
+                margin:8px 0 16px 0;color:#0f172a;font-size:15px;font-weight:700;
+                display:flex;align-items:center;gap:10px;
+            }
+            .section-title .count-pill{
+                background:#f1f5f9;color:#64748b;padding:2px 10px;border-radius:4px;
+                font-size:12px;font-family:'Fira Code',monospace;font-weight:600;
+            }
+
+            .vuln-item{
+                background:#fff;padding:18px 20px;margin-bottom:12px;border-radius:10px;
+                border:1px solid #e3e8f0;transition:border-color .15s;
+            }
+            .vuln-item:hover{border-color:#cbd5e1;}
+
+            .vuln-header{
+                display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+                margin-bottom:12px;align-items:center;
+            }
+            .vuln-header-left{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+
+            .severity-badge{
+                display:inline-block;padding:3px 10px;border-radius:4px;
+                font-size:10px;font-weight:700;font-family:'Fira Code',monospace;
+                text-transform:uppercase;letter-spacing:0.05em;
+            }
+            .badge-critical{background:#fee2e2;color:#b91c1c;}
+            .badge-high{background:#ffedd5;color:#c2410c;}
+            .badge-medium{background:#fef3c7;color:#a16207;}
+            .badge-low{background:#dcfce7;color:#15803d;}
+            .badge-info{background:#e0f2fe;color:#0369a1;}
+
+            .file-path{
+                background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:4px;
+                font-size:12px;font-family:'Fira Code',monospace;
+            }
+            .rule-id{
+                color:#64748b;font-size:11px;font-family:'Fira Code',monospace;
+                padding:3px 10px;background:#f8fafc;border-radius:4px;
+                border:1px solid #e3e8f0;
+            }
+            .vuln-message{
+                margin:0 0 14px 0;font-weight:500;color:#0f172a;
+                font-size:14px;line-height:1.5;
+            }
+
+            /* CODE BLOCK */
+            .code-block{
+                background:#0f172a;border-radius:8px;margin:14px 0;
+                overflow:hidden;border:1px solid #1e293b;
+            }
+            .code-header{
+                background:#1e293b;padding:9px 14px;font-size:11px;font-weight:700;
+                color:#94a3b8;border-bottom:1px solid #334155;
+                display:flex;align-items:center;gap:8px;
+                font-family:'Fira Sans',sans-serif;
+                text-transform:uppercase;letter-spacing:0.05em;
+            }
+            .code-header i{color:#0891b2;}
+            .code-block pre{
+                margin:0;padding:14px 0;overflow-x:auto;
+                font-family:'Fira Code',monospace;font-size:12px;line-height:1.5;
+            }
+            .code-line{
+                display:flex;align-items:flex-start;
+                min-height:18px;line-height:18px;white-space:pre;
+                font-family:'Fira Code',monospace;
+            }
+            .code-line-number{
+                color:#484f58;width:52px;flex:0 0 52px;text-align:right;
+                padding-right:12px;user-select:none;font-size:12px;
+            }
+            .code-line-text{
+                color:#e2e8f0;white-space:pre;padding-right:14px;
+            }
+            .code-line-text.is-vulnerable{color:#f85149;font-weight:500;}
+            .code-line.vulnerable-line{
+                background:rgba(239,68,68,0.15);
+            }
+            .code-legend{
+                display:flex;align-items:center;gap:8px;
+                padding:8px 14px;font-size:11px;color:#8b949e;
+                border-top:1px solid #1e293b;background:#0b1220;
+            }
+            .legend-dot{
+                display:inline-block;width:8px;height:8px;border-radius:50%;
+                background:#ef4444;
+            }
+
+            .recommendation{
+                background:#fffbeb;border:1px solid #fde68a;border-radius:8px;
+                padding:14px;margin-top:14px;display:flex;gap:12px;
+            }
+            .recommendation i{font-size:18px;color:#b45309;flex-shrink:0;}
+            .recommendation-title{
+                font-size:12px;font-weight:700;margin-bottom:4px;color:#0f172a;
+                text-transform:uppercase;letter-spacing:0.05em;
+            }
+            .recommendation-text{
+                font-size:12px;color:#475569;line-height:1.5;
+            }
+
+            .empty-state{
+                text-align:center;padding:60px 20px;background:#fff;
+                border-radius:10px;border:1px solid #e3e8f0;
+            }
+            .empty-state i{font-size:42px;color:#cbd5e1;margin-bottom:14px;display:block;}
+            .empty-state h3{font-size:16px;margin-bottom:6px;color:#0f172a;font-weight:700;}
+            .empty-state p{font-size:13px;color:#64748b;}
+
+            .modal-footer{
+                padding:14px 24px;background:#f8fafc;border-top:1px solid #e3e8f0;
+                display:flex;justify-content:flex-end;gap:10px;flex-shrink:0;
+            }
+            .btn{
+                padding:9px 18px;border-radius:6px;font-size:13px;font-weight:600;
+                cursor:pointer;border:none;font-family:'Fira Sans',sans-serif;
+                transition:all .15s;display:inline-flex;align-items:center;gap:8px;
+                color:#fff;
+            }
+            .btn i{font-size:13px;}
+            .btn-html{background:#0891b2;}
+            .btn-html:hover{background:#0e7490;}
+            .btn-download{background:#10b981;}
+            .btn-download:hover{background:#0e9f6e;}
+
+            @media (max-width:1100px){
+                .stats-grid{grid-template-columns:repeat(3,1fr);}
+            }
+            @media (max-width:768px){
+                .modal-body{padding:20px;}
+                .stats-grid{grid-template-columns:repeat(2,1fr);}
+                .vuln-header{flex-direction:column;align-items:flex-start;}
+            }
+        </style>
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-shield-halved"></i>
+                    SAST Analysis Results
+                    <span class="sub">${totalCount} issues · ${criticalHigh.length} critical/high</span>
+                </h3>
+                <button class="modal-close" aria-label="Close"><i class="fas fa-xmark"></i></button>
             </div>
-            <div class="modal-body" style="padding: 24px; overflow-y: auto; flex: 1; background: #f8f9fa;">
+            <div class="modal-body">
                 ${metadataHtml}
-                
-                <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 24px;">
-                    <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
-                        <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #0a0a12;">${totalCount}</div>
-                        <div class="stat-label" style="color: #6c757d; font-size: 12px;">Total</div>
-                    </div>
-                    <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
-                        <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #dc3545;">${criticalCount}</div>
-                        <div class="stat-label" style="color: #6c757d; font-size: 12px;">Critical</div>
-                    </div>
-                    <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
-                        <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #fd7e14;">${highCount}</div>
-                        <div class="stat-label" style="color: #6c757d; font-size: 12px;">High</div>
-                    </div>
-                    <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
-                        <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #ffc107;">${mediumCount}</div>
-                        <div class="stat-label" style="color: #6c757d; font-size: 12px;">Medium</div>
-                    </div>
-                    <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
-                        <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #28a745;">${lowCount}</div>
-                        <div class="stat-label" style="color: #6c757d; font-size: 12px;">Low</div>
-                    </div>
-                    <div class="stat-card" style="background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb;">
-                        <div class="stat-number" style="font-size: 28px; font-weight: bold; color: #6c757d;">${infoCount}</div>
-                        <div class="stat-label" style="color: #6c757d; font-size: 12px;">Info</div>
-                    </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card"><div class="stat-number c-total">${totalCount}</div><div class="stat-label">Total</div></div>
+                    <div class="stat-card"><div class="stat-number c-critical">${criticalCount}</div><div class="stat-label">Critical</div></div>
+                    <div class="stat-card"><div class="stat-number c-high">${highCount}</div><div class="stat-label">High</div></div>
+                    <div class="stat-card"><div class="stat-number c-medium">${mediumCount}</div><div class="stat-label">Medium</div></div>
+                    <div class="stat-card"><div class="stat-number c-low">${lowCount}</div><div class="stat-label">Low</div></div>
+                    <div class="stat-card"><div class="stat-number c-info">${infoCount}</div><div class="stat-label">Info</div></div>
                 </div>
-                
-                <h4 style="margin: 20px 0 16px 0; color: #212529; font-size: 16px;">Critical & High Vulnerabilities (${criticalHigh.length})</h4>
+
+                <h4 class="section-title">
+                    <i class="fas fa-triangle-exclamation" style="color:#dc3545;"></i>
+                    Critical &amp; High Vulnerabilities
+                    <span class="count-pill">${criticalHigh.length}</span>
+                </h4>
                 <div id="vulnerabilities-list">${criticalHighHtml}</div>
             </div>
-            <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 12px; background: white;">
-                <button id="downloadHtmlBtn" class="btn-html" style="background: #6f42c1; color: white; border: none; font-family: 'Fira Sans', sans-serif; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s;" onmouseover="this.style.background='#5a32a3'" onmouseout="this.style.background='#6f42c1'">
-                    <i class="fab fa-html5"></i> Download HTML
+            <div class="modal-footer">
+                <button id="downloadHtmlBtn" class="btn btn-html">
+                    <i class="fas fa-file-arrow-down"></i> Download HTML
                 </button>
-                <button id="downloadReportBtn" class="btn-download" style="background: #10b981; color: white; border: none; font-family: 'Fira Sans', sans-serif; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 500; transition: background 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
-                    <i class="fas fa-download"></i> Download JSON
+                <button id="downloadReportBtn" class="btn btn-download">
+                    <i class="fas fa-file-code"></i> Download JSON
                 </button>
             </div>
         </div>
     `;
 
     document.body.appendChild(overlay);
-    
+
     const closePopup = () => {
         overlay.style.opacity = '0';
         overlay.style.transition = 'opacity 0.2s';
@@ -319,7 +498,7 @@ function generateFullHTMLReport(results) {
             return `
                 <div class="code-block" style="background: #0d1117; color: #e6edf3; padding: 16px; border-radius: 8px; font-family: 'JetBrains Mono', 'Courier New', monospace; font-size: 13px; margin-bottom: 14px; overflow-x: auto; border: 1px solid #30363d; box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);">
                     ${item.codeBlock.lines.map(line => `
-                        <div style="display: flex; align-items: center; min-height: 22px; ${line.isVulnerable ? 'background: rgba(239, 68, 68, 0.15); border-left: 3px solid #ef4444; padding-left: 4px;' : 'padding-left: 7px;'}">
+                        <div style="display: flex; align-items: center; min-height: 22px; ${line.isVulnerable ? 'background: rgba(239, 68, 68, 0.15); padding-left: 4px;' : 'padding-left: 7px;'}">
                             <span style="color: #484f58; display: inline-block; width: ${lineNumberWidth * 8 + 8}px; text-align: right; padding-right: 12px; user-select: none; font-size: 12px; flex-shrink: 0;">${String(line.number).padStart(lineNumberWidth, ' ')}</span>
                             <span style="${line.isVulnerable ? 'color: #f85149; font-weight: 500;' : 'color: #e6edf3;'} white-space: pre;">${escapeHtml(line.code)}</span>
                         </div>
@@ -622,7 +801,7 @@ function generatePDFHTML(results) {
                 .stat-card { background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e5e7eb; flex: 1; min-width: 80px; }
                 .stat-number { font-size: 28px; font-weight: bold; font-family: 'Fira Code', monospace; }
                 .stat-label { color: #6c757d; font-size: 11px; margin-top: 5px; }
-                .section-title { margin: 30px 0 20px 0; color: #1f2937; font-size: 18px; border-left: 4px solid #dc3545; padding-left: 12px; }
+                .section-title { margin: 30px 0 20px 0; color: #1f2937; font-size: 18px; padding-left: 12px; }
                 .footer { margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #6c757d; font-size: 10px; }
                 .no-vulns { text-align: center; padding: 40px; color: #28a745; font-size: 16px; }
             </style>

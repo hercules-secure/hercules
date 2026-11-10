@@ -1,0 +1,66 @@
+{
+  "success": true,
+  "taskId": "mv54mkw3771bb963",
+  "status": "completed",
+  "source": "tatlin-notification.zip",
+  "sca": {
+    "dependencies": [],
+    "vulnerabilities": [],
+    "licenseIssues": [],
+    "reachability": {
+      "total": 0,
+      "reachable": 0,
+      "notReachable": 0,
+      "unknown": 0,
+      "details": []
+    },
+    "statistics": {
+      "byEcosystem": {
+        "python": {
+          "count": 0
+        },
+        "php": {
+          "count": 0
+        },
+        "maven": {
+          "count": 0
+        },
+        "gradle": {
+          "count": 0
+        },
+        "rust": {
+          "count": 0
+        },
+        "ruby": {
+          "count": 0
+        }
+      },
+      "totalDependencies": 0,
+      "totalVulnerabilities": 0,
+      "totalCriticalVulnerabilities": 0,
+      "totalHighVulnerabilities": 0,
+      "totalMediumVulnerabilities": 0,
+      "totalLowVulnerabilities": 0,
+      "licenseSummary": {
+        "total": 0,
+        "permissive": 0,
+        "copyleft": 0,
+        "restricted": 0,
+        "unknown": 0,
+        "highRisk": 0
+      }
+    }
+  },
+  "sast": {
+    "issues": [],
+    "statistics": {
+      "total": 0,
+      "critical": 0,
+      "high": 0,
+      "medium": 0,
+      "low": 0,
+      "info": 0
+    }
+  },
+  "analyzedAt": "2026-10-12T10:46:05.409Z"
+}

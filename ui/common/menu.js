@@ -8,7 +8,6 @@ async function loadMenu() {
 
     
     try {
-        // Эндпоинт возвращает ТОЛЬКО установленные расширения
         const response = await fetch('/addons/api/extensions/installed');
 
        
@@ -21,7 +20,7 @@ async function loadMenu() {
             cacheExtensions(data.extensions, data.licence);
 
             const sortedExtensions = [...data.extensions].sort((a, b) => {
-                const orderA = a.order ?? 999;  // если order нет, ставим в конец
+                const orderA = a.order ?? 999; 
                 const orderB = b.order ?? 999;
                 return orderA - orderB;
             });
