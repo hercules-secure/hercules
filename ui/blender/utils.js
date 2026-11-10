@@ -83,14 +83,14 @@ export function generateDependenciesHTML(report) {
         low: 0,
         total: 0
     };
-    
+
     if (report.dependencies && Array.isArray(report.dependencies) && report.dependencies.length > 0) {
         dependencies = report.dependencies;
-        
+
         for (const dep of dependencies) {
             const cveCount = typeof dep.cveCount === 'number' ? dep.cveCount : 0;
             vulnerabilityStats.total += cveCount;
-            
+
             const cveSummary = dep.cveSummary || {};
             vulnerabilityStats.critical += typeof cveSummary.critical === 'number' ? cveSummary.critical : 0;
             vulnerabilityStats.high += typeof cveSummary.high === 'number' ? cveSummary.high : 0;
@@ -99,7 +99,7 @@ export function generateDependenciesHTML(report) {
         }
     } else if (report.sca?.dependencies && report.sca.dependencies.length > 0) {
         dependencies = report.sca.dependencies;
-        
+
         for (const dep of dependencies) {
             if (dep.cveCount) vulnerabilityStats.total += dep.cveCount;
             if (dep.cveSummary) {
@@ -110,11 +110,11 @@ export function generateDependenciesHTML(report) {
             }
         }
     }
-    
+
     if (!dependencies?.length) {
         return '<div class="info-box">No dependencies found</div>';
     }
-    
+
     let allVulnerabilities = [];
     for (const dep of dependencies) {
         if (dep.vulnerabilities && dep.vulnerabilities.vulnerabilities) {
@@ -129,36 +129,36 @@ export function generateDependenciesHTML(report) {
             }
         }
     }
-    
+
     const grouped = dependencies.reduce((acc, dep) => {
         const manager = dep.manager || 'unknown';
         if (!acc[manager]) acc[manager] = [];
         acc[manager].push(dep);
         return acc;
     }, {});
-    
+
     let html = `
         <div class="vuln-stats" style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-            <div class="summary-card critical" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+            <div class="summary-card critical" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #dc2626;">${vulnerabilityStats.critical}</div>
-                <div class="card-label" style="font-size: 12px; color: #64748b;">Critical</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">Critical</div>
             </div>
-            <div class="summary-card high" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+            <div class="summary-card high" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #f97316;">${vulnerabilityStats.high}</div>
-                <div class="card-label" style="font-size: 12px; color: #64748b;">High</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">High</div>
             </div>
-            <div class="summary-card medium" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+            <div class="summary-card medium" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #eab308;">${vulnerabilityStats.medium}</div>
-                <div class="card-label" style="font-size: 12px; color: #64748b;">Medium</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">Medium</div>
             </div>
-            <div class="summary-card low" style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+            <div class="summary-card low" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #22c55e;">${vulnerabilityStats.low}</div>
-                <div class="card-label" style="font-size: 12px; color: #64748b;">Low</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">Low</div>
             </div>
         </div>
-        
+
         <div class="filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-            <input type="text" id="vulnSearch" placeholder="Search by component or CVE..." class="search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px;">
+            <input type="text" id="vulnSearch" placeholder="Search by component or CVE..." class="search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); border-radius: 5px; outline: none;">
             <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                 <button class="filter-btn active" data-filter="all">All (${allVulnerabilities.length})</button>
                 <button class="filter-btn" data-filter="critical">Critical (${allVulnerabilities.filter(v => v.severity === 'critical').length})</button>
@@ -169,21 +169,21 @@ export function generateDependenciesHTML(report) {
             </div>
         </div>
     `;
-    
-    html += `<h4 style="margin-bottom: 16px;">Dependencies found: ${dependencies.length}</h4>`;
-    
+
+    html += `<h4 style="margin-bottom: 16px; color: var(--text);">Dependencies found: ${dependencies.length}</h4>`;
+
     for (const [manager, items] of Object.entries(grouped)) {
         html += `
             <div class="dep-group" style="margin-bottom: 24px;">
-                <h5 style="margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid #3b82f6; display: inline-flex; align-items: center; gap: 8px;">
-                    <i class="fas fa-box"></i>
+                <h5 style="margin-bottom: 12px; padding-bottom: 6px; border-bottom: 2px solid var(--accent); display: inline-flex; align-items: center; gap: 8px; color: var(--text);">
+                    <i class="fas fa-box" style="color: var(--accent);"></i>
                     ${escapeHtml(manager).toUpperCase()}
-                    <span style="font-size: 12px; font-weight: normal; color: #64748b;">(${items.length})</span>
+                    <span style="font-size: 12px; font-weight: normal; color: var(--text-dim);">(${items.length})</span>
                 </h5>
                 <div style="overflow-x: auto;">
                     <table class="dep-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                         <thead>
-                            <tr style="background: #f1f5f9;">
+                            <tr style="background: var(--bg-input);">
                                 <th style="width: 30px; padding: 10px;"></th>
                                 <th style="padding: 10px; text-align: left;">Package</th>
                                 <th style="padding: 10px; text-align: left;">Version</th>
@@ -197,15 +197,15 @@ export function generateDependenciesHTML(report) {
                             ${items.map((dep, idx) => {
                                 const reachableText = dep.isReachable === true ? 'Yes' : (dep.isReachable === false ? 'No' : 'Unknown');
                                 const reachableClass = dep.isReachable === true ? 'reachable-yes' : (dep.isReachable === false ? 'reachable-no' : 'reachable-unknown');
-                                
+
                                 return `
-                                <tr class="dep-row" data-idx="${idx}" data-manager="${manager}" data-severity="${dep.cveSummary?.critical > 0 ? 'critical' : (dep.cveSummary?.high > 0 ? 'high' : '')}" data-reachable="${dep.isReachable}" data-component="${dep.name}" style="border-bottom: 1px solid #e2e8f0; cursor: pointer;">
+                                <tr class="dep-row" data-idx="${idx}" data-manager="${manager}" data-severity="${dep.cveSummary?.critical > 0 ? 'critical' : (dep.cveSummary?.high > 0 ? 'high' : '')}" data-reachable="${dep.isReachable}" data-component="${dep.name}" style="border-bottom: 1px solid var(--border); cursor: pointer;">
                                     <td style="padding: 10px; text-align: center;">
                                         <span class="expand-icon" style="transition: transform 0.2s; display: inline-block;">▶</span>
                                     </td>
-                                    <td style="padding: 10px;"><strong>${escapeHtml(dep.name)}</strong>${dep.type === 'development' ? '<span style="font-size: 10px; background: #e2e8f0; padding: 2px 6px; border-radius: 10px; margin-left: 8px;">dev</span>' : ''}</td>
+                                    <td style="padding: 10px;"><strong>${escapeHtml(dep.name)}</strong>${dep.type === 'development' ? '<span style="font-size: 10px; background: var(--bg-input); padding: 2px 6px; border-radius: 10px; margin-left: 8px;">dev</span>' : ''}</td>
                                     <td style="padding: 10px; font-family: monospace;">${escapeHtml(dep.version || 'unknown')}</td>
-                                    <td style="padding: 10px; font-size: 11px; color: #64748b;">${escapeHtml(dep.file || '-')}</td>
+                                    <td style="padding: 10px; font-size: 11px; color: var(--text-dim);">${escapeHtml(dep.file || '-')}</td>
                                     <td style="padding: 10px; text-align: center;">
                                         ${dep.cveCount > 0 ? `
                                             <span class="vuln-count" style="background: #f9731620; color: #f97316; padding: 2px 8px; border-radius: 16px; font-weight: 600; font-size: 12px;">
@@ -222,9 +222,9 @@ export function generateDependenciesHTML(report) {
                                         <span class="${reachableClass}" style="padding: 4px 8px; border-radius: 12px; font-size: 11px;">${reachableText}</span>
                                     </td>
                                 </tr>
-                                <tr class="dep-details-row" data-details-idx="${idx}" data-details-manager="${manager}" style="display: none; background: #f8fafc;">
+                                <tr class="dep-details-row" data-details-idx="${idx}" data-details-manager="${manager}" style="display: none; background: var(--bg-input);">
                                     <td colspan="7" style="padding: 15px 20px;">
-                                        <div style="background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
+                                        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px; border: 1px solid var(--border); color: var(--text);">
                                             <div><strong>Dependency Details</strong></div>
                                             <div style="margin-top: 12px;">
                                                 <strong>License:</strong> ${escapeHtml(dep.license || 'UNKNOWN')}
@@ -252,10 +252,10 @@ export function generateDependenciesHTML(report) {
                                                     <strong>Found CVE (${dep.vulnerabilities.vulnerabilities.length}):</strong>
                                                     <div style="max-height: 300px; overflow-y: auto; margin-top: 8px;">
                                                         ${dep.vulnerabilities.vulnerabilities.map(v => `
-                                                            <div style="padding: 6px 0; border-bottom: 1px solid #e2e8f0;">
-                                                                <a href="https://osv.dev/vulnerability/${v.id}" target="_blank" style="color: #3b82f6;">${escapeHtml(v.id)}</a>
+                                                            <div style="padding: 6px 0; border-bottom: 1px solid var(--border);">
+                                                                <a href="https://osv.dev/vulnerability/${v.id}" target="_blank" style="color: var(--accent);">${escapeHtml(v.id)}</a>
                                                                 <span style="margin-left: 8px; padding: 2px 6px; border-radius: 10px; font-size: 10px; background: ${v.severity === 'critical' ? '#fee2e2' : '#ffedd5'}; color: ${v.severity === 'critical' ? '#dc2626' : '#f97316'};">${v.severity || 'unknown'}</span>
-                                                                <span style="margin-left: 8px; font-size: 11px; color: #64748b;">${escapeHtml((v.summary || '').substring(0, 80))}${(v.summary || '').length > 80 ? '...' : ''}</span>
+                                                                <span style="margin-left: 8px; font-size: 11px; color: var(--text-dim);">${escapeHtml((v.summary || '').substring(0, 80))}${(v.summary || '').length > 80 ? '...' : ''}</span>
                                                             </div>
                                                         `).join('')}
                                                     </div>
@@ -272,7 +272,7 @@ export function generateDependenciesHTML(report) {
             </div>
         `;
     }
-    
+
     setTimeout(() => {
         const rows = document.querySelectorAll('.dep-row');
         rows.forEach(row => {
@@ -290,36 +290,34 @@ export function generateDependenciesHTML(report) {
                 }
             };
         });
-        
+
         let activeFilter = 'all';
         const searchInput = document.getElementById('vulnSearch');
         const filterBtns = document.querySelectorAll('.filter-btn');
         const allRows = document.querySelectorAll('.dep-row');
-        
+
         function filterRows() {
             const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
-            
+
             allRows.forEach(row => {
                 const severity = row.dataset.severity;
                 const reachable = row.dataset.reachable === 'true';
                 const component = (row.dataset.component || '').toLowerCase();
-                const vulnCountSpan = row.querySelector('.vuln-count');
-                const hasVuln = vulnCountSpan !== null;
-                
+
                 let matchesFilter = true;
                 if (activeFilter === 'critical') matchesFilter = severity === 'critical';
                 else if (activeFilter === 'high') matchesFilter = severity === 'high';
                 else if (activeFilter === 'medium') matchesFilter = severity === 'medium';
                 else if (activeFilter === 'low') matchesFilter = severity === 'low';
                 else if (activeFilter === 'reachable') matchesFilter = reachable === true;
-                
+
                 let matchesSearch = true;
                 if (searchTerm) {
                     matchesSearch = component.includes(searchTerm);
                 }
-                
+
                 row.style.display = matchesFilter && matchesSearch ? '' : 'none';
-                
+
                 const idx = row.dataset.idx;
                 const manager = row.dataset.manager;
                 const detailsRow = document.querySelector(`.dep-details-row[data-details-idx="${idx}"][data-details-manager="${manager}"]`);
@@ -330,7 +328,7 @@ export function generateDependenciesHTML(report) {
                 }
             });
         }
-        
+
         filterBtns.forEach(btn => {
             btn.onclick = () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
@@ -339,12 +337,12 @@ export function generateDependenciesHTML(report) {
                 filterRows();
             };
         });
-        
+
         if (searchInput) {
             searchInput.oninput = filterRows;
         }
     }, 100);
-    
+
     return html;
 }
 
@@ -360,7 +358,7 @@ function generateCodeHTML(report) {
             </div>
         `;
     }
-    
+
     function getSeverityColorStatic(severity) {
         switch(severity) {
             case 'CRITICAL': return '#dc2626';
@@ -433,7 +431,7 @@ function generateCodeHTML(report) {
 
     function renderSastTableRowsInline(issuesList, uid) {
         if (!issuesList.length) return '';
-        
+
         let html = '';
         for (let i = 0; i < issuesList.length; i++) {
             const issue = issuesList[i];
@@ -446,7 +444,7 @@ function generateCodeHTML(report) {
             const codeBlock = issue.codeBlock;
             const rowId = 'sast-row-' + uid + '-' + i;
             const detailsId = 'sast-details-' + uid + '-' + i;
-            
+
             html += `
                 <tr id="${rowId}" class="sast-row" data-idx="${i}" data-severity="${issue.severity}" data-rule="${escapeHtmlStatic(ruleName)}" data-fullpath="${escapeHtmlStatic(fullPath)}" data-message="${escapeHtmlStatic(message)}">
                     <td style="padding: 10px; text-align: center;">
@@ -467,12 +465,12 @@ function generateCodeHTML(report) {
                         <span class="sast-filepath" title="${escapeHtmlStatic(fullPath)}">${escapeHtmlStatic(file)}</span>
                     </td>
                     <td style="padding: 10px; text-align: center;">
-                        <span style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: monospace;">${line}</span>
+                        <span style="background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: monospace;">${line}</span>
                     </td>
                 </tr>
-                <tr id="${detailsId}" class="sast-details-row" data-details-idx="${i}" style="display: none; background: #f8fafc;">
+                <tr id="${detailsId}" class="sast-details-row" data-details-idx="${i}" style="display: none; background: var(--bg-input);">
                     <td colspan="6" style="padding: 15px 20px;">
-                        <div style="background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0;">
+                        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px; border: 1px solid var(--border); color: var(--text);">
                             <div style="margin-bottom: 12px;">
                                 <strong style="font-size: 14px;">${escapeHtmlStatic(ruleName)}</strong>
                                 <span style="color: ${severityColor}; padding: 2px 8px; border-radius: 12px; font-size: 10px; margin-left: 10px; background: ${severityColor}20;">
@@ -481,11 +479,11 @@ function generateCodeHTML(report) {
                             </div>
                             <div style="margin-bottom: 12px;">
                                 <strong>Description:</strong>
-                                <p style="margin-top: 4px; color: #334155;">${escapeHtmlStatic(issue.message || 'No description')}</p>
+                                <p style="margin-top: 4px; color: var(--text-dim);">${escapeHtmlStatic(issue.message || 'No description')}</p>
                             </div>
                             <div style="margin-bottom: 12px;">
                                 <strong>Location:</strong>
-                                <div style="margin-top: 4px; font-family: monospace; font-size: 12px; background: #f1f5f9; padding: 6px 10px; border-radius: 4px;">
+                                <div style="margin-top: 4px; font-family: monospace; font-size: 12px; background: var(--bg-input); padding: 6px 10px; border-radius: 4px;">
                                     ${escapeHtmlStatic(fullPath)}:${line}
                                 </div>
                             </div>
@@ -506,9 +504,9 @@ function generateCodeHTML(report) {
                                 </div>
                             ` : ''}
                             ${issue.recommendation ? `
-                                <div style="margin-top: 12px; padding: 12px; background: #eff6ff; border-left: 3px solid #3b82f6; border-radius: 4px;">
-                                    <strong><i class="fas fa-lightbulb"></i> Recommendation:</strong>
-                                    <p style="margin-top: 4px; color: #1e40af;">${escapeHtmlStatic(issue.recommendation)}</p>
+                                <div style="margin-top: 12px; padding: 12px; background: rgba(59,130,246,0.08); border-left: 3px solid var(--accent); border-radius: 4px;">
+                                    <strong style="color: var(--accent);"><i class="fas fa-lightbulb"></i> Recommendation:</strong>
+                                    <p style="margin-top: 4px; color: var(--text);">${escapeHtmlStatic(issue.recommendation)}</p>
                                 </div>
                             ` : ''}
                         </div>
@@ -520,37 +518,37 @@ function generateCodeHTML(report) {
     }
 
     const filterModalHtml = `
-            <div id="sast-filter-modal-${uniqueId}" class="sast-modal-overlay">
-                <div class="sast-modal">
-                    <div class="sast-modal-header">
-                        <h3><i class="fas fa-sliders-h"></i>Advanced Filters</h3>
-                        <button class="sast-modal-close">&times;</button>
-                    </div>
-                    <div class="sast-modal-body">
-                        <div class="sast-filter-group">
-                            <label class="sast-checkbox-label">
-                                <input type="checkbox" id="sast-exclude-test-mock-${uniqueId}">
-                                <span>Exclude test/mock files</span>
-                            </label>
-                            <div class="sast-filter-hint">
-                                excludes files containing: test, mock, spec, fixture, __tests__, etc.
-                            </div>
-                        </div>
-                        <div class="sast-filter-group">
-                            <label>Filter by rule:</label>
-                            <select id="sast-rule-filter-${uniqueId}" class="sast-select">
-                                <option value="all">All rules</option>
-                                ${getUniqueRules(normalizedIssues).map(rule => `<option value="${escapeHtmlStatic(rule)}">${escapeHtmlStatic(rule)}</option>`).join('')}
-                            </select>
-                        </div>
-                    </div>
-                    <div class="sast-modal-footer">
-                        <button class="sast-btn sast-btn-secondary sast-filter-reset">Reset</button>
-                        <button class="sast-btn sast-btn-primary sast-filter-apply">Apply</button>
+    <div id="sast-filter-modal-${uniqueId}" class="sast-modal-overlay">
+        <div class="sast-modal">
+            <div class="sast-modal-header">
+                <h3><i class="fas fa-sliders-h"></i>Advanced Filters</h3>
+                <button class="sast-modal-close">&times;</button>
+            </div>
+            <div class="sast-modal-body">
+                <div class="sast-filter-group">
+                    <label class="sast-checkbox-label">
+                        <input type="checkbox" id="sast-exclude-test-mock-${uniqueId}">
+                        <span>Exclude test/mock files</span>
+                    </label>
+                    <div class="sast-filter-hint">
+                        excludes files containing: test, mock, spec, fixture, __tests__, etc.
                     </div>
                 </div>
+                <div class="sast-filter-group">
+                    <label>Filter by rule:</label>
+                    <select id="sast-rule-filter-${uniqueId}" class="sast-select">
+                        <option value="all">All rules</option>
+                        ${getUniqueRules(normalizedIssues).map(rule => `<option value="${escapeHtmlStatic(rule)}">${escapeHtmlStatic(rule)}</option>`).join('')}
+                    </select>
+                </div>
             </div>
-            `;
+            <div class="sast-modal-footer">
+                <button class="sast-btn sast-btn-secondary sast-filter-reset">Reset</button>
+                <button class="sast-btn sast-btn-primary sast-filter-apply">Apply</button>
+            </div>
+        </div>
+    </div>
+    `;
 
     const filterBarHtml = `
 <button id="sast-filter-btn-${uniqueId}" class="sast-filter-btn-ext">
@@ -561,30 +559,30 @@ function generateCodeHTML(report) {
     let html = `
         <div id="${uniqueId}" class="sast-container">
             <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
-                <div style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${statistics.critical}</div>
-                    <div style="font-size: 12px; color: #64748b;">Critical</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">Critical</div>
                 </div>
-                <div style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #f97316;">${statistics.high}</div>
-                    <div style="font-size: 12px; color: #64748b;">High</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">High</div>
                 </div>
-                <div style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #eab308;">${statistics.medium}</div>
-                    <div style="font-size: 12px; color: #64748b;">Medium</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">Medium</div>
                 </div>
-                <div style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #22c55e;">${statistics.low}</div>
-                    <div style="font-size: 12px; color: #64748b;">Low</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">Low</div>
                 </div>
-                <div style="flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0;">
+                <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #3b82f6;">${statistics.info}</div>
-                    <div style="font-size: 12px; color: #64748b;">Info</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">Info</div>
                 </div>
             </div>
-            
+
             <div class="sast-filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-                <input type="text" id="sast-search-${uniqueId}" placeholder="Search by file, rule or description..." class="sast-search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px;">
+                <input type="text" id="sast-search-${uniqueId}" placeholder="Search by file, rule or description..." class="sast-search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); border-radius: 5px; outline: none;">
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="sast-filter-btn active" data-filter="all">All (${statistics.total})</button>
                     <button class="sast-filter-btn" data-filter="critical">Critical (${statistics.critical})</button>
@@ -595,13 +593,13 @@ function generateCodeHTML(report) {
                 </div>
                 ${filterBarHtml}
             </div>
-            
+
             ${filterModalHtml}
-            
+
             <div style="overflow-x: auto;">
                 <table class="sast-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <thead>
-                        <tr style="background: #f1f5f9;">
+                        <tr style="background: var(--bg-input);">
                             <th style="width: 30px; padding: 10px;"></th>
                             <th style="padding: 10px; text-align: left;">Severity</th>
                             <th style="padding: 10px; text-align: left;">Rule</th>
@@ -617,11 +615,11 @@ function generateCodeHTML(report) {
             </div>
         </div>
     `;
-    
+
     setTimeout(() => {
         const container = document.getElementById(uniqueId);
         if (!container) return;
-        
+
         const rows = container.querySelectorAll('.sast-row');
         rows.forEach(row => {
             const expandIcon = row.querySelector('.sast-expand-icon');
@@ -629,7 +627,7 @@ function generateCodeHTML(report) {
             const detailsId = expandIcon.getAttribute('data-details-id');
             const detailsRow = document.getElementById(detailsId);
             if (!detailsRow) return;
-            
+
             row.onclick = (e) => {
                 if (e.target.classList && e.target.classList.contains('sast-expand-icon')) return;
                 if (detailsRow.style.display === 'none' || !detailsRow.style.display) {
@@ -640,7 +638,7 @@ function generateCodeHTML(report) {
                     expandIcon.style.transform = 'rotate(0deg)';
                 }
             };
-            
+
             expandIcon.onclick = (e) => {
                 e.stopPropagation();
                 if (detailsRow.style.display === 'none' || !detailsRow.style.display) {
@@ -652,33 +650,33 @@ function generateCodeHTML(report) {
                 }
             };
         });
-        
+
         const searchInputElem = container.querySelector('.sast-search-box');
         const filterBtnsElem = container.querySelectorAll('.sast-filter-btn');
         let activeFilter = 'all';
-        
+
         function filterRows() {
             const searchTerm = searchInputElem ? searchInputElem.value.toLowerCase() : '';
             const allRows = container.querySelectorAll('.sast-row');
-            
+
             allRows.forEach(row => {
                 const severity = row.getAttribute('data-severity') || '';
                 const filePath = row.querySelector('.sast-filepath')?.getAttribute('title') || '';
                 const message = row.querySelector('.sast-message')?.innerText || '';
-                
+
                 let matchesFilter = true;
                 if (activeFilter !== 'all') {
                     matchesFilter = severity.toLowerCase() === activeFilter;
                 }
-                
+
                 let matchesSearch = true;
                 if (searchTerm) {
-                    matchesSearch = filePath.toLowerCase().includes(searchTerm) || 
+                    matchesSearch = filePath.toLowerCase().includes(searchTerm) ||
                                    message.toLowerCase().includes(searchTerm);
                 }
-                
+
                 row.style.display = matchesFilter && matchesSearch ? '' : 'none';
-                
+
                 if (row.style.display === 'none') {
                     const icon = row.querySelector('.sast-expand-icon');
                     if (icon) {
@@ -688,7 +686,7 @@ function generateCodeHTML(report) {
                 }
             });
         }
-        
+
         filterBtnsElem.forEach(btn => {
             if (btn.classList.contains('sast-filter-btn')) {
                 btn.onclick = () => {
@@ -699,58 +697,58 @@ function generateCodeHTML(report) {
                 };
             }
         });
-        
+
         if (searchInputElem) {
             searchInputElem.oninput = filterRows;
         }
-        
+
         const filterBtn = document.getElementById(`sast-filter-btn-${uniqueId}`);
         const modal = document.getElementById(`sast-filter-modal-${uniqueId}`);
-        const closeBtn = modal?.querySelector('.sast-modal-close');
         const applyBtn = modal?.querySelector('.sast-filter-apply');
         const resetBtn = modal?.querySelector('.sast-filter-reset');
         const excludeTestMockCheckbox = document.getElementById(`sast-exclude-test-mock-${uniqueId}`);
         const ruleFilterSelect = document.getElementById(`sast-rule-filter-${uniqueId}`);
-        
+
         let excludeTestMock = false;
         let selectedRule = 'all';
-        
+
         if (filterBtn && modal) {
             filterBtn.onclick = () => {
                 modal.style.display = 'flex';
             };
         }
-        
-            modal.querySelector('.sast-modal-close').onclick = () => {
-                modal.style.display = 'none';
-            };
+
+        if (modal) {
+            const closeBtn = modal.querySelector('.sast-modal-close');
+            if (closeBtn) closeBtn.onclick = () => { modal.style.display = 'none'; };
 
             modal.onclick = (e) => {
                 if (e.target === modal) modal.style.display = 'none';
             };
-        
+        }
+
         if (applyBtn) {
             applyBtn.onclick = () => {
                 excludeTestMock = excludeTestMockCheckbox ? excludeTestMockCheckbox.checked : false;
                 selectedRule = ruleFilterSelect ? ruleFilterSelect.value : 'all';
-                
+
                 const rowsList = document.querySelectorAll(`#${uniqueId} .sast-row`);
                 rowsList.forEach(row => {
                     const filePath = row.querySelector('.sast-filepath')?.getAttribute('title') || '';
                     const ruleName = row.querySelector('.sast-rule-name')?.innerText || '';
-                    
+
                     let excludeByTestMock = true;
                     if (excludeTestMock) {
                         excludeByTestMock = !isTestMockFile(filePath);
                     }
-                    
+
                     let matchRule = true;
                     if (selectedRule !== 'all') {
                         matchRule = ruleName === selectedRule;
                     }
-                    
+
                     row.style.display = (excludeByTestMock && matchRule) ? '' : 'none';
-                    
+
                     if (row.style.display === 'none') {
                         const icon = row.querySelector('.sast-expand-icon');
                         if (icon) {
@@ -759,35 +757,34 @@ function generateCodeHTML(report) {
                         }
                     }
                 });
-                
+
                 modal.style.display = 'none';
             };
         }
-        
+
         if (resetBtn) {
             resetBtn.onclick = () => {
                 if (excludeTestMockCheckbox) excludeTestMockCheckbox.checked = false;
                 if (ruleFilterSelect) ruleFilterSelect.value = 'all';
                 excludeTestMock = false;
                 selectedRule = 'all';
-                
+
                 const rowsList = document.querySelectorAll(`#${uniqueId} .sast-row`);
                 rowsList.forEach(row => {
                     row.style.display = '';
                 });
-                
+
                 modal.style.display = 'none';
             };
         }
     }, 100);
-    
+
     return html;
 }
 
 function generateSummaryHTML(report) {
     const scaStats = report.sca?.statistics || {};
     const scaVulnerabilities = report.sca?.vulnerabilities || [];
-    const reachability = report.sca?.reachability || {};
 
     const scaCritical = scaVulnerabilities.filter(v => v.severity === 'critical').length;
     const scaHigh = scaVulnerabilities.filter(v => v.severity === 'high').length;
@@ -795,7 +792,6 @@ function generateSummaryHTML(report) {
     const scaLow = scaVulnerabilities.filter(v => v.severity === 'low').length;
 
     const sastIssues = report.sast?.issues || [];
-    const sastStats = report.sast?.statistics || {};
 
     const sastCritical = sastIssues.filter(i => (i.severity || '').toUpperCase() === 'CRITICAL' || i.severity === 'critical').length;
     const sastHigh = sastIssues.filter(i => (i.severity || '').toUpperCase() === 'HIGH' || i.severity === 'high').length;
@@ -807,72 +803,74 @@ function generateSummaryHTML(report) {
 
     return `
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
-            <div class="stat-card" style="background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                <div class="stat-number" style="font-size: 32px; font-weight: bold; color: #667eea;">${scaStats.totalDependencies || 0}</div>
-                <div class="stat-label" style="font-size: 12px; color: #64748b;">Dependencies</div>
+            <div class="stat-card" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;">
+                <div class="stat-number" style="font-size: 32px; font-weight: bold; color: var(--accent);">${scaStats.totalDependencies || 0}</div>
+                <div class="stat-label" style="font-size: 12px; color: var(--text-dim);">Dependencies</div>
             </div>
-            <div class="stat-card" style="background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center;">
-                <div class="stat-number" style="font-size: 32px; font-weight: bold; color: #667eea;">${sastIssues.length}</div>
-                <div class="stat-label" style="font-size: 12px; color: #64748b;">SAST issues</div>
+            <div class="stat-card" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;">
+                <div class="stat-number" style="font-size: 32px; font-weight: bold; color: var(--accent);">${sastIssues.length}</div>
+                <div class="stat-label" style="font-size: 12px; color: var(--text-dim);">SAST issues</div>
             </div>
         </div>
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
-            <div style="color: white; text-align: center;">
+
+        <div style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+            <div style="color: var(--accent-ink); text-align: center;">
                 <div style="font-size: 14px; opacity: 0.9;">Overall risk</div>
                 <div style="font-size: 36px; font-weight: 700;">${totalCritical + totalHigh}</div>
                 <div style="font-size: 12px; opacity: 0.8;">critical and high vulnerabilities</div>
             </div>
         </div>
+
         <div style="margin-bottom: 24px;">
-            <h3 style="margin-bottom: 16px; font-size: 18px;">Critical and High Vulnerabilities</h3>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--text);">Critical and High Vulnerabilities</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
-                    <div style="padding: 12px 16px; background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%); color: white; font-weight: 600;">
+                <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;">
+                    <div style="padding: 12px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600;">
                         Composition Analysis
                     </div>
                     <div style="padding: 16px;">
                         <div style="display: flex; gap: 16px; margin-bottom: 16px;">
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${scaCritical}</div>
-                                <div style="font-size: 12px; color: #64748b;">Critical</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">Critical</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #f97316;">${scaHigh}</div>
-                                <div style="font-size: 12px; color: #64748b;">High</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">High</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #eab308;">${scaMedium}</div>
-                                <div style="font-size: 12px; color: #64748b;">Medium</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">Medium</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #22c55e;">${scaLow}</div>
-                                <div style="font-size: 12px; color: #64748b;">Low</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">Low</div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div style="background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden;">
-                    <div style="padding: 12px 16px; background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%); color: white; font-weight: 600;">
+
+                <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;">
+                    <div style="padding: 12px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600;">
                         Source Code Analysis
                     </div>
                     <div style="padding: 16px;">
                         <div style="display: flex; gap: 16px; margin-bottom: 16px;">
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${sastCritical}</div>
-                                <div style="font-size: 12px; color: #64748b;">Critical</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">Critical</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #f97316;">${sastHigh}</div>
-                                <div style="font-size: 12px; color: #64748b;">High</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">High</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #eab308;">${sastMedium}</div>
-                                <div style="font-size: 12px; color: #64748b;">Medium</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">Medium</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #22c55e;">${sastLow}</div>
-                                <div style="font-size: 12px; color: #64748b;">Low</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">Low</div>
                             </div>
                         </div>
                     </div>
@@ -891,267 +889,319 @@ function generateHTMLReport(report) {
     const scaHtml = generateDependenciesHTML(report);
     const sastHtml = generateCodeHTML(report);
 
+    const scaCount = (report.sca && report.sca.vulnerabilities && report.sca.vulnerabilities.length) || 0;
+    const sastCount = (report.sast && report.sast.issues && report.sast.issues.length) || 0;
+    const generated = new Date().toLocaleString('en-US', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+
     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hercules | Blender - Security Report</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-     * { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Fira Sans', sans-serif; background: #f5f5f5; padding: 24px; color: #0f172a; }
+        *{margin:0;padding:0;box-sizing:border-box}
 
-:root {
-    --primary-color: #2563eb;
-    --accent-color: #667eea;
-    --bg-color: #f8fafc;
-    --bg-secondary: #f1f5f9;
-    --card-bg: #ffffff;
-    --text-primary: #0f172a;
-    --text-secondary: #475569;
-    --border-color: #e2e8f0;
-    --border-radius: 12px;
-}
+        /* ============ REPORT (auto-adapts to parent theme via CSS vars) ============ */
+        .report-container,
+        .report-container *{
+            font-family:'Fira Sans',sans-serif;
+            color:inherit;
+        }
+        .report-container{
+            background:transparent;
+            color:var(--text);
+            width:100%;
+        }
 
-.report-container {
-    max-width: 1400px;
-    margin: 0 auto;
-    background: white;
-    border-radius: var(--border-radius);
-    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-    overflow: hidden;
-}
+        /* HEADER */
+        .report-header{padding:0 0 20px 0;border-bottom:1px solid var(--border);}
+        .report-header h1{
+            font-size:22px;display:flex;align-items:center;gap:12px;
+            font-weight:700;letter-spacing:-0.01em;color:var(--text);
+        }
+        .report-header h1 i{color:var(--accent);font-size:22px;}
+        .report-header p{color:var(--text-dim);font-size:13px;margin-top:8px;}
+        .report-meta{display:flex;gap:22px;font-size:12px;color:var(--text-dim);flex-wrap:wrap;margin-top:10px;}
+        .report-meta span{display:flex;align-items:center;gap:6px;}
+        .report-meta i{color:var(--accent);font-size:12px;}
 
-.report-header {
-    background: linear-gradient(135deg, #1a1a2a 0%, #0a0a0f 100%);
-    color: white;
-    padding: 32px 40px;
-}
+        /* TABS */
+        .report-tabs{
+            display:flex;gap:0;margin-top:20px;
+            border-bottom:1px solid var(--border);
+        }
+        .report-tab{
+            padding:14px 18px;background:transparent;border:none;
+            border-bottom:2px solid transparent;font-size:13px;font-weight:600;
+            color:var(--text-dim);cursor:pointer;transition:color .15s,border-color .15s;
+            font-family:'Fira Sans',sans-serif;letter-spacing:-0.01em;margin-bottom:-1px;
+            display:inline-flex;align-items:center;gap:8px;
+        }
+        .report-tab:hover{color:var(--text);}
+        .report-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+        .report-tab .tab-badge{
+            background:var(--bg-input);color:var(--text-dim);padding:1px 7px;border-radius:4px;
+            font-size:11px;font-family:'Fira Code',monospace;font-weight:600;
+        }
+        .report-tab.active .tab-badge{background:var(--logo-bg);color:var(--accent);}
 
-.report-header h1 { font-size: 28px; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
-.report-header h1 i { font-size: 32px; color: var(--accent-color); }
-.report-meta { display: flex; gap: 24px; margin-top: 16px; font-size: 13px; color: #94a3b8; }
+        /* CONTENT */
+        .report-content{padding:24px 0;min-height:200px;}
+        .tab-pane{display:none;}
+        .tab-pane.active{display:block;animation:fadeIn .25s ease;}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 
-.report-tabs {
-    display: flex;
-    gap: 4px;
-    padding: 0 40px;
-    background: white;
-    border-bottom: 1px solid var(--border-color);
-    flex-wrap: wrap;
-}
+        /* FOOTER */
+        .report-footer{
+            padding:18px 0 0 0;text-align:center;
+            font-size:11px;color:var(--text-faint);border-top:1px solid var(--border);line-height:1.7;
+        }
+        .report-footer strong{color:var(--text-dim);}
 
-.report-tab {
-    padding: 14px 24px;
-    background: none;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: 'Fira Sans', sans-serif;
-}
+        /* STATS GRID */
+        .stats-grid{
+            display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:14px;margin-bottom:24px;
+        }
+        .stat-card{
+            background:var(--bg-input);border-radius:10px;padding:20px;text-align:center;
+            border:1px solid var(--border);transition:border-color .15s;
+        }
+        .stat-card:hover{border-color:var(--accent);}
+        .stat-number{font-size:32px;font-weight:700;color:var(--text);font-family:'Fira Code',monospace;line-height:1;}
+        .stat-label{font-size:12px;color:var(--text-dim);margin-top:8px;}
 
-.report-tab:hover { color: var(--accent-color); }
-.report-tab.active { color: var(--accent-color); border-bottom: 2px solid var(--accent-color); }
+        /* VULN STATS */
+        .vuln-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px;}
+        .summary-card{
+            background:var(--bg-input);border:1px solid var(--border);border-radius:10px;
+            padding:18px;text-align:center;transition:border-color .15s;
+        }
+        .summary-card:hover{border-color:var(--accent);}
+        .summary-card .card-value{font-size:28px;font-weight:700;font-family:'Fira Code',monospace;line-height:1;}
+        .summary-card .card-label{font-size:12px;color:var(--text-dim);margin-top:8px;}
+        .summary-card.critical .card-value{color:#dc2626;}
+        .summary-card.high .card-value{color:#f97316;}
+        .summary-card.medium .card-value{color:#eab308;}
+        .summary-card.low .card-value{color:#22c55e;}
 
-.report-content {
-    padding: 32px 40px;
-    min-height: 500px;
-    background: var(--bg-color);
-}
+        /* FILTER BAR */
+        .filter-bar,.sast-filter-bar{
+            display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center;
+            background:var(--bg-input);padding:12px;border:1px solid var(--border);border-radius:10px;
+        }
+        .search-box,.sast-search-box{
+            flex:1;min-width:220px;padding:9px 14px;background:var(--bg-card);
+            border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);
+            font-family:'Fira Sans',sans-serif;transition:border-color .15s;
+        }
+        .search-box:focus,.sast-search-box:focus{outline:none;border-color:var(--accent);}
+        .search-box::placeholder,.sast-search-box::placeholder{color:var(--text-faint);}
 
-.tab-pane { display: none; animation: fadeIn 0.3s ease; }
-.tab-pane.active { display: block; }
+        .filter-btn,.sast-filter-btn{
+            padding:6px 12px;background:var(--bg-card);border:1px solid var(--border);
+            border-radius:6px;cursor:pointer;font-size:12px;color:var(--text-dim);
+            transition:all .15s;font-family:'Fira Sans',sans-serif;font-weight:600;
+        }
+        .filter-btn:hover,.sast-filter-btn:hover{border-color:var(--accent);color:var(--accent);}
+        .filter-btn.active,.sast-filter-btn.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        .sast-filter-btn-ext{
+            padding:6px 12px;background:var(--bg-card);border:1px solid var(--border);
+            border-radius:6px;cursor:pointer;font-size:12px;color:var(--text-dim);
+            transition:all .15s;font-family:'Fira Sans',sans-serif;font-weight:600;
+            display:inline-flex;align-items:center;gap:6px;
+        }
+        .sast-filter-btn-ext:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
 
-.report-footer {
-    padding: 20px 40px;
-    background: var(--bg-secondary);
-    border-top: 1px solid var(--border-color);
-    text-align: center;
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-family: 'Fira Sans', sans-serif;
-}
+        /* TABLES */
+        .dep-table,.sast-table{
+            width:100%;border-collapse:collapse;font-size:13px;background:var(--bg-card);
+            border-radius:8px;overflow:hidden;border:1px solid var(--border);
+        }
+        .dep-table th,.sast-table th{
+            background:var(--bg-input);padding:12px;text-align:left;font-weight:700;
+            font-size:11px;color:var(--text-dim);border-bottom:1px solid var(--border);
+            text-transform:uppercase;letter-spacing:0.05em;font-family:'Fira Sans',sans-serif;
+        }
+        .dep-table td,.sast-table td{
+            padding:11px 12px;border-bottom:1px solid var(--border);
+            font-family:'Fira Sans',sans-serif;vertical-align:top;color:var(--text);
+        }
+        .dep-table tr:last-child td,.sast-table tr:last-child td{border-bottom:none;}
 
-.vuln-stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
-.summary-card { flex: 1; background: #f8fafc; border-radius: 12px; padding: 16px; text-align: center; border: 1px solid #e2e8f0; transition: transform 0.2s, box-shadow 0.2s; }
-.summary-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.card-value { font-size: 28px; font-weight: 700; font-family: 'Fira Code', monospace; }
-.card-label { font-size: 12px; color: #64748b; font-family: 'Fira Sans', sans-serif; }
+        .dep-row,.sast-row{cursor:pointer;transition:background .1s;}
+        .dep-row:hover,.sast-row:hover{background:var(--bg-input);}
 
-.filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-.search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 13px; font-family: 'Fira Sans', sans-serif; }
-.search-box:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
-.filter-btn { font-family: 'Fira Sans', sans-serif; padding: 6px 14px; background: #f1f5f9; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
-.filter-btn:hover { background: #e2e8f0; }
-.filter-btn.active { background: #667eea; color: white; }
+        .expand-icon,.sast-expand-icon{
+            transition:transform .2s;display:inline-block;font-size:10px;
+            color:var(--text-faint);cursor:pointer;width:20px;text-align:center;
+        }
+        .dep-row:hover .expand-icon,.sast-row:hover .sast-expand-icon{color:var(--accent);}
 
-.dep-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.dep-table th { background: #f1f5f9; padding: 10px; text-align: left; font-weight: 600; border-bottom: 2px solid #e2e8f0; font-family: 'Fira Sans', sans-serif; }
-.dep-table td { padding: 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; font-family: 'Fira Sans', sans-serif; }
-.dep-row { cursor: pointer; transition: background 0.2s; }
-.dep-row:hover { background: #f8fafc; }
-.expand-icon { transition: transform 0.2s; display: inline-block; width: 20px; text-align: center; font-size: 12px; color: #667eea; cursor: pointer; }
-.expand-icon:hover { color: #2563eb; }
-.dep-details-row { display: none; background: #f8fafc; }
-.dep-details-row.show { display: table-row; }
+        .dep-details-row,.sast-details-row{display:none;background:var(--bg-input);}
+        .dep-details-row.show,.sast-details-row.show{display:table-row;}
 
-.reachable-yes { background: #fee2e2; color: #dc2626; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: 'Fira Sans', sans-serif; }
-.reachable-no { background: #dcfce7; color: #16a34a; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: 'Fira Sans', sans-serif; }
-.reachable-unknown { background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: 'Fira Sans', sans-serif; }
+        /* BADGES */
+        .badge{
+            display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
+            font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;
+            letter-spacing:0.05em;
+        }
+        .badge-critical{background:#fee2e2;color:#b91c1c;}
+        .badge-high{background:#ffedd5;color:#c2410c;}
+        .badge-medium{background:#fef3c7;color:#a16207;}
+        .badge-low{background:#dcfce7;color:#15803d;}
+        .badge-info{background:#e0f2fe;color:#0369a1;}
 
-.sast-container { width: 100%; }
-.sast-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-.sast-row { cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #e2e8f0; }
-.sast-row:hover { background: #f8fafc; }
-.sast-details-row { display: none; background: #f8fafc; }
-.sast-details-row.show { display: table-row; }
-.sast-expand-icon { transition: transform 0.2s; display: inline-block; width: 20px; text-align: center; font-size: 12px; color: #667eea; cursor: pointer; }
-.sast-expand-icon:hover { color: #2563eb; }
+        /* REACHABILITY */
+        .reachable-yes{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.05em;}
+        .reachable-no{background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.05em;}
+        .reachable-unknown{background:var(--bg-input);color:var(--text-dim);padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.05em;}
 
-.sast-filter-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-.sast-filter-btn { font-family: 'Fira Sans', sans-serif; padding: 6px 14px; background: #f1f5f9; border: none; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; }
-.sast-filter-btn:hover { background: #e2e8f0; }
-.sast-filter-btn.active { background: #667eea; color: white; }
-.sast-filter-btn-ext { padding: 6px 14px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 20px; cursor: pointer; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 6px; font-family: 'Fira Sans', sans-serif; }
-.sast-filter-btn-ext:hover { background: #667eea; color: white; border-color: #667eea; }
-.sast-search-box { flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 5px; font-size: 13px; font-family: 'Fira Sans', sans-serif; }
-.sast-search-box:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.1); }
+        /* MISC */
+        .vuln-count{
+            background:#ffedd5;color:#c2410c;padding:2px 8px;border-radius:4px;
+            font-weight:700;font-size:11px;font-family:'Fira Code',monospace;
+        }
+        .sast-rule-name,.sast-filepath{font-family:'Fira Code',monospace;font-size:12px;color:var(--text);}
+        .sast-filepath{color:var(--text-dim);}
 
-.sast-modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(4px);
-    z-index: 10000;
-    display: none;
-    justify-content: center;
-    align-items: center;
-}
-.sast-modal-overlay.active { display: flex; }
-.sast-modal { background: white; border-radius: 16px; width: 450px; max-width: 90%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); }
-.sast-modal-header { font-family: 'Fira Sans', sans-serif; display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #e2e8f0; }
-.sast-modal-header h3 { margin: 0; font-size: 18px; font-weight: 600; }
-.sast-modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; padding: 0 8px; font-family: 'Fira Sans', sans-serif;}
-.sast-modal-close:hover { color: #0f172a; }
-.sast-modal-body { padding: 24px; }
-.sast-filter-group { margin-bottom: 24px; }
-.sast-filter-group label { display: block; margin-bottom: 8px; font-weight: 500; font-family: 'Fira Sans', sans-serif; }
-.sast-checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.sast-checkbox-label input { width: 18px; height: 18px; cursor: pointer; }
-.sast-filter-hint { font-size: 11px; color: #64748b; margin-top: 5px; margin-left: 28px; font-family: 'Fira Sans', sans-serif; }
-.sast-select { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 14px; background: white; cursor: pointer; font-family: 'Fira Sans', sans-serif; }
-.sast-select:focus { outline: none; border-color: #667eea; }
-.sast-modal-footer { display: flex; justify-content: flex-end; gap: 12px; padding: 16px 24px; border-top: 1px solid #e2e8f0; }
-.sast-btn {font-family: 'Fira Sans', sans-serif; padding: 8px 20px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none; }
-.sast-btn-secondary { background: #f1f5f9; color: #475569; }
-.sast-btn-secondary:hover { background: #e2e8f0; }
-.sast-btn-primary { background: #667eea; color: white; }
-.sast-btn-primary:hover { background: #5a67d8; transform: translateY(-1px); }
+        .empty-state{
+            text-align:center;padding:60px 20px;background:var(--bg-input);
+            border-radius:10px;border:1px solid var(--border);
+        }
+        .empty-state i{font-size:42px;color:var(--text-faint);margin-bottom:14px;display:block;}
+        .empty-state h3{font-size:16px;margin-bottom:6px;color:var(--text);font-weight:700;}
+        .empty-state p{font-size:13px;color:var(--text-dim);}
 
-.empty-state {
-    text-align: center;
-    padding: 60px 24px;
-    background: var(--card-bg, white);
-    border-radius: 16px;
-    border: 1px solid var(--border-color, #e2e8f0);
-}
+        /* SAST MODAL (вложенная модалка фильтров) */
+        .sast-modal-overlay{
+            position:fixed;inset:0;background:rgba(0,0,0,0.6);
+            backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
+            z-index:21000;display:none;
+            justify-content:center;align-items:center;padding:20px;
+        }
+        .sast-modal-overlay.active,.sast-modal-overlay.show{display:flex;}
+        .sast-modal{
+            background:var(--bg-card);border-radius:12px;border:1px solid var(--border);
+            width:520px;max-width:96%;max-height:calc(100vh - 40px);
+            display:flex;flex-direction:column;overflow:hidden;
+            box-shadow:0 24px 60px rgba(0,0,0,0.5);
+            animation:sastModalFadeIn .2s ease;
+            color:var(--text);
+        }
+        @keyframes sastModalFadeIn{
+            from{opacity:0;transform:scale(.96) translateY(-10px)}
+            to{opacity:1;transform:scale(1) translateY(0)}
+        }
+        .sast-modal-header{
+            display:flex;justify-content:space-between;align-items:center;
+            padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0;
+        }
+        .sast-modal-header h3{
+            margin:0;font-size:16px;font-weight:700;color:var(--text);
+            display:flex;align-items:center;gap:8px;font-family:'Fira Sans',sans-serif;
+        }
+        .sast-modal-header h3 i{color:var(--accent);font-size:16px;}
+        .sast-modal-close{
+            background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-dim);
+            width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+            border-radius:6px;transition:all .15s;line-height:1;
+        }
+        .sast-modal-close:hover{background:var(--bg-input);color:var(--text);}
+        .sast-modal-body{padding:20px 22px;overflow-y:auto;flex:1;}
+        .sast-filter-group{margin-bottom:20px;}
+        .sast-filter-group:last-child{margin-bottom:0;}
+        .sast-filter-group label{
+            display:block;margin-bottom:8px;font-weight:600;font-size:13px;
+            color:var(--text);font-family:'Fira Sans',sans-serif;
+        }
+        .sast-checkbox-label{
+            display:flex;align-items:center;gap:10px;cursor:pointer;
+            font-size:14px;color:var(--text);font-family:'Fira Sans',sans-serif;
+        }
+        .sast-checkbox-label input{
+            width:16px;height:16px;cursor:pointer;accent-color:var(--accent);margin:0;
+        }
+        .sast-checkbox-label span{font-weight:400;}
+        .sast-filter-hint{
+            font-size:11px;color:var(--text-dim);margin-top:6px;margin-left:26px;
+            line-height:1.5;font-family:'Fira Sans',sans-serif;
+        }
+        .sast-select{
+            width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;
+            font-size:13px;font-family:'Fira Sans',sans-serif;background:var(--bg-input);
+            color:var(--text);cursor:pointer;transition:border-color .15s;
+        }
+        .sast-select:hover{border-color:var(--accent);}
+        .sast-select:focus{
+            outline:none;border-color:var(--accent);
+            box-shadow:0 0 0 3px var(--logo-glow);
+        }
+        .sast-modal-footer{
+            display:flex;justify-content:flex-end;gap:10px;padding:14px 22px;
+            border-top:1px solid var(--border);background:var(--bg-input);
+            border-radius:0 0 12px 12px;flex-shrink:0;
+        }
+        .sast-btn{
+            padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;
+            cursor:pointer;border:none;font-family:'Fira Sans',sans-serif;
+            transition:all .15s;line-height:1.2;
+        }
+        .sast-btn-secondary{background:var(--bg-card);color:var(--text-dim);border:1px solid var(--border);}
+        .sast-btn-secondary:hover{background:var(--bg-input);color:var(--text);}
+        .sast-btn-primary{background:var(--accent);color:var(--accent-ink);}
+        .sast-btn-primary:hover{background:var(--accent-2);}
 
-.empty-state i {
-    font-size: 64px;
-    color: #cbd5e1;
-    margin-bottom: 20px;
-    display: block;
-}
+        /* BLOCK HEADER (SCA groups) */
+        .dep-group h5{
+            display:inline-flex;align-items:center;gap:8px;
+            border-bottom:2px solid var(--accent);padding-bottom:6px;
+            color:var(--text);font-size:13px;font-weight:700;letter-spacing:0.05em;
+            text-transform:uppercase;margin-bottom:12px;
+        }
+        .dep-group h5 i{color:var(--accent);}
+        .dep-group h5 span{color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;}
 
-.empty-state h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--text-primary, #0f172a);
-    margin-bottom: 8px;
-    font-family: 'Fira Sans', sans-serif;
-}
-
-.empty-state p {
-    font-size: 14px;
-    color: var(--text-secondary, #64748b);
-    font-family: 'Fira Sans', sans-serif;
-}
-
-@media (max-width: 768px) {
-    .empty-state {
-        padding: 40px 20px;
-    }
-    
-    .empty-state i {
-        font-size: 48px;
-    }
-    
-    .empty-state h3 {
-        font-size: 16px;
-    }
-    
-    .empty-state p {
-        font-size: 13px;
-    }
-}
-
-.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; font-family: 'Fira Sans', sans-serif; }
-.badge-critical { background: #fee2e2; color: #dc2626; }
-.badge-high { background: #ffedd5; color: #f97316; }
-.badge-medium { background: #fef9c3; color: #ca8a04; }
-.badge-low { background: #dcfce7; color: #16a34a; }
-.badge-info { background: #dbeafe; color: #3b82f6; }
-
-@media (max-width: 768px) {
-    body { padding: 12px; }
-    .report-header { padding: 24px; }
-    .stats-grid { padding: 20px; gap: 12px; }
-    .report-content { padding: 20px; }
-    .report-tabs { padding: 0 20px; }
-    .dep-table, .sast-table { font-size: 11px; }
-    .dep-table th, .dep-table td, .sast-table th, .sast-table td { padding: 6px 8px; }
-}
-
-@media print {
-    body { background: white; padding: 0; }
-    .report-tabs { display: none; }
-    .tab-pane { display: block !important; }
-    .filter-bar { display: none; }
-}
+        /* RESPONSIVE */
+        @media (max-width:1100px){
+            .report-content{padding:20px 0;}
+        }
+        @media (max-width:768px){
+            .stats-grid{grid-template-columns:repeat(2,1fr);}
+            .dep-table,.sast-table{font-size:11px;}
+            .dep-table th,.dep-table td,.sast-table th,.sast-table td{padding:8px;}
+            .filter-bar,.sast-filter-bar{flex-direction:column;align-items:stretch;}
+        }
     </style>
 </head>
 <body>
     <div class="report-container">
         <div class="report-header">
-            <h1>    
-                Hercules | Blender
-            </h1>
-            <p>Comprehensive security analysis</p>
+            <h1><i class="fas fa-shield-halved"></i> Hercules | Blender</h1>
+            <p>Comprehensive security analysis — SCA &amp; SAST</p>
             <div class="report-meta">
-                <span>${new Date().toLocaleString()}</span>
+                <span><i class="fas fa-calendar"></i> Generated: ${generated}</span>
+                <span><i class="fas fa-cubes"></i> SCA: ${scaCount}</span>
+                <span><i class="fas fa-code"></i> SAST: ${sastCount}</span>
             </div>
         </div>
-        
+
         <div class="report-tabs">
-            <button class="report-tab active" data-tab="summary">Summary</button>
-            <button class="report-tab" data-tab="sca">SCA (${report.sca?.vulnerabilities?.length || 0})</button>
-            <button class="report-tab" data-tab="sast">SAST (${report.sast?.issues?.length || 0})</button>
+            <button class="report-tab active" data-tab="summary"><i class="fas fa-chart-pie"></i> Summary</button>
+            <button class="report-tab" data-tab="sca"><i class="fas fa-cubes"></i> SCA <span class="tab-badge">${scaCount}</span></button>
+            <button class="report-tab" data-tab="sast"><i class="fas fa-code"></i> SAST <span class="tab-badge">${sastCount}</span></button>
         </div>
-        
+
         <div class="report-content">
             <div class="tab-pane active" id="tab-summary">
                 ${summaryHtml}
@@ -1163,287 +1213,211 @@ body { font-family: 'Fira Sans', sans-serif; background: #f5f5f5; padding: 24px;
                 ${sastHtml}
             </div>
         </div>
-        
+
         <div class="report-footer">
-            <p>Generated with Hercules | Blender</p>
+            <p>Generated with <strong>Hercules | Blender</strong> · Comprehensive security analysis</p>
+            <p>SCA based on public CVE databases · SAST based on static code analysis rules</p>
         </div>
     </div>
-    
+
     <script>
-    const tabs = document.querySelectorAll('.report-tab');
-    const panes = document.querySelectorAll('.tab-pane');
-    
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            const target = tab.getAttribute('data-tab');
-            tabs.forEach(t => t.classList.remove('active'));
-            panes.forEach(p => p.classList.remove('active'));
+    // Tabs
+    document.querySelectorAll('.report-tab').forEach(function(tab){
+        tab.addEventListener('click', function(){
+            var target = tab.getAttribute('data-tab');
+            document.querySelectorAll('.report-tab').forEach(function(t){t.classList.remove('active');});
+            document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('active');});
             tab.classList.add('active');
-            document.getElementById('tab-' + target).classList.add('active');
+            var pane = document.getElementById('tab-' + target);
+            if (pane) pane.classList.add('active');
         });
     });
-    
-    document.querySelectorAll('.dep-row').forEach(row => {
-        const icon = row.querySelector('.expand-icon');
-        const details = row.nextElementSibling;
+
+    // Expandable rows (SCA)
+    document.querySelectorAll('.dep-row').forEach(function(row){
+        var icon = row.querySelector('.expand-icon');
+        var details = row.nextElementSibling;
         if (!icon || !details) return;
-        
-        icon.onclick = (e) => {
-            e.stopPropagation();
-            if (details.style.display === 'none' || !details.style.display) {
+
+        function toggle(){
+            if (details.style.display === 'none' || !details.style.display){
                 details.style.display = 'table-row';
+                details.classList.add('show');
                 icon.style.transform = 'rotate(90deg)';
             } else {
                 details.style.display = 'none';
+                details.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
             }
-        };
-        
-        row.onclick = () => {
-            if (details.style.display === 'none' || !details.style.display) {
-                details.style.display = 'table-row';
-                icon.style.transform = 'rotate(90deg)';
-            } else {
-                details.style.display = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            }
-        };
+        }
+        icon.onclick = function(e){e.stopPropagation(); toggle();};
+        row.onclick = toggle;
     });
-    
-    document.querySelectorAll('.sast-row').forEach(row => {
-        const icon = row.querySelector('.sast-expand-icon');
-        const details = row.nextElementSibling;
+
+    // Expandable rows (SAST)
+    document.querySelectorAll('.sast-row').forEach(function(row){
+        var icon = row.querySelector('.sast-expand-icon');
+        var details = row.nextElementSibling;
         if (!icon || !details) return;
-        
-        icon.onclick = (e) => {
-            e.stopPropagation();
-            if (details.style.display === 'none' || !details.style.display) {
+
+        function toggle(){
+            if (details.style.display === 'none' || !details.style.display){
                 details.style.display = 'table-row';
+                details.classList.add('show');
                 icon.style.transform = 'rotate(90deg)';
             } else {
                 details.style.display = 'none';
+                details.classList.remove('show');
                 icon.style.transform = 'rotate(0deg)';
             }
-        };
-        
-        row.onclick = () => {
-            if (details.style.display === 'none' || !details.style.display) {
-                details.style.display = 'table-row';
-                icon.style.transform = 'rotate(90deg)';
-            } else {
-                details.style.display = 'none';
-                icon.style.transform = 'rotate(0deg)';
-            }
-        };
+        }
+        icon.onclick = function(e){e.stopPropagation(); toggle();};
+        row.onclick = toggle;
     });
-    
-    const scaSearch = document.getElementById('vulnSearch');
-    const scaBtns = document.querySelectorAll('#tab-sca .filter-btn');
-    let currentScaFilter = 'all';
-    let currentScaReachable = false;
-    
-    function getScaSeverityFromRow(row) {
-        const reachableSpan = row.querySelector('.reachable-yes, .reachable-no, .reachable-unknown');
-        if (reachableSpan) {
-            const text = reachableSpan.innerText.toLowerCase();
-            if (text === 'yes') return 'high';
-            if (text === 'no') return 'low';
-        }
-        
-        const vulnSpan = row.querySelector('td:nth-child(5) span');
-        if (vulnSpan) {
-            const classes = vulnSpan.className;
-            if (classes.includes('critical')) return 'critical';
-            if (classes.includes('high')) return 'high';
-            if (classes.includes('medium')) return 'medium';
-            if (classes.includes('low')) return 'low';
-        }
-        
-        return '';
-    }
-    
-    function filterSca() {
-        const searchText = scaSearch ? scaSearch.value.toLowerCase() : '';
-        const rows = document.querySelectorAll('#sca-table tbody tr.dep-row');
-        
-        rows.forEach(row => {
-            let severity = getScaSeverityFromRow(row);
-            
-            const componentCell = row.querySelector('td:first-child strong, td:first-child');
-            let component = componentCell ? componentCell.innerText.toLowerCase() : '';
-            component = component.replace(/dev/, '').trim();
-            
-            const reachable = row.getAttribute('data-reachable') === 'true';
-            
-            let show = true;
-            
-            if (currentScaFilter !== 'all') {
-                show = show && severity === currentScaFilter;
-            }
-            
-            if (currentScaReachable) {
-                show = show && reachable;
-            }
-            
-            if (searchText) {
-                show = show && component.includes(searchText);
-            }
-            
+
+    // SCA filter
+    var scaSearch = document.getElementById('vulnSearch');
+    var scaBtns = document.querySelectorAll('#tab-sca .filter-btn');
+    var currentScaFilter = 'all';
+    var currentScaReachable = false;
+
+    function filterSca(){
+        var searchText = scaSearch ? scaSearch.value.toLowerCase() : '';
+        var rows = document.querySelectorAll('#tab-sca .dep-row');
+        rows.forEach(function(row){
+            var severity = row.getAttribute('data-severity') || '';
+            var reachable = row.getAttribute('data-reachable') === 'true';
+            var component = (row.getAttribute('data-component') || '').toLowerCase();
+
+            var show = true;
+            if (currentScaFilter === 'critical') show = show && severity === 'critical';
+            else if (currentScaFilter === 'high') show = show && severity === 'high';
+            else if (currentScaFilter === 'medium') show = show && severity === 'medium';
+            else if (currentScaFilter === 'low') show = show && severity === 'low';
+            if (currentScaReachable) show = show && reachable;
+            if (searchText) show = show && component.indexOf(searchText) !== -1;
+
             row.style.display = show ? '' : 'none';
-            
-            if (!show) {
-                const details = row.nextElementSibling;
-                if (details && details.classList.contains('dep-details-row')) {
+            if (!show){
+                var details = row.nextElementSibling;
+                if (details && details.classList.contains('dep-details-row')){
                     details.style.display = 'none';
-                    const icon = row.querySelector('.expand-icon');
+                    details.classList.remove('show');
+                    var icon = row.querySelector('.expand-icon');
                     if (icon) icon.style.transform = 'rotate(0deg)';
                 }
             }
         });
     }
-    
-    scaBtns.forEach(btn => {
-        btn.onclick = () => {
-            const filterValue = btn.getAttribute('data-filter');
-            
-            if (filterValue === 'reachable') {
+
+    scaBtns.forEach(function(btn){
+        btn.onclick = function(){
+            var fv = btn.getAttribute('data-filter');
+            if (fv === 'reachable'){
                 currentScaReachable = !currentScaReachable;
                 btn.classList.toggle('active');
-                filterSca();
             } else {
-                scaBtns.forEach(b => {
-                    const fv = b.getAttribute('data-filter');
-                    if (fv !== 'reachable') b.classList.remove('active');
+                scaBtns.forEach(function(b){
+                    if (b.getAttribute('data-filter') !== 'reachable') b.classList.remove('active');
                 });
                 btn.classList.add('active');
-                currentScaFilter = filterValue;
-                filterSca();
+                currentScaFilter = fv;
             }
+            filterSca();
         };
     });
-    
-    if (scaSearch) {
-        scaSearch.oninput = filterSca;
-    }
-    
-    const sastSearch = document.querySelector('#tab-sast .sast-search-box');
-    const sastBtns = document.querySelectorAll('#tab-sast .sast-filter-btn');
-    let currentSastFilter = 'all';
-    
-    function filterSast() {
-        const searchText = sastSearch ? sastSearch.value.toLowerCase() : '';
-        const rows = document.querySelectorAll('#tab-sast .sast-row');
-        
-        rows.forEach(row => {
-            let severity = row.getAttribute('data-severity');
-            severity = severity ? severity.toLowerCase() : '';
-            
-            const file = row.getAttribute('data-fullpath') || '';
-            const rule = row.getAttribute('data-rule') || '';
-            
-            let show = true;
-            
-            if (currentSastFilter !== 'all') {
-                show = show && severity === currentSastFilter;
-            }
-            
-            if (searchText) {
-                show = show && (file.toLowerCase().includes(searchText) || rule.toLowerCase().includes(searchText));
-            }
-            
+    if (scaSearch) scaSearch.oninput = filterSca;
+
+    // SAST filter
+    var sastSearch = document.querySelector('#tab-sast .sast-search-box');
+    var sastBtns = document.querySelectorAll('#tab-sast .sast-filter-btn');
+    var currentSastFilter = 'all';
+
+    function filterSast(){
+        var searchText = sastSearch ? sastSearch.value.toLowerCase() : '';
+        var rows = document.querySelectorAll('#tab-sast .sast-row');
+        rows.forEach(function(row){
+            var severity = (row.getAttribute('data-severity') || '').toLowerCase();
+            var file = row.getAttribute('data-fullpath') || '';
+            var rule = row.getAttribute('data-rule') || '';
+
+            var show = true;
+            if (currentSastFilter !== 'all') show = show && severity === currentSastFilter;
+            if (searchText) show = show && (file.toLowerCase().indexOf(searchText) !== -1 || rule.toLowerCase().indexOf(searchText) !== -1);
+
             row.style.display = show ? '' : 'none';
-            
-            if (!show) {
-                const details = row.nextElementSibling;
-                if (details && details.classList.contains('sast-details-row')) {
+            if (!show){
+                var details = row.nextElementSibling;
+                if (details && details.classList.contains('sast-details-row')){
                     details.style.display = 'none';
-                    const icon = row.querySelector('.sast-expand-icon');
+                    details.classList.remove('show');
+                    var icon = row.querySelector('.sast-expand-icon');
                     if (icon) icon.style.transform = 'rotate(0deg)';
                 }
             }
         });
     }
-    
-    sastBtns.forEach(btn => {
-        btn.onclick = () => {
-            sastBtns.forEach(b => b.classList.remove('active'));
+
+    sastBtns.forEach(function(btn){
+        btn.onclick = function(){
+            sastBtns.forEach(function(b){b.classList.remove('active');});
             btn.classList.add('active');
             currentSastFilter = btn.getAttribute('data-filter');
             filterSast();
         };
     });
-    
-    if (sastSearch) {
-        sastSearch.oninput = filterSast;
-    }
-    
-    const filterBtn = document.querySelector('#tab-sast .sast-filter-btn-ext');
-    const modal = document.querySelector('#tab-sast .sast-modal-overlay');
-    const excludeCheckbox = document.querySelector('#tab-sast .sast-checkbox-label input');
-    const ruleSelect = document.querySelector('#tab-sast .sast-select');
-    
-    function isTestMockFile(path) {
+    if (sastSearch) sastSearch.oninput = filterSast;
+
+    // Advanced SAST filters modal
+    var filterBtn = document.querySelector('#tab-sast .sast-filter-btn-ext');
+    var modal = document.querySelector('#tab-sast .sast-modal-overlay');
+    var excludeCheckbox = document.querySelector('#tab-sast .sast-checkbox-label input');
+    var ruleSelect = document.querySelector('#tab-sast .sast-select');
+
+    function isTestMockFile(path){
         if (!path) return false;
-        const p = path.toLowerCase();
-        return p.includes('test') || p.includes('mock') || p.includes('spec') || p.includes('fixture') || p.includes('__tests__');
+        var p = path.toLowerCase();
+        return p.indexOf('test') !== -1 || p.indexOf('mock') !== -1 || p.indexOf('spec') !== -1
+            || p.indexOf('fixture') !== -1 || p.indexOf('__tests__') !== -1;
     }
-    
-    function applyExtendedFilters() {
-        const exclude = excludeCheckbox ? excludeCheckbox.checked : false;
-        const rule = ruleSelect ? ruleSelect.value : 'all';
-        
-        const rows = document.querySelectorAll('#tab-sast .sast-row');
-        rows.forEach(row => {
-            const filePath = row.getAttribute('data-fullpath') || '';
-            const ruleName = row.getAttribute('data-rule') || '';
-            
-            let show = true;
+
+    function applyExtendedFilters(){
+        var exclude = excludeCheckbox ? excludeCheckbox.checked : false;
+        var rule = ruleSelect ? ruleSelect.value : 'all';
+        document.querySelectorAll('#tab-sast .sast-row').forEach(function(row){
+            var filePath = row.getAttribute('data-fullpath') || '';
+            var ruleName = row.getAttribute('data-rule') || '';
+            var show = true;
             if (exclude) show = show && !isTestMockFile(filePath);
             if (rule !== 'all') show = show && ruleName === rule;
-            
             row.style.display = show ? '' : 'none';
-            if (!show) {
-                const details = row.nextElementSibling;
+            if (!show){
+                var details = row.nextElementSibling;
                 if (details) details.style.display = 'none';
-                const icon = row.querySelector('.sast-expand-icon');
+                var icon = row.querySelector('.sast-expand-icon');
                 if (icon) icon.style.transform = 'rotate(0deg)';
             }
         });
     }
-    
-    if (filterBtn && modal) {
-        filterBtn.onclick = () => {
-            modal.style.display = 'flex';
-        };
-        
-        const closeBtn = modal.querySelector('.sast-modal-close');
-        if (closeBtn) closeBtn.onclick = () => modal.style.display = 'none';
-        
-        const applyBtn = modal.querySelector('.sast-filter-apply');
-        if (applyBtn) applyBtn.onclick = () => {
-            applyExtendedFilters();
-            modal.style.display = 'none';
-        };
-        
-        const resetBtn = modal.querySelector('.sast-filter-reset');
-        if (resetBtn) resetBtn.onclick = () => {
+
+    if (filterBtn && modal){
+        filterBtn.onclick = function(){ modal.style.display = 'flex'; };
+        var closeBtn = modal.querySelector('.sast-modal-close');
+        if (closeBtn) closeBtn.onclick = function(){ modal.style.display = 'none'; };
+        var applyBtn = modal.querySelector('.sast-filter-apply');
+        if (applyBtn) applyBtn.onclick = function(){ applyExtendedFilters(); modal.style.display = 'none'; };
+        var resetBtn = modal.querySelector('.sast-filter-reset');
+        if (resetBtn) resetBtn.onclick = function(){
             if (excludeCheckbox) excludeCheckbox.checked = false;
             if (ruleSelect) ruleSelect.value = 'all';
-            document.querySelectorAll('#tab-sast .sast-row').forEach(row => row.style.display = '');
+            document.querySelectorAll('#tab-sast .sast-row').forEach(function(r){r.style.display = '';});
             modal.style.display = 'none';
         };
-        
-        modal.onclick = (e) => {
-            if (e.target === modal) modal.style.display = 'none';
-        };
+        modal.onclick = function(e){ if (e.target === modal) modal.style.display = 'none'; };
     }
-    
-    setTimeout(() => {
-        filterSca();
-        filterSast();
-    }, 200);
-</script>
-    
+
+    setTimeout(function(){ filterSca(); filterSast(); }, 150);
+    </script>
 </body>
 </html>`;
 }

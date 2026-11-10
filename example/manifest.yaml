@@ -1,0 +1,11 @@
+team: DevOps Team
+name: web-server-01
+owner: Mr. Smith
+custodian: Mrs. Smith
+email: smith@domen.com
+type: server
+status: active
+description: Main production web server for the platform
+git: https://github.com/hercules-secure/web-server-01
+stack: Node.js, React, PostgreSQL
+docs: https://wiki.hercules.local/web-server-01

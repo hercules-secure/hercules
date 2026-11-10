@@ -1,8 +1,8 @@
 #!/bin/bash
-# hercules.sh - Управление сервером Hercules
+# hercules.sh - Hercules server manager
 
 # ============================================
-# Конфигурация
+# Configuration
 # ============================================
 PORT=${PORT:-6565}
 HOST=${HOST:-localhost}
@@ -13,13 +13,13 @@ LOG_ERRORS="$LOG_DIR/errors.log"
 ENV_FILE=".env"
 ENV_EXAMPLE=".env.example"
 
-# Определяем абсолютный путь к директории скрипта
+# Resolve absolute path to the script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_COMBINED_PATH="$SCRIPT_DIR/$LOG_COMBINED"
 LOG_ERRORS_PATH="$SCRIPT_DIR/$LOG_ERRORS"
 
 # ============================================
-# Цвета
+# Colors
 # ============================================
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -28,7 +28,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # ============================================
-# Функции
+# Functions
 # ============================================
 print_success() { echo -e "${GREEN}[OK]${NC} $1"; }
 print_error()   { echo -e "${RED}[ERROR]${NC} $1"; }
@@ -39,39 +39,39 @@ show_help() {
     echo ""
     echo "Hercules Server Manager"
     echo ""
-    echo "Команды:"
-    echo "  ./hercules.sh install              - Установка зависимостей"
-    echo "  ./hercules.sh start                - Запуск сервера"
-    echo "  ./hercules.sh stop                 - Остановка сервера"
-    echo "  ./hercules.sh restart              - Перезапуск сервера"
-    echo "  ./hercules.sh status               - Статус сервера"
-    echo "  ./hercules.sh update               - Обновление из git + перезапуск"
+    echo "Commands:"
+    echo "  ./hercules.sh install              - Install dependencies"
+    echo "  ./hercules.sh start                - Start the server"
+    echo "  ./hercules.sh stop                 - Stop the server"
+    echo "  ./hercules.sh restart              - Restart the server"
+    echo "  ./hercules.sh status               - Show server status"
+    echo "  ./hercules.sh update               - Update from git and restart"
     echo ""
-    echo "  ./hercules.sh logs                 - Показать все логи"
-    echo "  ./hercules.sh logs-combined        - Показать combined.log"
-    echo "  ./hercules.sh logs-errors          - Показать errors.log"
-    echo "  ./hercules.sh logs-follow          - Логи в реальном времени (combined)"
-    echo "  ./hercules.sh logs-follow-errors   - Логи ошибок в реальном времени"
-    echo "  ./hercules.sh logs-clear           - Очистить логи"
-    echo "  ./hercules.sh logs-size            - Показать размер логов"
+    echo "  ./hercules.sh logs                 - Show all logs"
+    echo "  ./hercules.sh logs-combined        - Show combined.log"
+    echo "  ./hercules.sh logs-errors          - Show errors.log"
+    echo "  ./hercules.sh logs-follow          - Follow combined log in real time"
+    echo "  ./hercules.sh logs-follow-errors   - Follow error log in real time"
+    echo "  ./hercules.sh logs-clear           - Clear logs"
+    echo "  ./hercules.sh logs-size            - Show log sizes"
     echo ""
-    echo "  ./hercules.sh clean                - Очистка"
-    echo "  ./hercules.sh help                 - Эта справка"
+    echo "  ./hercules.sh clean                - Clean up"
+    echo "  ./hercules.sh help                 - Show this help"
     echo ""
-    echo "Примеры:"
+    echo "Examples:"
     echo "  PORT=3000 ./hercules.sh start"
     echo "  HOST=0.0.0.0 ./hercules.sh start"
-    echo "  ./hercules.sh update               # обновить и перезапустить"
-    echo "  ./hercules.sh logs-errors          # только ошибки"
-    echo "  ./hercules.sh logs-follow-errors   # ошибки в реальном времени"
+    echo "  ./hercules.sh update               # update and restart"
+    echo "  ./hercules.sh logs-errors          # errors only"
+    echo "  ./hercules.sh logs-follow-errors   # errors in real time"
     echo ""
 }
 
-# Проверка Node.js
+# Check Node.js
 check_node() {
     if ! command -v node &> /dev/null; then
-        print_error "Node.js не установлен"
-        echo "Установите Node.js 18+: https://nodejs.org/"
+        print_error "Node.js is not installed"
+        echo "Install Node.js 18+: https://nodejs.org/"
         exit 1
     fi
     
@@ -79,30 +79,30 @@ check_node() {
     MAJOR_VERSION=$(echo $NODE_VERSION | cut -d. -f1)
     
     if [ "$MAJOR_VERSION" -lt 18 ]; then
-        print_error "Node.js версия должна быть 18+, у вас $NODE_VERSION"
+        print_error "Node.js version must be 18+, you have $NODE_VERSION"
         exit 1
     fi
     
     print_success "Node.js $(node -v)"
 }
 
-# Проверка npm
+# Check npm
 check_npm() {
     if ! command -v npm &> /dev/null; then
-        print_error "npm не установлен"
+        print_error "npm is not installed"
         exit 1
     fi
     print_success "npm $(npm -v)"
 }
 
-# Настройка .env
+# Set up .env
 setup_env() {
     if [ ! -f "$ENV_FILE" ]; then
-        print_info "Создание .env файла..."
+        print_info "Creating .env file..."
         
         if [ -f "$ENV_EXAMPLE" ]; then
             cp "$ENV_EXAMPLE" "$ENV_FILE"
-            print_success "Создан $ENV_FILE из шаблона"
+            print_success "Created $ENV_FILE from template"
         else
             cat > "$ENV_FILE" << EOF
 # Hercules Server Configuration
@@ -121,94 +121,94 @@ EXTRACTED_DIR=./extracted
 TEMP_DIR=./temp
 VERBOSE=false
 EOF
-            print_success "Создан базовый $ENV_FILE"
+            print_success "Created basic $ENV_FILE"
         fi
         
-        print_warning "Отредактируйте $ENV_FILE при необходимости"
+        print_warning "Edit $ENV_FILE if needed"
     else
-        print_info ".env файл уже существует"
+        print_info ".env file already exists"
     fi
 }
 
-# Создание директории для логов
+# Create log directory
 setup_logs_dir() {
     if [ ! -d "$LOG_DIR" ]; then
         mkdir -p "$LOG_DIR"
-        print_success "Создана директория $LOG_DIR"
+        print_success "Created directory $LOG_DIR"
     fi
 }
 
-# Установка зависимостей
+# Install dependencies
 cmd_install() {
-    print_info "Проверка окружения..."
+    print_info "Checking environment..."
     check_node
     check_npm
     
-    print_info "Настройка .env..."
+    print_info "Setting up .env..."
     setup_env
     
-    print_info "Настройка директории логов..."
+    print_info "Setting up log directory..."
     setup_logs_dir
     
-    print_info "Установка зависимостей..."
+    print_info "Installing dependencies..."
     npm install
     
-    print_info "Проверка уязвимостей..."
+    print_info "Checking for vulnerabilities..."
     npm audit fix --force
     
-    print_success "Установка завершена"
+    print_success "Installation complete"
 }
 
-# Запуск сервера (в фоне)
+# Start the server (in background)
 cmd_start() {
     check_node
     
-    # Проверяем, не запущен ли уже сервер
+    # Check if the server is already running
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
         if kill -0 "$PID" 2>/dev/null; then
-            print_error "Сервер уже запущен (PID: $PID)"
+            print_error "Server is already running (PID: $PID)"
             exit 1
         else
             rm -f "$PID_FILE"
         fi
     fi
     
-    # Создаём директорию для логов
+    # Create log directory
     setup_logs_dir
     
-    print_info "Запуск сервера..."
-    print_info "Лог (combined): $LOG_COMBINED"
-    print_info "Лог (errors): $LOG_ERRORS"
+    print_info "Starting server..."
+    print_info "Log (combined): $LOG_COMBINED"
+    print_info "Log (errors): $LOG_ERRORS"
     
     export PORT=$PORT
     export HOST=$HOST
     
-    # Запускаем сервер, разделяя stdout/stderr
+    # Start the server, splitting stdout/stderr
     nohup node server.js >> "$LOG_COMBINED" 2>> "$LOG_ERRORS" &
     echo $! > "$PID_FILE"
     
-    # Даём время на запуск
+    # Give it time to start
     sleep 3
     
-    # Проверяем, запустился ли сервер
+    # Check if the server started
     if kill -0 $(cat "$PID_FILE") 2>/dev/null; then
-        print_success "Сервер запущен (PID: $(cat $PID_FILE))"
-        print_info "Порт: $PORT, Хост: $HOST"
+        print_success "Server started (PID: $(cat $PID_FILE))"
+        print_info "Port: $PORT, Host: $HOST"
         
-        # Показываем последние строки лога
+        # Show the last log lines
         if [ -f "$LOG_COMBINED" ] && [ -s "$LOG_COMBINED" ]; then
             echo ""
-            print_info "Последние записи в combined.log:"
+            print_info "Latest entries in combined.log:"
             echo "----------------------------------------"
             tail -10 "$LOG_COMBINED"
             echo "----------------------------------------"
         fi
     else
-        print_error "Ошибка запуска сервера"
+        print_error "Failed to start server"
         if [ -f "$LOG_ERRORS" ] && [ -s "$LOG_ERRORS" ]; then
             echo ""
-            print_info "Содержимое errors.log:"
+            print_info "Contents of errors.log:"
             echo "----------------------------------------"
             cat "$LOG_ERRORS"
             echo "----------------------------------------"
@@ -217,16 +217,16 @@ cmd_start() {
     fi
 }
 
-# Остановка сервера
+# Stop the server
 cmd_stop() {
-    print_info "Остановка сервера..."
+    print_info "Stopping server..."
     
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
         if kill -0 "$PID" 2>/dev/null; then
             kill "$PID"
             
-            # Ждём завершения процесса
+            # Wait for the process to exit
             for i in {1..10}; do
                 if ! kill -0 "$PID" 2>/dev/null; then
                     break
@@ -234,32 +234,32 @@ cmd_stop() {
                 sleep 1
             done
             
-            # Принудительно убиваем, если не завершился
+            # Force kill if it did not exit
             if kill -0 "$PID" 2>/dev/null; then
-                print_warning "Процесс не завершился, принудительное убийство"
+                print_warning "Process did not exit, forcing kill"
                 kill -9 "$PID"
             fi
             
-            print_success "Сервер остановлен (PID: $PID)"
+            print_success "Server stopped (PID: $PID)"
             rm -f "$PID_FILE"
         else
-            print_warning "Процесс не найден"
+            print_warning "Process not found"
             rm -f "$PID_FILE"
         fi
     else
         PID=$(pgrep -f "node server.js" 2>/dev/null)
         if [ -n "$PID" ]; then
             kill "$PID"
-            print_success "Сервер остановлен (PID: $PID)"
+            print_success "Server stopped (PID: $PID)"
         else
-            print_warning "Запущенный процесс не найден"
+            print_warning "No running process found"
         fi
     fi
 }
 
-# Перезапуск
+# Restart
 cmd_restart() {
-    print_info "Перезапуск сервера..."
+    print_info "Restarting server..."
     cmd_stop
     sleep 2
     cmd_start
@@ -267,11 +267,11 @@ cmd_restart() {
 
 
 cmd_update() {
-    print_info "=== ОБНОВЛЕНИЕ СЕРВЕРА ==="
+    print_info "=== SERVER UPDATE ==="
     echo ""
     
-    # 1. Сохраняем текущие параметры из .env файла
-    print_info "Сохранение параметров запуска..."
+    # 1. Save current settings from .env
+    print_info "Saving startup parameters..."
     
     SAVED_PORT=""
     SAVED_HOST=""
@@ -284,10 +284,10 @@ cmd_update() {
         SAVED_HOST=$(echo "$SAVED_HOST" | cut -d'#' -f1 | xargs)
         
         if [ -n "$SAVED_PORT" ]; then
-            print_info "Найден PORT: $SAVED_PORT"
+            print_info "Found PORT: $SAVED_PORT"
         fi
         if [ -n "$SAVED_HOST" ]; then
-            print_info "Найден HOST: $SAVED_HOST"
+            print_info "Found HOST: $SAVED_HOST"
         fi
     fi
     
@@ -302,38 +302,38 @@ cmd_update() {
     SAVED_PORT="${SAVED_PORT:-6565}"
     SAVED_HOST="${SAVED_HOST:-localhost}"
     
-    print_info "Будут использованы: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
+    print_info "Using: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     
-    # 1.5 Сохраняем config.json (если существует)
-    print_info "Сохранение config.json..."
+    # 1.5 Save config.json (if it exists)
+    print_info "Saving config.json..."
     
     CONFIG_FILE="config.json"
     TEMP_CONFIG="/tmp/hercules_config_backup.json"
     
     if [ -f "$CONFIG_FILE" ]; then
         cp "$CONFIG_FILE" "$TEMP_CONFIG"
-        print_success "config.json сохранён во временный файл"
+        print_success "config.json saved to a temporary file"
     else
-        print_warning "config.json не найден, будет создан при необходимости"
+        print_warning "config.json not found, will be created if needed"
     fi
     
-    # 2. Останавливаем сервер
-    print_info "Остановка сервера..."
+    # 2. Stop the server
+    print_info "Stopping server..."
     cmd_stop
     sleep 2
     
-    # 3. Сохраняем текущую ветку
+    # 3. Save current branch
     CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "main")
-    print_info "Текущая ветка: $CURRENT_BRANCH"
+    print_info "Current branch: $CURRENT_BRANCH"
     
-    # 4. Сохраняем локальные изменения во временном stash (только важные файлы)
-    print_info "Сохранение локальных изменений конфигурации..."
+    # 4. Save local changes in a temporary backup (important files only)
+    print_info "Saving local configuration changes..."
     
-    # Создаём временную папку для бэкапа
+    # Create a temporary backup directory
     BACKUP_DIR="/tmp/hercules_backup_$(date +%Y%m%d_%H%M%S)"
     mkdir -p "$BACKUP_DIR"
     
-    # Сохраняем важные конфигурационные файлы
+    # Save important configuration files
     IMPORTANT_FILES=(
         "config.json"
         ".env"
@@ -346,22 +346,22 @@ cmd_update() {
         if [ -f "$file" ]; then
             mkdir -p "$BACKUP_DIR/$(dirname "$file")"
             cp "$file" "$BACKUP_DIR/$file"
-            print_info "Сохранён: $file"
+            print_info "Saved: $file"
         fi
     done
     
-    # 5. Git fetch + reset с сохранением важных файлов
-    print_info "Выполнение git fetch..."
+    # 5. Git fetch + reset while preserving important files
+    print_info "Running git fetch..."
     
     git fetch origin "$CURRENT_BRANCH"
     
     if [ $? -ne 0 ]; then
-        print_error "Ошибка git fetch"
+        print_error "git fetch failed"
         exit 1
     fi
     
-    # Временно перемещаем важные файлы перед reset
-    print_info "Временное перемещение конфигурационных файлов..."
+    # Temporarily move important files before reset
+    print_info "Temporarily moving configuration files..."
     
     for file in "${IMPORTANT_FILES[@]}"; do
         if [ -f "$file" ]; then
@@ -369,52 +369,52 @@ cmd_update() {
         fi
     done
     
-    # Выполняем reset (теперь важные файлы не будут затронуты)
-    print_info "Применение изменений (git reset --hard)..."
+    # Run reset (important files are now out of the way)
+    print_info "Applying changes (git reset --hard)..."
     git reset --hard "origin/$CURRENT_BRANCH"
     
     if [ $? -ne 0 ]; then
-        print_error "Ошибка git reset"
+        print_error "git reset failed"
         exit 1
     fi
     
-    # Возвращаем важные файлы на место
-    print_info "Восстановление конфигурационных файлов..."
+    # Restore important files
+    print_info "Restoring configuration files..."
     
     for file in "${IMPORTANT_FILES[@]}"; do
         MOVED_FILE="$BACKUP_DIR/${file}.moved"
         if [ -f "$MOVED_FILE" ]; then
             mkdir -p "$(dirname "$file")"
             mv "$MOVED_FILE" "$file"
-            print_info "Восстановлен: $file"
+            print_info "Restored: $file"
         elif [ -f "$BACKUP_DIR/$file" ]; then
             mkdir -p "$(dirname "$file")"
             cp "$BACKUP_DIR/$file" "$file"
-            print_info "Восстановлен из копии: $file"
+            print_info "Restored from backup: $file"
         fi
     done
     
-    print_success "Git fetch + reset выполнен успешно, конфигурация сохранена"
+    print_success "Git fetch + reset completed, configuration preserved"
     
-    # 6. Обновляем .env файл с сохранёнными параметрами
-    print_info "Восстановление параметров в .env..."
+    # 6. Update .env with saved parameters
+    print_info "Restoring parameters in .env..."
     
     if [ -f "$ENV_FILE" ]; then
-        # Проверяем и обновляем PORT
+        # Check and update PORT
         if grep -q "^PORT=" "$ENV_FILE"; then
             sed -i "s/^PORT=.*/PORT=$SAVED_PORT/" "$ENV_FILE"
         else
             echo "PORT=$SAVED_PORT" >> "$ENV_FILE"
         fi
         
-        # Проверяем и обновляем HOST
+        # Check and update HOST
         if grep -q "^HOST=" "$ENV_FILE"; then
             sed -i "s/^HOST=.*/HOST=$SAVED_HOST/" "$ENV_FILE"
         else
             echo "HOST=$SAVED_HOST" >> "$ENV_FILE"
         fi
         
-        print_success ".env обновлён: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
+        print_success ".env updated: PORT=$SAVED_PORT, HOST=$SAVED_HOST"
     else
         cat > "$ENV_FILE" << EOF
 # Hercules Server Configuration
@@ -427,31 +427,31 @@ RATE_LIMIT_WINDOW=15
 MAX_FILE_SIZE=104857600
 LOG_DIR=./logs
 EOF
-        print_success ".env создан"
+        print_success ".env created"
     fi
     
-    # 7. Обновляем зависимости (только если изменился package.json)
+    # 7. Update dependencies (only if package.json changed)
     if [ -f "package.json" ]; then
         if git diff HEAD@{1} --name-only 2>/dev/null | grep -q "package.json"; then
-            print_info "Обновление зависимостей..."
+            print_info "Updating dependencies..."
             npm install --production
         else
-            print_info "Зависимости не изменились, пропускаем npm install"
+            print_info "Dependencies unchanged, skipping npm install"
         fi
     fi
     
-    # 8. Создаём новую версию
+    # 8. Create a new version marker
     NEW_VERSION=$(date +%Y%m%d%H%M%S)
     echo $NEW_VERSION > ".current_version"
-    print_success "Новая версия: $NEW_VERSION"
+    print_success "New version: $NEW_VERSION"
     
-    # 9. Очистка временных файлов
-    print_info "Очистка временных файлов..."
+    # 9. Clean up temporary files
+    print_info "Cleaning up temporary files..."
     rm -rf "$BACKUP_DIR" 2>/dev/null || true
     rm -f "$TEMP_CONFIG" 2>/dev/null || true
     
-    # 10. Запускаем сервер
-    print_info "Запуск сервера..."
+    # 10. Start the server
+    print_info "Starting server..."
     
     export PORT="$SAVED_PORT"
     export HOST="$SAVED_HOST"
@@ -464,21 +464,21 @@ EOF
     sleep 3
     
     if kill -0 $(cat "$PID_FILE") 2>/dev/null; then
-        print_success "Сервер запущен (PID: $(cat $PID_FILE))"
-        print_info "Порт: $PORT, Хост: $HOST"
+        print_success "Server started (PID: $(cat $PID_FILE))"
+        print_info "Port: $PORT, Host: $HOST"
         
         if [ -f "$LOG_COMBINED" ] && [ -s "$LOG_COMBINED" ]; then
             echo ""
-            print_info "Последние записи в combined.log:"
+            print_info "Latest entries in combined.log:"
             echo "----------------------------------------"
             tail -5 "$LOG_COMBINED"
             echo "----------------------------------------"
         fi
     else
-        print_error "Ошибка запуска сервера"
+        print_error "Failed to start server"
         if [ -f "$LOG_ERRORS" ] && [ -s "$LOG_ERRORS" ]; then
             echo ""
-            print_info "Содержимое errors.log:"
+            print_info "Contents of errors.log:"
             echo "----------------------------------------"
             cat "$LOG_ERRORS"
             echo "----------------------------------------"
@@ -486,42 +486,42 @@ EOF
         exit 1
     fi
     
-    print_success "=== ОБНОВЛЕНИЕ ЗАВЕРШЕНО ==="
+    print_success "=== UPDATE COMPLETE ==="
 }
 
-# Статус
+# Status
 cmd_status() {
     if [ -f "$PID_FILE" ]; then
         PID=$(cat "$PID_FILE")
         if kill -0 "$PID" 2>/dev/null; then
-            print_success "Сервер запущен (PID: $PID)"
+            print_success "Server is running (PID: $PID)"
             echo ""
             ps -p "$PID" -o pid,ppid,state,pcpu,pmem,etime,command | grep -v COMMAND
             echo ""
             
-            # Показываем информацию о логах
+            # Show log information
             cmd_logs_size
             
-            # Показываем версию если есть
+            # Show version if available
             if [ -f ".current_version" ]; then
                 VERSION=$(cat ".current_version")
                 echo ""
-                print_info "Версия: $VERSION"
+                print_info "Version: $VERSION"
             fi
         else
-            print_error "Сервер не запущен (PID файл существует, но процесс не найден)"
+            print_error "Server is not running (PID file exists, but process not found)"
         fi
     else
         PID=$(pgrep -f "node server.js" 2>/dev/null)
         if [ -n "$PID" ]; then
-            print_warning "Сервер запущен, но без PID файла (PID: $PID)"
+            print_warning "Server is running, but without a PID file (PID: $PID)"
         else
-            print_error "Сервер не запущен"
+            print_error "Server is not running"
         fi
     fi
 }
 
-# Показать все логи
+# Show all logs
 cmd_logs() {
     echo ""
     print_info "=== LOGS ==="
@@ -531,165 +531,165 @@ cmd_logs() {
     cmd_logs_errors
 }
 
-# Показать combined.log
+# Show combined.log
 cmd_logs_combined() {
     if [ -f "$LOG_COMBINED" ]; then
         if [ -s "$LOG_COMBINED" ]; then
-            print_info "Последние 50 строк combined.log:"
+            print_info "Last 50 lines of combined.log:"
             echo "----------------------------------------"
             tail -50 "$LOG_COMBINED"
             echo "----------------------------------------"
-            print_info "Всего строк: $(wc -l < "$LOG_COMBINED")"
+            print_info "Total lines: $(wc -l < "$LOG_COMBINED")"
         else
-            print_warning "combined.log пуст"
+            print_warning "combined.log is empty"
         fi
     else
-        print_error "combined.log не найден: $LOG_COMBINED"
-        print_info "Сначала запустите сервер: ./hercules.sh start"
+        print_error "combined.log not found: $LOG_COMBINED"
+        print_info "Start the server first: ./hercules.sh start"
     fi
 }
 
-# Показать errors.log
+# Show errors.log
 cmd_logs_errors() {
     if [ -f "$LOG_ERRORS" ]; then
         if [ -s "$LOG_ERRORS" ]; then
-            print_info "Последние 50 строк errors.log:"
+            print_info "Last 50 lines of errors.log:"
             echo "----------------------------------------"
             tail -50 "$LOG_ERRORS"
             echo "----------------------------------------"
-            print_info "Всего строк: $(wc -l < "$LOG_ERRORS")"
+            print_info "Total lines: $(wc -l < "$LOG_ERRORS")"
         else
-            print_warning "errors.log пуст (ошибок нет)"
+            print_warning "errors.log is empty (no errors)"
         fi
     else
-        print_error "errors.log не найден: $LOG_ERRORS"
+        print_error "errors.log not found: $LOG_ERRORS"
     fi
 }
 
-# Логи в реальном времени (combined)
+# Follow logs in real time (combined)
 cmd_logs_follow() {
     if [ -f "$LOG_COMBINED" ]; then
-        print_info "Логи в реальном времени (combined.log), Ctrl+C для выхода"
+        print_info "Following logs in real time (combined.log), Ctrl+C to exit"
         echo "----------------------------------------"
         tail -f "$LOG_COMBINED"
     else
-        print_error "combined.log не найден"
-        print_info "Сначала запустите сервер: ./hercules.sh start"
+        print_error "combined.log not found"
+        print_info "Start the server first: ./hercules.sh start"
     fi
 }
 
-# Логи ошибок в реальном времени
+# Follow error logs in real time
 cmd_logs_follow_errors() {
     if [ -f "$LOG_ERRORS" ]; then
-        print_info "Логи ошибок в реальном времени (errors.log), Ctrl+C для выхода"
+        print_info "Following error logs in real time (errors.log), Ctrl+C to exit"
         echo "----------------------------------------"
         tail -f "$LOG_ERRORS"
     else
-        print_error "errors.log не найден"
+        print_error "errors.log not found"
     fi
 }
 
-# Очистить логи
+# Clear logs
 cmd_logs_clear() {
-    print_info "Очистка логов..."
+    print_info "Clearing logs..."
     
     if [ -f "$LOG_COMBINED" ]; then
         > "$LOG_COMBINED"
-        print_success "Очищен combined.log"
+        print_success "Cleared combined.log"
     fi
     
     if [ -f "$LOG_ERRORS" ]; then
         > "$LOG_ERRORS"
-        print_success "Очищен errors.log"
+        print_success "Cleared errors.log"
     fi
     
-    # Очищаем логи addons
+    # Clear addon logs
     if [ -d "addons" ]; then
         for addon in blender sca sast fuzz; do
             if [ -f "addons/$addon/log.txt" ]; then
                 > "addons/$addon/log.txt"
-                print_success "Очищен addons/$addon/log.txt"
+                print_success "Cleared addons/$addon/log.txt"
             fi
         done
     fi
     
-    print_success "Логи очищены"
+    print_success "Logs cleared"
 }
 
-# Показать размер логов
+# Show log sizes
 cmd_logs_size() {
     echo ""
-    print_info "Размер логов:"
+    print_info "Log sizes:"
     echo "----------------------------------------"
     
     if [ -f "$LOG_COMBINED" ]; then
         SIZE=$(du -h "$LOG_COMBINED" | cut -f1)
         LINES=$(wc -l < "$LOG_COMBINED")
-        echo "  combined.log: $SIZE ($LINES строк)"
+        echo "  combined.log: $SIZE ($LINES lines)"
     else
-        echo "  combined.log: не существует"
+        echo "  combined.log: does not exist"
     fi
     
     if [ -f "$LOG_ERRORS" ]; then
         SIZE=$(du -h "$LOG_ERRORS" | cut -f1)
         LINES=$(wc -l < "$LOG_ERRORS")
-        echo "  errors.log: $SIZE ($LINES строк)"
+        echo "  errors.log: $SIZE ($LINES lines)"
     else
-        echo "  errors.log: не существует"
+        echo "  errors.log: does not exist"
     fi
     
-    # Размер логов addons
+    # Addon log sizes
     if [ -d "addons" ]; then
         for addon in blender sca sast fuzz; do
             if [ -f "addons/$addon/log.txt" ]; then
                 SIZE=$(du -h "addons/$addon/log.txt" | cut -f1)
                 LINES=$(wc -l < "addons/$addon/log.txt")
-                echo "  addons/$addon/log.txt: $SIZE ($LINES строк)"
+                echo "  addons/$addon/log.txt: $SIZE ($LINES lines)"
             fi
         done
     fi
     echo "----------------------------------------"
 }
 
-# Очистка
+# Clean up
 cmd_clean() {
-    print_info "Очистка проекта..."
+    print_info "Cleaning up the project..."
     
     if [ -d "node_modules" ]; then
         rm -rf node_modules
-        print_success "Удалены node_modules"
+        print_success "Removed node_modules"
     fi
     
     if [ -f "package-lock.json" ]; then
         rm -f package-lock.json
-        print_success "Удален package-lock.json"
+        print_success "Removed package-lock.json"
     fi
     
     if [ -f "$PID_FILE" ]; then
         rm -f "$PID_FILE"
-        print_success "Удален PID файл"
+        print_success "Removed PID file"
     fi
     
     if [ -d "$LOG_DIR" ]; then
         rm -rf "$LOG_DIR"
-        print_success "Удалена директория логов"
+        print_success "Removed log directory"
     fi
     
-    # Очищаем логи addons
+    # Clear addon logs
     if [ -d "addons" ]; then
         for addon in blender sca sast fuzz; do
             if [ -f "addons/$addon/log.txt" ]; then
                 rm -f "addons/$addon/log.txt"
-                print_success "Удален addons/$addon/log.txt"
+                print_success "Removed addons/$addon/log.txt"
             fi
         done
     fi
     
-    print_success "Очистка завершена"
+    print_success "Cleanup complete"
 }
 
 # ============================================
-# Главный обработчик команд
+# Main command handler
 # ============================================
 case "$1" in
     install)
@@ -741,7 +741,7 @@ case "$1" in
         if [ -z "$1" ]; then
             show_help
         else
-            print_error "Неизвестная команда: $1"
+            print_error "Unknown command: $1"
             show_help
         fi
         exit 1

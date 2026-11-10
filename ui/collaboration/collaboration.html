@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collaboration | Team feed</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="collaboration.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="icon" type="image/x-icon" href="../../rocket.ico">
+    <script>
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
+</head>
+<body>
+    <div id="box">
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title"><i class="fas fa-tools black-icon"></i><span>Tools</span></div>
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu"><i class="fas fa-chevron-left"></i></button>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader"><i class="fas fa-spinner fa-spin"></i><br>Loading...</div>
+                </div>
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-info"><span class="tool-name">History</span><span class="tool-desc">Scan log</span></div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
+                            <div class="tool-info"><span class="tool-name">Settings</span><span class="tool-desc">Manage parameters</span></div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tool-divider"></div>
+            </div>
+        </div>
+
+        <div id="center">
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <i class="fas fa-comments black-icon"></i>
+                    <span>Collaboration</span>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="header-btn" id="newChatBtn" style="cursor: pointer;"><i class="fas fa-plus"></i> New collaboration</button>
+                    <button class="theme-toggle btn btn-secondary" id="themeToggle">
+                        <i class="fas fa-sun icon-sun"></i>
+                        <i class="fas fa-moon icon-moon"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="messenger">
+                <aside class="chat-list" id="chatList">
+                    <div class="chat-list-loader"><i class="fas fa-spinner fa-spin"></i><br>Loading...</div>
+                </aside>
+
+                <section class="chat-window" id="chatWindow">
+                    <div class="chat-empty" id="chatEmpty">
+                        <i class="fas fa-comments"></i>
+                        <p>Select a chat or create a new one</p>
+                    </div>
+
+                    <div class="chat-active" id="chatActive" style="display:none;">
+                        <header class="chat-header">
+                            <div class="chat-header-info">
+                                <div class="chat-avatar" id="chatAvatar">#</div>
+                                <div class="chat-header-text">
+                                    <span class="chat-name" id="chatName"># general</span>
+                                    <span class="chat-status" id="chatStatus">online</span>
+                                </div>
+                            </div>
+                            <div class="chat-header-actions">
+                                <button class="chat-header-btn" id="clearChatBtn" title="Clear messages">
+                                    <i class="fas fa-broom"></i>
+                                </button>
+                                <button class="chat-header-btn" id="renameChatBtn" title="Rename chat">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="chat-header-btn danger" id="deleteChatBtn" title="Delete chat">
+                                    <i class="fas fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </header>
+
+                        <div class="messages" id="messages"></div>
+
+                        <footer class="composer">
+    <button class="composer-icon-btn" id="attachBtn" title="Attach file" type="button">
+        <i class="fas fa-paperclip"></i>
+    </button>
+
+    <textarea
+        id="messageInput"
+        placeholder="Type a message… (Enter to send, Shift+Enter for newline)"
+        rows="1"
+    ></textarea>
+
+    <div class="composer-actions">
+        <button class="composer-icon-btn" id="callBtn" title="Voice call" type="button">
+            <i class="fas fa-phone"></i>
+        </button>
+        <button class="composer-icon-btn" id="videoBtn" title="Video call" type="button">
+            <i class="fas fa-video"></i>
+        </button>
+        <button class="composer-send-btn" id="sendBtn" title="Send" type="button">
+            <i class="fas fa-paper-plane"></i>
+        </button>
+    </div>
+
+    <input type="file" id="attachInput" hidden multiple>
+</footer>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ NEW COLLABORATION MODAL ============ -->
+    <div class="modal-overlay" id="newChatModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title"><i class="fas fa-comments"></i> New collaboration</div>
+            <button class="modal-close" type="button" data-close>&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="newChatName">Name <span class="required">*</span></label>
+                <input type="text" id="newChatName" placeholder="general" maxlength="64" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label>Visibility</label>
+                <div class="visibility-toggle" id="newChatVisibility">
+                    <button type="button" class="visibility-option active" data-value="private">
+                        <i class="fas fa-lock"></i>
+                        <span class="visibility-label">Private</span>
+                        <span class="visibility-desc">Only invited members</span>
+                    </button>
+                    <button type="button" class="visibility-option" data-value="public">
+                        <i class="fas fa-globe"></i>
+                        <span class="visibility-label">Public</span>
+                        <span class="visibility-desc">Anyone on the team</span>
+                    </button>
+                </div>
+            </div>
+
+            <p class="hint-text">
+                <i class="fas fa-info-circle"></i>
+                Names starting with <code>#</code> are channels, otherwise it's a direct chat.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+            <button class="btn btn-primary" type="button" id="newChatConfirm">
+                <i class="fas fa-plus"></i> Create
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- ============ RENAME CHAT MODAL ============ -->
+    <div class="modal-overlay" id="renameChatModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-pen"></i> Rename chat</div>
+                <button class="modal-close" type="button" data-close>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="renameChatName">Chat name <span class="required">*</span></label>
+                    <input type="text" id="renameChatName" maxlength="64" autocomplete="off">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+                <button class="btn btn-primary" type="button" id="renameChatConfirm">
+                    <i class="fas fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ DELETE CHAT MODAL ============ -->
+    <div class="modal-overlay modal-danger" id="deleteChatModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-trash-can"></i> Delete chat</div>
+                <button class="modal-close" type="button" data-close>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-text">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Are you sure you want to delete chat <strong id="deleteChatName"></strong>?
+                </div>
+                <p class="hint-text">
+                    All messages in this chat will be permanently lost. This action is irreversible.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+                <button class="btn btn-primary" type="button" id="deleteChatConfirm">
+                    <i class="fas fa-trash-can"></i> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CLEAR CHAT MODAL ============ -->
+    <div class="modal-overlay modal-danger" id="clearChatModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-broom"></i> Clear messages</div>
+                <button class="modal-close" type="button" data-close>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-text">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Clear all messages in <strong id="clearChatName"></strong>?
+                </div>
+                <p class="hint-text">
+                    The chat itself will be kept, only the message history is removed.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+                <button class="btn btn-primary" type="button" id="clearChatConfirm">
+                    <i class="fas fa-broom"></i> Clear
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ INVITE MEMBER MODAL ============ -->
+    <div class="modal-overlay" id="inviteModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title"><i class="fas fa-user-plus"></i> Invite to chat</div>
+                <button class="modal-close" type="button" data-close>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inviteUser">Username <span class="required">*</span></label>
+                    <input type="text" id="inviteUser" placeholder="username" autocomplete="off">
+                </div>
+                <div class="form-group">
+                    <label for="inviteRole">Role</label>
+                    <select id="inviteRole">
+                        <option value="member">Member</option>
+                        <option value="admin">Admin</option>
+                        <option value="readonly">Read-only</option>
+                    </select>
+                </div>
+                <p class="hint-text">
+                    <i class="fas fa-info-circle"></i>
+                    The user will see this chat in their list.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+                <button class="btn btn-primary" type="button" id="inviteConfirm">
+                    <i class="fas fa-user-plus"></i> Invite
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============ CONTEXT MENU ============ -->
+    <div class="context-menu" id="chatContextMenu">
+        <div class="context-item" data-action="open">
+            <i class="fas fa-arrow-right"></i> Open
+        </div>
+        <div class="context-item" data-action="rename">
+            <i class="fas fa-pen"></i> Rename
+        </div>
+        <div class="context-item" data-action="clear">
+            <i class="fas fa-broom"></i> Clear messages
+        </div>
+        <div class="context-item" data-action="invite">
+            <i class="fas fa-user-plus"></i> Invite
+        </div>
+        <div class="context-divider"></div>
+        <div class="context-item danger" data-action="delete">
+            <i class="fas fa-trash-can"></i> Delete
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script type="text/javascript" src="../common/preloader.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script type="text/javascript" src="../common/modal.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+    <script type="module" src="collaboration.js"></script>
+</body>
+</html>

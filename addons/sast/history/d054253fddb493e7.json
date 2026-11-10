@@ -1,0 +1,2218 @@
+{
+  "issues": [
+    {
+      "file": "hercules-cli-amvera/server.js",
+      "line": 116,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "app.get",
+      "codeBlock": {
+        "vulnerableLine": 116,
+        "lines": [
+          {
+            "number": 114,
+            "code": "// МАРШРУТЫ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 115,
+            "code": "// ======================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 116,
+            "code": "app.get('/', (req, res) => { \r",
+            "isVulnerable": true
+          },
+          {
+            "number": 117,
+            "code": "    res.sendFile(join(__dirname, 'public', 'index.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 118,
+            "code": "});\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/server.js",
+      "line": 116,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "app.get",
+      "codeBlock": {
+        "vulnerableLine": 116,
+        "lines": [
+          {
+            "number": 114,
+            "code": "// МАРШРУТЫ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 115,
+            "code": "// ======================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 116,
+            "code": "app.get('/', (req, res) => { \r",
+            "isVulnerable": true
+          },
+          {
+            "number": 117,
+            "code": "    res.sendFile(join(__dirname, 'public', 'index.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 118,
+            "code": "});\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 118,
+      "severity": "CRITICAL",
+      "ruleId": "sql-injection",
+      "category": "injection",
+      "message": "Potential SQL injection in template string",
+      "snippet": "`Updated pending order:  for `",
+      "codeBlock": {
+        "vulnerableLine": 118,
+        "lines": [
+          {
+            "number": 116,
+            "code": "        );\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 117,
+            "code": "        \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 118,
+            "code": "        await logToFile(`Updated pending order: ${licenceKey} for ${customerEmail}`, 'INFO');\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 119,
+            "code": "        \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 120,
+            "code": "        return {\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Use parameterized queries, avoid interpolation in SQL"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 160,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 160,
+        "lines": [
+          {
+            "number": 158,
+            "code": "    const router = express.Router();\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 159,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 160,
+            "code": "router.post('/activate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 161,
+            "code": "    const { licenceKey } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 162,
+            "code": "    \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 242,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 242,
+        "lines": [
+          {
+            "number": 240,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 241,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 242,
+            "code": "    router.post('/deactivate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 243,
+            "code": "        const { licenceKey, adminToken } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 244,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 160,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 160,
+        "lines": [
+          {
+            "number": 158,
+            "code": "    const router = express.Router();\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 159,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 160,
+            "code": "router.post('/activate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 161,
+            "code": "    const { licenceKey } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 162,
+            "code": "    \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 242,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 242,
+        "lines": [
+          {
+            "number": 240,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 241,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 242,
+            "code": "    router.post('/deactivate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 243,
+            "code": "        const { licenceKey, adminToken } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 244,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 160,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 160,
+        "lines": [
+          {
+            "number": 158,
+            "code": "    const router = express.Router();\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 159,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 160,
+            "code": "router.post('/activate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 161,
+            "code": "    const { licenceKey } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 162,
+            "code": "    \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 242,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 242,
+        "lines": [
+          {
+            "number": 240,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 241,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 242,
+            "code": "    router.post('/deactivate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 243,
+            "code": "        const { licenceKey, adminToken } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 244,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 160,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 160,
+        "lines": [
+          {
+            "number": 158,
+            "code": "    const router = express.Router();\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 159,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 160,
+            "code": "router.post('/activate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 161,
+            "code": "    const { licenceKey } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 162,
+            "code": "    \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/licence/router.js",
+      "line": 242,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 242,
+        "lines": [
+          {
+            "number": 240,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 241,
+            "code": "    \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 242,
+            "code": "    router.post('/deactivate', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 243,
+            "code": "        const { licenceKey, adminToken } = req.body;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 244,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/metrics/router.js",
+      "line": 225,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 225,
+        "lines": [
+          {
+            "number": 223,
+            "code": "    // POST / - СОХРАНЕНИЕ МЕТРИКИ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 224,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 225,
+            "code": "    router.post('/', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 226,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 227,
+            "code": "            const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/metrics/router.js",
+      "line": 225,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 225,
+        "lines": [
+          {
+            "number": 223,
+            "code": "    // POST / - СОХРАНЕНИЕ МЕТРИКИ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 224,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 225,
+            "code": "    router.post('/', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 226,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 227,
+            "code": "            const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/metrics/router.js",
+      "line": 225,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 225,
+        "lines": [
+          {
+            "number": 223,
+            "code": "    // POST / - СОХРАНЕНИЕ МЕТРИКИ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 224,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 225,
+            "code": "    router.post('/', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 226,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 227,
+            "code": "            const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/metrics/router.js",
+      "line": 225,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 225,
+        "lines": [
+          {
+            "number": 223,
+            "code": "    // POST / - СОХРАНЕНИЕ МЕТРИКИ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 224,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 225,
+            "code": "    router.post('/', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 226,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 227,
+            "code": "            const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 130,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 130,
+        "lines": [
+          {
+            "number": 128,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 129,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 130,
+            "code": "    router.get('/order', orderPageLimiter, (req, res) => { \r",
+            "isVulnerable": true
+          },
+          {
+            "number": 131,
+            "code": "        res.sendFile(join(__dirname, 'order.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 132,
+            "code": "    });\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 134,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 134,
+        "lines": [
+          {
+            "number": 132,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 133,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 134,
+            "code": "router.get('/success', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 135,
+            "code": "    const { InvId, OutSum, SignatureValue } = req.query;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 136,
+            "code": "    \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 164,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 164,
+        "lines": [
+          {
+            "number": 162,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 163,
+            "code": " \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 164,
+            "code": "    router.get('/success.html', (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 165,
+            "code": "     res.sendFile(join(__dirname, 'success.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 166,
+            "code": "    });\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 168,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 168,
+        "lines": [
+          {
+            "number": 166,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 167,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 168,
+            "code": "    router.get('/failed', (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 169,
+            "code": "        res.sendFile(join(__dirname, 'failed.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 170,
+            "code": "    });\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 172,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 172,
+        "lines": [
+          {
+            "number": 170,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 171,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 172,
+            "code": "router.post('/order', orderCreateLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 173,
+            "code": "    // Константы цен\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 174,
+            "code": "    const BASE_DAY_PRICE = 799;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 293,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 293,
+        "lines": [
+          {
+            "number": 291,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 292,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 293,
+            "code": "router.post('/webhook', webhookLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 294,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 295,
+            "code": "    await connectToDB();\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 172,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 172,
+        "lines": [
+          {
+            "number": 170,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 171,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 172,
+            "code": "router.post('/order', orderCreateLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 173,
+            "code": "    // Константы цен\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 174,
+            "code": "    const BASE_DAY_PRICE = 799;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 293,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 293,
+        "lines": [
+          {
+            "number": 291,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 292,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 293,
+            "code": "router.post('/webhook', webhookLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 294,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 295,
+            "code": "    await connectToDB();\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 172,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 172,
+        "lines": [
+          {
+            "number": 170,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 171,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 172,
+            "code": "router.post('/order', orderCreateLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 173,
+            "code": "    // Константы цен\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 174,
+            "code": "    const BASE_DAY_PRICE = 799;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 293,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 293,
+        "lines": [
+          {
+            "number": 291,
+            "code": "});\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 292,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 293,
+            "code": "router.post('/webhook', webhookLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 294,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 295,
+            "code": "    await connectToDB();\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 134,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 134,
+        "lines": [
+          {
+            "number": 132,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 133,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 134,
+            "code": "router.get('/success', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 135,
+            "code": "    const { InvId, OutSum, SignatureValue } = req.query;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 136,
+            "code": "    \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 164,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 164,
+        "lines": [
+          {
+            "number": 162,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 163,
+            "code": " \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 164,
+            "code": "    router.get('/success.html', (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 165,
+            "code": "     res.sendFile(join(__dirname, 'success.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 166,
+            "code": "    });\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/payment/router.js",
+      "line": 168,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 168,
+        "lines": [
+          {
+            "number": 166,
+            "code": "    });\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 167,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 168,
+            "code": "    router.get('/failed', (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 169,
+            "code": "        res.sendFile(join(__dirname, 'failed.html'));\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 170,
+            "code": "    });\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/chat/router.js",
+      "line": 204,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 204,
+        "lines": [
+          {
+            "number": 202,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 203,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 204,
+            "code": "    router.post('/message', chatLimiter, validateMessage, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 205,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 206,
+            "code": "        const userAgent = getUserAgent(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/chat/router.js",
+      "line": 307,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 307,
+        "lines": [
+          {
+            "number": 305,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 306,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 307,
+            "code": "    router.get('/session/:id', (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 308,
+            "code": "        const sessionId = req.params.id;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 309,
+            "code": "        const session = getSession(sessionId);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/chat/router.js",
+      "line": 204,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 204,
+        "lines": [
+          {
+            "number": 202,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 203,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 204,
+            "code": "    router.post('/message', chatLimiter, validateMessage, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 205,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 206,
+            "code": "        const userAgent = getUserAgent(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/chat/router.js",
+      "line": 204,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 204,
+        "lines": [
+          {
+            "number": 202,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 203,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 204,
+            "code": "    router.post('/message', chatLimiter, validateMessage, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 205,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 206,
+            "code": "        const userAgent = getUserAgent(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/chat/router.js",
+      "line": 307,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 307,
+        "lines": [
+          {
+            "number": 305,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 306,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 307,
+            "code": "    router.get('/session/:id', (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 308,
+            "code": "        const sessionId = req.params.id;\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 309,
+            "code": "        const session = getSession(sessionId);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/request/router.js",
+      "line": 486,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 486,
+        "lines": [
+          {
+            "number": 484,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 485,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 486,
+            "code": "    router.post('/', orderLimiter, validateOrder, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 487,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 488,
+            "code": "        const userAgent = getUserAgent(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/request/router.js",
+      "line": 486,
+      "severity": "HIGH",
+      "ruleId": "rest-missing-role-check",
+      "category": "rest-api",
+      "message": "Modifying endpoint without role check",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 486,
+        "lines": [
+          {
+            "number": 484,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 485,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 486,
+            "code": "    router.post('/', orderLimiter, validateOrder, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 487,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 488,
+            "code": "        const userAgent = getUserAgent(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Restrict access by roles"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/request/router.js",
+      "line": 486,
+      "severity": "MEDIUM",
+      "ruleId": "rest-missing-validation",
+      "category": "rest-api",
+      "message": "Missing input validation",
+      "snippet": "router.post",
+      "codeBlock": {
+        "vulnerableLine": 486,
+        "lines": [
+          {
+            "number": 484,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 485,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 486,
+            "code": "    router.post('/', orderLimiter, validateOrder, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 487,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 488,
+            "code": "        const userAgent = getUserAgent(req);\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add input validation"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 62,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 62,
+        "lines": [
+          {
+            "number": 60,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 61,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 62,
+            "code": "    router.get('/products', shopLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 63,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 64,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 98,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 98,
+        "lines": [
+          {
+            "number": 96,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 97,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 98,
+            "code": "    router.get('/product/:id', shopLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 99,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 100,
+            "code": "        const id = req.params.id;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 123,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 123,
+        "lines": [
+          {
+            "number": 121,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 122,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 123,
+            "code": "    router.get('/slug/:slug', shopLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 124,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 125,
+            "code": "        const slug = req.params.slug;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 148,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 148,
+        "lines": [
+          {
+            "number": 146,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 147,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 148,
+            "code": "    router.get('/categories', shopLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 149,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 150,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 172,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 172,
+        "lines": [
+          {
+            "number": 170,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 171,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 172,
+            "code": "    router.get('/stats', shopLimiter, async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 173,
+            "code": "        const ip = getClientIp(req);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 174,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 196,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 196,
+        "lines": [
+          {
+            "number": 194,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 195,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 196,
+            "code": "    router.get('/health', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 197,
+            "code": "        writeLog('[SHOP] Health check', 'INFO');\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 198,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/shop/router.js",
+      "line": 196,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 196,
+        "lines": [
+          {
+            "number": 194,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 195,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 196,
+            "code": "    router.get('/health', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 197,
+            "code": "        writeLog('[SHOP] Health check', 'INFO');\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 198,
+            "code": "        \r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 445,
+      "severity": "HIGH",
+      "ruleId": "path-traversal",
+      "category": "owasp",
+      "message": "Potential Path Traversal vulnerability",
+      "snippet": "const latestData = await fs.readFile(latestPath, 'utf8');",
+      "codeBlock": {
+        "vulnerableLine": 445,
+        "lines": [
+          {
+            "number": 443,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 444,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 445,
+            "code": "            const latestData = await fs.readFile(latestPath, 'utf8');\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 446,
+            "code": "            const data = JSON.parse(latestData);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 447,
+            "code": "\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Validate paths, use path.resolve"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 60,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 60,
+        "lines": [
+          {
+            "number": 58,
+            "code": "    // GET /token/:os - ПОЛУЧЕНИЕ ТОКЕНА\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 59,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 60,
+            "code": "    router.get('/token/:os', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 61,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 62,
+            "code": "            const os = req.params.os;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 127,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 127,
+        "lines": [
+          {
+            "number": 125,
+            "code": "    // GET /link/:token - ПОЛУЧЕНИЕ ССЫЛКИ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 126,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 127,
+            "code": "    router.get('/link/:token', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 128,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 129,
+            "code": "            const token = req.params.token;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 262,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 262,
+        "lines": [
+          {
+            "number": 260,
+            "code": "const deltaLimits = new Map();\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 261,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 262,
+            "code": "router.get('/delta', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 263,
+            "code": "    try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 264,
+            "code": "        const ip = req.ip || req.connection?.remoteAddress || 'unknown';\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 419,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 419,
+        "lines": [
+          {
+            "number": 417,
+            "code": "}, 60 * 60 * 1000); \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 418,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 419,
+            "code": "router.get('/latest', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 420,
+            "code": "    try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 421,
+            "code": "\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 487,
+      "severity": "CRITICAL",
+      "ruleId": "rest-missing-auth",
+      "category": "rest-api",
+      "message": "REST endpoint without authentication check (check for global middleware)",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 487,
+        "lines": [
+          {
+            "number": 485,
+            "code": "    // GET /file/:dlToken - СКАЧИВАНИЕ ФАЙЛА\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 486,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 487,
+            "code": "    router.get('/file/:dlToken', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 488,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 489,
+            "code": "            const dlToken = req.params.dlToken;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Add authentication middleware or check global app.use()"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 60,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 60,
+        "lines": [
+          {
+            "number": 58,
+            "code": "    // GET /token/:os - ПОЛУЧЕНИЕ ТОКЕНА\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 59,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 60,
+            "code": "    router.get('/token/:os', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 61,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 62,
+            "code": "            const os = req.params.os;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 127,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 127,
+        "lines": [
+          {
+            "number": 125,
+            "code": "    // GET /link/:token - ПОЛУЧЕНИЕ ССЫЛКИ\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 126,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 127,
+            "code": "    router.get('/link/:token', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 128,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 129,
+            "code": "            const token = req.params.token;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 262,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 262,
+        "lines": [
+          {
+            "number": 260,
+            "code": "const deltaLimits = new Map();\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 261,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 262,
+            "code": "router.get('/delta', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 263,
+            "code": "    try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 264,
+            "code": "        const ip = req.ip || req.connection?.remoteAddress || 'unknown';\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 419,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 419,
+        "lines": [
+          {
+            "number": 417,
+            "code": "}, 60 * 60 * 1000); \r",
+            "isVulnerable": false
+          },
+          {
+            "number": 418,
+            "code": "\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 419,
+            "code": "router.get('/latest', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 420,
+            "code": "    try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 421,
+            "code": "\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/router.js",
+      "line": 487,
+      "severity": "MEDIUM",
+      "ruleId": "rate-limit-missing",
+      "category": "rate-limit",
+      "message": "Endpoint without rate limiting",
+      "snippet": "router.get",
+      "codeBlock": {
+        "vulnerableLine": 487,
+        "lines": [
+          {
+            "number": 485,
+            "code": "    // GET /file/:dlToken - СКАЧИВАНИЕ ФАЙЛА\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 486,
+            "code": "    // ============================================================\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 487,
+            "code": "    router.get('/file/:dlToken', async (req, res) => {\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 488,
+            "code": "        try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 489,
+            "code": "            const dlToken = req.params.dlToken;\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Implement rate limiting"
+    },
+    {
+      "file": "hercules-cli-amvera/modules/version/utils.js",
+      "line": 114,
+      "severity": "HIGH",
+      "ruleId": "path-traversal",
+      "category": "owasp",
+      "message": "Potential Path Traversal vulnerability",
+      "snippet": "const data = fs.readFileSync(filePath);",
+      "codeBlock": {
+        "vulnerableLine": 114,
+        "lines": [
+          {
+            "number": 112,
+            "code": "    try {\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 113,
+            "code": "        const hash = crypto.createHash('sha256');\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 114,
+            "code": "        const data = fs.readFileSync(filePath);\r",
+            "isVulnerable": true
+          },
+          {
+            "number": 115,
+            "code": "        hash.update(data);\r",
+            "isVulnerable": false
+          },
+          {
+            "number": 116,
+            "code": "        const computed = 'sha256:' + hash.digest('hex');\r",
+            "isVulnerable": false
+          }
+        ]
+      },
+      "recommendation": "Validate paths, use path.resolve"
+    }
+  ],
+  "statistics": {
+    "total": 55,
+    "critical": 25,
+    "high": 9,
+    "medium": 21,
+    "low": 0,
+    "info": 0
+  },
+  "metadata": {
+    "archiveId": "d054253fddb493e7",
+    "archiveName": "d054253fddb493e7.zip",
+    "fileCount": 77,
+    "scanTime": "2026-10-20T12:46:27.720Z"
+  }
+}

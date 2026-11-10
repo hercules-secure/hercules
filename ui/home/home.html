@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>Home</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../rocket.ico">
+
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="../common/scroll.css">
+
+    <script>
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', saved || (prefersDark ? 'dark' : 'light'));
+        })();
+    </script>
+</head>
+
+<body>
+    <div id="box">
+        <!-- ============ SIDEBAR ============ -->
+        <div id="left">
+            <div class="tools-section">
+                <div class="tools-header">
+                    <div class="tools-title">
+                        <i class="fas fa-tools black-icon"></i>
+                        <span>Tools</span>
+                    </div>
+                    <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                </div>
+                <div class="tool-divider"></div>
+
+                <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Loading...
+                    </div>
+                </div>
+
+                <div class="tool-divider"></div>
+                <div class="tools-grid">
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-info">
+                                <span class="tool-name">History</span>
+                                <span class="tool-desc">Scan log</span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
+                            <div class="tool-info">
+                                <span class="tool-name">Settings</span>
+                                <span class="tool-desc">Manage parameters</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                <div class="tool-divider"></div>
+            </div>
+        </div>
+
+        <!-- ============ CENTER ============ -->
+        <div id="center">
+            <!-- TOP BAR -->
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <i class="fas fa-house black-icon"></i>
+                    <span>Activity &amp; Statistics</span>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="header-btn" id="refreshBtn" title="Refresh dashboard">
+                        <i class="fas fa-sync-alt"></i> Refresh
+                    </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+                        <i class="fas fa-sun icon-sun"></i>
+                        <i class="fas fa-moon icon-moon"></i>
+                    </button>
+                </div>
+            </div>
+            
+
+            <!-- CHARTS ROW -->
+            <div class="dashboard-grid charts-grid">
+                <section class="dashboard-card chart-card">
+                    <header class="dashboard-card-header">
+                        <h2><i class="fas fa-note-sticky"></i> Tasks</h2>
+                        <a href="/notes" class="dashboard-link">Open <i class="fas fa-arrow-right"></i></a>
+                    </header>
+                    <div class="scans-list" id="tasksList">
+                        <div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading tasks...</div>
+                    </div>
+                </section>
+
+                <!-- VULNS BY SEVERITY (compact) -->
+                <section class="dashboard-card chart-card chart-card--compact">
+                    <header class="dashboard-card-header">
+                        <h2><i class="fas fa-chart-pie"></i> Severity</h2>
+                    </header>
+                    <div class="chart-body chart-body--donut-compact">
+                        <svg class="donut-svg donut-svg--compact" id="chartSeverity" viewBox="0 0 200 200"></svg>
+                        <ul class="donut-legend donut-legend--stacked" id="severityLegend"></ul>
+                    </div>
+                </section>
+            </div>
+
+            <div class="dashboard-grid dashboard-grid--3">
+                <!-- ACTIVITY -->
+                <section class="dashboard-card activity-card">
+                    <header class="dashboard-card-header">
+                        <h2><i class="fas fa-wave-square"></i> Recent activity</h2>
+                        <span class="dashboard-card-hint" id="activityCount">—</span>
+                    </header>
+                    <div class="activity-list" id="activityList">
+                        <div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading activities...</div>
+                    </div>
+                </section>
+
+                <!-- CMDB ALERTS -->
+                <section class="dashboard-card cmdb-card">
+                    <header class="dashboard-card-header">
+                        <h2><i class="fas fa-cubes"></i> CMDB</h2>
+                        <a href="/cmdb" class="dashboard-link">Open <i class="fas fa-arrow-right"></i></a>
+                    </header>
+                    <div class="cmdb-alerts" id="cmdbAlerts">
+                        <div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                    </div>
+                </section>
+
+                <!-- COLLABORATION INBOX -->
+                <section class="dashboard-card collab-card">
+                    <header class="dashboard-card-header">
+                        <h2><i class="fas fa-comments"></i> Collaboration</h2>
+                        <span class="dashboard-card-hint" id="collabUnreadBadge">—</span>
+                    </header>
+                    <div class="collab-inbox" id="collabInbox">
+                        <div class="loading-row"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+    <!-- SCRIPTS -->
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script type="text/javascript" src="../common/modal.js"></script>
+    <script type="module" src="home.js"></script>
+</body>
+</html>

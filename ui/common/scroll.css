@@ -1,0 +1,138 @@
+/* ============================================================
+   Hercules — Unified Scrollbar
+   Подключается на всех страницах:
+   <link rel="stylesheet" href="../common/scroll.css">
+   ============================================================ */
+
+/* -------- Firefox -------- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-hover, rgba(120, 130, 150, 0.35)) transparent;
+}
+
+/* -------- Chrome / Edge / Safari -------- */
+*::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb {
+    background: var(--border-hover, rgba(120, 130, 150, 0.35));
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+    transition: background 0.2s ease;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+    background: var(--accent, #22d3ee);
+    background-clip: content-box;
+}
+
+*::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* ============================================================
+   Тонкие скроллы для конкретных контейнеров
+   ============================================================ */
+
+/* Основной сайдбар — тоньше */
+#left {
+    scrollbar-width: thin;
+}
+
+#left::-webkit-scrollbar {
+    width: 6px;
+}
+
+#left::-webkit-scrollbar-thumb {
+    background: var(--border-hover, rgba(120, 130, 150, 0.35));
+    border-radius: 6px;
+    border: none;
+    background-clip: padding-box;
+}
+
+#left::-webkit-scrollbar-thumb:hover {
+    background: var(--accent, #22d3ee);
+}
+
+/* Модалки — тонкие */
+.modal::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar,
+.modal-content::-webkit-scrollbar,
+.settings-content::-webkit-scrollbar,
+.result-modal-body::-webkit-scrollbar,
+.sast-modal-body::-webkit-scrollbar,
+.sast-modal::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.modal::-webkit-scrollbar-thumb,
+.modal-body::-webkit-scrollbar-thumb,
+.modal-content::-webkit-scrollbar-thumb,
+.settings-content::-webkit-scrollbar-thumb,
+.result-modal-body::-webkit-scrollbar-thumb,
+.sast-modal-body::-webkit-scrollbar-thumb,
+.sast-modal::-webkit-scrollbar-thumb {
+    background: var(--border-hover, rgba(120, 130, 150, 0.35));
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.modal::-webkit-scrollbar-thumb:hover,
+.modal-body::-webkit-scrollbar-thumb:hover,
+.modal-content::-webkit-scrollbar-thumb:hover,
+.settings-content::-webkit-scrollbar-thumb:hover,
+.result-modal-body::-webkit-scrollbar-thumb:hover,
+.sast-modal-body::-webkit-scrollbar-thumb:hover,
+.sast-modal::-webkit-scrollbar-thumb:hover {
+    background: var(--accent, #22d3ee);
+    background-clip: content-box;
+}
+
+/* Таблицы — тонкие */
+.table-wrapper::-webkit-scrollbar,
+.history-table-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb,
+.history-table-wrapper::-webkit-scrollbar-thumb {
+    background: var(--border-hover, rgba(120, 130, 150, 0.35));
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover,
+.history-table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: var(--accent, #22d3ee);
+    background-clip: content-box;
+}
+
+
+.custom-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: var(--border-hover, rgba(120, 130, 150, 0.35));
+    border-radius: 8px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--accent, #22d3ee);
+    background-clip: content-box;
+}

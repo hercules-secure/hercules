@@ -16,9 +16,9 @@ function saveUpdateSettings() {
 // ==================== НАСТРОЙКИ ДОСТУПА ====================
 
 async function saveSettings() {
-    // Собираем ВСЕ настройки в один массив
-    const items = [];
 
+    const items = [];
+    
     // Авторизация
     const authToggle = document.getElementById('authEnabled');
     if (authToggle) {
@@ -30,7 +30,23 @@ async function saveSettings() {
             sessionTimeout: document.getElementById('sessionTimeout')?.value || '30'
         });
     }
+        // Collaboration
+        const collabEnabled = document.getElementById('collabEnabled');
+        if (collabEnabled) {
+            const rawUrl = (document.getElementById('collabServerUrl')?.value || '').trim();
+            // Убираем случайно введённый /socket — он добавляется клиентом
+            const serverUrl = rawUrl.replace(/\/socket\/?$/, '');
 
+            items.push({
+                item: 'collaboration',
+                enabled: collabEnabled.checked,
+                serverUrl,
+                apiKey: (document.getElementById('collabApiKey')?.value || '').trim(),
+                workspace: (document.getElementById('collabWorkspace')?.value || '').trim(),
+                reconnectInterval: parseInt(document.getElementById('collabReconnect')?.value || '5', 10),
+                verifyTls: document.getElementById('collabVerifyTls')?.checked ?? false,
+            });
+        } 
     // История
     const historyToggle = document.getElementById('historyEnabled');
     if (historyToggle) {
@@ -40,7 +56,7 @@ async function saveSettings() {
             retention: parseInt(document.getElementById('historyRetention')?.value || '30')
         });
     }
-
+   
     // ========== ИНТЕГРАЦИИ ==========
     
     // Git (Webhook)
@@ -127,11 +143,11 @@ async function saveSettings() {
     // Отправляем одним запросом
     const success = await patchConfig(items);
 
-    if (success) {
-        showNotification('Все настройки сохранены!', 'success');
-    } else {
-        showNotification('Ошибка сохранения настроек', 'error');
-    }
+        if (success) {
+            showNotification('All settings saved!', 'success');
+        } else {
+            showNotification('Failed to save settings', 'error');
+        }
 }
 // ==================== ЗАГРУЗКА НАСТРОЕК ====================
 
@@ -178,7 +194,7 @@ async function checkUpdates() {
 // ==================== СБРОС НАСТРОЕК ====================
 
 function factoryReset() {
-    if (confirm('ВНИМАНИЕ! Это действие сбросит ВСЕ настройки платформы.\n\nВы уверены?')) {
+    if (confirm('WARNING! This action will reset ALL platform settings.\n\nAre you sure you want to continue?')) {
         localStorage.removeItem('hercules_settings');
         localStorage.removeItem('hercules_update_settings');
         localStorage.removeItem('hercules_analysis_history');
@@ -396,6 +412,96 @@ if (historyToggle) {
     historyToggle.addEventListener('change', updateHistoryOptions);
     updateHistoryOptions();
 }
+/* ============================================================
+   COLLABORATION — показать/скрыть настройки + тест + копирование
+   ============================================================ */
+(function initCollaborationSettings() {
+    const enabled = document.getElementById('collabEnabled');
+    const settings = document.getElementById('collabSettings');
+    if (!enabled || !settings) return;
 
+    function syncVisibility() {
+        settings.style.display = enabled.checked ? 'block' : 'none';
+    }
+
+    enabled.addEventListener('change', syncVisibility);
+    syncVisibility();
+
+    // ===== Toggle API key visibility =====
+    const toggleBtn = document.getElementById('collabToggleKey');
+    const apiKeyInput = document.getElementById('collabApiKey');
+    toggleBtn?.addEventListener('click', () => {
+        if (!apiKeyInput) return;
+        const isPassword = apiKeyInput.type === 'password';
+        apiKeyInput.type = isPassword ? 'text' : 'password';
+        toggleBtn.innerHTML = isPassword
+            ? '<i class="fas fa-eye-slash"></i>'
+            : '<i class="fas fa-eye"></i>';
+    });
+
+    // ===== Copy API key =====
+    document.getElementById('collabCopyKey')?.addEventListener('click', () => {
+        if (!apiKeyInput) return;
+        navigator.clipboard.writeText(apiKeyInput.value).then(() => {
+            if (typeof showNotification === 'function') {
+                showNotification('API key copied', 'success');
+            }
+        });
+    });
+
+    // ===== Test connection =====
+    document.getElementById('collabTestBtn')?.addEventListener('click', async () => {
+    const url = (document.getElementById('collabServerUrl')?.value || '').trim();
+    const key = (document.getElementById('collabApiKey')?.value || '').trim();
+
+    if (!url) {
+        showNotification?.('Server URL is required', 'error');
+        return;
+    }
+
+    const base = url
+        .replace(/^ws(s?):\/\//, 'http$1://')
+        .replace(/\/socket(\/|\?|$).*$/, '')
+        .replace(/\/$/, '');
+
+    showNotification?.('Testing connection…', 'info');
+
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 8000);
+
+    try {
+        // 1. Проверяем health (без Authorization — сервер его не использует)
+        const health = await fetch(base + '/health', {
+            method: 'GET',
+            signal: ctrl.signal,
+        });
+        if (!health.ok) throw new Error('Health check: HTTP ' + health.status);
+
+        // 2. Проверяем, что это действительно Socket.IO endpoint
+        const socketRes = await fetch(base + '/socket.io/?EIO=4&transport=polling', {
+            method: 'GET',
+            signal: ctrl.signal,
+        });
+        if (!socketRes.ok) throw new Error('Socket.IO: HTTP ' + socketRes.status);
+
+        const text = await socketRes.text();
+        if (!text.startsWith('0{')) {
+            throw new Error('Not a Socket.IO endpoint');
+        }
+
+        // 3. Если задан ключ — предупреждаем, что он не проверен этим тестом
+        if (key) {
+            showNotification?.('Server reachable. Token will be verified on connect.', 'success');
+        } else {
+            showNotification?.('Collaboration server reachable', 'success');
+        }
+    } catch (err) {
+        const msg = err.name === 'AbortError' ? 'Timeout after 8s' : err.message;
+        showNotification?.('Connection failed: ' + msg, 'error');
+    } finally {
+        clearTimeout(timer);
+    }
+});
+})();
 window.closeUpdateModal = closeUpdateModal;
 window.showNotification = showNotification;

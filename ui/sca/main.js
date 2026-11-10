@@ -1001,385 +1001,235 @@ SCAPopupReporter.prototype.showPopup = function() {
     overlay.className = 'sca-popup-overlay';
     var popup = document.createElement('div');
     popup.className = 'sca-popup';
-    
+
     var styles = document.createElement('style');
     styles.textContent = `
-        .sca-popup-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            font-family: 'Fira Sans', sans-serif;
-            padding: 10px;
+        .sca-popup-overlay{
+            position:fixed;inset:0;background:rgba(15,23,42,0.65);
+            display:flex;justify-content:center;align-items:center;
+            z-index:9999;font-family:'Fira Sans',sans-serif;padding:16px;
+            backdrop-filter:blur(2px);
         }
-        .sca-popup {
-            background: white;
-            width: 100%;
-            max-width: 1200px;
-            max-height: 90vh;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            animation: sca-slideIn 0.3s ease-out;
+        .sca-popup{
+            background:#fff;width:96vw;max-width:1600px;max-height:92vh;
+            border-radius:12px;border:1px solid #e3e8f0;
+            box-shadow:0 24px 60px rgba(15,23,42,0.35);
+            display:flex;flex-direction:column;overflow:hidden;
+            animation:sca-slideIn 0.25s ease-out;
         }
-        @keyframes sca-slideIn {
-            from { transform: translateY(-50px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+        @keyframes sca-slideIn{from{transform:translateY(-16px);opacity:0}to{transform:translateY(0);opacity:1}}
+
+        .sca-popup-header{
+            padding:18px 24px;background:#fff;color:#0f172a;
+            display:flex;justify-content:space-between;align-items:center;
+            border-bottom:1px solid #e3e8f0;
         }
-        .sca-popup-header {
-            padding: 20px;
-            background: #1a1a2a;
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
+        .sca-popup-title{
+            font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;
+            letter-spacing:-0.01em;
         }
-        .sca-popup-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .sca-popup-title i{color:#0891b2;font-size:18px;}
+        .sca-popup-title .sub{color:#64748b;font-weight:400;font-size:13px;margin-left:8px;}
+        .sca-popup-close{
+            background:none;border:none;color:#64748b;font-size:22px;cursor:pointer;
+            width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+            border-radius:6px;transition:all 0.15s;
         }
-        .sca-popup-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 28px;
-            cursor: pointer;
-            padding: 0;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            transition: background 0.2s;
-        }
-        .sca-popup-close:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .sca-popup-content {
-            padding: 20px;
-            overflow-y: auto;
-            flex: 1;
-            background: #f5f5f5;
-        }
-        .sca-popup-footer {
-            padding: 15px 20px;
-            background: #f8f9fa;
-            border-top: 1px solid #dee2e6;
-            display: flex;
-            justify-content: flex-end;
-            gap: 12px;
-        }
-        .sca-btn {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
-            font-family: 'Fira Sans', sans-serif;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .sca-btn-html { background: #6f42c1; color: white; }
-        .sca-btn-html:hover { background: #5a32a3; }
-        .sca-btn-pdf { background: #dc3545; color: white; }
-        .sca-btn-pdf:hover { background: #b02a37; }
-        .sca-btn-json { background: #10b981; color: white; }
-        .sca-btn-json:hover { background: #0e9f6e; }
-        
-        .sca-stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        .sca-stat-card {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .sca-stat-number {
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-        }
-        .sca-stat-label {
-            color: #666;
-            font-size: 13px;
-            margin-top: 5px;
-        }
-        
-        .sca-component-block {
-            background: white;
-            border-radius: 8px;
-            margin-bottom: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            overflow: hidden;
+        .sca-popup-close:hover{background:#f1f5f9;color:#0f172a;}
+
+        .sca-popup-content{
+            padding:20px 24px;overflow-y:auto;flex:1;background:#f4f6fb;
         }
 
-        .sca-component-header {
-            padding: 12px 16px;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            user-select: none;
-            transition: background 0.2s;
-            flex-wrap: wrap;
-            gap: 6px;
+        .sca-stats-grid{
+            display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px;
         }
-        .sca-component-header:hover {
-            background: #f8f9fa;
+        .sca-stat-card{
+            background:#fff;padding:16px;border-radius:10px;
+            border:1px solid #e3e8f0;text-align:center;transition:border-color 0.15s;
         }
-        .sca-component-name {
-            font-weight: 600;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            flex-wrap: wrap;
+        .sca-stat-card:hover{border-color:#0891b2;}
+        .sca-stat-number{
+            font-size:28px;font-weight:700;color:#0f172a;
+            font-family:'Fira Code',monospace;line-height:1;
         }
-        .sca-component-version {
-            font-weight: 400;
-            color: #6c757d;
-            font-size: 12px;
+        .sca-stat-number.c-total{color:#0891b2;}
+        .sca-stat-number.c-vuln{color:#fd7e14;}
+        .sca-stat-number.c-critical{color:#dc3545;}
+        .sca-stat-number.c-high{color:#fd7e14;}
+        .sca-stat-number.c-moderate{color:#d97706;}
+        .sca-stat-number.c-low{color:#16a34a;}
+        .sca-stat-label{font-size:12px;color:#64748b;margin-top:8px;}
+
+        .sca-toolbar{
+            display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;
+            background:#fff;padding:12px;border:1px solid #e3e8f0;border-radius:10px;
         }
-        .sca-component-badge {
-            font-size: 11px;
-            padding: 2px 12px;
-            border-radius: 20px;
-            font-weight: 500;
+        .sca-search-input{
+            flex:1;min-width:220px;padding:9px 14px;border:1px solid #e3e8f0;border-radius:6px;
+            font-size:13px;font-family:'Fira Sans',sans-serif;background:#fff;color:#0f172a;
+            transition:border-color 0.15s;
         }
-        .sca-component-badge.ok {
-            background: #d4edda;
-            color: #155724;
+        .sca-search-input:focus{outline:none;border-color:#0891b2;}
+        .sca-filter-select{
+            padding:9px 14px;border:1px solid #e3e8f0;border-radius:6px;background:#fff;
+            font-size:13px;font-family:'Fira Sans',sans-serif;cursor:pointer;color:#0f172a;
         }
-        .sca-component-badge.issues {
-            background: #fff3cd;
-            color: #856404;
+        .sca-filter-select:focus{outline:none;border-color:#0891b2;}
+        .sca-block-count{
+            font-size:12px;color:#64748b;font-family:'Fira Code',monospace;
+            margin-left:auto;padding:6px 12px;background:#f8fafc;border-radius:6px;
         }
-        .sca-component-badge.critical {
-            background: #f8d7da;
-            color: #721c24;
+
+        .sca-component-block{
+            background:#fff;border:1px solid #e3e8f0;border-radius:10px;
+            margin-bottom:10px;overflow:hidden;transition:border-color 0.15s;
         }
-        .sca-component-stats {
-            font-size: 12px;
-            color: #6c757d;
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .sca-component-block:hover{border-color:#cbd5e1;}
+
+        .sca-component-header{
+            padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;
+            align-items:center;user-select:none;transition:background 0.15s;
+            flex-wrap:wrap;gap:8px;background:#fff;
         }
-        .sca-component-arrow {
-            font-size: 16px;
-            color: #999;
-            transition: transform 0.3s;
-            margin-left: 4px;
+        .sca-component-header:hover{background:#f8fafc;}
+        .sca-component-name{
+            font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px;
+            flex-wrap:wrap;color:#0f172a;
         }
-        .sca-component-arrow.open {
-            transform: rotate(180deg);
+        .sca-component-name strong{font-weight:700;}
+        .sca-component-version{
+            font-weight:400;color:#64748b;font-size:12px;
+            font-family:'Fira Code',monospace;padding:2px 8px;background:#f1f5f9;border-radius:4px;
         }
-        .sca-component-body {
-            display: none;
-            padding: 0 16px 16px 16px;
-            border-top: 1px solid #f0f0f0;
+        .sca-component-badge{
+            font-size:11px;padding:3px 10px;border-radius:4px;font-weight:600;
+            font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.04em;
+            display:inline-flex;align-items:center;gap:6px;
         }
-        .sca-component-body.open {
-            display: block;
+        .sca-component-badge.ok{background:#dcfce7;color:#15803d;}
+        .sca-component-badge.issues{background:#fef3c7;color:#a16207;}
+        .sca-component-badge.critical{background:#fee2e2;color:#b91c1c;}
+        .sca-component-stats{
+            font-size:12px;color:#64748b;display:flex;gap:12px;align-items:center;
+            font-family:'Fira Code',monospace;
         }
-        
-        .sca-vuln-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            margin-top: 8px;
+        .sca-component-arrow{
+            font-size:14px;color:#94a3b8;transition:transform 0.2s;margin-left:4px;
         }
-        .sca-vuln-table th {
-            background: #f8f9fa;
-            padding: 10px 12px;
-            text-align: left;
-            font-weight: 600;
-            border-bottom: 2px solid #dee2e6;
-            font-size: 11px;
+        .sca-component-arrow.open{transform:rotate(180deg);}
+
+        .sca-component-body{
+            display:none;padding:0 18px 18px;border-top:1px solid #f1f5f9;background:#fff;
         }
-        .sca-vuln-table td {
-            padding: 8px 12px;
-            border-bottom: 1px solid #e9ecef;
-            vertical-align: top;
-            font-size: 12px;
+        .sca-component-body.open{display:block;}
+
+        .sca-vuln-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+        .sca-vuln-table th{
+            background:#f8fafc;padding:10px 12px;text-align:left;font-weight:700;
+            border-bottom:1px solid #e3e8f0;font-size:10px;color:#64748b;
+            text-transform:uppercase;letter-spacing:0.05em;
         }
-        .sca-vuln-table tr:hover {
-            background: #f8f9fa;
+        .sca-vuln-table td{
+            padding:10px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top;font-size:12px;
         }
-        .sca-severity-CRITICAL { color: #dc3545; font-weight: bold; }
-        .sca-severity-HIGH { color: #fd7e14; font-weight: bold; }
-        .sca-severity-MODERATE { color: #ffc107; font-weight: bold; }
-        .sca-severity-LOW { color: #28a745; font-weight: bold; }
-        .sca-severity-UNKNOWN { color: #6c757d; }
-        
-        .sca-cve-link {
-            color: #0066cc;
-            text-decoration: none;
+        .sca-vuln-table tr:last-child td{border-bottom:none;}
+        .sca-vuln-table tr:hover{background:#f8fafc;}
+
+        .sca-severity-badge{
+            display:inline-block;padding:2px 8px;border-radius:4px;
+            font-size:10px;font-weight:700;font-family:'Fira Code',monospace;
+            text-transform:uppercase;letter-spacing:0.04em;
         }
-        .sca-cve-link:hover {
-            text-decoration: underline;
+        .sca-severity-CRITICAL{background:#fee2e2;color:#b91c1c;}
+        .sca-severity-HIGH{background:#ffedd5;color:#c2410c;}
+        .sca-severity-MODERATE{background:#fef3c7;color:#a16207;}
+        .sca-severity-LOW{background:#dcfce7;color:#15803d;}
+        .sca-severity-UNKNOWN{background:#f1f5f9;color:#64748b;}
+
+        .sca-cve-link{
+            color:#0891b2;text-decoration:none;font-family:'Fira Code',monospace;
+            font-weight:600;font-size:12px;
         }
-        .sca-empty-state {
-            text-align: center;
-            padding: 30px;
-            color: #999;
-            font-size: 13px;
+        .sca-cve-link:hover{text-decoration:underline;}
+
+        .sca-empty-state{text-align:center;padding:40px;color:#94a3b8;font-size:13px;}
+
+        .sca-remediation{font-size:11px;color:#64748b;line-height:1.5;}
+        .sca-vuln-description{font-size:12px;color:#475569;max-width:520px;line-height:1.5;}
+        .sca-safe-text{
+            color:#15803d;font-weight:500;font-size:13px;
+            display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;
         }
-        .sca-no-vulns-text {
-            color: #28a745;
-            font-weight: 500;
-            font-size: 13px;
+
+        .sca-popup-footer{
+            padding:14px 24px;background:#f8fafc;border-top:1px solid #e3e8f0;
+            display:flex;justify-content:flex-end;gap:10px;
         }
-        .sca-remediation {
-            font-size: 11px;
-            color: #6c757d;
-            margin-top: 4px;
-            padding-top: 4px;
-            border-top: 1px dashed #e5e7eb;
+        .sca-btn{
+            padding:9px 18px;border:none;border-radius:6px;font-size:13px;font-weight:600;
+            font-family:'Fira Sans',sans-serif;cursor:pointer;transition:all 0.15s;
+            display:inline-flex;align-items:center;gap:8px;
         }
-        .sca-vuln-description {
-            font-size: 12px;
-            color: #495057;
-            max-width: 400px;
-        }
-        
-        .sca-toolbar {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .sca-search-input {
-            flex: 1;
-            min-width: 180px;
-            padding: 8px 14px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 13px;
-            font-family: 'Fira Sans', sans-serif;
-            background: white;
-        }
-        .sca-search-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        .sca-filter-select {
-            padding: 8px 14px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            background: white;
-            font-size: 13px;
-            font-family: 'Fira Sans', sans-serif;
-            cursor: pointer;
-        }
-        .sca-block-count {
-            font-size: 12px;
-            color: #6c757d;
-            margin-left: auto;
-        }
-        
-        @media (max-width: 768px) {
-            .sca-stats-grid { grid-template-columns: repeat(3, 1fr); }
-            .sca-component-header { flex-direction: column; align-items: flex-start; gap: 4px; }
-            .sca-component-stats { font-size: 11px; flex-wrap: wrap; }
-            .sca-vuln-table { font-size: 11px; }
-            .sca-vuln-table th, .sca-vuln-table td { padding: 4px 8px; }
-            .sca-toolbar { flex-direction: column; align-items: stretch; }
-            .sca-search-input { min-width: auto; }
-        }
+        .sca-btn i{font-size:13px;}
+        .sca-btn-html{background:#0891b2;color:#fff;}
+        .sca-btn-html:hover{background:#0e7490;}
+        .sca-btn-json{background:#10b981;color:#fff;}
+        .sca-btn-json:hover{background:#0e9f6e;}
     `;
-    
+
     var stats = this.extractStats();
     var groupedComponents = this.groupComponents();
     var totalVulns = 0;
     for (var i = 0; i < groupedComponents.length; i++) {
         totalVulns += groupedComponents[i].vulns.length;
     }
-    
+
     popup.innerHTML = `
         <div class="sca-popup-header">
             <div class="sca-popup-title">
+                <i class="fas fa-cubes"></i>
                 SCA Analysis Results
+                <span class="sub">${groupedComponents.length} components · ${totalVulns} vulnerabilities</span>
             </div>
-            <button class="sca-popup-close" id="closePopup">&times;</button>
+            <button class="sca-popup-close" id="closePopup" aria-label="Close"><i class="fas fa-xmark"></i></button>
         </div>
         <div class="sca-popup-content">
             <div class="sca-stats-grid">
-                <div class="sca-stat-card">
-                    <div class="sca-stat-number">${stats.components}</div>
-                    <div class="sca-stat-label">Components</div>
-                </div>
-                <div class="sca-stat-card">
-                    <div class="sca-stat-number">${totalVulns}</div>
-                    <div class="sca-stat-label">Vulnerabilities</div>
-                </div>
-                <div class="sca-stat-card">
-                    <div class="sca-stat-number" style="color:#dc3545">${stats.critical}</div>
-                    <div class="sca-stat-label">Critical</div>
-                </div>
-                <div class="sca-stat-card">
-                    <div class="sca-stat-number" style="color:#fd7e14">${stats.high}</div>
-                    <div class="sca-stat-label">High</div>
-                </div>
-                <div class="sca-stat-card">
-                    <div class="sca-stat-number" style="color:#ffc107">${stats.moderate}</div>
-                    <div class="sca-stat-label">Moderate</div>
-                </div>
-                <div class="sca-stat-card">
-                    <div class="sca-stat-number" style="color:#28a745">${stats.low}</div>
-                    <div class="sca-stat-label">Low</div>
-                </div>
+                <div class="sca-stat-card"><div class="sca-stat-number c-total">${stats.components}</div><div class="sca-stat-label">Components</div></div>
+                <div class="sca-stat-card"><div class="sca-stat-number c-vuln">${totalVulns}</div><div class="sca-stat-label">Vulnerabilities</div></div>
+                <div class="sca-stat-card"><div class="sca-stat-number c-critical">${stats.critical}</div><div class="sca-stat-label">Critical</div></div>
+                <div class="sca-stat-card"><div class="sca-stat-number c-high">${stats.high}</div><div class="sca-stat-label">High</div></div>
+                <div class="sca-stat-card"><div class="sca-stat-number c-moderate">${stats.moderate}</div><div class="sca-stat-label">Moderate</div></div>
+                <div class="sca-stat-card"><div class="sca-stat-number c-low">${stats.low}</div><div class="sca-stat-label">Low</div></div>
             </div>
-            
+
             <div class="sca-toolbar">
                 <input type="text" class="sca-search-input" id="scaSearch" placeholder="Search component...">
                 <select class="sca-filter-select" id="scaFilter">
                     <option value="all">All components</option>
                     <option value="has-issues">With vulnerabilities</option>
                     <option value="no-issues">Without vulnerabilities</option>
-                    <option value="critical">Critical</option>
-                    <option value="high">High</option>
+                    <option value="critical">Critical only</option>
+                    <option value="high">High only</option>
                 </select>
                 <span class="sca-block-count">${groupedComponents.length} components</span>
             </div>
-            
+
             <div id="scaComponents">
                 ${this.renderComponentBlocks(groupedComponents)}
             </div>
         </div>
         <div class="sca-popup-footer">
-            <button id="downloadHtmlBtn" class="sca-btn sca-btn-html">Download HTML</button>
-            <button id="downloadJsonBtn" class="sca-btn sca-btn-json">Download JSON</button>
+            <button id="downloadJsonBtn" class="sca-btn sca-btn-json"><i class="fas fa-file-code"></i> Download JSON</button>
+            <button id="downloadHtmlBtn" class="sca-btn sca-btn-html"><i class="fas fa-file-arrow-down"></i> Download HTML</button>
         </div>
     `;
-    
+
     document.head.appendChild(styles);
     overlay.appendChild(popup);
     document.body.appendChild(overlay);
-    
+
     this.addEventListeners(overlay);
     this.initComponentToggles(overlay);
     this.initSearchFilter(overlay);
@@ -1809,12 +1659,12 @@ SCAPopupReporter.prototype.showNotification = function(message, type) {
 SCAPopupReporter.prototype.generateFullHTMLReport = function() {
     var stats = this.extractStats();
     var groupedComponents = this.groupComponents();
-    
+
     var totalVulns = 0;
     for (var i = 0; i < groupedComponents.length; i++) {
         totalVulns += groupedComponents[i].vulns.length;
     }
-    
+
     var componentBlocks = '';
     for (var i = 0; i < groupedComponents.length; i++) {
         var comp = groupedComponents[i];
@@ -1822,45 +1672,176 @@ SCAPopupReporter.prototype.generateFullHTMLReport = function() {
         var hasVulns = vulns.length > 0;
         var hasCritical = false;
         var hasHigh = false;
-        
+
         for (var v = 0; v < vulns.length; v++) {
             var severity = this.getSeverity(vulns[v]);
             if (severity === 'CRITICAL') hasCritical = true;
             if (severity === 'HIGH') hasHigh = true;
         }
-        
-        var badgeText = hasVulns ? (hasCritical ? '🔴 Critical' : hasHigh ? '🟠 High' : '<i class="fas fa-times"></i>Has vulnerabilities') : '<i class="fas fa-check"></i> Safe';
-        
+
+        var badgeText = hasVulns
+            ? (hasCritical ? '<i class="fas fa-triangle-exclamation"></i> Critical' : hasHigh ? '<i class="fas fa-circle-exclamation"></i> High' : '<i class="fas fa-circle-exclamation"></i> Has issues')
+            : '<i class="fas fa-check"></i> Safe';
+
         var vulnRows = '';
         if (hasVulns) {
             vulnRows = vulns.map(function(vuln, idx) {
-                var severity = this.getSeverity(vuln);
-                var id = vuln.id || vuln.vulnerability?.id || 'N/A';
-                var description = vuln.description || vuln.vulnerability?.description || 'No description';
-                var url = vuln.source?.url || vuln.vulnerability?.source?.url || 'https://osv.dev/vulnerability/' + id;
-                var remediation = vuln.remediation || vuln.vulnerability?.remediation || vuln.analysis?.detail || 'Update to latest version';
-                var severityClass = 'severity-' + severity;
-                
-                return '<tr><td>' + (idx + 1) + '</td><td><a href="' + url + '" target="_blank" class="cve-link">' + id + '</a></td><td>' + this.escapeHtml(description.substring(0, 150)) + (description.length > 150 ? '...' : '') + '</td><td class="' + severityClass + '">' + severity + '</td><td style="font-size:11px;color:#6c757d;">' + this.escapeHtml(remediation) + '</td></tr>';
+                var sev = this.getSeverity(vuln);
+                var id = vuln.id || (vuln.vulnerability && vuln.vulnerability.id) || 'N/A';
+                var description = vuln.description || (vuln.vulnerability && vuln.vulnerability.description) || 'No description';
+                var url = (vuln.source && vuln.source.url) || (vuln.vulnerability && vuln.vulnerability.source && vuln.vulnerability.source.url) || ('https://osv.dev/vulnerability/' + id);
+                var remediation = vuln.remediation || (vuln.vulnerability && vuln.vulnerability.remediation) || (vuln.analysis && vuln.analysis.detail) || 'Update to latest version';
+
+                return '<tr>' +
+                    '<td class="num">' + (idx + 1) + '</td>' +
+                    '<td><a href="' + url + '" target="_blank" rel="noopener" class="cve-link">' + id + '</a></td>' +
+                    '<td class="desc">' + this.escapeHtml(description.substring(0, 180)) + (description.length > 180 ? '…' : '') + '</td>' +
+                    '<td><span class="sev-badge sev-' + sev + '">' + sev + '</span></td>' +
+                    '<td class="rem">' + this.escapeHtml(remediation) + '</td>' +
+                    '</tr>';
             }.bind(this)).join('');
         }
-        
+
         componentBlocks += `
             <div class="component-block${hasCritical ? ' critical' : hasVulns ? ' issues' : ''}">
                 <div class="component-header">
                     <div class="component-name">
                         <strong>${this.escapeHtml(comp.name)}</strong>
                         <span class="component-version">v${this.escapeHtml(comp.version)}</span>
-                        <span class="badge${hasVulns ? (hasCritical ? '-critical' : '-issues') : '-ok'}">${badgeText}</span>
+                        <span class="badge badge-${hasCritical ? 'critical' : hasVulns ? 'issues' : 'ok'}">${badgeText}</span>
                     </div>
                     <div class="component-stats">${hasVulns ? vulns.length + ' vulnerabilities' : '<i class="fas fa-check"></i> Safe'}</div>
                 </div>
-                ${hasVulns ? `<div class="component-body"><table class="vuln-table"><thead><tr><th>#</th><th>CVE ID</th><th>Description</th><th>Severity</th><th>Remediation</th></tr></thead><tbody>${vulnRows}</tbody></table></div>` : `<div class="component-body" style="padding:10px 16px;color:#28a745;font-size:13px;"><i class="fas fa-check"></i> All checks passed, no vulnerabilities found</div>`}
+                ${hasVulns
+                    ? `<div class="component-body"><table class="vuln-table"><thead><tr><th>#</th><th>CVE ID</th><th>Description</th><th>Severity</th><th>Remediation</th></tr></thead><tbody>${vulnRows}</tbody></table></div>`
+                    : `<div class="component-body"><div class="safe-text"><i class="fas fa-check"></i> All checks passed, no vulnerabilities found</div></div>`}
             </div>
         `;
     }
-    
-    return '<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <link rel="preconnect" href="https://fonts.googleapis.com">\n    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">\n    <title>Hercules | SCA - ' + new Date().toLocaleDateString() + '</title>\n    <style>\n        * { margin: 0; padding: 0; box-sizing: border-box; }\n        body { font-family: "Fira Sans", sans-serif; background: white; padding: 20px; color: #333; }\n        .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }\n        .header { background: black; color: white; padding: 40px; }\n        .header h1 { font-size: 32px; margin-bottom: 10px; }\n        .header .meta { opacity: 0.9; font-size: 14px; }\n        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; padding: 30px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; }\n        .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); text-align: center; }\n        .stat-card .label { font-size: 14px; color: #6c757d; margin-bottom: 10px; }\n        .stat-card .value { font-size: 36px; font-weight: bold; }\n        .content { padding: 30px; }\n        .component-block { background: white; border: 1px solid #e5e7eb; border-radius: 8px; margin-bottom: 8px; overflow: hidden; }\n        .component-block.issues { }\n        .component-block.critical { border-left-color: #dc3545; }\n        .component-header { padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; background: #fafbfc; }\n        .component-name { font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }\n        .component-version { font-weight: 400; color: #6c757d; font-size: 12px; }\n        .component-stats { font-size: 12px; color: #6c757d; }\n        .badge-ok { background: #d4edda; color: #155724; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .badge-issues { background: #fff3cd; color: #856404; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .badge-critical { background: #f8d7da; color: #721c24; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; }\n        .component-body { padding: 0 16px 16px 16px; border-top: 1px solid #f0f0f0; }\n        .vuln-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }\n        .vuln-table th { background: #f8f9fa; padding: 8px 12px; text-align: left; font-weight: 600; border-bottom: 2px solid #dee2e6; font-size: 10px; text-transform: uppercase; letter-spacing: 0.3px; }\n        .vuln-table td { padding: 6px 12px; border-bottom: 1px solid #e9ecef; }\n        .vuln-table tr:hover { background: #f8f9fa; }\n        .severity-CRITICAL { color: #dc3545; font-weight: bold; }\n        .severity-HIGH { color: #fd7e14; font-weight: bold; }\n        .severity-MODERATE { color: #ffc107; font-weight: bold; }\n        .severity-MEDIUM { color: #ffc107; font-weight: bold; }\n        .severity-LOW { color: #28a745; font-weight: bold; }\n        .cve-link { color: #0066cc; text-decoration: none; }\n        .cve-link:hover { text-decoration: underline; }\n        .footer { background: #f8f9fa; padding: 20px 30px; text-align: center; color: #6c757d; font-size: 12px; border-top: 1px solid #e9ecef; }\n        @media (max-width: 768px) {\n            .stats { grid-template-columns: repeat(3, 1fr); padding: 12px 16px; }\n            .content { padding: 12px 16px; }\n            .header { padding: 16px 20px; }\n            .component-header { flex-direction: column; align-items: flex-start; gap: 4px; }\n            .vuln-table { font-size: 10px; }\n            .vuln-table th, .vuln-table td { padding: 4px 6px; }\n        }\n    </style>\n</head>\n<body>\n    <div class="container">\n        <div class="header">\n            <h1>Hercules | SCA</h1>\n            <div class="meta">Generated: ' + new Date().toLocaleString() + '</div>\n        </div>\n        <div class="stats">\n            <div class="stat-card"><div class="label">Components</div><div class="value" style="color:#667eea;">' + stats.components + '</div></div>\n            <div class="stat-card"><div class="label">Vulnerabilities</div><div class="value" style="color:#fd7e14;">' + totalVulns + '</div></div>\n            <div class="stat-card"><div class="label">Critical</div><div class="value" style="color:#dc3545;">' + stats.critical + '</div></div>\n            <div class="stat-card"><div class="label">High</div><div class="value" style="color:#fd7e14;">' + stats.high + '</div></div>\n            <div class="stat-card"><div class="label">Moderate</div><div class="value" style="color:#ffc107;">' + stats.moderate + '</div></div>\n            <div class="stat-card"><div class="label">Low</div><div class="value" style="color:#28a745;">' + stats.low + '</div></div>\n        </div>\n        <div class="content">\n            <h3 style="margin-bottom:16px;font-size:16px;">All components (' + groupedComponents.length + ')</h3>\n            ' + (groupedComponents.length > 0 ? componentBlocks : '<div style="text-align:center;padding:40px;color:#999;">No components found</div>') + '\n        </div>\n        <div class="footer">\n            <p>Generated with Hercules | Analysis based on public CVE databases</p>\n            <p>It is recommended to update vulnerable components to the latest versions</p>\n        </div>\n    </div>\n</body>\n</html>';
+
+    var generated = new Date().toLocaleString('en-US', {
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit'
+    });
+
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Hercules | SCA - ${new Date().toLocaleDateString()}</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Fira Sans',sans-serif;background:#f4f6fb;padding:24px;color:#0f172a;min-height:100vh;}
+        .container{max-width:1600px;margin:0 auto;background:#fff;border-radius:12px;border:1px solid #e3e8f0;box-shadow:0 4px 24px rgba(15,23,42,0.06);overflow:hidden;}
+
+        .header{background:#fff;padding:28px 32px;border-bottom:1px solid #e3e8f0;}
+        .header h1{font-size:22px;display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:-0.01em;}
+        .header h1 i{color:#0891b2;font-size:22px;}
+        .header p{color:#64748b;font-size:13px;margin-top:10px;}
+        .meta{display:flex;gap:22px;font-size:12px;color:#64748b;flex-wrap:wrap;margin-top:10px;}
+        .meta span{display:flex;align-items:center;gap:6px;}
+        .meta i{color:#0891b2;font-size:12px;}
+
+        .stats{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;padding:28px 32px 0;}
+        .stat-card{background:#f8fafc;border:1px solid #e3e8f0;border-radius:10px;padding:18px;text-align:center;transition:border-color 0.15s;}
+        .stat-card:hover{border-color:#0891b2;}
+        .stat-card .label{font-size:12px;color:#64748b;margin-bottom:8px;}
+        .stat-card .value{font-size:30px;font-weight:700;font-family:'Fira Code',monospace;line-height:1;}
+        .v-total{color:#0891b2}.v-vuln{color:#fd7e14}.v-critical{color:#dc3545}
+        .v-high{color:#fd7e14}.v-moderate{color:#d97706}.v-low{color:#16a34a}
+
+        .content{padding:28px 32px;}
+
+        .component-block{background:#fff;border:1px solid #e3e8f0;border-radius:10px;margin-bottom:10px;overflow:hidden;transition:border-color 0.15s;}
+
+        .component-block:hover{border-color:#cbd5e1;}
+
+        .component-header{padding:14px 18px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;background:#fff;border-bottom:1px solid #f1f5f9;}
+        .component-name{font-size:14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:600;color:#0f172a;}
+        .component-name strong{font-weight:700;}
+        .component-version{font-weight:400;color:#64748b;font-size:12px;font-family:'Fira Code',monospace;padding:2px 8px;background:#f1f5f9;border-radius:4px;}
+        .component-stats{font-size:12px;color:#64748b;font-family:'Fira Code',monospace;}
+
+        .badge{padding:3px 10px;border-radius:4px;font-size:11px;font-weight:600;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.04em;display:inline-flex;align-items:center;gap:6px;}
+        .badge-ok{background:#dcfce7;color:#15803d;}
+        .badge-issues{background:#fef3c7;color:#a16207;}
+        .badge-critical{background:#fee2e2;color:#b91c1c;}
+
+        .component-body{padding:0 18px 18px;background:#fff;}
+        .vuln-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
+        .vuln-table th{background:#f8fafc;padding:10px 12px;text-align:left;font-weight:700;border-bottom:1px solid #e3e8f0;font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;}
+        .vuln-table td{padding:10px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top;}
+        .vuln-table tr:last-child td{border-bottom:none;}
+        .vuln-table tr:hover{background:#f8fafc;}
+        .vuln-table td.num{text-align:center;color:#94a3b8;font-family:'Fira Code',monospace;}
+        .vuln-table td.desc{color:#475569;max-width:520px;line-height:1.5;}
+        .vuln-table td.rem{color:#64748b;font-size:11px;line-height:1.5;}
+
+        .sev-badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.04em;}
+        .sev-CRITICAL{background:#fee2e2;color:#b91c1c;}
+        .sev-HIGH{background:#ffedd5;color:#c2410c;}
+        .sev-MODERATE{background:#fef3c7;color:#a16207;}
+        .sev-LOW{background:#dcfce7;color:#15803d;}
+        .sev-UNKNOWN{background:#f1f5f9;color:#64748b;}
+
+        .cve-link{color:#0891b2;text-decoration:none;font-family:'Fira Code',monospace;font-weight:600;font-size:12px;}
+        .cve-link:hover{text-decoration:underline;}
+
+        .safe-text{color:#15803d;font-weight:500;font-size:13px;display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;}
+
+        .footer{padding:18px 32px;background:#f8fafc;text-align:center;font-size:11px;color:#94a3b8;border-top:1px solid #e3e8f0;line-height:1.7;}
+        .footer strong{color:#64748b;}
+
+        @media (max-width:1100px){
+            .stats{grid-template-columns:repeat(3,1fr);}
+        }
+        @media (max-width:768px){
+            body{padding:12px}
+            .header{padding:20px}
+            .content{padding:20px}
+            .stats{padding:20px 20px 0;grid-template-columns:repeat(2,1fr)}
+            .component-header{flex-direction:column;align-items:flex-start;gap:6px;}
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cubes"></i> Hercules | SCA</h1>
+            <p>Software Composition Analysis report</p>
+            <div class="meta">
+                <span><i class="fas fa-calendar"></i> Generated: ${generated}</span>
+                <span><i class="fas fa-cube"></i> ${stats.components} components</span>
+                <span><i class="fas fa-shield-halved"></i> ${totalVulns} vulnerabilities</span>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card"><div class="label">Components</div><div class="value v-total">${stats.components}</div></div>
+            <div class="stat-card"><div class="label">Vulnerabilities</div><div class="value v-vuln">${totalVulns}</div></div>
+            <div class="stat-card"><div class="label">Critical</div><div class="value v-critical">${stats.critical}</div></div>
+            <div class="stat-card"><div class="label">High</div><div class="value v-high">${stats.high}</div></div>
+            <div class="stat-card"><div class="label">Moderate</div><div class="value v-moderate">${stats.moderate}</div></div>
+            <div class="stat-card"><div class="label">Low</div><div class="value v-low">${stats.low}</div></div>
+        </div>
+
+        <div class="content">
+            <h3 style="margin-bottom:16px;font-size:15px;color:#0f172a;font-weight:700;">All components (${groupedComponents.length})</h3>
+            ${groupedComponents.length > 0 ? componentBlocks : '<div class="safe-text">No components found</div>'}
+        </div>
+
+        <div class="footer">
+            <p>Generated with <strong>Hercules | SCA</strong> · Analysis based on public CVE databases</p>
+            <p>It is recommended to update vulnerable components to the latest versions</p>
+        </div>
+    </div>
+</body>
+</html>`;
 };
 
 // ============================================================

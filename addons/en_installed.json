@@ -709,5 +709,196 @@
         }
       ]
     }
-  }
+  },
+  {
+    "id": "cmdb",
+    "name": "CMDB",
+    "version": "1.0.0",
+    "shortDesc": "Infrastructure Inventory",
+    "description": "Configuration management database — a single source of truth for servers, databases, network gear, applications and ownership across your infrastructure",
+    "icon": "fas fa-cubes",
+    "url": "/cmdb",
+    "router": "./addons/cmdb/router.js",
+    "ui": "./ui/cmdb.html",
+    "order": 8,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-server",         "iconColor": "#3B82F6", "name": "Asset Registry" },
+            { "icon": "fas fa-user-tie",       "iconColor": "#10B981", "name": "Owner & Custodian Tracking" },
+            { "icon": "fas fa-diagram-project", "iconColor": "#8B5CF6", "name": "Relationship Mapping" },
+            { "icon": "fas fa-clock-rotate-left", "iconColor": "#F59E0B", "name": "Change History" }
+        ],
+        "assetTypes": [
+            { "icon": "fas fa-server",     "iconColor": "#3B82F6", "name": "Servers" },
+            { "icon": "fas fa-database",   "iconColor": "#10B981", "name": "Databases" },
+            { "icon": "fas fa-network-wired", "iconColor": "#8B5CF6", "name": "Network" },
+            { "icon": "fas fa-hard-drive", "iconColor": "#F59E0B", "name": "Storage" },
+            { "icon": "fas fa-window-restore", "iconColor": "#EC4899", "name": "Applications" },
+            { "icon": "fas fa-cube",       "iconColor": "#6B7280", "name": "Other" }
+        ],
+        "attributes": [
+            { "icon": "fas fa-tag",        "iconColor": "#22d3ee", "name": "Team & Type" },
+            { "icon": "fas fa-circle-check", "iconColor": "#10B981", "name": "Status (active / maintenance)" },
+            { "icon": "fas fa-code-branch", "iconColor": "#8B5CF6", "name": "Git Repository" },
+            { "icon": "fas fa-book",       "iconColor": "#F59E0B", "name": "Documentation Link" },
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "Security Report" }
+        ],
+        "sources": [
+            { "icon": "fas fa-plus",       "iconColor": "#22d3ee", "name": "Manual Entry" },
+            { "icon": "fas fa-file-import", "iconColor": "#10B981", "name": "Import from JSON/YAML" },
+            { "icon": "fas fa-clone",      "iconColor": "#8B5CF6", "name": "Clone Existing Asset" }
+        ],
+        "reports": [
+            { "icon": "fab fa-html5", "iconColor": "#E44D26", "name": "HTML" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "notes",
+    "name": "Notes",
+    "version": "1.0.0",
+    "shortDesc": "Engineering knowledge base",
+    "description": "Personal and team notebook for engineers — capture runbooks, snippets, checklists and tasks with statuses, priorities and due dates",
+    "icon": "fas fa-note-sticky",
+    "url": "/notes",
+    "router": "./addons/notes/router.js",
+    "ui": "./ui/notes/notes.html",
+    "order": 9,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-note-sticky",  "iconColor": "#22d3ee", "name": "Markdown Notes" },
+            { "icon": "fas fa-list-check",   "iconColor": "#10B981", "name": "Task Tracker" },
+            { "icon": "fas fa-magnifying-glass", "iconColor": "#8B5CF6", "name": "Full-text Search" },
+            { "icon": "fas fa-tags",         "iconColor": "#F59E0B", "name": "Tags & Filters" }
+        ],
+        "noteTypes": [
+            { "icon": "fas fa-note-sticky", "iconColor": "#22d3ee", "name": "Note" },
+            { "icon": "fas fa-list-check",  "iconColor": "#10B981", "name": "Task" }
+        ],
+        "taskFields": [
+            { "icon": "fas fa-circle-half-stroke", "iconColor": "#3B82F6", "name": "Status (todo / in progress / done)" },
+            { "icon": "fas fa-flag",        "iconColor": "#EF4444", "name": "Priority (low / medium / high / critical)" },
+            { "icon": "fas fa-user",        "iconColor": "#8B5CF6", "name": "Assignee" },
+            { "icon": "fas fa-calendar-day", "iconColor": "#F59E0B", "name": "Due Date" }
+        ],
+        "views": [
+            { "icon": "fas fa-layer-group", "iconColor": "#22d3ee", "name": "All" },
+            { "icon": "fas fa-list-check",  "iconColor": "#10B981", "name": "Tasks" },
+            { "icon": "fas fa-note-sticky", "iconColor": "#8B5CF6", "name": "Notes" }
+        ],
+        "reports": [
+            { "icon": "fab fa-markdown", "iconColor": "#000000", "name": "Markdown" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+  {
+    "id": "collaboration",
+    "name": "Collaboration",
+    "version": "1.0.0",
+    "shortDesc": "Team collaboration hub",
+    "description": "Internal messenger for the team — channels, direct chats, threads and shared context across all Hercules modules",
+    "icon": "fas fa-comments",
+    "url": "/collaboration",
+    "router": "./addons/collaboration/router.js",
+    "ui": "./ui/collaboration/collaboration.html",
+    "order": 10,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-comments",     "iconColor": "#22d3ee", "name": "Real-time Messaging" },
+            { "icon": "fas fa-hashtag",      "iconColor": "#8B5CF6", "name": "Channels" },
+            { "icon": "fas fa-comment-dots", "iconColor": "#10B981", "name": "Direct Messages" },
+            { "icon": "fas fa-reply-all",    "iconColor": "#F59E0B", "name": "Threads" }
+        ],
+        "chatTypes": [
+            { "icon": "fas fa-hashtag",      "iconColor": "#8B5CF6", "name": "Channel" },
+            { "icon": "fas fa-user",         "iconColor": "#22d3ee", "name": "Direct Message" },
+            { "icon": "fas fa-users",        "iconColor": "#10B981", "name": "Group Chat" }
+        ],
+        "messageFeatures": [
+            { "icon": "fab fa-markdown",     "iconColor": "#000000", "name": "Markdown" },
+            { "icon": "fas fa-code",         "iconColor": "#F7DF1E", "name": "Code Blocks" },
+            { "icon": "fas fa-paperclip",    "iconColor": "#3B82F6", "name": "Attachments" },
+            { "icon": "fas fa-at",           "iconColor": "#EC4899", "name": "Mentions" },
+            { "icon": "fas fa-face-smile",   "iconColor": "#F59E0B", "name": "Reactions" }
+        ],
+        "integrations": [
+            { "icon": "fas fa-bell",         "iconColor": "#22d3ee", "name": "Scan Notifications" },
+            { "icon": "fas fa-link",         "iconColor": "#8B5CF6", "name": "Share Findings" },
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "Incident Rooms" }
+        ],
+        "reports": [
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+  {
+    "id": "donor",
+    "name": "Data Donors",
+    "version": "1.0.0",
+    "shortDesc": "Data source registry",
+    "description": "Registry of data sources and providers — track who supplies what, in which format, how often, and where it goes",
+    "icon": "fas fa-database",
+    "url": "/donor",
+    "router": "./addons/donor/router.js",
+    "ui": "./ui/donor/donor.html",
+    "order": 11,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-database",      "iconColor": "#22d3ee", "name": "Source Registry" },
+            { "icon": "fas fa-user-tie",      "iconColor": "#10B981", "name": "Provider Tracking" },
+            { "icon": "fas fa-arrows-turn-right", "iconColor": "#8B5CF6", "name": "Destination Mapping" },
+            { "icon": "fas fa-clock",         "iconColor": "#F59E0B", "name": "Frequency & Schedule" }
+        ],
+        "sourceTypes": [
+            { "icon": "fas fa-plug",          "iconColor": "#3B82F6", "name": "API" },
+            { "icon": "fas fa-database",      "iconColor": "#10B981", "name": "Database" },
+            { "icon": "fas fa-file-lines",    "iconColor": "#F59E0B", "name": "Log" },
+            { "icon": "fas fa-file-export",   "iconColor": "#8B5CF6", "name": "File Export" }
+        ],
+        "formats": [
+            { "icon": "far fa-file-code",     "iconColor": "#F7DF1E", "name": "JSON" },
+            { "icon": "fas fa-table",         "iconColor": "#10B981", "name": "CSV" },
+            { "icon": "fas fa-file-csv",      "iconColor": "#22d3ee", "name": "Parquet" },
+            { "icon": "fab fa-xml",           "iconColor": "#F59E0B", "name": "XML" }
+        ],
+        "destinations": [
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "SIEM" },
+            { "icon": "fas fa-warehouse",     "iconColor": "#3B82F6", "name": "Data Warehouse" },
+            { "icon": "fas fa-cloud",         "iconColor": "#8B5CF6", "name": "Object Storage (S3)" },
+            { "icon": "fas fa-chart-line",    "iconColor": "#10B981", "name": "Analytics Platform" }
+        ],
+        "sources": [
+            { "icon": "fas fa-plus",          "iconColor": "#22d3ee", "name": "Manual Entry" },
+            { "icon": "fas fa-file-import",   "iconColor": "#10B981", "name": "Import from JSON/YAML" }
+        ],
+        "reports": [
+            { "icon": "fab fa-html5", "iconColor": "#E44D26", "name": "HTML" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "home",
+    "name": "Home",
+    "version": "1.0.0",
+    "shortDesc": "Dashboard, activity and analytics",
+    "description": "Personal dashboard — recent activity across all Hercules modules, live counters, and statistics with trends and reports",
+    "icon": "fas fa-home",
+    "url": "/home",
+    "router": "./addons/home/router.js",
+    "ui": "./ui/home/home.html",
+    "order": 0,
+    "enabled": true,
+    "free": true
+}
 ]

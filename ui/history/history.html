@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html data-page="construction" data-version="1.27.0" lang="en">
-
+<html data-page="history" data-version="1.27.0" lang="en">
 <head>
     <title>Scan History</title>
     <meta charset="utf-8">
@@ -9,18 +8,30 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@300;400;500;700&display=swap">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="history.css">    
-    <link rel="stylesheet" href="../common/main.css">
-    <link rel="stylesheet" href="../common/sidebar.css">
-    <link rel="stylesheet" href="../common/modal.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
+
+    <link rel="stylesheet" href="../common/modal.css">
+    <link rel="stylesheet" href="../common/sidebar.css">
+    <link rel="stylesheet" href="history.css">
+
+    <script>
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 
 <body>
-    <div id="box" class="fade-in">
+    <div id="box">
+        <!-- SIDEBAR -->
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
@@ -43,21 +54,16 @@
 
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
-                    <div class="tool-item active">
-                        <div class="tool-icon">
-                            <i class="fas fa-history black-icon"></i>
-                        </div>
+                    <div class="tool-item">
+                        <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
                         <div class="tool-info">
                             <span class="tool-name">History</span>
                             <span class="tool-desc">Scan log</span>
                         </div>
                     </div>
-                    <div class="tool-divider"></div>
                     <a href="/config">
                         <div class="tool-item">
-                            <div class="tool-icon">
-                                <i class="fas fa-cogs black-icon"></i>
-                            </div>
+                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
                             <div class="tool-info">
                                 <span class="tool-name">Settings</span>
                                 <span class="tool-desc">Manage parameters</span>
@@ -65,288 +71,102 @@
                         </div>
                     </a>
                 </div>
+                 <div class="tool-divider"></div>
             </div>
         </div>
 
+        <!-- CENTER -->
         <div id="center">
-            <div class="header-row">
-                <h2 class="section-title">Scan History</h2>
-                <div style="display: flex; gap: 10px;">
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <i class="fas fa-history black-icon"></i>
+                    <span>Scan History</span>
+                </div>
+                <div class="top-bar-actions">
                     <button class="header-btn" id="refreshBtn">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </button>
                     <button class="header-btn" id="clearHistoryBtn">
                         <i class="fas fa-trash-alt"></i> Clear
                     </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+                        <i class="fas fa-sun icon-sun"></i>
+                        <i class="fas fa-moon icon-moon"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="history-table-wrapper">
-                <table class="history-table">
+            <!-- TABLE CARD (CMDB style) -->
+            <div class="table-wrapper">
+                <table>
                     <thead>
                         <tr>
                             <th>Tool</th>
                             <th>Source Type</th>
                             <th>Source</th>
-                            <th>Date & Time</th>
+                            <th>Date &amp; Time</th>
                             <th>Duration</th>
                             <th>Status</th>
-                            <th>Actions</th>
+                            <th style="text-align:right;">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="historyTableBody">
                         <tr>
                             <td colspan="7" class="empty-state">
-                                <i class="fas fa-history"></i>
-                                <p>Loading history...</p>
+                                <i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i><br>
+                                Loading...
                             </td>
                         </tr>
                     </tbody>
                 </table>
-            </div>
 
-            <div class="pagination" id="pagination"></div>
-        </div>
-    </div>
-
-    <div id="detailModal" class="settings-modal" style="display: none;">
-        <div class="settings-content" style="max-width: 550px;">
-            <div class="settings-header">
-                <h3><i class="fas fa-info-circle"></i> Scan Details</h3>
-                <span class="settings-close" onclick="closeDetailModal()">&times;</span>
-            </div>
-            <div class="unified-layout">
-                <div class="unified-left" style="width: 100%;">
-                    <div id="detailContent"></div>
+                <div class="table-footer">
+                    <div class="pagination" id="pagination"></div>
                 </div>
             </div>
         </div>
     </div>
-    <script type="module" src="history.js"></script>     
+
+    <!-- DETAIL MODAL -->
+    <!-- ============ DETAIL MODAL ============ -->
+
+
+<!-- ============ CLEAR CONFIRM MODAL ============ -->
+<div class="modal-overlay modal-danger" id="confirmModal">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-title">
+                <i class="fas fa-triangle-exclamation"></i> Clear all history?
+            </div>
+            <button class="modal-close" type="button" data-close>&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="warning-text">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Are you sure you want to <strong>clear all scan history</strong>?</span>
+            </div>
+            <p class="hint-text">
+                <i class="fas fa-info-circle"></i>
+                All scan records will be permanently deleted. This action is irreversible.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+            <button class="btn btn-primary btn-danger" type="button" id="confirmClearBtn">
+                <i class="fas fa-trash-can"></i> Clear history
+            </button>
+        </div>
+    </div>
+</div>
+
+    <!-- TOAST -->
+    <div id="toast" class="toast"></div>
+
+    <!-- SCRIPTS -->
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
-
-    <script>
-        loadMenu();
-
-        let currentRecords = [];
-        let currentPage = 1;
-        const rowsPerPage = 10;
-
-        function getShortName(sourceName, sourceType) {
-            if (!sourceName) return '—';
-            
-            if (sourceType === 'archive') {
-                const parts = sourceName.split(/[/\\]/);
-                return parts[parts.length - 1];
-            } else {
-                let name = sourceName;
-                const parts = name.split('/');
-                let repoName = parts[parts.length - 1];
-                return repoName;
-            }
-        }
-
-        async function loadHistory() {
-            try {
-                const response = await fetch('/api/history');
-                const data = await response.json();
-                
-                if (data.success) {
-                    currentRecords = data.records || [];
-                    renderTable();
-                    renderPagination();
-                } else {
-                    showError('Failed to load history');
-                }
-            } catch (error) {
-                console.error('Error loading history:', error);
-                showError('Connection error');
-            }
-        }
-
-        function renderTable() {
-            const tbody = document.getElementById('historyTableBody');
-            
-            if (!currentRecords.length) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i class="fas fa-history"></i>
-                            <p>Scan history is empty</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            const pageRecords = currentRecords.slice(start, end);
-
-            tbody.innerHTML = pageRecords.map(record => {
-                const shortName = record.sourceType == 'url' ? record.sourceName : getShortName(record.sourceName, record.sourceType);
-                const sourceTypeLabel = record.sourceType === 'repository' ? 'Repository' : 
-                        (record.sourceType === 'url' ? 'URL' : 
-                        (record.sourceType === 'network' ? 'Network' : 
-                        (record.sourceType === 'workflow' ? 'Workflow' : 
-                        (record.sourceType === 'archive' ? 'Archive' : 'Unknown'))));
-
-                const sourceTypeClass = record.sourceType === 'repository' ? 'source-type-repository' : 
-                        (record.sourceType === 'url' ? 'source-type-url' : 
-                        (record.sourceType === 'network' ? 'source-type-network' : 
-                        (record.sourceType === 'workflow' ? 'source-type-workflow' : 
-                        (record.sourceType === 'archive' ? 'source-type-archive' : 'source-type-unknown'))));
-
-                const sourceTypeIcon = record.sourceType === 'repository' ? '<i class="fab fa-github"></i>' : 
-                       (record.sourceType === 'url' ? '<i class="fas fa-globe"></i>' : 
-                       (record.sourceType === 'network' ? '<i class="fas fa-server"></i>' : 
-                       (record.sourceType === 'workflow' ? '<i class="fas fa-code-branch"></i>' :
-                       (record.sourceType === 'archive' ? '<i class="fas fa-file-archive"></i>' : '<i class="fas fa-question-circle"></i>'))));
-                
-                const statusLabel = record.status === 'success' ? 'Success' : record.status === 'error' ? 'Error' : 'In Progress';
-                
-                return `
-                    <tr>
-                        <td><strong>${record.tool?.toUpperCase() || '—'}</strong></td>
-                        <td>
-                            <span class="source-type-badge ${sourceTypeClass}">
-                                ${sourceTypeIcon} ${sourceTypeLabel}
-                            </span>
-                        </td>
-                        <td class="source-name" title="${escapeHtml(record.sourceName)}">
-                            ${escapeHtml(shortName)}
-                        </td>
-                        <td>${new Date(record.endTime || record.startTime).toLocaleString()}</td>
-                        <td>${formatDuration(record.duration)}</td>
-                        <td>
-                            <span class="status-badge status-${record.status}">
-                                ${statusLabel}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="action-btn" onclick="viewDetails('${record.tool}', '${record.reportId}')" title="View report">
-                                <i class="fab fa-html5" style="width: 28px; color: #E44D26;"></i>
-                            </button>
-                           ${record.sourceType === 'repository' || 'url' ? `
-                            <button id="history-replay" data-type="${record.sourceType}" data-tool="${record.tool}" data-url="${record.sourceName}" data-branch="${record.branch}" 
-                                 onclick="historyReplay(this.id)"
-                                 style="background: white; border: none; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; color: black; transition: all 0.2s;">
-                                <i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>
-                            </button>
-                        ` : ''}
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function formatDuration(ms) {
-            if (!ms && ms !== 0) return '—';
-            if (ms < 1000) return `${ms}ms`;
-            if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-            return `${Math.floor(ms / 60000)}m ${Math.floor((ms % 60000) / 1000)}s`;
-        }
-
-        function renderPagination() {
-            const pagination = document.getElementById('pagination');
-            const totalPages = Math.ceil(currentRecords.length / rowsPerPage);
-            
-            if (totalPages <= 1) {
-                pagination.innerHTML = '';
-                return;
-            }
-
-            let html = '';
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
-            }
-            pagination.innerHTML = html;
-        }
-
-        function goToPage(page) {
-            currentPage = page;
-            renderTable();
-        }
-
-        window.viewDetails = function(tool, reportId) {
-            if (!tool || !reportId) {
-                console.error('Missing parameters');
-                return;
-            }
-            const url = `${window.location.origin}/api/${tool}/history/${reportId}`;
-            window.open(url, '_blank', 'noopener,noreferrer');
-        };
-
-        window.closeDetailModal = function() {
-            document.getElementById('detailModal').style.display = 'none';
-        };
-
-        async function clearHistory() {
-            if (!confirm('Are you sure you want to clear all scan history?')) return;
-            
-            try {
-                const response = await fetch('/api/history', { method: 'DELETE' });
-                const data = await response.json();
-                
-                if (data.success) {
-                    showNotification('History cleared', 'success');
-                    loadHistory();
-                } else {
-                    showNotification('Clear failed', 'error');
-                }
-            } catch (error) {
-                showNotification('Clear failed', 'error');
-            }
-        }
-
-        function showNotification(message, type) {
-            const notification = document.createElement('div');
-            notification.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                right: 20px;
-                background: ${type === 'success' ? '#10b981' : '#ef4444'};
-                color: white;
-                padding: 12px 20px;
-                border-radius: 8px;
-                z-index: 1001;
-                animation: slideIn 0.3s ease;
-                font-family: Ubuntu;
-            `;
-            notification.innerHTML = message;
-            document.body.appendChild(notification);
-            setTimeout(() => notification.remove(), 3000);
-        }
-
-        function showError(message) {
-            const tbody = document.getElementById('historyTableBody');
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-state">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>${message}</p>
-                    </td>
-                </tr>
-            `;
-        }
-
-        function escapeHtml(str) {
-            if (!str) return '';
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-
-        document.getElementById('refreshBtn')?.addEventListener('click', () => loadHistory());
-        document.getElementById('clearHistoryBtn')?.addEventListener('click', () => clearHistory());
-
-        loadHistory();
-    </script>
+    <script type="text/javascript" src="../common/modal.js"></script>
+    <script type="module" src="history.js"></script>
 </body>
-
 </html>

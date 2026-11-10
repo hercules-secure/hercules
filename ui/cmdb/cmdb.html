@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMDB | Configuration Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/x-icon" href="../rocket.ico">
+  <link rel="stylesheet" href="../common/sidebar.css">
+  <link rel="stylesheet" href="./cmdb.css"/>
+  <script>
+    (function() {
+      const saved = localStorage.getItem('hercules_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = saved || (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+  
+</head>
+<body>
+  <div id="box">
+    <!-- ===== LEFT SIDEBAR ===== -->
+    <div id="left">
+      <div class="tools-section">
+        <div class="tools-header">
+          <div class="tools-title" id="toolsTitle">
+            <i class="fas fa-tools black-icon"></i>
+            <span>Tools</span>
+          </div>
+          <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+        </div>
+        <div class="tool-divider"></div>
+        <div class="tools-grid" id="toolsGrid">
+                    <div class="tools-loader">
+                        <i class="fas fa-spinner fa-spin"></i><br>
+                        Loading...
+                    </div>
+                </div>
+        <div class="tool-divider"></div>
+
+        <div class="tools-grid" id="toolsGrid">
+          
+          <a href="/history">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fas fa-history black-icon"></i>
+              </div>
+              <div class="tool-info">
+                <span class="tool-name">History</span>
+                <span class="tool-desc">Scan log</span>
+              </div>
+            </div>
+          </a>
+          <a href="/config">
+            <div class="tool-item">
+              <div class="tool-icon">
+                <i class="fas fa-cogs black-icon"></i>
+              </div>
+              <div class="tool-info">
+                <span class="tool-name">Settings</span>
+                <span class="tool-desc">Manage parameters</span>
+              </div>
+            </div>
+          </a>
+        </div>
+        <div class="tool-divider"></div>  
+      </div>
+    </div>
+
+    <!-- ===== CENTER ===== -->
+    <div id="center">
+      <div class="top-bar">
+        <div class="top-bar-title">
+          <i class="fas fa-cubes black-icon"></i>
+          <span>CMDB</span>
+        </div>
+        <div class="top-bar-actions">
+          <div class="header-actions">
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" placeholder="Search by name, team, owner..." id="globalSearch">
+            </div>
+            <button class="header-btn" id="addAssetBtn"><i class="fas fa-plus"></i> Add</button>
+          </div>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+            <i class="fas fa-sun icon-sun"></i>
+            <i class="fas fa-moon icon-moon"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-server"></i></div><div class="stat-info"><h3 id="totalCount">0</h3><p>Total assets</p></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-circle-check"></i></div><div class="stat-info"><h3 id="activeCount">0</h3><p>Active</p></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-info"><h3 id="maintenanceCount">0</h3><p>Under maintenance</p></div></div>
+        <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h3 id="teamCount">0</h3><p>Teams</p></div></div>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label><i class="fas fa-tag"></i> Type</label>
+          <select id="typeFilter">
+            <option value="all">All</option>
+            <option value="server">Server</option>
+            <option value="network">Network</option>
+            <option value="database">Database</option>
+            <option value="storage">Storage</option>
+            <option value="application">Application</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label><i class="fas fa-circle"></i> Status</label>
+          <select id="statusFilter">
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+        </div>
+        <div class="filter-clear" id="clearFilters"><i class="fas fa-rotate-left"></i> Reset</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Team</th>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>IT Custodian</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Links</th>
+              <th style="text-align:right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="assetTableBody">
+            <tr><td colspan="8" class="empty-state"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i><br>Loading...</td></tr>
+          </tbody>
+        </table>
+        <div class="table-footer">
+          <div class="pagination">
+            <span id="pageInfo">1-6</span>
+            <span class="active-page">1</span>
+            <span>2</span>
+            <span>3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===== EDIT MODAL ===== -->
+<div class="modal-overlay" id="formModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title" id="formModalTitle">
+        <i class="fas fa-pen"></i> Edit asset
+      </div>
+      <button class="modal-close" onclick="closeModal('formModal')">&times;</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Team + Asset name в одну строку -->
+      <div class="form-row">
+        <div class="form-group">
+          <label for="formTeam">Team <span class="required">*</span></label>
+          <input type="text" id="formTeam" placeholder="Example: DevOps Team">
+        </div>
+        <div class="form-group">
+          <label for="formName">Asset name <span class="required">*</span></label>
+          <input type="text" id="formName" placeholder="Example: Web-Server-01">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="formOwner">Owner <span class="required">*</span></label>
+          <input type="text" id="formOwner" placeholder="Owner name">
+        </div>
+        <div class="form-group">
+          <label for="formCustodian">IT Custodian <span class="required">*</span></label>
+          <input type="text" id="formCustodian" placeholder="IT Custodian name">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="formEmail">Email <span class="required">*</span></label>
+        <input type="email" id="formEmail" placeholder="owner@company.com">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="formType">Type <span class="required">*</span></label>
+          <select id="formType">
+            <option value="server">Server</option>
+            <option value="network">Network</option>
+            <option value="database">Database</option>
+            <option value="storage">Storage</option>
+            <option value="application">Application</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="formStatus">Status <span class="required">*</span></label>
+          <select id="formStatus">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="formDescription">Description</label>
+        <textarea id="formDescription" placeholder="Brief asset description"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="formGit">Git <span class="required">*</span></label>
+        <input type="text" id="formGit" placeholder="https://github.com/org/repo">
+      </div>
+
+      <div class="form-group">
+        <label for="formStack">Stack</label>
+        <input type="text" id="formStack" placeholder="Example: Node.js, React, PostgreSQL">
+      </div>
+
+      <div class="form-group">
+        <label for="formDocs">Documentation</label>
+        <input type="text" id="formDocs" placeholder="https://wiki.company.com/docs">
+      </div>
+
+      <div class="form-group">
+        <label for="formSecurity">Security assessment report</label>
+        <input type="text" id="formSecurity" placeholder="https://security.company.com/report">
+      </div>
+
+      <input type="hidden" id="formEditId" value="">
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('formModal')">Cancel</button>
+      <button class="btn btn-primary" id="formSubmitBtn"><i class="fas fa-save"></i> Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD MODAL ===== -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+
+    <!-- ШАГ 1: выбор источника -->
+    <div id="addStepSource">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-plus-circle"></i> Add asset
+        </div>
+        <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.25rem; font-family: 'Fira Sans', sans-serif;">
+          How would you like to provide the asset description?
+        </p>
+
+        <div class="source-options">
+          <button class="source-option" data-source="file">
+            <div class="source-icon"><i class="fas fa-file-arrow-up"></i></div>
+            <div class="source-info">
+              <span class="source-name">Upload file</span>
+              <span class="source-desc">JSON, YAML, or Markdown with asset details</span>
+            </div>
+            <i class="fas fa-chevron-right source-arrow"></i>
+          </button>
+
+          <button class="source-option" data-source="git">
+            <div class="source-icon"><i class="fab fa-git-alt"></i></div>
+            <div class="source-info">
+              <span class="source-name">From Git repository</span>
+              <span class="source-desc">Parse README, manifest.yaml, or custom manifest</span>
+            </div>
+            <i class="fas fa-chevron-right source-arrow"></i>
+          </button>
+
+          <button class="source-option" data-source="manual">
+            <div class="source-icon"><i class="fas fa-keyboard"></i></div>
+            <div class="source-info">
+              <span class="source-name">Enter manually</span>
+              <span class="source-desc">Fill in the form fields yourself</span>
+            </div>
+            <i class="fas fa-chevron-right source-arrow"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ШАГ 2a: загрузка файла -->
+    <div id="addStepFile" style="display: none;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-file-arrow-up"></i> Upload file
+        </div>
+        <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="upload-drop" id="assetUploadDrop">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Click or drag <strong>manifest.yaml</strong> here</p>
+          <small>YAML, YML, JSON — up to 1 MB</small>
+          <input type="file" id="assetFileInput" accept=".yaml,.yml,.json" hidden>
+        </div>
+        <p id="assetFileError" class="field-error" style="display: none;"></p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-back>Back</button>
+        <button class="btn btn-primary" id="assetFileNext" disabled>
+          <i class="fas fa-arrow-right"></i> Next
+        </button>
+      </div>
+    </div>
+
+    <!-- ШАГ 2b: Git -->
+    <div id="addStepGit" style="display: none;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fab fa-git-alt"></i> From Git repository
+        </div>
+        <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="assetGitUrl">Repository URL <span class="required">*</span></label>
+          <input type="text" id="assetGitUrl" placeholder="https://github.com/org/repo">
+        </div>
+        <div class="form-group">
+          <label for="assetGitBranch">Branch</label>
+          <input type="text" id="assetGitBranch" placeholder="main">
+        </div>
+        <div class="form-group">
+          <label for="assetGitPath">Manifest path</label>
+          <input type="text" id="assetGitPath" placeholder="manifest.yaml">
+        </div>
+        <p id="assetGitError" class="field-error" style="display: none;"></p>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-back>Back</button>
+        <button class="btn btn-primary" id="assetGitNext">
+          <i class="fas fa-download"></i> Fetch & continue
+        </button>
+      </div>
+    </div>
+
+    <!-- ШАГ 3: форма -->
+    <div id="addStepForm" style="display: none;">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-plus-circle"></i> Add asset
+        </div>
+        <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="addSourceBadge" class="source-badge" style="display: none;"></div>
+
+        <!-- Team + Asset name в одну строку -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addTeam">Team <span class="required">*</span></label>
+            <input type="text" id="addTeam" placeholder="Example: DevOps Team">
+          </div>
+          <div class="form-group">
+            <label for="addName">Asset name <span class="required">*</span></label>
+            <input type="text" id="addName" placeholder="Example: Web-Server-01">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addOwner">Owner <span class="required">*</span></label>
+            <input type="text" id="addOwner" placeholder="Owner name">
+          </div>
+          <div class="form-group">
+            <label for="addCustodian">IT Custodian <span class="required">*</span></label>
+            <input type="text" id="addCustodian" placeholder="IT Custodian name">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="addEmail">Email <span class="required">*</span></label>
+          <input type="email" id="addEmail" placeholder="owner@company.com">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="addType">Type <span class="required">*</span></label>
+            <select id="addType">
+              <option value="server">Server</option>
+              <option value="network">Network</option>
+              <option value="database">Database</option>
+              <option value="storage">Storage</option>
+              <option value="application">Application</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="addStatus">Status <span class="required">*</span></label>
+            <select id="addStatus">
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+              <option value="maintenance">Maintenance</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="addDescription">Description</label>
+          <textarea id="addDescription" placeholder="Brief asset description"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="addGit">Git <span class="required">*</span></label>
+          <input type="text" id="addGit" placeholder="https://github.com/org/repo">
+        </div>
+        <div class="form-group">
+          <label for="addStack">Stack</label>
+          <input type="text" id="addStack" placeholder="Example: Node.js, React, PostgreSQL">
+        </div>
+
+        <div class="form-group">
+          <label for="addDocs">Documentation</label>
+          <input type="text" id="addDocs" placeholder="https://wiki.company.com/docs">
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-back>Back</button>
+        <button class="btn btn-primary" id="addSubmitBtn">
+          <i class="fas fa-save"></i> Create
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+  <!-- Modal: Delete -->
+  <div class="modal-overlay modal-danger" id="deleteModal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="fas fa-trash-can"></i> Delete asset
+        </div>
+        <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="warning-text">
+          <i class="fas fa-exclamation-triangle"></i>
+          Are you sure you want to delete asset <strong id="deleteAssetName"></strong>?
+        </div>
+        <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;">This action is irreversible. All asset data will be lost.</p>
+        <input type="hidden" id="deleteAssetId" value="">
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
+        <button class="btn btn-primary" id="deleteConfirmBtn"><i class="fas fa-trash-can"></i> Delete</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ===== ANALYSIS PROGRESS MODAL ===== -->
+<div class="modal-overlay modal-progress" id="progressModal">
+  <div class="progress-card">
+    <!-- <button class="modal-close progress-close" onclick="closeProgress()">&times;</button> -->
+
+  <div class="progress-orb">
+    <div class="orb-ring orb-ring--outer"></div>
+    <div class="orb-ring orb-ring--inner"></div>
+
+    <div class="progress-orb-inner">
+      <i class="fas fa-rocket progress-orb-icon" id="progressOrbIcon"></i>
+    </div>
+  </div>
+
+    <h3 class="progress-title" id="progressTitle">Security assessment</h3>
+    <div class="progress-target" id="progressTarget">—</div>
+
+    <div class="progress-bar">
+      <div class="progress-bar-fill" id="progressBarFill"></div>
+    </div>
+
+    <div class="progress-footer">
+      <div class="progress-status">
+        <span class="progress-status-dot"></span>
+        <span id="progressStatus">Initializing...</span>
+      </div>
+      <div class="progress-counter">
+        <span id="progressCurrent">0</span> / <span id="progressTotal">0</span>
+      </div>
+    </div>
+  </div>
+</div>
+  <div id="toast" class="toast"></div>
+
+    <script type="text/javascript" src="../common/preloader.js"></script>
+    <script type="text/javascript" src="../common/info.js"></script>
+    <script type="text/javascript" src="../common/menu.js"></script>
+    <script type="text/javascript" src="../common/sidebar.js"></script>
+    <script type="text/javascript" src="../common/modal.js"></script>
+    <script type="text/javascript" src="./cmdb.js"></script>
+
+
+</body>
+</html>

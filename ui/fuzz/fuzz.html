@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html data-page="construction" data-version="1.27.0" lang="en">
+
 <head>
     <title>Baba Yaga</title>
     <meta charset="utf-8">
@@ -8,1116 +9,1615 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="../rocket.ico">
+
     <link rel="stylesheet" href="replay.css">
     <link rel="stylesheet" href="fuzz.css">
-    <link rel="stylesheet" href="../common/sidebar.css">  
+    <link rel="stylesheet" href="../common/sidebar.css">
     <link rel="stylesheet" href="../common/modal.css">
-    <link rel="stylesheet" href="../common/main.css">
-    <link rel="icon" type="image/x-icon" href="/rocket.ico">
+
+    <script>
+        (function() {
+            const saved = localStorage.getItem('hercules_theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = saved || (prefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+
     <style>
-*:not(.fa):not(.fas):not(.far):not(.fab):not(i):not([class*="fa-"]) {
-    font-family: 'Fira Sans', sans-serif !important;
-}
+        :root,
+        [data-theme="dark"] {
+            --bg: #0a0c14;
+            --bg-card: rgba(13, 16, 24, 0.85);
+            --bg-input: #131722;
+            --bg-input-focus: #161b28;
+            --border: #1e2433;
+            --border-hover: #2a3142;
+            --accent: #22d3ee;
+            --accent-2: #a855f7;
+            --accent-ink: #06141a;
+            --text: #e6edf7;
+            --text-dim: #6b7280;
+            --text-faint: #4a536b;
+            --error-bg: rgba(239, 68, 68, 0.08);
+            --error-border: rgba(239, 68, 68, 0.25);
+            --error-text: #fca5a5;
+            --success-bg: rgba(16, 185, 129, 0.10);
+            --success-border: rgba(16, 185, 129, 0.30);
+            --success-text: #6ee7b7;
+            --warning-bg: rgba(245, 158, 11, 0.10);
+            --warning-border: rgba(245, 158, 11, 0.30);
+            --warning-text: #fcd34d;
+            --logo-bg: linear-gradient(135deg, rgba(34, 211, 238, 0.18), rgba(168, 85, 247, 0.10));
+            --logo-border: rgba(34, 211, 238, 0.35);
+            --logo-glow: rgba(34, 211, 238, 0.25);
+            --logo-glow-strong: rgba(34, 211, 238, 0.45);
+            --card-shadow:
+                0 0 0 1px rgba(34, 211, 238, 0.05),
+                0 24px 60px rgba(0, 0, 0, 0.7),
+                0 0 80px rgba(34, 211, 238, 0.06);
+            --toggle-bg: rgba(255, 255, 255, 0.05);
+            --toggle-hover: rgba(255, 255, 255, 0.10);
+            --toggle-color: #6b7280;
+            --toggle-color-hover: #22d3ee;
+            --grid-line: rgba(34, 211, 238, 0.05);
+            --method-get-bg: rgba(97, 175, 254, 0.15);
+            --method-get-text: #7cb7ff;
+            --method-post-bg: rgba(73, 204, 144, 0.15);
+            --method-post-text: #6ee7b7;
+            --method-put-bg: rgba(252, 161, 48, 0.15);
+            --method-put-text: #fcd34d;
+            --method-delete-bg: rgba(249, 62, 62, 0.15);
+            --method-delete-text: #fca5a5;
+            --method-patch-bg: rgba(80, 227, 194, 0.15);
+            --method-patch-text: #5eead4;
+        }
 
-.task-id, .task-status, .modal-select, .modal-input,
-.license-input, .data-structure-preview, .version,
-.format-badge, .supported-format-badge, .tools-loader i,
-.progress-container, .start-button, .header-btn,
-.input-group input, .section-title, .task-status,
-.card-header, .card-body h4, .upload-text,
-.supported-format-badge, .format-badge span,
-.tools-loader, .error-message, .source-btn,
-.thermometer-mark .mark-label, .overall-percent,
-.result-tab, .btn-download, .btn-download-html,
-.metla-detail-method, .metla-detail-path, .metla-detail-tab,
-.metla-detail-btn, .metla-detail-analysis-select,
-.metla-detail-info-item .label, .metla-detail-info-item .value,
-.metla-detail-code-block, .metla-detail-empty,
-.metla-detail-analysis-label, .step-label, .thermometer-percent,
-.metla-header, .metla-header-cell, .metla-method, .metla-path,
-.metla-badge, .metla-stats, .metla-detail-auth-badge,
-.mode-btn-mode, .fuzz-input-group input, .fuzz-input-group .fuzz-start-btn,
-.upload-text, .upload-hint, .spec-info-item, .metla-empty {
-    font-family: 'Fira Code', monospace !important;
-}
+        [data-theme="light"] {
+            --bg: #f4f6fb;
+            --bg-card: rgba(255, 255, 255, 0.92);
+            --bg-input: #ffffff;
+            --bg-input-focus: #ffffff;
+            --border: #e3e8f0;
+            --border-hover: #d0d7e3;
+            --accent: #0891b2;
+            --accent-2: #7c3aed;
+            --accent-ink: #ffffff;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --text-faint: #94a3b8;
+            --error-bg: rgba(239, 68, 68, 0.06);
+            --error-border: rgba(239, 68, 68, 0.20);
+            --error-text: #b91c1c;
+            --success-bg: rgba(16, 185, 129, 0.08);
+            --success-border: rgba(16, 185, 129, 0.25);
+            --success-text: #047857;
+            --warning-bg: rgba(245, 158, 11, 0.08);
+            --warning-border: rgba(245, 158, 11, 0.25);
+            --warning-text: #b45309;
+            --logo-bg: linear-gradient(135deg, rgba(8, 145, 178, 0.12), rgba(124, 58, 237, 0.06));
+            --logo-border: rgba(8, 145, 178, 0.30);
+            --logo-glow: rgba(8, 145, 178, 0.15);
+            --logo-glow-strong: rgba(8, 145, 178, 0.30);
+            --card-shadow:
+                0 0 0 1px rgba(8, 145, 178, 0.04),
+                0 20px 50px rgba(15, 23, 42, 0.10),
+                0 0 60px rgba(8, 145, 178, 0.04);
+            --toggle-bg: rgba(0, 0, 0, 0.04);
+            --toggle-hover: rgba(0, 0, 0, 0.08);
+            --toggle-color: #94a3b8;
+            --toggle-color-hover: #0891b2;
+            --grid-line: rgba(8, 145, 178, 0.06);
+            --method-get-bg: rgba(97, 175, 254, 0.15);
+            --method-get-text: #1d4ed8;
+            --method-post-bg: rgba(73, 204, 144, 0.15);
+            --method-post-text: #047857;
+            --method-put-bg: rgba(252, 161, 48, 0.15);
+            --method-put-text: #b45309;
+            --method-delete-bg: rgba(249, 62, 62, 0.15);
+            --method-delete-text: #b91c1c;
+            --method-patch-bg: rgba(80, 227, 194, 0.15);
+            --method-patch-text: #0f766e;
+        }
 
-input, select, textarea, button {
-    font-family: 'Fira Sans', sans-serif;
-}
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.fuzz-input-group {
-    display: flex !important;
-    gap: 10px !important;
-    align-items: stretch !important;
-    margin-bottom: 16px !important;
-    width: 100% !important;
-}
+        html, body {
+            min-height: 100%;
+            transition: background 0.35s ease, color 0.35s ease;
+        }
 
-.fuzz-input-group .fuzz-input-wrapper {
-    flex: 1 !important;
-    min-width: 0 !important;
-    position: relative !important;
-    display: flex !important;
-    align-items: stretch !important;
-}
+        body {
+            font-family: 'Fira Code', ui-monospace, monospace;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
 
-.fuzz-input-group .fuzz-input-wrapper input {
-    width: 100% !important;
-    padding: 10px 14px !important;
-    border: 1px solid var(--border, #e9ecef) !important;
-    border-radius: 8px !important;
-    font-family: 'Fira Sans', sans-serif !important;
-    font-size: 14px !important;
-    background: var(--bg-primary, white) !important;
-    color: var(--text-primary, #1a1a2e) !important;
-    transition: border-color 0.2s !important;
-    box-sizing: border-box !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    max-height: 44px !important;
-    line-height: 24px !important;
-    margin: 0 !important;
-    display: block !important;
-}
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 40% at 50% 0%, var(--logo-glow), transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 100%, var(--logo-glow), transparent 60%),
+                radial-gradient(ellipse 40% 30% at 10% 80%, var(--logo-glow), transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background 0.35s ease;
+        }
 
-.fuzz-input-group .fuzz-input-wrapper input:focus {
-    outline: none !important;
-    border-color: #667eea !important;
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15) !important;
-}
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 44px 44px;
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+            -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 50%, black 30%, transparent 80%);
+            pointer-events: none;
+            z-index: 0;
+            transition: background-image 0.35s ease;
+        }
 
-.fuzz-input-group .fuzz-input-wrapper input::placeholder {
-    color: var(--text-muted, #adb5bd) !important;
-    line-height: 24px !important;
-}
+        #box {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            min-height: 100vh;
+            gap: 20px;
+            padding: 20px;
+            width: 100%;
+            margin: 0;
+            align-items: flex-start;
+        }
 
-.fuzz-input-group .fuzz-start-btn {
-    flex-shrink: 0 !important;
-    white-space: nowrap !important;
-    padding: 0 20px !important;
-    height: 44px !important;
-    min-height: 44px !important;
-    max-height: 44px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-family: 'Fira Sans', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    cursor: pointer !important;
-    transition: all 0.2s !important;
-    background: #e2e8f0 !important;
-    color: #94a3b8 !important;
-    min-width: 160px !important;
-    margin: 0 !important;
-    box-sizing: border-box !important;
-    line-height: 1 !important;
-}
+        #left {
+            flex: 0 0 300px;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            overflow-y: auto;
+            overflow-x: hidden;
+            transition: flex-basis 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+        }
 
-.fuzz-input-group .fuzz-start-btn.active {
-    background: var(--primary-color, #667eea) !important;
-    color: white !important;
-    cursor: pointer !important;
-}
+        #left.collapsed {
+            flex-basis: 0;
+            padding: 0;
+            border: none;
+            opacity: 0;
+            transform: translateX(-20px);
+            pointer-events: none;
+        }
 
-.fuzz-input-group .fuzz-start-btn.active:hover {
-    background: var(--primary-hover, #5a6fd6) !important;
-    transform: translateY(-1px) !important;
-    box-shadow: var(--shadow-md) !important;
-}
+        #center {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
 
-.fuzz-input-group .fuzz-start-btn:disabled {
-    opacity: 0.5 !important;
-    cursor: not-allowed !important;
-}
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            padding: 16px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        }
 
-.metla-targets-area {
-    border: 1px dashed black;
-    border-radius: 12px;
-    padding: 16px;
-    transition: all 0.3s ease;
-    background: var(--bg-secondary, #f8f9fa);
-    min-height: 100px;
-    display: flex;
-    flex-direction: column;
-}
+        .top-bar::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 15%; right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 1px;
+            opacity: 0.7;
+        }
 
-.metla-targets-area.has-targets {
-    border-color: black;
-    background: #f8f9ff;
-}
+        .top-bar-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
 
-.metla-targets-area .metla-empty {
-    color: var(--text-muted, #6c757d);
-    text-align: center;
-    padding: 20px 0;
-    font-family: 'Fira Sans', sans-serif;
-}
+        .top-bar-title i {
+            color: var(--accent) !important;
+            font-size: 1.05rem;
+            filter: drop-shadow(0 0 6px var(--logo-glow-strong));
+        }
 
-.metla-targets-area .metla-empty i {
-    font-size: 32px;
-    margin-bottom: 8px;
-    opacity: 0.5;
-    display: block;
-}
-
-.metla-targets-area .metla-empty .metla-hint {
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-.metla-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 6px 12px 4px 12px;
-    border-bottom: 2px solid var(--border, #e9ecef);
-    margin-bottom: 4px;
-    font-size: 10px;
-    font-weight: 600;
-    color: var(--text-secondary, #6c757d);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-family: 'Fira Sans', sans-serif;
-}
-
-.metla-header-cell {
-    flex-shrink: 0;
-    text-align: center;
-}
-
-.metla-header-cell:first-child {
-    width: 36px;
-    flex-shrink: 0;
-}
-
-.metla-header-cell:nth-child(2) {
-    min-width: 75px;
-    flex-shrink: 0;
-}
-
-.metla-header-cell:nth-child(3) {
-    flex: 1;
-    text-align: left;
-}
-
-.metla-header-cell:nth-child(4) {
-    min-width: 80px;
-    flex-shrink: 0;
-}
-
-.metla-header-cell:last-child {
-    width: 30px;
-    flex-shrink: 0;
-}
-
-#metlaTargetsList {
-    width: 100%;
-}
-
-.metla-item {
-    border-bottom: 1px solid var(--border, #e9ecef);
-    background: white;
-}
-
-.metla-item:last-child {
-    border-bottom: none;
-}
-
-.metla-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 12px;
-    cursor: pointer;
-    transition: background 0.15s;
-    user-select: none;
-}
-
-.metla-row:hover {
-    background: var(--bg-secondary, #f8f9fa);
-}
-
-.metla-checkbox {
-    width: 16px;
-    height: 16px;
-    cursor: pointer;
-    flex-shrink: 0;
-    accent-color: #667eea;
-}
-
-.metla-method {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    min-width: 44px;
-    flex-shrink: 0;
-    letter-spacing: 0.3px;
-    text-align: center;
-}
-
-.metla-path {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 13px;
-    color: var(--text-primary, #1a1a2e);
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    text-align: left;
-}
-
-.metla-badge {
-    font-family: 'Fira Sans';
-    font-size: 9px;
-    font-weight: 600;
-    padding: 2px 10px;
-    border-radius: 12px;
-    flex-shrink: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    text-align: left;
-}
-
-.metla-badge.auth {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.metla-badge.public {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.metla-icon {
-    color: var(--text-muted, #adb5bd);
-    font-size: 11px;
-    flex-shrink: 0;
-    width: 20px;
-    text-align: center;
-}
-
-.metla-row:hover .metla-icon {
-    color: var(--text-secondary, #6c757d);
-}
-
-.metla-stats {
-    display: none;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 12px;
-    margin-top: 8px;
-    background: var(--bg-secondary, #f8f9fa);
-    border-radius: 6px;
-    font-size: 12px;
-    color: var(--text-secondary, #6c757d);
-    flex-wrap: wrap;
-    font-family: 'Fira Sans', sans-serif;
-}
-
-.metla-stats .stat-item {
+        .top-bar .top-bar-actions {
     display: flex;
     align-items: center;
-    gap: 2px;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 12px;
-    color: var(--text-secondary, #6c757d);
-}
-
-.metla-stats .stat-item strong {
-    font-family: 'Fira Code', monospace;
-    font-weight: 700;
-    color: var(--text-primary, #1a1a2e);
-}
-
-.metla-stats .stat-divider {
-    width: 1px;
-    height: 16px;
-    background: var(--border, #e9ecef);
-}
-
-.metla-detail-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10000;
-    align-items: center;
-    justify-content: center;
-}
-
-.metla-detail-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    animation: metlaFadeIn 0.2s ease;
-}
-
-.metla-detail-content {
-    position: relative;
-    max-width: 820px;
-    width: 92%;
-    max-height: 85vh;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    display: flex;
-    flex-direction: column;
-    animation: metlaSlideUp 0.25s ease;
-    overflow: hidden;
-}
-
-.metla-detail-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 20px;
-    border-bottom: 1px solid var(--border, #e9ecef);
+    gap: 4px;
     flex-shrink: 0;
-    background: var(--bg-secondary, #f8f9fa);
+    margin-left: 6px;
 }
 
-.metla-detail-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    overflow: hidden;
-    flex: 1;
-}
-
-.metla-detail-method {
-    font-family: 'Fira Sans', sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 4px 14px;
-    border-radius: 4px;
-    flex-shrink: 0;
-}
-
-.metla-detail-path {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-primary, #1a1a2e);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.metla-detail-auth-badge {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 10px;
-    font-weight: 600;
-    padding: 2px 12px;
-    border-radius: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    flex-shrink: 0;
-}
-
-.metla-detail-auth-badge.public {
-    background: #dcfce7;
-    color: #16a34a;
-}
-
-.metla-detail-auth-badge.auth {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.metla-detail-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-}
-
-.metla-detail-btn {
-    padding: 6px 14px;
-    border: 1px solid var(--border, #e9ecef);
-    border-radius: 6px;
-    background: white;
-    color: var(--text-secondary, #6c757d);
-    cursor: pointer;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.2s;
+.top-bar .top-bar-actions .header-btn {
+    height: 26px;
+    padding: 0 10px;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-}
-
-.metla-detail-btn:hover {
-    background: var(--bg-secondary, #f1f3f5);
-    border-color: #667eea;
-    color: var(--text-primary, #1a1a2e);
-}
-
-.metla-detail-btn.primary {
-    background: #667eea;
-    border-color: #667eea;
-    color: white;
-}
-
-.metla-detail-btn.primary:hover {
-    background: #5a6fd6;
-    border-color: #5a6fd6;
-}
-
-.metla-detail-btn.small {
-    padding: 4px 10px;
-    font-size: 11px;
-}
-
-.metla-detail-close {
-    width: 32px;
-    height: 32px;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    font-size: 18px;
-    color: var(--text-muted, #adb5bd);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-}
-
-.metla-detail-close:hover {
-    background: var(--bg-secondary, #f1f3f5);
-    color: var(--text-primary, #1a1a2e);
-}
-
-.metla-detail-tabs {
-    display: flex;
-    gap: 4px;
-    padding: 8px 20px 0 20px;
-    border-bottom: 1px solid var(--border, #e9ecef);
-    flex-shrink: 0;
-    background: white;
-}
-
-.metla-detail-tab {
-    padding: 8px 16px;
-    border: none;
-    border-bottom: 2px solid transparent;
-    background: transparent;
-    color: var(--text-secondary, #6c757d);
-    cursor: pointer;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 12px;
-    font-weight: 500;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.metla-detail-tab:hover {
-    color: var(--text-primary, #1a1a2e);
-}
-
-.metla-detail-tab.active {
-    color: #667eea;
-    border-bottom-color: #667eea;
-}
-
-.metla-detail-tab i {
-    font-size: 13px;
-}
-
-.metla-detail-body {
-    padding: 16px 20px;
-    overflow-y: auto;
-    flex: 1;
-    background: white;
-}
-
-.metla-detail-panel {
-    animation: metlaFadeIn 0.2s ease;
-}
-
-.metla-detail-info {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.metla-detail-info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.metla-detail-info-item .label {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary, #6c757d);
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-}
-
-.metla-detail-info-item .value {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 13px;
-    color: var(--text-primary, #1a1a2e);
-    word-break: break-all;
-}
-
-.metla-detail-code-block {
-    background: #1a1a2e;
-    color: #e9ecef;
-    padding: 14px 18px;
-    border-radius: 8px;
-    font-family: 'Fira Code', monospace;
-    font-size: 12px;
-    line-height: 1.7;
-    overflow-x: auto;
-    white-space: pre-wrap;
-    word-break: break-all;
-    max-height: 300px;
-    overflow-y: auto;
-    margin: 0;
-}
-
-.metla-detail-empty {
-    color: #6c757d;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 13px;
-}
-
-.metla-detail-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    border-top: 1px solid var(--border, #e9ecef);
-    flex-shrink: 0;
-    background: var(--bg-secondary, #f8f9fa);
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.metla-detail-footer-left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.metla-detail-footer-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.metla-detail-export-group {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.metla-detail-analysis-group {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.metla-detail-analysis-label {
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 12px;
-    color: var(--text-secondary, #6c757d);
-    font-weight: 500;
-}
-
-.metla-detail-analysis-select {
-    padding: 4px 10px;
-    border: 1px solid var(--border, #e9ecef);
-    border-radius: 6px;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 12px;
-    background: white;
-    color: var(--text-primary, #1a1a2e);
-    cursor: pointer;
-    outline: none;
-}
-
-.metla-detail-analysis-select:focus {
-    border-color: #667eea;
-}
-
-@media (max-width: 768px) {
-    .metla-detail-content {
-        width: 95%;
-        max-height: 92vh;
-        border-radius: 8px;
-    }
-    
-    .metla-detail-header {
-        padding: 10px 14px;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    
-    .metla-detail-title {
-        flex-wrap: wrap;
-    }
-    
-    .metla-detail-method {
-        font-size: 12px;
-        padding: 2px 10px;
-    }
-    
-    .metla-detail-path {
-        font-size: 12px;
-    }
-    
-    .metla-detail-body {
-        padding: 12px 14px;
-    }
-    
-    .metla-detail-info {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-    
-    .metla-detail-tabs {
-        padding: 6px 14px 0 14px;
-        overflow-x: auto;
-    }
-    
-    .metla-detail-tab {
-        padding: 6px 12px;
-        font-size: 11px;
-        white-space: nowrap;
-    }
-    
-    .metla-detail-tab i {
-        font-size: 11px;
-    }
-    
-    .metla-detail-code-block {
-        font-size: 10px;
-        padding: 10px 12px;
-        max-height: 200px;
-    }
-    
-    .metla-detail-footer {
-        padding: 8px 14px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-    }
-    
-    .metla-detail-footer-left,
-    .metla-detail-footer-right {
-        justify-content: center;
-    }
-    
-    .metla-detail-analysis-group {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .metla-detail-btn {
-        font-size: 10px;
-        padding: 4px 10px;
-    }
-    
-    .metla-detail-btn.small {
-        font-size: 10px;
-        padding: 3px 8px;
-    }
-}
-
-.progress-thermometer {
-    background: white;
-    border-radius: 12px;
-    padding: 20px 24px 16px 24px;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    border: 1px solid var(--border, #e9ecef);
-}
-
-.thermometer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-}
-
-.thermometer-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text-secondary, #6c757d);
-}
-
-.thermometer-percent {
-    font-size: 18px;
-    font-weight: 700;
-    color: black;
-    font-variant-numeric: tabular-nums;
-    font-family: 'Fira Code', monospace;
-}
-
-.thermometer-track {
-    position: relative;
-    height: 8px;
-    background: #e9ecef;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 14px;
-}
-
-.thermometer-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #667eea, #764ba2);
-    border-radius: 4px;
-    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    width: 0%;
-}
-
-.thermometer-glow {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 40px;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
-    border-radius: 4px;
-}
-
-.thermometer-steps {
-    display: flex;
-    justify-content: space-between;
-    position: relative;
-    width: 100%;
-}
-
-.thermometer-step {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: flex-start;
-    position: relative;
-}
-
-.step-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex: 1;
-    gap: 4px;
-}
-
-.step-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #e9ecef;
-    border: 2px solid white;
-    box-shadow: 0 0 0 1px #e9ecef;
-    transition: all 0.4s ease;
-    flex-shrink: 0;
-    z-index: 1;
-}
-
-.step-dot.active {
-    background: #667eea;
-    box-shadow: 0 0 0 1px #667eea, 0 0 12px rgba(102, 126, 234, 0.3);
-    transform: scale(1.15);
-}
-
-.step-dot.completed {
-    background: #10b981;
-    box-shadow: 0 0 0 1px #10b981;
-}
-
-.step-label {
-    font-size: 10px;
-    color: var(--text-muted, #adb5bd);
-    font-weight: 500;
-    text-align: center;
-    transition: color 0.3s ease;
+    gap: 5px;
+    font-size: 0.62rem;
     white-space: nowrap;
-    max-width: 70px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-family: 'Fira Code', monospace;
-}
-
-.step-label.active {
-    color: var(--text-primary, #1a1a2e);
-    font-weight: 600;
-}
-
-.step-label.completed {
-    color: #10b981;
-}
-
-@media (max-width: 600px) {
-    .progress-thermometer {
-        padding: 16px;
-    }
-    .step-label {
-        font-size: 8px;
-        max-width: 50px;
-    }
-    .step-dot {
-        width: 8px;
-        height: 8px;
-    }
-    .thermometer-percent {
-        font-size: 15px;
-    }
-}
-
-.mode-selector {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-    background: var(--bg-secondary, #f1f3f5);
-    border-radius: 12px;
-    padding: 4px;
-    border: 1px solid var(--border, #e9ecef);
-}
-
-.mode-btn-mode {
-    flex: 1;
-    padding: 10px 18px;
-    border: none;
-    border-radius: 9px;
-    font-family: 'Fira Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    background: transparent;
-    color: var(--text-secondary, #6c757d);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-
-.mode-btn-mode i {
-    font-size: 16px;
-}
-
-.mode-btn-mode:hover {
-    color: var(--text-primary, #1a1a2e);
-    background: rgba(255,255,255,0.4);
-}
-
-.mode-btn-mode.active {
-    background: white;
-    color: var(--text-primary, #1a1a2e);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-.mode-btn-mode .badge-beta-gradient {
-    font-size: 9px;
-    padding: 2px 8px;
-    border-radius: 20px;
-    font-weight: 700;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    margin-left: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-@media (max-width: 600px) {
-    .mode-btn-mode {
-        font-size: 12px;
-        padding: 8px 12px;
-    }
-    .mode-btn-mode i {
-        font-size: 14px;
-    }
-    .mode-btn-mode .badge-beta-gradient {
-        font-size: 7px;
-        padding: 1px 6px;
-    }
-}
-
-.mode-domovoy .metla-targets-area {
-    display: none !important;
-}
-
-.mode-metla .domovoy-only {
-    display: none !important;
-}
-
-.mode-metla .metla-targets-area {
-    display: flex !important;
-}
-
-.domovoy-only .upload-area {
-    border: 2px dashed var(--border, #e9ecef);
-    border-radius: 12px;
-    padding: 32px 20px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background: var(--bg-secondary, #f8f9fa);
-}
-
-.domovoy-only .upload-area:hover {
-    border-color: #667eea;
-    background: #f8f9ff;
-}
-
-.domovoy-only .upload-area.dragover {
-    border-color: #667eea;
-    background: #eef0ff;
-}
-
-.domovoy-only .upload-icon i {
-    font-size: 48px;
-    color: #667eea;
-    opacity: 0.6;
-}
-
-.domovoy-only .upload-text {
-    font-size: 14px;
-    color: var(--text-secondary, #6c757d);
-    margin-top: 8px;
-}
-
-.domovoy-only .upload-hint {
-    font-size: 12px;
-    color: var(--text-muted, #adb5bd);
-    margin-top: 6px;
-}
-
-.domovoy-only .file-info {
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    margin-top: 12px;
-    background: var(--bg-secondary, #f8f9fa);
-    border-radius: 8px;
-    border: 1px solid var(--border, #e9ecef);
-}
-
-.domovoy-only .file-info .file-details {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.domovoy-only .file-info .file-name {
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-primary, #1a1a2e);
-}
-
-.domovoy-only .file-info .file-size {
-    font-size: 12px;
-    color: var(--text-muted, #adb5bd);
-}
-
-.domovoy-only .file-info .remove-file {
-    cursor: pointer;
-    color: var(--text-muted, #adb5bd);
-    transition: color 0.2s;
-}
-
-.domovoy-only .file-info .remove-file:hover {
-    color: #dc3545;
-}
-
-.domovoy-only .spec-preview {
-    display: none;
-    margin-top: 16px;
-    padding: 16px;
-    background: var(--bg-secondary, #f8f9fa);
-    border-radius: 8px;
-    border: 1px solid var(--border, #e9ecef);
-}
-
-.domovoy-only .spec-preview.active {
-    display: block;
-}
-
-.domovoy-only .spec-info {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    margin-bottom: 12px;
-}
-
-.domovoy-only .spec-info-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    color: var(--text-secondary, #6c757d);
-}
-
-.domovoy-only .spec-info-item i {
-    color: #667eea;
-    width: 16px;
-}
-
-.domovoy-only .spec-endpoints {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.domovoy-only .spec-endpoints .endpoint-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    background: white;
     border-radius: 4px;
-    border: 1px solid var(--border, #e9ecef);
-    font-size: 12px;
-    font-family: 'Fira Code', monospace;
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+    box-shadow: none;
 }
 
-.domovoy-only .spec-endpoints .method-badge {
-    display: inline-block;
-    padding: 1px 6px;
-    border-radius: 3px;
-    font-size: 9px;
-    font-weight: 700;
-    color: white;
+.top-bar .top-bar-actions .header-btn:hover {
+    background: transparent;
+    color: var(--accent);
+    border-color: transparent;
 }
 
-.domovoy-only .spec-endpoints .method-GET { background: #61affe; }
-.domovoy-only .spec-endpoints .method-POST { background: #49cc90; }
-.domovoy-only .spec-endpoints .method-PUT { background: #fca130; }
-.domovoy-only .spec-endpoints .method-DELETE { background: #f93e3e; }
-.domovoy-only .spec-endpoints .method-PATCH { background: #50e3c2; color: #333; }
-.domovoy-only .spec-endpoints .method-HEAD { background: #9012fe; }
-.domovoy-only .spec-endpoints .method-OPTIONS { background: #0d5aa7; }
-</style>
+.top-bar .top-bar-actions .theme-toggle {
+    width: 26px;
+    height: 26px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    font-size: 0.7rem;
+    background: transparent;
+    border-color: transparent;
+    color: var(--text-dim);
+    box-shadow: none;
+}
+
+.top-bar .top-bar-actions .theme-toggle:hover {
+    background: transparent;
+    color: var(--accent);
+    border-color: transparent;
+    transform: none;
+}
+
+        .theme-toggle .icon-sun  { display: none; cursor: pointer;}
+        .theme-toggle .icon-moon { display: block; cursor: pointer;}
+        [data-theme="light"] .theme-toggle .icon-sun  { display: block; }
+        [data-theme="light"] .theme-toggle .icon-moon { display: none; }
+
+        .header-btn {
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: var(--toggle-bg);
+            border-color: var(--border);
+            color: var(--text);
+        }
+
+        .header-btn:hover {
+            background: var(--toggle-hover);
+            border-color: var(--border-hover);
+            color: var(--accent);
+        }
+
+        .tools-section {
+            padding: 20px 14px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+        }
+
+        .tools-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px;
+            margin-bottom: 14px;
+        }
+
+        .tools-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--text);
+        }
+
+        .tools-title i {
+            color: var(--accent) !important;
+            filter: drop-shadow(0 0 6px var(--logo-glow-strong));
+        }
+
+        .collapse-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            color: var(--toggle-color);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .collapse-btn:hover {
+            background: var(--toggle-hover);
+            color: var(--accent);
+            border-color: var(--border-hover);
+        }
+
+        .tool-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 10px 4px;
+        }
+
+        .tools-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .tool-item:hover {
+            background: var(--toggle-bg);
+            border-color: var(--border);
+        }
+
+        .tool-item.active {
+            background: var(--logo-bg);
+            border-color: var(--logo-border);
+            box-shadow: 0 0 20px var(--logo-glow);
+        }
+
+        .tool-item.active .tool-icon i {
+            color: var(--accent) !important;
+            filter: drop-shadow(0 0 6px var(--logo-glow-strong));
+        }
+
+        .tool-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .tool-icon i {
+            font-size: 0.9rem;
+            color: var(--accent);
+            transition: color 0.25s ease;
+        }
+
+        .tool-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .tool-name {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .tool-desc {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.68rem;
+            color: var(--text-dim);
+        }
+
+        .black-icon { color: var(--accent) !important; }
+
+        a { text-decoration: none; color: inherit; }
+        a:hover, a:focus, a:active, a:visited { text-decoration: none; color: inherit; }
+        .tools-grid a { display: block; width: 100%; }
+
+        .workspace-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+        }
+
+        .workspace-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 15%; right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            border-radius: 1px;
+            opacity: 0.7;
+        }
+
+        .mode-selector {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 5px;
+            border: 1px solid var(--border);
+        }
+
+        .mode-btn-mode {
+            flex: 1;
+            padding: 11px 18px;
+            border: none;
+            border-radius: 9px;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: transparent;
+            color: var(--text-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .mode-btn-mode i { font-size: 15px; }
+
+        .mode-btn-mode:hover {
+            color: var(--text);
+            background: var(--toggle-bg);
+        }
+
+        .mode-btn-mode.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: var(--accent-ink);
+            box-shadow: 0 0 20px var(--logo-glow);
+        }
+
+        .mode-btn-mode .badge-beta-gradient {
+            display: inline-block;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            background-size: 200% 200%;
+            color: var(--accent-ink);
+            margin-left: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .mode-btn-mode.active .badge-beta-gradient {
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--accent-ink);
+            animation: none;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .fuzz-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+
+        .fuzz-input-wrapper {
+            flex: 1;
+            min-width: 0;
+            position: relative;
+            display: flex;
+            align-items: stretch;
+        }
+
+        .fuzz-input-wrapper input {
+            width: 100%;
+            padding: 13px 16px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            transition: all 0.25s ease;
+            outline: none;
+            height: 48px;
+        }
+
+        .fuzz-input-wrapper input::placeholder { color: var(--text-faint); }
+
+        .fuzz-input-wrapper input:focus {
+            border-color: var(--accent);
+            background: var(--bg-input-focus);
+            box-shadow:
+                0 0 0 3px var(--logo-glow),
+                0 0 20px var(--logo-glow);
+        }
+
+        .fuzz-start-btn {
+            flex-shrink: 0;
+            white-space: nowrap;
+            padding: 0 24px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            font-weight: 700;
+            cursor: not-allowed;
+            transition: all 0.25s ease;
+            background: var(--border);
+            color: var(--text-faint);
+            min-width: 180px;
+            box-shadow: none;
+        }
+
+        .fuzz-start-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: var(--accent-ink);
+            cursor: pointer;
+            box-shadow: 0 0 24px var(--logo-glow-strong);
+        }
+
+        .fuzz-start-btn.active:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 32px var(--logo-glow-strong);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 36px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            background: var(--bg-input);
+            position: relative;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--bg-input-focus);
+            box-shadow: 0 0 30px var(--logo-glow);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--logo-bg);
+            box-shadow: 0 0 40px var(--logo-glow-strong);
+        }
+
+        .upload-icon i {
+            font-size: 2.4rem;
+            color: var(--accent);
+            filter: drop-shadow(0 0 12px var(--logo-glow-strong));
+            margin-bottom: 14px;
+        }
+
+        .upload-text {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text);
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .upload-hint {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            margin-top: 10px;
+        }
+
+        .icons-row {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .icons-row .format-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 10px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .file-info {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            margin-top: 12px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+        }
+
+        .file-info.show { display: flex; }
+
+        .file-details {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .file-name {
+            flex: 1;
+            font-weight: 600;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .file-size {
+            color: var(--text-dim);
+        }
+
+        .remove-file {
+            cursor: pointer;
+            color: var(--error-text);
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            transition: all 0.2s ease;
+        }
+
+        .remove-file:hover {
+            background: var(--error-border);
+            color: #fff;
+        }
+
+        .spec-preview {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: var(--bg-input);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .spec-preview.active { display: block; }
+
+        .spec-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 12px;
+        }
+
+        .spec-info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+        }
+
+        .spec-info-item i {
+            color: var(--accent);
+            width: 14px;
+        }
+
+        .spec-endpoints {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .spec-endpoints .endpoint-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: var(--bg-input-focus);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.68rem;
+            color: var(--text);
+        }
+
+        .spec-endpoints .method-badge {
+            display: inline-block;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+        }
+
+        .spec-endpoints .method-GET { background: var(--method-get-bg); color: var(--method-get-text); }
+        .spec-endpoints .method-POST { background: var(--method-post-bg); color: var(--method-post-text); }
+        .spec-endpoints .method-PUT { background: var(--method-put-bg); color: var(--method-put-text); }
+        .spec-endpoints .method-DELETE { background: var(--method-delete-bg); color: var(--method-delete-text); }
+        .spec-endpoints .method-PATCH { background: var(--method-patch-bg); color: var(--method-patch-text); }
+
+        .progress-thermometer {
+            background: var(--bg-input);
+            border-radius: 14px;
+            padding: 20px 24px 16px 24px;
+            margin-top: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+        }
+
+        .thermometer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .thermometer-title {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        .thermometer-percent {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-variant-numeric: tabular-nums;
+            filter: drop-shadow(0 0 8px var(--logo-glow));
+        }
+
+        .thermometer-track {
+            position: relative;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .thermometer-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-2));
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            width: 0%;
+            box-shadow: 0 0 12px var(--logo-glow);
+        }
+
+        .thermometer-glow {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 40px;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+            border-radius: 4px;
+        }
+
+        .thermometer-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            width: 100%;
+        }
+
+        .thermometer-step {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .step-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            gap: 4px;
+        }
+
+        .step-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+            border: 2px solid var(--bg-input);
+            box-shadow: 0 0 0 1px var(--border);
+            transition: all 0.4s ease;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .step-dot.active {
+            background: var(--accent);
+            box-shadow: 0 0 0 1px var(--accent), 0 0 12px var(--logo-glow-strong);
+            transform: scale(1.15);
+        }
+
+        .step-dot.completed {
+            background: var(--success-text);
+            box-shadow: 0 0 0 1px var(--success-text);
+        }
+
+        .step-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            color: var(--text-faint);
+            font-weight: 500;
+            text-align: center;
+            transition: color 0.3s ease;
+            white-space: nowrap;
+            max-width: 80px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .step-label.active {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .step-label.completed {
+            color: var(--success-text);
+        }
+
+        .metla-targets-area {
+            border: 1px dashed var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            transition: all 0.3s ease;
+            background: var(--bg-input);
+            display: flex;
+            flex-direction: column;
+            min-height: 100px;
+        }
+
+        .metla-targets-area.has-targets {
+            border-color: var(--accent);
+            background: var(--bg-input-focus);
+            box-shadow: 0 0 20px var(--logo-glow);
+        }
+
+        .metla-empty {
+            color: var(--text-dim);
+            text-align: center;
+            padding: 20px 0;
+            font-family: 'Fira Sans', sans-serif;
+        }
+
+        .metla-empty i {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.5;
+            display: block;
+            color: var(--accent);
+        }
+
+        .metla-empty .metla-hint {
+            font-size: 0.72rem;
+            margin-top: 4px;
+        }
+
+        .metla-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px 8px 12px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.65rem;
+            font-weight: 600;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .metla-header-cell { flex-shrink: 0; }
+        .metla-header-cell:first-child { width: 60px; }
+        .metla-header-cell:nth-child(2) { flex: 1; }
+
+        #metlaTargetsList { width: 100%; }
+
+        .metla-item {
+            border-bottom: 1px solid var(--border);
+            background: transparent;
+        }
+
+        .metla-item:last-child { border-bottom: none; }
+
+        .metla-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: background 0.15s;
+            user-select: none;
+            border-radius: 8px;
+        }
+
+        .metla-row:hover { background: var(--toggle-bg); }
+
+        .metla-checkbox {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            flex-shrink: 0;
+            accent-color: var(--accent);
+        }
+
+        .metla-method {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 60px;
+            flex-shrink: 0;
+            text-align: center;
+            padding: 2px 8px;
+            border-radius: 5px;
+        }
+
+        .metla-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            color: var(--text);
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .metla-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            border: 1px solid transparent;
+        }
+
+        .metla-badge.auth {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
+
+        .metla-badge.public {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-border);
+        }
+
+        .metla-icon {
+            color: var(--text-faint);
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center;
+        }
+
+        .metla-row:hover .metla-icon { color: var(--accent); }
+
+        .metla-stats {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin-top: 10px;
+            background: var(--bg-input);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            color: var(--text-dim);
+            flex-wrap: wrap;
+            border: 1px solid var(--border);
+        }
+
+        .metla-stats.show { display: flex; }
+
+        .metla-stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .metla-stats .stat-item strong {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .metla-stats .stat-divider {
+            width: 1px;
+            height: 14px;
+            background: var(--border);
+        }
+
+        .metla-detail-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .metla-detail-modal.show { display: flex; }
+
+        .metla-detail-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            animation: metlaFadeIn 0.2s ease;
+        }
+
+        .metla-detail-content {
+            position: relative;
+            max-width: 820px;
+            width: 92%;
+            max-height: 85vh;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            animation: metlaSlideUp 0.25s ease;
+            overflow: hidden;
+            color: var(--text);
+        }
+
+        @keyframes metlaFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes metlaSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .metla-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            background: var(--bg-input);
+        }
+
+        .metla-detail-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .metla-detail-method {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 12px;
+            border-radius: 6px;
+            flex-shrink: 0;
+            background: var(--method-get-bg);
+            color: var(--method-get-text);
+        }
+
+        .metla-detail-path {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .metla-detail-auth-badge {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            flex-shrink: 0;
+            border: 1px solid transparent;
+        }
+
+        .metla-detail-auth-badge.public {
+            background: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-border);
+        }
+
+        .metla-detail-auth-badge.auth {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
+
+        .metla-detail-actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .metla-detail-btn {
+            padding: 7px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--toggle-bg);
+            color: var(--text);
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metla-detail-btn:hover {
+            background: var(--toggle-hover);
+            border-color: var(--border-hover);
+            color: var(--accent);
+        }
+
+        .metla-detail-btn.primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border-color: transparent;
+            color: var(--accent-ink);
+            box-shadow: 0 0 16px var(--logo-glow);
+        }
+
+        .metla-detail-btn.primary:hover {
+            box-shadow: 0 0 24px var(--logo-glow-strong);
+            transform: translateY(-1px);
+            color: var(--accent-ink);
+        }
+
+        .metla-detail-btn.small {
+            padding: 5px 10px;
+            font-size: 0.68rem;
+        }
+
+        .metla-detail-close {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 8px;
+            background: var(--toggle-bg);
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            line-height: 1;
+        }
+
+        .metla-detail-close:hover {
+            background: var(--error-bg);
+            color: var(--error-text);
+        }
+
+        .metla-detail-tabs {
+            display: flex;
+            gap: 4px;
+            padding: 8px 20px 0 20px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            background: var(--bg-card);
+        }
+
+        .metla-detail-tab {
+            padding: 9px 16px;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background: transparent;
+            color: var(--text-dim);
+            cursor: pointer;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metla-detail-tab:hover { color: var(--text); }
+
+        .metla-detail-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .metla-detail-tab i { font-size: 0.75rem; }
+
+        .metla-detail-body {
+            padding: 18px 20px;
+            overflow-y: auto;
+            flex: 1;
+            background: var(--bg-card);
+        }
+
+        .metla-detail-panel {
+            animation: metlaFadeIn 0.2s ease;
+        }
+
+        .metla-detail-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .metla-detail-info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .metla-detail-info-item .label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.62rem;
+            font-weight: 700;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .metla-detail-info-item .value {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            color: var(--text);
+            word-break: break-all;
+        }
+
+        .metla-detail-code-block {
+            background: var(--bg-input);
+            color: var(--text);
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.72rem;
+            line-height: 1.7;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 320px;
+            overflow-y: auto;
+            margin: 0;
+            border: 1px solid var(--border);
+        }
+
+        .metla-detail-empty {
+            color: var(--text-dim);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+            font-style: italic;
+        }
+
+        .metla-detail-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            background: var(--bg-input);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .metla-detail-footer-left,
+        .metla-detail-footer-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .metla-detail-export-group,
+        .metla-detail-analysis-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .metla-detail-analysis-label {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            font-weight: 600;
+        }
+
+        .metla-detail-analysis-select {
+            padding: 5px 10px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.7rem;
+            background: var(--bg-input);
+            color: var(--text);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .metla-detail-analysis-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--logo-glow);
+        }
+
+        .settings-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .settings-modal.show { display: flex; }
+
+        .settings-content {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--card-shadow);
+            animation: fadeInUp 0.25s ease;
+            color: var(--text);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .settings-header h3 {
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-header h3 i {
+            color: var(--accent) !important;
+            filter: drop-shadow(0 0 6px var(--logo-glow));
+        }
+
+        .settings-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: var(--toggle-bg);
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .settings-close:hover {
+            background: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
+
+        .unified-layout {
+            display: flex;
+            gap: 16px;
+        }
+
+        .unified-left,
+        .unified-right {
+            flex: 1;
+            font-family: 'Fira Sans', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .tools-loader {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-dim);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.75rem;
+        }
+
+        .tools-loader i {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            display: inline-block;
+            color: var(--accent);
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 20px;
+            color: var(--error-text);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+        }
+
+        .mode-domovoy .metla-targets-area { display: none !important; }
+        .mode-metla .domovoy-only { display: none !important; }
+        .mode-metla .metla-targets-area { display: flex !important; }
+
+        @media (max-width: 1100px) {
+            #box { gap: 16px; padding: 16px; }
+            #left { flex-basis: 260px; top: 16px; max-height: calc(100vh - 32px); }
+        }
+
+        @media (max-width: 900px) {
+            #box { flex-direction: column; padding: 16px; }
+            #left {
+                flex: 0 0 auto;
+                width: 100%;
+                position: relative;
+                top: 0;
+                max-height: none;
+            }
+            #left.collapsed { display: none; }
+            .top-bar { padding: 14px 18px; flex-wrap: wrap; }
+            .top-bar-title { font-size: 1rem; }
+            .workspace-card { padding: 16px; }
+            .fuzz-input-group { flex-direction: column; }
+            .fuzz-input-wrapper input,
+            .fuzz-start-btn { width: 100%; min-width: 0; }
+            .upload-area { padding: 24px 16px; }
+        }
+
+        @media (max-width: 768px) {
+            .metla-detail-content { width: 95%; max-height: 92vh; }
+            .metla-detail-header { padding: 10px 14px; flex-wrap: wrap; gap: 8px; }
+            .metla-detail-title { flex-wrap: wrap; }
+            .metla-detail-body { padding: 12px 14px; }
+            .metla-detail-info { grid-template-columns: 1fr; gap: 8px; }
+            .metla-detail-tabs { padding: 6px 14px 0 14px; overflow-x: auto; }
+            .metla-detail-tab { padding: 6px 12px; font-size: 0.68rem; white-space: nowrap; }
+            .metla-detail-code-block { font-size: 0.65rem; padding: 10px 12px; max-height: 200px; }
+            .metla-detail-footer {
+                padding: 8px 14px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .metla-detail-footer-left,
+            .metla-detail-footer-right { justify-content: center; }
+            .metla-detail-analysis-group { flex-wrap: wrap; justify-content: center; }
+        }
+    </style>
 </head>
+
 <body>
     <div id="box" class="fade-in">
         <div id="left">
@@ -1132,14 +1632,14 @@ input, select, textarea, button {
                     </button>
                 </div>
                 <div class="tool-divider"></div>
-                
+
                 <div class="tools-grid" id="toolsGrid">
                     <div class="tools-loader">
                         <i class="fas fa-spinner fa-spin"></i><br>
                         Loading...
                     </div>
                 </div>
-                
+
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
                     <a href="/history">
@@ -1153,7 +1653,6 @@ input, select, textarea, button {
                             </div>
                         </div>
                     </a>
-                    <div class="tool-divider"></div>
                     <a href="/config">
                         <div class="tool-item">
                             <div class="tool-icon">
@@ -1164,278 +1663,286 @@ input, select, textarea, button {
                                 <span class="tool-desc">Manage parameters</span>
                             </div>
                         </div>
-                    </a> 
+                    </a>
                 </div>
+                 <div class="tool-divider"></div>
             </div>
         </div>
 
         <div id="center">
-
-            <div class="page-header">
-                <h2 class="section-title">Select source</h2>
-                <div class="header-buttons">
+            <div class="top-bar">
+                <div class="top-bar-title">
+                    <i class="fas fa-dragon black-icon"></i>
+                    <span>Select source</span>
+                </div>
+                <div class="top-bar-actions">
                     <button class="header-btn" onclick="showToolInfo('fuzz')">
                         <i class="fas fa-info-circle"></i> Tool info
                     </button>
+                    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+                        <i class="fas fa-sun icon-sun"></i>
+                        <i class="fas fa-moon icon-moon"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="mode-selector" id="modeSelector">
-                <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy">
-                    Domovoy
-                </button>
-                <button class="mode-btn-mode" data-mode="metla" id="modeMetla">
-                    Broom <span class="badge-beta-gradient">Beta</span>
-                </button>
-            </div>
 
-            <div class="fuzz-input-group">
-                <div class="fuzz-input-wrapper">
-                    <input type="text" id="specUrl" placeholder="Paste OpenAPI specification link (Swagger/OpenAPI)">
+            <div class="workspace-card">
+                <div class="mode-selector" id="modeSelector">
+                    <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy">
+                        Domovoy
+                    </button>
+                    <button class="mode-btn-mode" data-mode="metla" id="modeMetla">
+                        Broom <span class="badge-beta-gradient">Beta</span>
+                    </button>
                 </div>
-                <button class="fuzz-start-btn" id="start-btn" type="button" disabled>
-                    <i class="fas fa-play" style="margin-right: 6px;"></i>Start analysis
-                </button>
-            </div>
 
-            <div class="domovoy-only">
-                <div class="upload-area" id="uploadArea">
-                    <div class="upload-icon">
-                        <i class="fas fa-cloud-upload-alt black-icon"></i>
+                <div class="fuzz-input-group">
+                    <div class="fuzz-input-wrapper">
+                        <input type="text" id="specUrl" placeholder="Paste OpenAPI specification link (Swagger/OpenAPI)">
                     </div>
-                    <div class="upload-text">
-                        Click to select specification file<br>
-                        <span style="font-size: 9px">
+                    <button class="fuzz-start-btn" id="start-btn" type="button" disabled>
+                        <i class="fas fa-play" style="margin-right: 6px;"></i>Start analysis
+                    </button>
+                </div>
+
+                <div class="domovoy-only">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">
+                            <i class="fas fa-cloud-upload-alt black-icon"></i>
+                        </div>
+                        <div class="upload-text">
+                            Click to select specification file<br>
                             <div class="icons-row">
-                                <span class="format-badge"><i class="fas fa-file-code" style="color:orange; font-size:15px"></i> JSON</span>
-                                <span class="format-badge"><i class="fas fa-file-alt" style="color:rgb(47, 49, 47); font-size:15px"></i> YAML</span>
-                                <span class="format-badge"><i class="fas fa-file" style="color:rgb(12, 120, 102); font-size:15px"></i> YML</span>
+                                <span class="format-badge"><i class="fas fa-file-code" style="color: #f59e0b;"></i> JSON</span>
+                                <span class="format-badge"><i class="fas fa-file-alt" style="color: var(--text);"></i> YAML</span>
+                                <span class="format-badge"><i class="fas fa-file" style="color: #0d9488;"></i> YML</span>
                             </div>
-                        </span>
+                        </div>
+                        <div class="upload-hint">
+                            Supports Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
+                        </div>
+                        <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
                     </div>
-                    <div class="upload-hint">
-                        Supports Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1
+
+                    <div class="file-info" id="fileInfo">
+                        <div class="file-details">
+                            <i class="fas fa-file-code" style="color: var(--accent); font-size: 20px;"></i>
+                            <span class="file-name" id="fileName"></span>
+                            <span class="file-size" id="fileSize"></span>
+                            <span class="remove-file" onclick="removeFile()">
+                                <i class="fas fa-times"></i>
+                            </span>
+                        </div>
                     </div>
-                    <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
+
+                    <div class="spec-preview" id="specPreview">
+                        <div class="spec-info">
+                            <div class="spec-info-item">
+                                <i class="fas fa-tag"></i>
+                                <span id="specTitle">Title</span>
+                            </div>
+                            <div class="spec-info-item">
+                                <i class="fas fa-code-branch"></i>
+                                <span id="specVersion">Version</span>
+                            </div>
+                            <div class="spec-info-item">
+                                <i class="fas fa-cube"></i>
+                                <span id="specFormat">Format</span>
+                            </div>
+                        </div>
+                        <div class="spec-endpoints" id="specEndpoints"></div>
+                    </div>
                 </div>
 
-                <div class="file-info" id="fileInfo">
-                    <div class="file-details">
-                        <i class="fas fa-file-code" style="color: var(--accent-color); font-size: 24px;"></i>
-                        <span class="file-name" id="fileName"></span>
-                        <span class="file-size" id="fileSize"></span>
-                        <span class="remove-file" onclick="removeFile()">
-                            <i class="fas fa-times"></i>
-                        </span>
+                <div class="progress-thermometer" id="progressThermometer">
+                    <div class="thermometer-header">
+                        <span class="thermometer-title" id="thermometerTitle">Overall analysis progress</span>
+                        <span class="thermometer-percent" id="thermometerPercent">0%</span>
+                    </div>
+                    <div class="thermometer-track">
+                        <div class="thermometer-fill" id="thermometerFill" style="width: 0%;">
+                            <div class="thermometer-glow"></div>
+                        </div>
+                    </div>
+                    <div class="thermometer-steps" id="thermometerSteps">
+                        <div class="thermometer-step domovoy-steps">
+                            <div class="step-item">
+                                <span class="step-dot" data-step="0"></span>
+                                <span class="step-label">Loading</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="25"></span>
+                                <span class="step-label">Generation</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="50"></span>
+                                <span class="step-label">Fuzzing</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="75"></span>
+                                <span class="step-label">Analysis</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="100"></span>
+                                <span class="step-label">Report</span>
+                            </div>
+                        </div>
+                        <div class="thermometer-step metla-steps" style="display: none;">
+                            <div class="step-item">
+                                <span class="step-dot" data-step="0"></span>
+                                <span class="step-label">Discovery</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="25"></span>
+                                <span class="step-label">Analysis</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="50"></span>
+                                <span class="step-label">Generation</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="75"></span>
+                                <span class="step-label">Fuzzing</span>
+                            </div>
+                            <div class="step-item">
+                                <span class="step-dot" data-step="100"></span>
+                                <span class="step-label">Report</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="spec-preview" id="specPreview">
-                    <div class="spec-info">
-                        <div class="spec-info-item">
-                            <i class="fas fa-tag"></i>
-                            <span id="specTitle">Title</span>
-                        </div>
-                        <div class="spec-info-item">
-                            <i class="fas fa-code-branch"></i>
-                            <span id="specVersion">Version</span>
-                        </div>
-                        <div class="spec-info-item">
-                            <i class="fas fa-cube"></i>
-                            <span id="specFormat">Format</span>
-                        </div>
+                <div class="metla-targets-area" id="metlaTargetsArea" style="margin-top: 20px;">
+                    <div class="metla-empty" id="metlaEmpty">
+                        <i class="fas fa-crosshairs"></i>
+                        <div style="font-weight: 600; margin-bottom: 4px; color: var(--text);">Fuzzing targets</div>
+                        <div class="metla-hint">Discovered endpoints will appear here after scanning</div>
                     </div>
-                    <div class="spec-endpoints" id="specEndpoints"></div>
-                </div>
-            </div>
 
-            <div class="progress-thermometer" id="progressThermometer">
-                <div class="thermometer-header">
-                    <span class="thermometer-title" id="thermometerTitle">Overall analysis progress</span>
-                    <span class="thermometer-percent" id="thermometerPercent">0%</span>
-                </div>
-                <div class="thermometer-track">
-                    <div class="thermometer-fill" id="thermometerFill" style="width: 0%;">
-                        <div class="thermometer-glow"></div>
+                    <div class="metla-header" id="metlaHeader" style="display: none;">
+                        <div class="metla-header-cell">Method</div>
+                        <div class="metla-header-cell">Path</div>
                     </div>
-                </div>
-                <div class="thermometer-steps" id="thermometerSteps">
-                    <div class="thermometer-step domovoy-steps">
-                        <div class="step-item">
-                            <span class="step-dot" data-step="0"></span>
-                            <span class="step-label">Loading</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="25"></span>
-                            <span class="step-label">Generation</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="50"></span>
-                            <span class="step-label">Fuzzing</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="75"></span>
-                            <span class="step-label">Analysis</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="100"></span>
-                            <span class="step-label">Report</span>
-                        </div>
-                    </div>
-                    <div class="thermometer-step metla-steps" style="display: none;">
-                        <div class="step-item">
-                            <span class="step-dot" data-step="0"></span>
-                            <span class="step-label">Discovery</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="25"></span>
-                            <span class="step-label">Analysis</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="50"></span>
-                            <span class="step-label">Generation</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="75"></span>
-                            <span class="step-label">Fuzzing</span>
-                        </div>
-                        <div class="step-item">
-                            <span class="step-dot" data-step="100"></span>
-                            <span class="step-label">Report</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="metla-targets-area" id="metlaTargetsArea">
-                <div class="metla-empty" id="metlaEmpty">
-                    <div style="font-weight: 500; margin-bottom: 4px;">Fuzzing targets</div>
-                    <div class="metla-hint">Discovered endpoints will appear here after scanning</div>
+                    <div class="metla-targets-list" id="metlaTargetsList" style="display: none;"></div>
+                    <div class="metla-stats" id="metlaStats" style="display: none;"></div>
                 </div>
-                
-                <div class="metla-header" id="metlaHeader" style="display: none;">
-                    <div class="metla-header-cell">Method</div>
-                    <div class="metla-header-cell">Path</div>
-                </div>
-                
-                <div class="metla-targets-list" id="metlaTargetsList" style="display: none;"></div>
-                <div class="metla-stats" id="metlaStats" style="display: none;"></div>
             </div>
         </div>
     </div>
 
-<div id="metlaDetailModal" class="metla-detail-modal">
-    <div class="metla-detail-overlay" onclick="closeMetlaDetail()"></div>
-    <div class="metla-detail-content">
-        <div class="metla-detail-header">
-            <div class="metla-detail-title">
-                <span class="metla-detail-method" id="metla-detail-method">GET</span>
-                <span class="metla-detail-path" id="metla-detail-path">/path</span>
-                <span class="metla-detail-auth-badge" id="metla-detail-auth-badge">Public</span>
+    <div id="metlaDetailModal" class="metla-detail-modal">
+        <div class="metla-detail-overlay" onclick="closeMetlaDetail()"></div>
+        <div class="metla-detail-content">
+            <div class="metla-detail-header">
+                <div class="metla-detail-title">
+                    <span class="metla-detail-method" id="metla-detail-method">GET</span>
+                    <span class="metla-detail-path" id="metla-detail-path">/path</span>
+                    <span class="metla-detail-auth-badge" id="metla-detail-auth-badge">Public</span>
+                </div>
+                <div class="metla-detail-actions">
+                    <button class="metla-detail-btn" onclick="copyMetlaRequest()" title="Copy request">
+                        <i class="fas fa-copy"></i>
+                    </button>
+                    <button class="metla-detail-close" onclick="closeMetlaDetail()">✕</button>
+                </div>
             </div>
-            <div class="metla-detail-actions">
-                <button class="metla-detail-btn" onclick="copyMetlaRequest()" title="Copy request">
-                    <i class="fas fa-copy"></i>
+
+            <div class="metla-detail-tabs">
+                <button class="metla-detail-tab active" data-tab="details" onclick="switchMetlaTab('details')">
+                    <i class="fas fa-info-circle"></i> Details
                 </button>
-                <button class="metla-detail-close" onclick="closeMetlaDetail()">✕</button>
+                <button class="metla-detail-tab" data-tab="headers" onclick="switchMetlaTab('headers')">
+                    <i class="fas fa-heading"></i> Headers
+                </button>
+                <button class="metla-detail-tab" data-tab="body" onclick="switchMetlaTab('body')">
+                    <i class="fas fa-code"></i> Body
+                </button>
+                <button class="metla-detail-tab" data-tab="schema" onclick="switchMetlaTab('schema')">
+                    <i class="fas fa-cube"></i> Schema
+                </button>
             </div>
-        </div>
 
-        <div class="metla-detail-tabs">
-            <button class="metla-detail-tab active" data-tab="details" onclick="switchMetlaTab('details')">
-                <i class="fas fa-info-circle"></i> Details
-            </button>
-            <button class="metla-detail-tab" data-tab="headers" onclick="switchMetlaTab('headers')">
-                <i class="fas fa-heading"></i> Headers
-            </button>
-            <button class="metla-detail-tab" data-tab="body" onclick="switchMetlaTab('body')">
-                <i class="fas fa-code"></i> Body
-            </button>
-            <button class="metla-detail-tab" data-tab="schema" onclick="switchMetlaTab('schema')">
-                <i class="fas fa-cube"></i> Schema
-            </button>
-        </div>
-
-        <div class="metla-detail-body" id="metla-detail-body">
-            <div class="metla-detail-panel active" id="panel-details">
-                <div class="metla-detail-info">
-                    <div class="metla-detail-info-item">
-                        <span class="label">URL</span>
-                        <span class="value" id="metla-detail-url">-</span>
-                    </div>
-                    <div class="metla-detail-info-item">
-                        <span class="label">Auth</span>
-                        <span class="value" id="metla-detail-auth">-</span>
-                    </div>
-                    <div class="metla-detail-info-item">
-                        <span class="label">Content-Type</span>
-                        <span class="value" id="metla-detail-content-type">-</span>
-                    </div>
-                    <div class="metla-detail-info-item">
-                        <span class="label">Server</span>
-                        <span class="value" id="metla-detail-server">-</span>
+            <div class="metla-detail-body" id="metla-detail-body">
+                <div class="metla-detail-panel active" id="panel-details">
+                    <div class="metla-detail-info">
+                        <div class="metla-detail-info-item">
+                            <span class="label">URL</span>
+                            <span class="value" id="metla-detail-url">-</span>
+                        </div>
+                        <div class="metla-detail-info-item">
+                            <span class="label">Auth</span>
+                            <span class="value" id="metla-detail-auth">-</span>
+                        </div>
+                        <div class="metla-detail-info-item">
+                            <span class="label">Content-Type</span>
+                            <span class="value" id="metla-detail-content-type">-</span>
+                        </div>
+                        <div class="metla-detail-info-item">
+                            <span class="label">Server</span>
+                            <span class="value" id="metla-detail-server">-</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="metla-detail-panel" id="panel-headers" style="display: none;">
-                <div class="metla-detail-code-block" id="metla-detail-headers-content">
-                    <span class="metla-detail-empty">No headers</span>
+                <div class="metla-detail-panel" id="panel-headers" style="display: none;">
+                    <div class="metla-detail-code-block" id="metla-detail-headers-content">
+                        <span class="metla-detail-empty">No headers</span>
+                    </div>
+                </div>
+
+                <div class="metla-detail-panel" id="panel-body" style="display: none;">
+                    <div class="metla-detail-code-block" id="metla-detail-body-content">
+                        <span class="metla-detail-empty">No request body</span>
+                    </div>
+                </div>
+
+                <div class="metla-detail-panel" id="panel-schema" style="display: none;">
+                    <div class="metla-detail-code-block" id="metla-detail-schema-content">
+                        <span class="metla-detail-empty">No schema</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="metla-detail-panel" id="panel-body" style="display: none;">
-                <div class="metla-detail-code-block" id="metla-detail-body-content">
-                    <span class="metla-detail-empty">No request body</span>
+            <div class="metla-detail-footer">
+                <div class="metla-detail-footer-left">
+                    <div class="metla-detail-export-group">
+                        <button class="metla-detail-btn small" onclick="exportMetlaRequest('curl')">
+                            <i class="fas fa-terminal"></i> cURL
+                        </button>
+                        <button class="metla-detail-btn small" onclick="exportMetlaRequest('postman')">
+                            <i class="fas fa-bolt"></i> Postman
+                        </button>
+                        <button class="metla-detail-btn small" onclick="exportMetlaRequest('fetch')">
+                            <i class="fab fa-js"></i> Fetch
+                        </button>
+                        <button class="metla-detail-btn small" onclick="exportMetlaRequest('python')">
+                            <i class="fab fa-python"></i> Python
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <div class="metla-detail-panel" id="panel-schema" style="display: none;">
-                <div class="metla-detail-code-block" id="metla-detail-schema-content">
-                    <span class="metla-detail-empty">No schema</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="metla-detail-footer">
-            <div class="metla-detail-footer-left">
-                <div class="metla-detail-export-group">
-                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('curl')">
-                        <i class="fas fa-terminal"></i> cURL
-                    </button>
-                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('postman')">
-                        <i class="fas fa-bolt"></i> Postman
-                    </button>
-                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('fetch')">
-                        <i class="fab fa-js"></i> Fetch
-                    </button>
-                    <button class="metla-detail-btn small" onclick="exportMetlaRequest('python')">
-                        <i class="fab fa-python"></i> Python
-                    </button>
-                </div>
-            </div>
-            
-            <div class="metla-detail-footer-right">
-                <div class="metla-detail-analysis-group">
-                    <span class="metla-detail-analysis-label">Analysis:</span>
-                    <select class="metla-detail-analysis-select" id="metlaAnalysisType">
-                        <option value="xss">XSS</option>
-                        <option value="sql">SQL Injection</option>
-                        <option value="headers">Headers</option>
-                        <option value="bruteforce">Bruteforce</option>
-                        <option value="full">Full</option>
-                    </select>
-                    <button class="metla-detail-btn primary small" onclick="runMetlaAnalysis()">
-                        <i class="fas fa-play"></i> Run
-                    </button>
-                    <button class="metla-detail-btn small" onclick="saveMetlaRequest()">
-                        <i class="fas fa-save"></i> Save
-                    </button>
+                <div class="metla-detail-footer-right">
+                    <div class="metla-detail-analysis-group">
+                        <span class="metla-detail-analysis-label">Analysis:</span>
+                        <select class="metla-detail-analysis-select" id="metlaAnalysisType">
+                            <option value="xss">XSS</option>
+                            <option value="sql">SQL Injection</option>
+                            <option value="headers">Headers</option>
+                            <option value="bruteforce">Bruteforce</option>
+                            <option value="full">Full</option>
+                        </select>
+                        <button class="metla-detail-btn primary small" onclick="runMetlaAnalysis()">
+                            <i class="fas fa-play"></i> Run
+                        </button>
+                        <button class="metla-detail-btn small" onclick="saveMetlaRequest()">
+                            <i class="fas fa-save"></i> Save
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
 
     <div id="fuzzModal" class="modal-overlay">
         <div class="modal-container">
@@ -1455,7 +1962,7 @@ input, select, textarea, button {
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>
+                <h3><i class="fas fa-list"></i>Key features</h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -1473,7 +1980,36 @@ input, select, textarea, button {
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="../common/modal.js"></script>
+
     <script>
+        (function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const root = document.documentElement;
+
+            function applyTheme(theme) {
+                root.setAttribute('data-theme', theme);
+                localStorage.setItem('hercules_theme', theme);
+            }
+
+            function toggleTheme() {
+                const current = root.getAttribute('data-theme') || 'dark';
+                applyTheme(current === 'dark' ? 'light' : 'dark');
+            }
+
+            if (themeToggle) {
+                themeToggle.addEventListener('click', toggleTheme);
+            }
+
+            if (window.matchMedia) {
+                const mq = window.matchMedia('(prefers-color-scheme: dark)');
+                mq.addEventListener('change', (e) => {
+                    if (!localStorage.getItem('hercules_theme')) {
+                        applyTheme(e.matches ? 'dark' : 'light');
+                    }
+                });
+            }
+        })();
+
         loadMenu();
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -1491,16 +2027,14 @@ input, select, textarea, button {
                     modeDomovoy.classList.add('active');
                     center.classList.add('mode-domovoy');
                     specUrlInput.placeholder = 'Paste OpenAPI specification link (Swagger/OpenAPI)';
-                    if (typeof validateStartButton === 'function') {
-                        validateStartButton();
-                    }
                 } else {
                     modeMetla.classList.add('active');
                     center.classList.add('mode-metla');
                     specUrlInput.placeholder = 'Paste URL for scanning (Broom)';
-                    if (typeof validateStartButton === 'function') {
-                        validateStartButton();
-                    }
+                }
+
+                if (typeof validateStartButton === 'function') {
+                    validateStartButton();
                 }
             }
 
@@ -1516,4 +2050,5 @@ input, select, textarea, button {
         });
     </script>
 </body>
+
 </html>
