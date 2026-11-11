@@ -1,0 +1,4687 @@
+{
+  "sbom": {
+    "$schema": "http://cyclonedx.org/schema/bom-1.6.schema.json",
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.6",
+    "serialNumber": "urn:uuid:7efd5921-20f3-4911-b3a7-02d6e3afa82f",
+    "version": 1,
+    "metadata": {
+      "timestamp": "2026-11-11T14:13:30.555Z",
+      "tools": [
+        {
+          "vendor": "Hercules",
+          "name": "Hercules-SBOM-Generator",
+          "version": "2.1.0"
+        }
+      ],
+      "component": {
+        "bom-ref": "pkg:generic/local/22f43805-94a2-4882-9b2b-31322e026838@main",
+        "type": "application",
+        "name": "local/22f43805-94a2-4882-9b2b-31322e026838",
+        "version": "main",
+        "description": "",
+        "purl": "pkg:generic/local/22f43805-94a2-4882-9b2b-31322e026838@main",
+        "properties": [
+          {
+            "name": "hercules:repository",
+            "value": "local/22f43805-94a2-4882-9b2b-31322e026838"
+          },
+          {
+            "name": "hercules:branch",
+            "value": "main"
+          },
+          {
+            "name": "hercules:primaryLanguage",
+            "value": "JavaScript"
+          },
+          {
+            "name": "hercules:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "hercules:packageManager",
+            "value": "npm"
+          },
+          {
+            "name": "hercules:packageFiles",
+            "value": "2"
+          },
+          {
+            "name": "hercules:commitHash",
+            "value": "unknown"
+          },
+          {
+            "name": "hercules:languages",
+            "value": "YAML,JavaScript,JSON,Python,Terraform"
+          }
+        ]
+      }
+    },
+    "components": [
+      {
+        "bom-ref": "pkg:npm/express@4.16.0",
+        "type": "library",
+        "name": "express",
+        "version": "4.16.0",
+        "purl": "pkg:npm/express@4.16.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/lodash@4.17.4",
+        "type": "library",
+        "name": "lodash",
+        "version": "4.17.4",
+        "purl": "pkg:npm/lodash@4.17.4",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/mysql@2.15.0",
+        "type": "library",
+        "name": "mysql",
+        "version": "2.15.0",
+        "purl": "pkg:npm/mysql@2.15.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/mongoose@5.0.0",
+        "type": "library",
+        "name": "mongoose",
+        "version": "5.0.0",
+        "purl": "pkg:npm/mongoose@5.0.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/request@2.88.0",
+        "type": "library",
+        "name": "request",
+        "version": "2.88.0",
+        "purl": "pkg:npm/request@2.88.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/moment@2.19.0",
+        "type": "library",
+        "name": "moment",
+        "version": "2.19.0",
+        "purl": "pkg:npm/moment@2.19.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/underscore@1.8.3",
+        "type": "library",
+        "name": "underscore",
+        "version": "1.8.3",
+        "purl": "pkg:npm/underscore@1.8.3",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/jquery@3.3.1",
+        "type": "library",
+        "name": "jquery",
+        "version": "3.3.1",
+        "purl": "pkg:npm/jquery@3.3.1",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/axios@0.18.0",
+        "type": "library",
+        "name": "axios",
+        "version": "0.18.0",
+        "purl": "pkg:npm/axios@0.18.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/debug@2.6.8",
+        "type": "library",
+        "name": "debug",
+        "version": "2.6.8",
+        "purl": "pkg:npm/debug@2.6.8",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/body-parser@1.18.2",
+        "type": "library",
+        "name": "body-parser",
+        "version": "1.18.2",
+        "purl": "pkg:npm/body-parser@1.18.2",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/cookie-parser@1.4.3",
+        "type": "library",
+        "name": "cookie-parser",
+        "version": "1.4.3",
+        "purl": "pkg:npm/cookie-parser@1.4.3",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/ws@3.3.1",
+        "type": "library",
+        "name": "ws",
+        "version": "3.3.1",
+        "purl": "pkg:npm/ws@3.3.1",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/xmldom@0.1.27",
+        "type": "library",
+        "name": "xmldom",
+        "version": "0.1.27",
+        "purl": "pkg:npm/xmldom@0.1.27",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/handlebars@4.0.11",
+        "type": "library",
+        "name": "handlebars",
+        "version": "4.0.11",
+        "purl": "pkg:npm/handlebars@4.0.11",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/marked@0.3.9",
+        "type": "library",
+        "name": "marked",
+        "version": "0.3.9",
+        "purl": "pkg:npm/marked@0.3.9",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/ejs@2.5.7",
+        "type": "library",
+        "name": "ejs",
+        "version": "2.5.7",
+        "purl": "pkg:npm/ejs@2.5.7",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/jsonwebtoken@8.1.0",
+        "type": "library",
+        "name": "jsonwebtoken",
+        "version": "8.1.0",
+        "purl": "pkg:npm/jsonwebtoken@8.1.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/sequelize@4.37.0",
+        "type": "library",
+        "name": "sequelize",
+        "version": "4.37.0",
+        "purl": "pkg:npm/sequelize@4.37.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/bcrypt@2.0.0",
+        "type": "library",
+        "name": "bcrypt",
+        "version": "2.0.0",
+        "purl": "pkg:npm/bcrypt@2.0.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/multer@1.3.0",
+        "type": "library",
+        "name": "multer",
+        "version": "1.3.0",
+        "purl": "pkg:npm/multer@1.3.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/node-forge@0.7.0",
+        "type": "library",
+        "name": "node-forge",
+        "version": "0.7.0",
+        "purl": "pkg:npm/node-forge@0.7.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/tar@2.2.1",
+        "type": "library",
+        "name": "tar",
+        "version": "2.2.1",
+        "purl": "pkg:npm/tar@2.2.1",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/unzip@0.1.11",
+        "type": "library",
+        "name": "unzip",
+        "version": "0.1.11",
+        "purl": "pkg:npm/unzip@0.1.11",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/js-yaml@3.10.0",
+        "type": "library",
+        "name": "js-yaml",
+        "version": "3.10.0",
+        "purl": "pkg:npm/js-yaml@3.10.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/minimist@1.2.0",
+        "type": "library",
+        "name": "minimist",
+        "version": "1.2.0",
+        "purl": "pkg:npm/minimist@1.2.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/morgan@1.9.0",
+        "type": "library",
+        "name": "morgan",
+        "version": "1.9.0",
+        "purl": "pkg:npm/morgan@1.9.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/webpack@4.28.0",
+        "type": "library",
+        "name": "webpack",
+        "version": "4.28.0",
+        "purl": "pkg:npm/webpack@4.28.0",
+        "scope": "optional",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:npm/babel-core@6.26.0",
+        "type": "library",
+        "name": "babel-core",
+        "version": "6.26.0",
+        "purl": "pkg:npm/babel-core@6.26.0",
+        "scope": "optional",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "npm"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/package.json"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "type": "library",
+        "name": "Django",
+        "version": "2.2.0",
+        "purl": "pkg:pypi/django@2.2.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "Django==2.2.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/flask@0.12.2",
+        "type": "library",
+        "name": "Flask",
+        "version": "0.12.2",
+        "purl": "pkg:pypi/flask@0.12.2",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "Flask==0.12.2"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/requests@2.6.0",
+        "type": "library",
+        "name": "requests",
+        "version": "2.6.0",
+        "purl": "pkg:pypi/requests@2.6.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "requests==2.6.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/pyyaml@5.1",
+        "type": "library",
+        "name": "PyYAML",
+        "version": "5.1",
+        "purl": "pkg:pypi/pyyaml@5.1",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "PyYAML==5.1"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/jinja2@2.10",
+        "type": "library",
+        "name": "Jinja2",
+        "version": "2.10",
+        "purl": "pkg:pypi/jinja2@2.10",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "Jinja2==2.10"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/pillow@6.0.0",
+        "type": "library",
+        "name": "Pillow",
+        "version": "6.0.0",
+        "purl": "pkg:pypi/pillow@6.0.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "Pillow==6.0.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/cryptography@2.3",
+        "type": "library",
+        "name": "cryptography",
+        "version": "2.3",
+        "purl": "pkg:pypi/cryptography@2.3",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "cryptography==2.3"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/sqlalchemy@1.2.0",
+        "type": "library",
+        "name": "SQLAlchemy",
+        "version": "1.2.0",
+        "purl": "pkg:pypi/sqlalchemy@1.2.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "SQLAlchemy==1.2.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/werkzeug@0.14.0",
+        "type": "library",
+        "name": "Werkzeug",
+        "version": "0.14.0",
+        "purl": "pkg:pypi/werkzeug@0.14.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "Werkzeug==0.14.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/urllib3@1.24",
+        "type": "library",
+        "name": "urllib3",
+        "version": "1.24",
+        "purl": "pkg:pypi/urllib3@1.24",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "urllib3==1.24"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/pycryptodome@3.6.0",
+        "type": "library",
+        "name": "pycryptodome",
+        "version": "3.6.0",
+        "purl": "pkg:pypi/pycryptodome@3.6.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "pycryptodome==3.6.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/lxml@4.3.0",
+        "type": "library",
+        "name": "lxml",
+        "version": "4.3.0",
+        "purl": "pkg:pypi/lxml@4.3.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "lxml==4.3.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/httplib2@0.12.0",
+        "type": "library",
+        "name": "httplib2",
+        "version": "0.12.0",
+        "purl": "pkg:pypi/httplib2@0.12.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "httplib2==0.12.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/paramiko@2.4.0",
+        "type": "library",
+        "name": "paramiko",
+        "version": "2.4.0",
+        "purl": "pkg:pypi/paramiko@2.4.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "paramiko==2.4.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/ansible@2.7.0",
+        "type": "library",
+        "name": "ansible",
+        "version": "2.7.0",
+        "purl": "pkg:pypi/ansible@2.7.0",
+        "properties": [
+          {
+            "name": "dependency:ecosystem",
+            "value": "pypi"
+          },
+          {
+            "name": "dependency:type",
+            "value": "direct"
+          },
+          {
+            "name": "hercules:isTransitive",
+            "value": "false"
+          },
+          {
+            "name": "hercules:rawSpec",
+            "value": "ansible==2.7.0"
+          },
+          {
+            "name": "hercules:source",
+            "value": "fake-vuln-main/requirements.txt"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:generic/local/22f43805-94a2-4882-9b2b-31322e026838/fake-vuln-main@main",
+        "type": "application",
+        "name": "local/22f43805-94a2-4882-9b2b-31322e026838/fake-vuln-main",
+        "version": "main",
+        "purl": "pkg:generic/local/22f43805-94a2-4882-9b2b-31322e026838/fake-vuln-main@main",
+        "properties": [
+          {
+            "name": "hercules:subproject",
+            "value": "true"
+          },
+          {
+            "name": "hercules:path",
+            "value": "fake-vuln-main"
+          }
+        ]
+      }
+    ],
+    "dependencies": [
+      {
+        "ref": "pkg:generic/local/22f43805-94a2-4882-9b2b-31322e026838@main",
+        "dependsOn": [
+          "pkg:npm/express@4.16.0",
+          "pkg:npm/lodash@4.17.4",
+          "pkg:npm/mysql@2.15.0",
+          "pkg:npm/mongoose@5.0.0",
+          "pkg:npm/request@2.88.0",
+          "pkg:npm/moment@2.19.0",
+          "pkg:npm/underscore@1.8.3",
+          "pkg:npm/jquery@3.3.1",
+          "pkg:npm/axios@0.18.0",
+          "pkg:npm/debug@2.6.8",
+          "pkg:npm/body-parser@1.18.2",
+          "pkg:npm/cookie-parser@1.4.3",
+          "pkg:npm/ws@3.3.1",
+          "pkg:npm/xmldom@0.1.27",
+          "pkg:npm/handlebars@4.0.11",
+          "pkg:npm/marked@0.3.9",
+          "pkg:npm/ejs@2.5.7",
+          "pkg:npm/jsonwebtoken@8.1.0",
+          "pkg:npm/sequelize@4.37.0",
+          "pkg:npm/bcrypt@2.0.0",
+          "pkg:npm/multer@1.3.0",
+          "pkg:npm/node-forge@0.7.0",
+          "pkg:npm/tar@2.2.1",
+          "pkg:npm/unzip@0.1.11",
+          "pkg:npm/js-yaml@3.10.0",
+          "pkg:npm/minimist@1.2.0",
+          "pkg:npm/morgan@1.9.0",
+          "pkg:npm/webpack@4.28.0",
+          "pkg:npm/babel-core@6.26.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/flask@0.12.2",
+          "pkg:pypi/requests@2.6.0",
+          "pkg:pypi/pyyaml@5.1",
+          "pkg:pypi/jinja2@2.10",
+          "pkg:pypi/pillow@6.0.0",
+          "pkg:pypi/cryptography@2.3",
+          "pkg:pypi/sqlalchemy@1.2.0",
+          "pkg:pypi/werkzeug@0.14.0",
+          "pkg:pypi/urllib3@1.24",
+          "pkg:pypi/pycryptodome@3.6.0",
+          "pkg:pypi/lxml@4.3.0",
+          "pkg:pypi/httplib2@0.12.0",
+          "pkg:pypi/paramiko@2.4.0",
+          "pkg:pypi/ansible@2.7.0"
+        ]
+      },
+      {
+        "ref": "pkg:npm/express@4.16.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/lodash@4.17.4",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/mysql@2.15.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/mongoose@5.0.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/request@2.88.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/moment@2.19.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/underscore@1.8.3",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/jquery@3.3.1",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/axios@0.18.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/debug@2.6.8",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/body-parser@1.18.2",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/cookie-parser@1.4.3",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/ws@3.3.1",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/xmldom@0.1.27",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/handlebars@4.0.11",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/marked@0.3.9",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/ejs@2.5.7",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/jsonwebtoken@8.1.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/sequelize@4.37.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/bcrypt@2.0.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/multer@1.3.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/node-forge@0.7.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/tar@2.2.1",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/unzip@0.1.11",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/js-yaml@3.10.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/minimist@1.2.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/morgan@1.9.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/webpack@4.28.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:npm/babel-core@6.26.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/django@2.2.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/flask@0.12.2",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/requests@2.6.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/pyyaml@5.1",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/jinja2@2.10",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/pillow@6.0.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/cryptography@2.3",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/sqlalchemy@1.2.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/werkzeug@0.14.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/urllib3@1.24",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/pycryptodome@3.6.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/lxml@4.3.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/httplib2@0.12.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/paramiko@2.4.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:pypi/ansible@2.7.0",
+        "dependsOn": []
+      },
+      {
+        "ref": "pkg:generic/local/22f43805-94a2-4882-9b2b-31322e026838/fake-vuln-main@main",
+        "dependsOn": [
+          "pkg:npm/express@4.16.0",
+          "pkg:npm/lodash@4.17.4",
+          "pkg:npm/mysql@2.15.0",
+          "pkg:npm/mongoose@5.0.0",
+          "pkg:npm/request@2.88.0",
+          "pkg:npm/moment@2.19.0",
+          "pkg:npm/underscore@1.8.3",
+          "pkg:npm/jquery@3.3.1",
+          "pkg:npm/axios@0.18.0",
+          "pkg:npm/debug@2.6.8",
+          "pkg:npm/body-parser@1.18.2",
+          "pkg:npm/cookie-parser@1.4.3",
+          "pkg:npm/ws@3.3.1",
+          "pkg:npm/xmldom@0.1.27",
+          "pkg:npm/handlebars@4.0.11",
+          "pkg:npm/marked@0.3.9",
+          "pkg:npm/ejs@2.5.7",
+          "pkg:npm/jsonwebtoken@8.1.0",
+          "pkg:npm/sequelize@4.37.0",
+          "pkg:npm/bcrypt@2.0.0",
+          "pkg:npm/multer@1.3.0",
+          "pkg:npm/node-forge@0.7.0",
+          "pkg:npm/tar@2.2.1",
+          "pkg:npm/unzip@0.1.11",
+          "pkg:npm/js-yaml@3.10.0",
+          "pkg:npm/minimist@1.2.0",
+          "pkg:npm/morgan@1.9.0",
+          "pkg:npm/webpack@4.28.0",
+          "pkg:npm/babel-core@6.26.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/flask@0.12.2",
+          "pkg:pypi/requests@2.6.0",
+          "pkg:pypi/pyyaml@5.1",
+          "pkg:pypi/jinja2@2.10",
+          "pkg:pypi/pillow@6.0.0",
+          "pkg:pypi/cryptography@2.3",
+          "pkg:pypi/sqlalchemy@1.2.0",
+          "pkg:pypi/werkzeug@0.14.0",
+          "pkg:pypi/urllib3@1.24",
+          "pkg:pypi/pycryptodome@3.6.0",
+          "pkg:pypi/lxml@4.3.0",
+          "pkg:pypi/httplib2@0.12.0",
+          "pkg:pypi/paramiko@2.4.0",
+          "pkg:pypi/ansible@2.7.0"
+        ]
+      }
+    ],
+    "vulnerabilities": [
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-2gwj-7jmv-h26r",
+        "description": "SQL Injection in Django",
+        "severity": "CRITICAL",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-2gwj-7jmv-h26r"
+        },
+        "published": "",
+        "updated": "2025-02-21T05:41:10.759178Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-2gwj-7jmv-h26r"
+            },
+            "score": 0,
+            "severity": "CRITICAL",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-2m34-jcjv-45xf",
+        "description": "XSS in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-2m34-jcjv-45xf"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:46:33.021684Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-2m34-jcjv-45xf"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-3gh2-xw74-jmcw",
+        "description": "SQL injection in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-3gh2-xw74-jmcw"
+        },
+        "published": "",
+        "updated": "2026-07-09T16:56:16.012032Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-3gh2-xw74-jmcw"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-3h9f-r86x-qvjx",
+        "description": "Django: cache middleware may expose private responses when unrelated request cookies are present",
+        "severity": "LOW",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-3h9f-r86x-qvjx"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:51:10.140141Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-3h9f-r86x-qvjx"
+            },
+            "score": 0,
+            "severity": "LOW",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-53qw-q765-4fww",
+        "description": "Denial-of-service in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-53qw-q765-4fww"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:09:39.890846Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-53qw-q765-4fww"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-68w8-qjq3-2gfm",
+        "description": "Path Traversal in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-68w8-qjq3-2gfm"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:46:52.557962Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-68w8-qjq3-2gfm"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-6c3j-c64m-qhgq",
+        "description": "XSS in jQuery as used in Drupal, Backdrop CMS, and other products",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-6c3j-c64m-qhgq"
+        },
+        "published": "",
+        "updated": "2026-07-08T05:56:09.047237Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-6c3j-c64m-qhgq"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-6c7v-2f49-8h26",
+        "description": "Django Incorrect HTTP detection with reverse-proxy connecting via HTTPS",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-6c7v-2f49-8h26"
+        },
+        "published": "",
+        "updated": "2024-09-18T16:26:02.265514Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-6c7v-2f49-8h26"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-6cw3-g6wv-c2xv",
+        "description": "Infinite Loop in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-6cw3-g6wv-c2xv"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:47:27.155401Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-6cw3-g6wv-c2xv"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-6r97-cj55-9hrq",
+        "description": "SQL Injection in Django",
+        "severity": "CRITICAL",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-6r97-cj55-9hrq"
+        },
+        "published": "",
+        "updated": "2025-02-21T05:50:19.980781Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-6r97-cj55-9hrq"
+            },
+            "score": 0,
+            "severity": "CRITICAL",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-6w2r-r2m5-xq5w",
+        "description": "Django is subject to SQL injection through its column aliases",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-6w2r-r2m5-xq5w"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:50:27.987884Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-6w2r-r2m5-xq5w"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-7rp2-fm2h-wchj",
+        "description": "Django Cross-site Scripting in AdminURLFieldWidget",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-7rp2-fm2h-wchj"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:09:01.600161Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-7rp2-fm2h-wchj"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-7xr5-9hcq-chf9",
+        "description": "Django Improper Output Neutralization for Logs vulnerability",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-7xr5-9hcq-chf9"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:50:25.160016Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-7xr5-9hcq-chf9"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-8c5j-9r9f-c6w8",
+        "description": "Information disclosure in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-8c5j-9r9f-c6w8"
+        },
+        "published": "",
+        "updated": "2025-02-21T05:29:59.213830Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-8c5j-9r9f-c6w8"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-8cjm-8mp7-r2xf",
+        "description": "Django: UpdateCacheMiddleware may disclose cached responses due to case-sensitive Cache-Control handling",
+        "severity": "LOW",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-8cjm-8mp7-r2xf"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:50:48.806230Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-8cjm-8mp7-r2xf"
+            },
+            "score": 0,
+            "severity": "LOW",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-8qcx-xf44-272x",
+        "description": "Django: DomainNameValidator permits newline characters that may enable HTTP header injection",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-8qcx-xf44-272x"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:51:11.070082Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-8qcx-xf44-272x"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-8x94-hmjh-97hq",
+        "description": "Django vulnerable to Reflected File Download attack",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-8x94-hmjh-97hq"
+        },
+        "published": "",
+        "updated": "2026-02-04T02:45:55.690257Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-8x94-hmjh-97hq"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-923m-gv2p-w5qp",
+        "description": "Django: has_vary_header may expose cached responses when Vary values contain whitespace",
+        "severity": "LOW",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-923m-gv2p-w5qp"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:50:48.942703Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-923m-gv2p-w5qp"
+            },
+            "score": 0,
+            "severity": "LOW",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-95rw-fx8r-36v6",
+        "description": "Cross-site Scripting in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-95rw-fx8r-36v6"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:47:46.984048Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-95rw-fx8r-36v6"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-c4qh-4vgv-qc6g",
+        "description": "Django Denial-of-service in django.utils.text.Truncator",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-c4qh-4vgv-qc6g"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:24:57.221275Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-c4qh-4vgv-qc6g"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-crhf-3pfg-w68w",
+        "description": " Django: GDALRaster may over-read heap memory when constructed from bytes",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-crhf-3pfg-w68w"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:51:11.475072Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-crhf-3pfg-w68w"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-fr28-569j-53c4",
+        "description": "Django Incorrect Default Permissions",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-fr28-569j-53c4"
+        },
+        "published": "",
+        "updated": "2024-11-19T05:35:08.998992Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-fr28-569j-53c4"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-frmv-pr5f-9mcr",
+        "description": "Django vulnerable to SQL injection via _connector keyword argument in QuerySet and Q objects.",
+        "severity": "CRITICAL",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-frmv-pr5f-9mcr"
+        },
+        "published": "",
+        "updated": "2026-06-05T14:45:52.053173Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-frmv-pr5f-9mcr"
+            },
+            "score": 0,
+            "severity": "CRITICAL",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-fvgf-6h6h-3322",
+        "description": "Django Directory Traversal via archive.extract",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-fvgf-6h6h-3322"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:46:03.145197Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-fvgf-6h6h-3322"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-h5jv-4p7w-64jg",
+        "description": "Django Denial-of-service in strip_tags()",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-h5jv-4p7w-64jg"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:35:22.320310Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-h5jv-4p7w-64jg"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-h7pc-vwp9-298g",
+        "description": "Django: signed cookies are vulnerable to salt namespace collisions",
+        "severity": "LOW",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-h7pc-vwp9-298g"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:50:49.784603Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-h7pc-vwp9-298g"
+            },
+            "score": 0,
+            "severity": "LOW",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-hmr4-m2h5-33qx",
+        "description": "SQL injection in Django",
+        "severity": "CRITICAL",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-hmr4-m2h5-33qx"
+        },
+        "published": "",
+        "updated": "2025-02-21T06:12:43.981276Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-hmr4-m2h5-33qx"
+            },
+            "score": 0,
+            "severity": "CRITICAL",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-hvmf-r92r-27hr",
+        "description": "Django allows unintended model editing",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-hvmf-r92r-27hr"
+        },
+        "published": "",
+        "updated": "2024-11-19T05:33:19.050183Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-hvmf-r92r-27hr"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-jrh2-hc4r-7jwx",
+        "description": "Directory-traversal in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-jrh2-hc4r-7jwx"
+        },
+        "published": "",
+        "updated": "2024-09-20T12:22:54.101910Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-jrh2-hc4r-7jwx"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-m6gj-h9gm-gw44",
+        "description": "Django Incorrect Default Permissions",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-m6gj-h9gm-gw44"
+        },
+        "published": "",
+        "updated": "2024-09-18T20:08:33.242589Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-m6gj-h9gm-gw44"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-p99v-5w3c-jqq9",
+        "description": "Django Access Control Bypass possibly leading to SSRF, RFI, and LFI attacks ",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-p99v-5w3c-jqq9"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:08:23.035684Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-p99v-5w3c-jqq9"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-q238-5cxm-5c9h",
+        "description": "Django GeoDjango vulnerable to denial of service through deeply nested geometry collections",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-q238-5cxm-5c9h"
+        },
+        "published": "",
+        "updated": "2026-10-12T14:45:06.559694Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-q238-5cxm-5c9h"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-qm57-vhq3-3fwf",
+        "description": "Header injection possible in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-qm57-vhq3-3fwf"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:33:15.953439Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-qm57-vhq3-3fwf"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-qw25-v68c-qjf3",
+        "description": "Django has a denial-of-service vulnerability in HttpResponseRedirect and HttpResponsePermanentRedirect on Windows",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-qw25-v68c-qjf3"
+        },
+        "published": "",
+        "updated": "2026-09-10T03:50:58.508072Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-qw25-v68c-qjf3"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-rrqc-c2jx-6jgv",
+        "description": "Django allows enumeration of user e-mail addresses",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-rrqc-c2jx-6jgv"
+        },
+        "published": "",
+        "updated": "2026-07-07T17:57:34.018251Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-rrqc-c2jx-6jgv"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-rxjp-mfm9-w4wr",
+        "description": "Path Traversal in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-rxjp-mfm9-w4wr"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:33:18.289155Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-rxjp-mfm9-w4wr"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-v6rh-hp5x-86rv",
+        "description": "Potential bypass of an upstream access control based on URL paths in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-v6rh-hp5x-86rv"
+        },
+        "published": "",
+        "updated": "2024-11-19T05:35:04.095106Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-v6rh-hp5x-86rv"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-v9qg-3j8p-r63v",
+        "description": "Uncontrolled Recursion in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-v9qg-3j8p-r63v"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:35:02.132194Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-v9qg-3j8p-r63v"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-vfq6-hq5r-27r6",
+        "description": "Django Potential account hijack via password reset form",
+        "severity": "CRITICAL",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-vfq6-hq5r-27r6"
+        },
+        "published": "",
+        "updated": "2024-09-20T15:24:05.816291Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-vfq6-hq5r-27r6"
+            },
+            "score": 0,
+            "severity": "CRITICAL",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-w24h-v9qh-8gxj",
+        "description": "SQL Injection in Django",
+        "severity": "CRITICAL",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-w24h-v9qh-8gxj"
+        },
+        "published": "",
+        "updated": "2025-02-21T05:41:01.294618Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-w24h-v9qh-8gxj"
+            },
+            "score": 0,
+            "severity": "CRITICAL",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-wpjr-j57x-wxfw",
+        "description": "Data leakage via cache key collision in Django",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-wpjr-j57x-wxfw"
+        },
+        "published": "",
+        "updated": "2024-11-19T05:38:34.283599Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-wpjr-j57x-wxfw"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-wvqv-fj8w-qmhm",
+        "description": "Django GeoDjango spatial lookups allow file writes and outbound requests through GDAL raster parsing",
+        "severity": "HIGH",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-wvqv-fj8w-qmhm"
+        },
+        "published": "",
+        "updated": "2026-10-01T17:56:17.845009Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-wvqv-fj8w-qmhm"
+            },
+            "score": 0,
+            "severity": "HIGH",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "GHSA-xgxc-v2qg-chmh",
+        "description": "Directory Traversal in Django",
+        "severity": "MODERATE",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/GHSA-xgxc-v2qg-chmh"
+        },
+        "published": "",
+        "updated": "2024-09-20T16:08:04.482170Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/GHSA-xgxc-v2qg-chmh"
+            },
+            "score": 0,
+            "severity": "MODERATE",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-10",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-10"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:06.373410Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-10"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-11",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-11"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:09.281488Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-11"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-12",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-12"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:09.343031Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-12"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-13",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-13"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:09.403667Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-13"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-14",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-14"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:09.464696Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-14"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-15",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-15"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:27.740072Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-15"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-16",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-16"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:29.652595Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-16"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2019-79",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2019-79"
+        },
+        "published": "",
+        "updated": "2023-11-08T04:01:03.504446Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2019-79"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2020-31",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2020-31"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:00:04.827501Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2020-31"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2020-32",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2020-32"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:00:11.037950Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2020-32"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2020-33",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2020-33"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:00:24.074093Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2020-33"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2020-34",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2020-34"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:00:24.135957Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2020-34"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2020-35",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2020-35"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:00:38.606116Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2020-35"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2020-36",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2020-36"
+        },
+        "published": "",
+        "updated": "2026-07-09T16:56:16.012032Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2020-36"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-439",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-439"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:41.266810Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-439"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-6",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-6"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:01.677077Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-6"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-7",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-7"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:11.745914Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-7"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-8",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-8"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:13.553156Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-8"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-9",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-9"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:15.916389Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-9"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-98",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-98"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:16.755410Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-98"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2021-99",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2021-99"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:16.815257Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2021-99"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-1",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-1"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:43.028018Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-1"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-19",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-19"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:58.226668Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-19"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-190",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-190"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:02:11.594317Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-190"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-191",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-191"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:02:11.666037Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-191"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-2",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-2"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:43.088680Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-2"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-20",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-20"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:02:02.697371Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-20"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      },
+      {
+        "bom-ref": "pkg:pypi/django@2.2.0",
+        "component": {
+          "name": "Django",
+          "version": "2.2.0"
+        },
+        "id": "PYSEC-2022-3",
+        "description": "",
+        "severity": "UNKNOWN",
+        "source": {
+          "name": "OSV",
+          "url": "https://osv.dev/vulnerability/PYSEC-2022-3"
+        },
+        "published": "",
+        "updated": "2023-12-06T01:01:43.819827Z",
+        "analysis": {
+          "state": "in_triage",
+          "detail": ""
+        },
+        "affects": [
+          {
+            "ref": "pkg:pypi/django@2.2.0",
+            "versions": [
+              "2.2.0"
+            ]
+          }
+        ],
+        "ratings": [
+          {
+            "source": {
+              "name": "OSV",
+              "url": "https://osv.dev/vulnerability/PYSEC-2022-3"
+            },
+            "score": 0,
+            "severity": "UNKNOWN",
+            "method": "CVSSv3"
+          }
+        ]
+      }
+    ],
+    "annotations": [
+      {
+        "bom-ref": "vuln-rec-1",
+        "subjects": [
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0"
+        ],
+        "text": "[VULNERABILITY] Critical: Immediately update 6 components with critical vulnerabilities",
+        "timestamp": "2026-11-11T14:13:59.976Z"
+      },
+      {
+        "bom-ref": "vuln-rec-2",
+        "subjects": [
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0"
+        ],
+        "text": "[VULNERABILITY] High: Schedule updates for 16 components with high severity vulnerabilities in the next sprint",
+        "timestamp": "2026-11-11T14:13:59.976Z"
+      },
+      {
+        "bom-ref": "vuln-rec-3",
+        "subjects": [
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0"
+        ],
+        "text": "[VULNERABILITY] Medium: Plan updates for 17 components with medium severity vulnerabilities in upcoming releases",
+        "timestamp": "2026-11-11T14:13:59.976Z"
+      },
+      {
+        "bom-ref": "vuln-rec-4",
+        "subjects": [
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0"
+        ],
+        "text": "[VULNERABILITY] Low: Monitor 4 components with low severity vulnerabilities",
+        "timestamp": "2026-11-11T14:13:59.976Z"
+      },
+      {
+        "bom-ref": "vuln-rec-5",
+        "subjects": [
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0",
+          "pkg:pypi/django@2.2.0"
+        ],
+        "text": "[VULNERABILITY] Total: 71 vulnerabilities found across 1 components",
+        "timestamp": "2026-11-11T14:13:59.976Z"
+      }
+    ]
+  },
+  "componentsCount": 45,
+  "dependenciesCount": 44,
+  "vulnerabilitiesCount": 71,
+  "generationTime": 29428,
+  "format": "CycloneDX",
+  "version": "1.6"
+}
