@@ -1,0 +1,28 @@
+{
+  "records": [
+    {
+      "id": "1794406531055",
+      "tool": "sca",
+      "sourceType": "archive",
+      "sourceName": "fake-vuln-main.zip",
+      "startTime": "2026-11-11T14:13:40.312Z",
+      "endTime": "2026-11-11T14:15:31.055Z",
+      "duration": 110743,
+      "reportId": "1794406531051",
+      "status": "success",
+      "error": null
+    },
+    {
+      "id": "1794406439982",
+      "tool": "sca",
+      "sourceType": "archive",
+      "sourceName": "fake-vuln-main.zip",
+      "startTime": "2026-11-11T14:13:30.530Z",
+      "endTime": "2026-11-11T14:13:59.982Z",
+      "duration": 29452,
+      "reportId": "1794406439978",
+      "status": "success",
+      "error": null
+    }
+  ]
+}
