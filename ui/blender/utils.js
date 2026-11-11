@@ -115,18 +115,32 @@ export function generateDependenciesHTML(report) {
         return '<div class="info-box">No dependencies found</div>';
     }
 
+function normalizeSev(s) {
+    if (!s) return 'unknown';
+    const v = String(s).toUpperCase();
+    if (v === 'CRITICAL') return 'critical';
+    if (v === 'HIGH') return 'high';
+    if (v === 'MODERATE' || v === 'MEDIUM') return 'medium';
+    if (v === 'LOW') return 'low';
+    return 'unknown';
+}
+
     let allVulnerabilities = [];
     for (const dep of dependencies) {
-        if (dep.vulnerabilities && dep.vulnerabilities.vulnerabilities) {
-            for (const vuln of dep.vulnerabilities.vulnerabilities) {
-                allVulnerabilities.push({
-                    ...vuln,
-                    package: dep.name,
-                    version: dep.version,
-                    reachable: dep.isReachable,
-                    usageFiles: dep.usageFiles || []
-                });
-            }
+        let list = [];
+        if (Array.isArray(dep.vulnerabilities)) list = dep.vulnerabilities;
+        else if (Array.isArray(dep.vulnerabilities?.vulnerabilities)) list = dep.vulnerabilities.vulnerabilities;
+        else if (Array.isArray(dep.vulnerabilities?.list)) list = dep.vulnerabilities.list;
+
+        for (const vuln of list) {
+            allVulnerabilities.push({
+                ...vuln,
+                severity: normalizeSev(vuln.severity),
+                package: dep.name,
+                version: dep.version,
+                reachable: dep.isReachable,
+                usageFiles: dep.usageFiles || []
+            });
         }
     }
 
@@ -199,7 +213,17 @@ export function generateDependenciesHTML(report) {
                                 const reachableClass = dep.isReachable === true ? 'reachable-yes' : (dep.isReachable === false ? 'reachable-no' : 'reachable-unknown');
 
                                 return `
-                                <tr class="dep-row" data-idx="${idx}" data-manager="${manager}" data-severity="${dep.cveSummary?.critical > 0 ? 'critical' : (dep.cveSummary?.high > 0 ? 'high' : '')}" data-reachable="${dep.isReachable}" data-component="${dep.name}" style="border-bottom: 1px solid var(--border); cursor: pointer;">
+                                <tr class="dep-row" data-idx="${idx}" data-manager="${manager}" 
+                                data-severity="${
+                                            [
+                                                dep.cveSummary?.critical > 0 ? 'critical' : '',
+                                                dep.cveSummary?.high > 0 ? 'high' : '',
+                                                dep.cveSummary?.medium > 0 ? 'medium' : '',
+                                                dep.cveSummary?.low > 0 ? 'low' : ''
+                                            ].filter(Boolean).join(',')
+                                        }"
+
+                                    data-reachable="${dep.isReachable}" data-component="${dep.name}" style="border-bottom: 1px solid var(--border); cursor: pointer;">
                                     <td style="padding: 10px; text-align: center;">
                                         <span class="expand-icon" style="transition: transform 0.2s; display: inline-block;">▶</span>
                                     </td>
@@ -305,10 +329,10 @@ export function generateDependenciesHTML(report) {
                 const component = (row.dataset.component || '').toLowerCase();
 
                 let matchesFilter = true;
-                if (activeFilter === 'critical') matchesFilter = severity === 'critical';
-                else if (activeFilter === 'high') matchesFilter = severity === 'high';
-                else if (activeFilter === 'medium') matchesFilter = severity === 'medium';
-                else if (activeFilter === 'low') matchesFilter = severity === 'low';
+                    if (activeFilter === 'critical') matchesFilter = severity.includes('critical');
+                    else if (activeFilter === 'high') matchesFilter = severity.includes('high');
+                    else if (activeFilter === 'medium') matchesFilter = severity.includes('medium');
+                    else if (activeFilter === 'low') matchesFilter = severity.includes('low');
                 else if (activeFilter === 'reachable') matchesFilter = reachable === true;
 
                 let matchesSearch = true;
@@ -907,302 +931,1318 @@ function generateHTMLReport(report) {
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        *{margin:0;padding:0;box-sizing:border-box}
+    /* ============================================================
+       CSS VARIABLES (fallback для контента из summary/sca/sast)
+       ============================================================ */
+    :root{
+        --text: #0f172a;
+        --text-dim: #64748b;
+        --text-faint: #94a3b8;
+        --bg-input: #f8fafc;
+        --bg-card: #ffffff;
+        --border: #e3e8f0;
+        --accent: #0891b2;
+        --accent-2: #0e7490;
+        --accent-ink: #ffffff;
+        --logo-bg: #e0f2fe;
+        --logo-glow: rgba(8,145,178,0.15);
+    }
 
-        /* ============ REPORT (auto-adapts to parent theme via CSS vars) ============ */
-        .report-container,
-        .report-container *{
-            font-family:'Fira Sans',sans-serif;
-            color:inherit;
-        }
-        .report-container{
-            background:transparent;
-            color:var(--text);
-            width:100%;
-        }
+    *{margin:0;padding:0;box-sizing:border-box}
 
-        /* HEADER */
-        .report-header{padding:0 0 20px 0;border-bottom:1px solid var(--border);}
-        .report-header h1{
-            font-size:22px;display:flex;align-items:center;gap:12px;
-            font-weight:700;letter-spacing:-0.01em;color:var(--text);
-        }
-        .report-header h1 i{color:var(--accent);font-size:22px;}
-        .report-header p{color:var(--text-dim);font-size:13px;margin-top:8px;}
-        .report-meta{display:flex;gap:22px;font-size:12px;color:var(--text-dim);flex-wrap:wrap;margin-top:10px;}
-        .report-meta span{display:flex;align-items:center;gap:6px;}
-        .report-meta i{color:var(--accent);font-size:12px;}
+    body{
+        font-family:'Fira Sans',sans-serif;
+        background:#f4f6fb;
+        padding:24px;
+        color:#0f172a;
+        min-height:100vh;
+    }
 
-        /* TABS */
-        .report-tabs{
-            display:flex;gap:0;margin-top:20px;
-            border-bottom:1px solid var(--border);
-        }
-        .report-tab{
-            padding:14px 18px;background:transparent;border:none;
-            border-bottom:2px solid transparent;font-size:13px;font-weight:600;
-            color:var(--text-dim);cursor:pointer;transition:color .15s,border-color .15s;
-            font-family:'Fira Sans',sans-serif;letter-spacing:-0.01em;margin-bottom:-1px;
-            display:inline-flex;align-items:center;gap:8px;
-        }
-        .report-tab:hover{color:var(--text);}
-        .report-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
-        .report-tab .tab-badge{
-            background:var(--bg-input);color:var(--text-dim);padding:1px 7px;border-radius:4px;
-            font-size:11px;font-family:'Fira Code',monospace;font-weight:600;
-        }
-        .report-tab.active .tab-badge{background:var(--logo-bg);color:var(--accent);}
+    .container{
+        max-width:1400px;
+        margin:0 auto;
+        background:#ffffff;
+        border-radius:12px;
+        border:1px solid #e3e8f0;
+        box-shadow:0 4px 24px rgba(15,23,42,0.06);
+        overflow:hidden;
+    }
 
-        /* CONTENT */
-        .report-content{padding:24px 0;min-height:200px;}
-        .tab-pane{display:none;}
-        .tab-pane.active{display:block;animation:fadeIn .25s ease;}
-        @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+    /* ============================================================
+       HEADER
+       ============================================================ */
+    .header{
+        background:#ffffff;
+        padding:28px 32px;
+        border-bottom:1px solid #e3e8f0;
+    }
 
-        /* FOOTER */
-        .report-footer{
-            padding:18px 0 0 0;text-align:center;
-            font-size:11px;color:var(--text-faint);border-top:1px solid var(--border);line-height:1.7;
-        }
-        .report-footer strong{color:var(--text-dim);}
+    .header-top{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:12px;
+        flex-wrap:wrap;
+        gap:16px;
+    }
 
-        /* STATS GRID */
-        .stats-grid{
-            display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-            gap:14px;margin-bottom:24px;
-        }
-        .stat-card{
-            background:var(--bg-input);border-radius:10px;padding:20px;text-align:center;
-            border:1px solid var(--border);transition:border-color .15s;
-        }
-        .stat-card:hover{border-color:var(--accent);}
-        .stat-number{font-size:32px;font-weight:700;color:var(--text);font-family:'Fira Code',monospace;line-height:1;}
-        .stat-label{font-size:12px;color:var(--text-dim);margin-top:8px;}
+    .header h1{
+        font-size:22px;
+        display:flex;
+        align-items:center;
+        gap:12px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        font-weight:700;
+        letter-spacing:-0.01em;
+    }
 
-        /* VULN STATS */
-        .vuln-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px;}
-        .summary-card{
-            background:var(--bg-input);border:1px solid var(--border);border-radius:10px;
-            padding:18px;text-align:center;transition:border-color .15s;
-        }
-        .summary-card:hover{border-color:var(--accent);}
-        .summary-card .card-value{font-size:28px;font-weight:700;font-family:'Fira Code',monospace;line-height:1;}
-        .summary-card .card-label{font-size:12px;color:var(--text-dim);margin-top:8px;}
-        .summary-card.critical .card-value{color:#dc2626;}
-        .summary-card.high .card-value{color:#f97316;}
-        .summary-card.medium .card-value{color:#eab308;}
-        .summary-card.low .card-value{color:#22c55e;}
+    .header h1 i{
+        color:#0891b2;
+        font-size:22px;
+    }
 
-        /* FILTER BAR */
-        .filter-bar,.sast-filter-bar{
-            display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;align-items:center;
-            background:var(--bg-input);padding:12px;border:1px solid var(--border);border-radius:10px;
-        }
-        .search-box,.sast-search-box{
-            flex:1;min-width:220px;padding:9px 14px;background:var(--bg-card);
-            border:1px solid var(--border);border-radius:6px;font-size:13px;color:var(--text);
-            font-family:'Fira Sans',sans-serif;transition:border-color .15s;
-        }
-        .search-box:focus,.sast-search-box:focus{outline:none;border-color:var(--accent);}
-        .search-box::placeholder,.sast-search-box::placeholder{color:var(--text-faint);}
+    .header p{
+        color:#64748b;
+        font-size:13px;
+        margin-bottom:14px;
+        font-family:'Fira Sans',sans-serif;
+    }
 
-        .filter-btn,.sast-filter-btn{
-            padding:6px 12px;background:var(--bg-card);border:1px solid var(--border);
-            border-radius:6px;cursor:pointer;font-size:12px;color:var(--text-dim);
-            transition:all .15s;font-family:'Fira Sans',sans-serif;font-weight:600;
-        }
-        .filter-btn:hover,.sast-filter-btn:hover{border-color:var(--accent);color:var(--accent);}
-        .filter-btn.active,.sast-filter-btn.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+    .meta{
+        display:flex;
+        gap:22px;
+        font-size:12px;
+        color:#64748b;
+        flex-wrap:wrap;
+        font-family:'Fira Sans',sans-serif;
+    }
 
-        .sast-filter-btn-ext{
-            padding:6px 12px;background:var(--bg-card);border:1px solid var(--border);
-            border-radius:6px;cursor:pointer;font-size:12px;color:var(--text-dim);
-            transition:all .15s;font-family:'Fira Sans',sans-serif;font-weight:600;
-            display:inline-flex;align-items:center;gap:6px;
-        }
-        .sast-filter-btn-ext:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);}
+    .meta span{
+        display:flex;
+        align-items:center;
+        gap:6px;
+    }
 
-        /* TABLES */
-        .dep-table,.sast-table{
-            width:100%;border-collapse:collapse;font-size:13px;background:var(--bg-card);
-            border-radius:8px;overflow:hidden;border:1px solid var(--border);
-        }
-        .dep-table th,.sast-table th{
-            background:var(--bg-input);padding:12px;text-align:left;font-weight:700;
-            font-size:11px;color:var(--text-dim);border-bottom:1px solid var(--border);
-            text-transform:uppercase;letter-spacing:0.05em;font-family:'Fira Sans',sans-serif;
-        }
-        .dep-table td,.sast-table td{
-            padding:11px 12px;border-bottom:1px solid var(--border);
-            font-family:'Fira Sans',sans-serif;vertical-align:top;color:var(--text);
-        }
-        .dep-table tr:last-child td,.sast-table tr:last-child td{border-bottom:none;}
+    .meta i{
+        font-size:12px;
+        color:#0891b2;
+    }
 
-        .dep-row,.sast-row{cursor:pointer;transition:background .1s;}
-        .dep-row:hover,.sast-row:hover{background:var(--bg-input);}
+    /* ============================================================
+       SAVE BUTTON
+       ============================================================ */
+    .save-btn{
+        background:transparent;
+        border:1px solid #0891b2;
+        border-radius:6px;
+        padding:7px 16px;
+        color:#0891b2;
+        font-family:'Fira Code',monospace;
+        font-weight:600;
+        font-size:12px;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        gap:7px;
+        transition:background 0.15s,color 0.15s;
+        letter-spacing:0.02em;
+    }
 
-        .expand-icon,.sast-expand-icon{
-            transition:transform .2s;display:inline-block;font-size:10px;
-            color:var(--text-faint);cursor:pointer;width:20px;text-align:center;
-        }
-        .dep-row:hover .expand-icon,.sast-row:hover .sast-expand-icon{color:var(--accent);}
+    .save-btn:hover{
+        background:#0891b2;
+        color:#ffffff;
+    }
 
-        .dep-details-row,.sast-details-row{display:none;background:var(--bg-input);}
-        .dep-details-row.show,.sast-details-row.show{display:table-row;}
+    .save-btn i{
+        color:inherit;
+        font-size:12px;
+    }
 
-        /* BADGES */
-        .badge{
-            display:inline-block;padding:3px 10px;border-radius:4px;font-size:10px;
-            font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;
-            letter-spacing:0.05em;
-        }
-        .badge-critical{background:#fee2e2;color:#b91c1c;}
-        .badge-high{background:#ffedd5;color:#c2410c;}
-        .badge-medium{background:#fef3c7;color:#a16207;}
-        .badge-low{background:#dcfce7;color:#15803d;}
-        .badge-info{background:#e0f2fe;color:#0369a1;}
+    /* ============================================================
+       TABS
+       ============================================================ */
+    .tabs{
+        display:flex;
+        gap:0;
+        padding:0 32px;
+        background:#ffffff;
+        border-bottom:1px solid #e3e8f0;
+    }
 
-        /* REACHABILITY */
-        .reachable-yes{background:#fee2e2;color:#b91c1c;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.05em;}
-        .reachable-no{background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.05em;}
-        .reachable-unknown{background:var(--bg-input);color:var(--text-dim);padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.05em;}
+    .tab{
+        padding:14px 18px;
+        background:transparent;
+        border:none;
+        border-bottom:2px solid transparent;
+        font-size:13px;
+        font-weight:600;
+        color:#64748b;
+        cursor:pointer;
+        transition:color 0.15s,border-color 0.15s;
+        font-family:'Fira Sans',sans-serif;
+        letter-spacing:-0.01em;
+        margin-bottom:-1px;
+    }
 
-        /* MISC */
-        .vuln-count{
-            background:#ffedd5;color:#c2410c;padding:2px 8px;border-radius:4px;
-            font-weight:700;font-size:11px;font-family:'Fira Code',monospace;
-        }
-        .sast-rule-name,.sast-filepath{font-family:'Fira Code',monospace;font-size:12px;color:var(--text);}
-        .sast-filepath{color:var(--text-dim);}
+    .tab:hover{
+        color:#0f172a;
+    }
 
-        .empty-state{
-            text-align:center;padding:60px 20px;background:var(--bg-input);
-            border-radius:10px;border:1px solid var(--border);
-        }
-        .empty-state i{font-size:42px;color:var(--text-faint);margin-bottom:14px;display:block;}
-        .empty-state h3{font-size:16px;margin-bottom:6px;color:var(--text);font-weight:700;}
-        .empty-state p{font-size:13px;color:var(--text-dim);}
+    .tab.active{
+        color:#0891b2;
+        border-bottom-color:#0891b2;
+    }
 
-        /* SAST MODAL (вложенная модалка фильтров) */
-        .sast-modal-overlay{
-            position:fixed;inset:0;background:rgba(0,0,0,0.6);
-            backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);
-            z-index:21000;display:none;
-            justify-content:center;align-items:center;padding:20px;
-        }
-        .sast-modal-overlay.active,.sast-modal-overlay.show{display:flex;}
-        .sast-modal{
-            background:var(--bg-card);border-radius:12px;border:1px solid var(--border);
-            width:520px;max-width:96%;max-height:calc(100vh - 40px);
-            display:flex;flex-direction:column;overflow:hidden;
-            box-shadow:0 24px 60px rgba(0,0,0,0.5);
-            animation:sastModalFadeIn .2s ease;
-            color:var(--text);
-        }
-        @keyframes sastModalFadeIn{
-            from{opacity:0;transform:scale(.96) translateY(-10px)}
-            to{opacity:1;transform:scale(1) translateY(0)}
-        }
-        .sast-modal-header{
-            display:flex;justify-content:space-between;align-items:center;
-            padding:18px 22px;border-bottom:1px solid var(--border);flex-shrink:0;
-        }
-        .sast-modal-header h3{
-            margin:0;font-size:16px;font-weight:700;color:var(--text);
-            display:flex;align-items:center;gap:8px;font-family:'Fira Sans',sans-serif;
-        }
-        .sast-modal-header h3 i{color:var(--accent);font-size:16px;}
-        .sast-modal-close{
-            background:none;border:none;font-size:16px;cursor:pointer;color:var(--text-dim);
-            width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-            border-radius:6px;transition:all .15s;line-height:1;
-        }
-        .sast-modal-close:hover{background:var(--bg-input);color:var(--text);}
-        .sast-modal-body{padding:20px 22px;overflow-y:auto;flex:1;}
-        .sast-filter-group{margin-bottom:20px;}
-        .sast-filter-group:last-child{margin-bottom:0;}
-        .sast-filter-group label{
-            display:block;margin-bottom:8px;font-weight:600;font-size:13px;
-            color:var(--text);font-family:'Fira Sans',sans-serif;
-        }
-        .sast-checkbox-label{
-            display:flex;align-items:center;gap:10px;cursor:pointer;
-            font-size:14px;color:var(--text);font-family:'Fira Sans',sans-serif;
-        }
-        .sast-checkbox-label input{
-            width:16px;height:16px;cursor:pointer;accent-color:var(--accent);margin:0;
-        }
-        .sast-checkbox-label span{font-weight:400;}
-        .sast-filter-hint{
-            font-size:11px;color:var(--text-dim);margin-top:6px;margin-left:26px;
-            line-height:1.5;font-family:'Fira Sans',sans-serif;
-        }
-        .sast-select{
-            width:100%;padding:9px 12px;border:1px solid var(--border);border-radius:6px;
-            font-size:13px;font-family:'Fira Sans',sans-serif;background:var(--bg-input);
-            color:var(--text);cursor:pointer;transition:border-color .15s;
-        }
-        .sast-select:hover{border-color:var(--accent);}
-        .sast-select:focus{
-            outline:none;border-color:var(--accent);
-            box-shadow:0 0 0 3px var(--logo-glow);
-        }
-        .sast-modal-footer{
-            display:flex;justify-content:flex-end;gap:10px;padding:14px 22px;
-            border-top:1px solid var(--border);background:var(--bg-input);
-            border-radius:0 0 12px 12px;flex-shrink:0;
-        }
-        .sast-btn{
-            padding:8px 18px;border-radius:6px;font-size:13px;font-weight:600;
-            cursor:pointer;border:none;font-family:'Fira Sans',sans-serif;
-            transition:all .15s;line-height:1.2;
-        }
-        .sast-btn-secondary{background:var(--bg-card);color:var(--text-dim);border:1px solid var(--border);}
-        .sast-btn-secondary:hover{background:var(--bg-input);color:var(--text);}
-        .sast-btn-primary{background:var(--accent);color:var(--accent-ink);}
-        .sast-btn-primary:hover{background:var(--accent-2);}
+    .badge-count{
+        display:inline-block;
+        margin-left:6px;
+        background:#f1f5f9;
+        padding:1px 7px;
+        border-radius:4px;
+        font-size:11px;
+        color:#64748b;
+        font-family:'Fira Code',monospace;
+        font-weight:600;
+    }
 
-        /* BLOCK HEADER (SCA groups) */
-        .dep-group h5{
-            display:inline-flex;align-items:center;gap:8px;
-            border-bottom:2px solid var(--accent);padding-bottom:6px;
-            color:var(--text);font-size:13px;font-weight:700;letter-spacing:0.05em;
-            text-transform:uppercase;margin-bottom:12px;
-        }
-        .dep-group h5 i{color:var(--accent);}
-        .dep-group h5 span{color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;}
+    .tab.active .badge-count{
+        background:rgba(8,145,178,0.12);
+        color:#0891b2;
+    }
 
-        /* RESPONSIVE */
-        @media (max-width:1100px){
-            .report-content{padding:20px 0;}
-        }
-        @media (max-width:768px){
-            .stats-grid{grid-template-columns:repeat(2,1fr);}
-            .dep-table,.sast-table{font-size:11px;}
-            .dep-table th,.dep-table td,.sast-table th,.sast-table td{padding:8px;}
-            .filter-bar,.sast-filter-bar{flex-direction:column;align-items:stretch;}
-        }
-    </style>
+    /* ============================================================
+       CONTENT
+       ============================================================ */
+    .content{
+        padding:28px 32px;
+        background:#ffffff;
+    }
+
+    .tab-pane{display:none}
+    .tab-pane.active{display:block;animation:fadeIn 0.25s ease}
+
+    @keyframes fadeIn{
+        from{opacity:0;transform:translateY(4px)}
+        to{opacity:1;transform:translateY(0)}
+    }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    .footer{
+        padding:18px 32px;
+        background:#f8fafc;
+        text-align:center;
+        font-size:11px;
+        color:#94a3b8;
+        border-top:1px solid #e3e8f0;
+        font-family:'Fira Sans',sans-serif;
+        line-height:1.7;
+    }
+
+    /* ============================================================
+       STATS GRID
+       ============================================================ */
+    .stats-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+        gap:14px;
+        margin-bottom:24px;
+    }
+
+    .stat-card{
+        background:#f8fafc;
+        border-radius:10px;
+        padding:20px;
+        text-align:center;
+        border:1px solid #e3e8f0;
+        transition:border-color 0.15s;
+    }
+
+    .stat-card:hover{
+        border-color:#0891b2;
+    }
+
+    .stat-number{
+        font-size:32px;
+        font-weight:700;
+        color:#0f172a;
+        font-family:'Fira Code',monospace;
+        line-height:1;
+    }
+
+    .stat-label{
+        font-size:12px;
+        color:#64748b;
+        margin-top:8px;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    /* ============================================================
+       RISK BANNER
+       ============================================================ */
+    .risk-banner{
+        background:#f8fafc;
+        border:1px solid #e3e8f0;
+        border-left:3px solid #0891b2;
+        border-radius:8px;
+        padding:20px 24px;
+        margin-bottom:24px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        flex-wrap:wrap;
+        gap:12px;
+    }
+
+    .risk-banner .value{
+        font-size:32px;
+        font-weight:700;
+        font-family:'Fira Code',monospace;
+        color:#0891b2;
+        line-height:1;
+    }
+
+    .risk-banner .label{
+        font-size:12px;
+        color:#64748b;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.06em;
+        font-weight:600;
+    }
+
+    /* ============================================================
+       CATEGORIES
+       ============================================================ */
+    .categories{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:16px;
+        margin-bottom:24px;
+    }
+
+    .category{
+        background:#f8fafc;
+        border-radius:10px;
+        padding:18px;
+        border:1px solid #e3e8f0;
+    }
+
+    .category h3{
+        margin-bottom:14px;
+        font-size:13px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .category h3 i{
+        color:#0891b2;
+        font-size:13px;
+    }
+
+    .category-badges{
+        display:flex;
+        gap:8px;
+        flex-wrap:wrap;
+    }
+
+    .badge{
+        padding:4px 12px;
+        border-radius:6px;
+        font-size:12px;
+        font-weight:600;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    .badge-critical{background:#fee2e2;color:#b91c1c}
+    .badge-high{background:#ffedd5;color:#c2410c}
+    .badge-medium{background:#fef3c7;color:#a16207}
+    .badge-low{background:#dcfce7;color:#15803d}
+
+    /* ============================================================
+       SCA STATS
+       ============================================================ */
+    .sca-stats{
+        display:flex;
+        gap:12px;
+        margin-bottom:20px;
+        flex-wrap:wrap;
+    }
+
+    .sca-stat-card{
+        flex:1;
+        min-width:100px;
+        background:#f8fafc;
+        border-radius:8px;
+        padding:14px;
+        text-align:center;
+        border:1px solid #e3e8f0;
+    }
+
+    .sca-stat-number{
+        font-size:24px;
+        font-weight:700;
+        font-family:'Fira Code',monospace;
+        line-height:1;
+    }
+
+    .sca-stat-label{
+        font-size:11px;
+        color:#64748b;
+        margin-top:6px;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    /* ============================================================
+       FILTER BAR
+       ============================================================ */
+    .filter-bar{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-bottom:20px;
+        align-items:center;
+    }
+
+    .search-box{
+        flex:1;
+        min-width:200px;
+        padding:9px 14px;
+        background:#ffffff;
+        border:1px solid #e3e8f0;
+        border-radius:6px;
+        font-size:13px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        transition:border-color 0.15s;
+    }
+
+    .search-box:focus{
+        outline:none;
+        border-color:#0891b2;
+    }
+
+    .search-box::placeholder{
+        color:#94a3b8;
+    }
+
+    .filter-group{
+        display:flex;
+        gap:6px;
+        flex-wrap:wrap;
+    }
+
+    .filter-btn{
+        padding:6px 12px;
+        background:#ffffff;
+        border:1px solid #e3e8f0;
+        border-radius:6px;
+        cursor:pointer;
+        font-size:12px;
+        color:#64748b;
+        transition:all 0.15s;
+        font-family:'Fira Sans',sans-serif;
+        font-weight:600;
+    }
+
+    .filter-btn:hover{
+        border-color:#0891b2;
+        color:#0891b2;
+    }
+
+    .filter-btn.active{
+        background:#0891b2;
+        color:#ffffff;
+        border-color:#0891b2;
+    }
+
+    /* ============================================================
+       TABLES
+       ============================================================ */
+    .dep-table,.sast-table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:13px;
+        background:#ffffff;
+        border-radius:8px;
+        overflow:hidden;
+        border:1px solid #e3e8f0;
+    }
+
+    .dep-table th,.sast-table th{
+        background:#f8fafc;
+        padding:12px;
+        text-align:left;
+        font-weight:700;
+        font-size:11px;
+        color:#64748b;
+        border-bottom:1px solid #e3e8f0;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .dep-table td,.sast-table td{
+        padding:11px 12px;
+        border-bottom:1px solid #e3e8f0;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    .dep-table tr:last-child td,.sast-table tr:last-child td{
+        border-bottom:none;
+    }
+
+    .dep-row,.sast-row{
+        cursor:pointer;
+        transition:background 0.1s;
+    }
+
+    .dep-row:hover,.sast-row:hover{
+        background:#f8fafc;
+    }
+
+    .expand-cell{
+        width:30px;
+        text-align:center;
+    }
+
+    .expand-icon,.sast-expand-icon{
+        transition:transform 0.2s;
+        display:inline-block;
+        font-size:10px;
+        color:#94a3b8;
+        cursor:pointer;
+    }
+
+    .dep-row:hover .expand-icon,
+    .sast-row:hover .sast-expand-icon{
+        color:#0891b2;
+    }
+
+    .dep-details-row,.sast-details-row{
+        display:none;
+        background:#f8fafc;
+    }
+
+    .dep-details-row.show,.sast-details-row.show{
+        display:table-row;
+    }
+
+    .details-container{
+        background:#ffffff;
+        border-radius:8px;
+        padding:18px;
+        margin:6px;
+        border:1px solid #e3e8f0;
+    }
+
+    .details-header{
+        margin-bottom:14px;
+        padding-bottom:12px;
+        border-bottom:1px solid #e3e8f0;
+    }
+
+    .details-title{
+        font-size:14px;
+        font-weight:700;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    .details-title i{
+        color:#0891b2;
+    }
+
+    .details-version{
+        font-size:11px;
+        color:#64748b;
+        font-weight:500;
+        font-family:'Fira Code',monospace;
+        padding:2px 8px;
+        background:#f1f5f9;
+        border-radius:4px;
+    }
+
+    .details-info{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+        gap:10px;
+        margin-bottom:14px;
+    }
+
+    .info-row{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+    }
+
+    .info-label{
+        font-size:11px;
+        color:#64748b;
+        min-width:70px;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+        font-weight:600;
+    }
+
+    .info-value{
+        font-size:12px;
+        font-family:'Fira Code',monospace;
+        color:#0f172a;
+    }
+
+    /* ============================================================
+       USAGE FILES
+       ============================================================ */
+    .usage-files{
+        background:#f0fdf4;
+        border:1px solid #bbf7d0;
+        border-radius:8px;
+        padding:14px;
+        margin-bottom:14px;
+    }
+
+    .usage-files-title{
+        font-size:12px;
+        font-weight:700;
+        margin-bottom:10px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        color:#15803d;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .files-list{
+        list-style:none;
+        padding:0;
+        margin:0;
+        display:flex;
+        flex-direction:column;
+        gap:4px;
+    }
+
+    .files-list li{
+        font-family:'Fira Code',monospace;
+        font-size:11px;
+        padding:5px 10px;
+        background:#ffffff;
+        border-radius:4px;
+        border:1px solid #e3e8f0;
+    }
+
+    .files-list code{
+        color:#0f172a;
+    }
+
+    .usage-files.warning{
+        background:#fffbeb;
+        border-color:#fde68a;
+    }
+
+    .usage-files.warning i{
+        color:#b45309;
+    }
+
+    .usage-files.warning span{
+        color:#b45309;
+        font-size:12px;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    /* ============================================================
+       CVE
+       ============================================================ */
+    .cve-section{
+        margin-top:14px;
+    }
+
+    .cve-title{
+        font-size:12px;
+        font-weight:700;
+        margin-bottom:10px;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        color:#b91c1c;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .cve-list{
+        display:flex;
+        flex-direction:column;
+        gap:10px;
+    }
+
+    .cve-item{
+        background:#fef2f2;
+        border:1px solid #fecaca;
+        border-radius:8px;
+        padding:12px;
+    }
+
+    .cve-header{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-bottom:6px;
+    }
+
+    .cve-id{
+        font-family:'Fira Code',monospace;
+        font-size:12px;
+        color:#0891b2;
+        text-decoration:none;
+        font-weight:600;
+    }
+
+    .cve-id:hover{
+        text-decoration:underline;
+    }
+
+    .cve-severity{
+        display:inline-block;
+        padding:2px 8px;
+        border-radius:4px;
+        font-size:10px;
+        font-weight:700;
+        font-family:'Fira Code',monospace;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .cve-severity.critical{background:#fee2e2;color:#b91c1c}
+    .cve-severity.high{background:#ffedd5;color:#c2410c}
+    .cve-severity.medium,
+    .cve-severity.moderate{background:#fef3c7;color:#a16207}
+    .cve-severity.low{background:#dcfce7;color:#15803d}
+
+    .cve-summary{
+        font-size:12px;
+        color:#475569;
+        margin-bottom:6px;
+        line-height:1.5;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    .cve-date{
+        font-size:11px;
+        color:#94a3b8;
+        display:flex;
+        align-items:center;
+        gap:5px;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    /* ============================================================
+       TABLE CELLS
+       ============================================================ */
+    .manager-badge{
+        font-size:10px;
+        background:#f1f5f9;
+        padding:2px 7px;
+        border-radius:4px;
+        margin-left:6px;
+        color:#64748b;
+        font-family:'Fira Code',monospace;
+    }
+
+    .version-text{
+        font-family:'Fira Code',monospace;
+        font-size:12px;
+        color:#0f172a;
+    }
+
+    .source-text{
+        font-size:11px;
+        color:#64748b;
+        font-family:'Fira Code',monospace;
+    }
+
+    .vuln-count{
+        background:#fee2e2;
+        color:#b91c1c;
+        padding:2px 8px;
+        border-radius:4px;
+        font-weight:700;
+        font-size:11px;
+        font-family:'Fira Code',monospace;
+    }
+
+    .no-vuln{
+        color:#15803d;
+        font-size:12px;
+        font-family:'Fira Code',monospace;
+    }
+
+    .license-badge{
+        padding:3px 8px;
+        border-radius:4px;
+        font-size:11px;
+        font-weight:600;
+        font-family:'Fira Code',monospace;
+    }
+
+    .license-high{background:#fee2e2;color:#b91c1c}
+    .license-ok{background:#dcfce7;color:#15803d}
+
+    .reachable-yes{
+        background:#fee2e2;
+        color:#b91c1c;
+        padding:3px 8px;
+        border-radius:4px;
+        font-size:11px;
+        font-weight:600;
+        font-family:'Fira Code',monospace;
+    }
+
+    .reachable-no{
+        background:#dcfce7;
+        color:#15803d;
+        padding:3px 8px;
+        border-radius:4px;
+        font-size:11px;
+        font-weight:600;
+        font-family:'Fira Code',monospace;
+    }
+
+    .reachable-unknown{
+        background:#f1f5f9;
+        color:#64748b;
+        padding:3px 8px;
+        border-radius:4px;
+        font-size:11px;
+        font-weight:600;
+        font-family:'Fira Code',monospace;
+    }
+
+    .severity-badge{
+        display:inline-block;
+        padding:3px 8px;
+        border-radius:4px;
+        font-size:10px;
+        font-weight:700;
+        font-family:'Fira Code',monospace;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .rule-id{
+        font-family:'Fira Code',monospace;
+        font-size:12px;
+        color:#0891b2;
+    }
+
+    .message-cell{
+        max-width:400px;
+        color:#475569;
+        font-family:'Fira Sans',sans-serif;
+        font-size:12px;
+    }
+
+    .file-cell{
+        font-family:'Fira Code',monospace;
+        font-size:11px;
+        max-width:200px;
+        overflow:hidden;
+        text-overflow:ellipsis;
+        white-space:nowrap;
+        color:#64748b;
+    }
+
+    .line-cell{
+        text-align:center;
+        font-family:'Fira Code',monospace;
+        color:#0f172a;
+        font-size:12px;
+    }
+
+    /* ============================================================
+       SAST DETAILS
+       ============================================================ */
+    .details-message{
+        background:#f8fafc;
+        padding:12px;
+        border-radius:8px;
+        margin-bottom:14px;
+        font-size:13px;
+        line-height:1.6;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        border:1px solid #e3e8f0;
+    }
+
+    .details-location{
+        background:#f8fafc;
+        padding:9px 12px;
+        border-radius:6px;
+        margin-bottom:14px;
+        font-size:12px;
+        font-family:'Fira Code',monospace;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        border:1px solid #e3e8f0;
+        color:#0891b2;
+    }
+
+    /* ============================================================
+       CODE BLOCK
+       ============================================================ */
+    .code-block{
+        background:#0f172a;
+        border-radius:8px;
+        margin:14px 0;
+        overflow:hidden;
+        border:1px solid #1e293b;
+    }
+
+    .code-header{
+        background:#1e293b;
+        padding:9px 14px;
+        font-size:11px;
+        font-weight:700;
+        color:#94a3b8;
+        border-bottom:1px solid #334155;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .code-header i{
+        color:#0891b2;
+    }
+
+    .code-block pre{
+        margin:0;
+        padding:14px;
+        overflow-x:auto;
+        font-family:'Fira Code',monospace;
+        font-size:12px;
+        line-height:1.6;
+    }
+
+    .code-line{
+        color:#e2e8f0;
+        white-space:pre;
+        font-family:'Fira Code',monospace;
+    }
+
+    .code-line.vulnerable-line{
+        background:rgba(239,68,68,0.15);
+        margin-left:-14px;
+        padding-left:11px;
+        border-left:3px solid #ef4444;
+    }
+
+    /* ============================================================
+       RECOMMENDATION
+       ============================================================ */
+    .recommendation{
+        background:#fffbeb;
+        border:1px solid #fde68a;
+        border-radius:8px;
+        padding:14px;
+        margin-top:14px;
+        display:flex;
+        gap:12px;
+    }
+
+    .recommendation i{
+        font-size:18px;
+        color:#b45309;
+        flex-shrink:0;
+    }
+
+    .recommendation-title{
+        font-size:12px;
+        font-weight:700;
+        margin-bottom:4px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        text-transform:uppercase;
+        letter-spacing:0.05em;
+    }
+
+    .recommendation-text{
+        font-size:12px;
+        color:#475569;
+        line-height:1.5;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    /* ============================================================
+       EMPTY STATE
+       ============================================================ */
+    .empty-state{
+        text-align:center;
+        padding:60px 20px;
+        background:#f8fafc;
+        border-radius:10px;
+        border:1px solid #e3e8f0;
+    }
+
+    .empty-state i{
+        font-size:42px;
+        color:#cbd5e1;
+        margin-bottom:14px;
+        display:block;
+    }
+
+    .empty-state h3{
+        font-size:16px;
+        margin-bottom:6px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        font-weight:700;
+    }
+
+    .empty-state p{
+        font-size:13px;
+        color:#64748b;
+        font-family:'Fira Sans',sans-serif;
+    }
+
+    .sast-table-wrapper{
+        overflow-x:auto;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width:768px){
+        body{padding:12px}
+        .header{padding:20px}
+        .content{padding:20px}
+        .tabs{padding:0 20px}
+        .stats-grid{grid-template-columns:repeat(2,1fr)}
+        .categories{grid-template-columns:1fr}
+        .dep-table,.sast-table{font-size:11px}
+        .dep-table td,.sast-table td{padding:8px}
+        .message-cell{max-width:150px}
+        .file-cell{max-width:120px}
+        .header-top{flex-direction:column;align-items:flex-start}
+    }
+            /* ============================================================
+       SAST FILTERS & MODAL (ДОБАВИТЬ ЭТОТ БЛОК)
+       ============================================================ */
+    
+    /* Панель фильтров */
+    .sast-filter-bar{
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-bottom:20px;
+        align-items:center;
+        background:#f8fafc;
+        padding:12px;
+        border:1px solid #e3e8f0;
+        border-radius:10px;
+    }
+
+    .sast-search-box{
+        flex:1;
+        min-width:220px;
+        padding:9px 14px;
+        background:#ffffff;
+        border:1px solid #e3e8f0;
+        border-radius:6px;
+        font-size:13px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+        transition:border-color 0.15s;
+    }
+    .sast-search-box:focus{
+        outline:none;
+        border-color:#0891b2;
+    }
+    .sast-search-box::placeholder{
+        color:#94a3b8;
+    }
+
+    .sast-filter-btn{
+        padding:6px 12px;
+        background:#ffffff;
+        border:1px solid #e3e8f0;
+        border-radius:6px;
+        cursor:pointer;
+        font-size:12px;
+        color:#64748b;
+        transition:all 0.15s;
+        font-family:'Fira Sans',sans-serif;
+        font-weight:600;
+    }
+    .sast-filter-btn:hover{
+        border-color:#0891b2;
+        color:#0891b2;
+    }
+    .sast-filter-btn.active{
+        background:#0891b2;
+        color:#ffffff;
+        border-color:#0891b2;
+    }
+
+    .sast-filter-btn-ext{
+        padding:6px 12px;
+        background:#ffffff;
+        border:1px solid #e3e8f0;
+        border-radius:6px;
+        cursor:pointer;
+        font-size:12px;
+        color:#64748b;
+        transition:all 0.15s;
+        font-family:'Fira Sans',sans-serif;
+        font-weight:600;
+        display:inline-flex;
+        align-items:center;
+        gap:6px;
+    }
+    .sast-filter-btn-ext:hover{
+        background:#0891b2;
+        color:#ffffff;
+        border-color:#0891b2;
+    }
+
+    /* Модалка Advanced Filters */
+    .sast-modal-overlay{
+        position:fixed;
+        inset:0;
+        background:rgba(15,23,42,0.6);
+        backdrop-filter:blur(3px);
+        -webkit-backdrop-filter:blur(3px);
+        z-index:21000;
+        display:none;
+        justify-content:center;
+        align-items:center;
+        padding:20px;
+    }
+    .sast-modal-overlay.show{
+        display:flex;
+    }
+    .sast-modal{
+        background:#ffffff;
+        border-radius:12px;
+        border:1px solid #e3e8f0;
+        width:520px;
+        max-width:96%;
+        max-height:calc(100vh - 40px);
+        display:flex;
+        flex-direction:column;
+        overflow:hidden;
+        box-shadow:0 24px 60px rgba(15,23,42,0.25);
+        animation:sastModalFadeIn 0.2s ease;
+    }
+    @keyframes sastModalFadeIn{
+        from{opacity:0;transform:scale(.96) translateY(-10px)}
+        to{opacity:1;transform:scale(1) translateY(0)}
+    }
+    
+    .sast-modal-header{
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:18px 22px;
+        border-bottom:1px solid #e3e8f0;
+        flex-shrink:0;
+    }
+    .sast-modal-header h3{
+        margin:0;
+        font-size:16px;
+        font-weight:700;
+        color:#0f172a;
+        display:flex;
+        align-items:center;
+        gap:8px;
+        font-family:'Fira Sans',sans-serif;
+    }
+    .sast-modal-header h3 i{
+        color:#0891b2;
+        font-size:16px;
+    }
+    .sast-modal-close{
+        background:none;
+        border:none;
+        font-size:16px;
+        cursor:pointer;
+        color:#64748b;
+        width:32px;
+        height:32px;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        border-radius:6px;
+        transition:all 0.15s;
+        line-height:1;
+    }
+    .sast-modal-close:hover{
+        background:#f1f5f9;
+        color:#0f172a;
+    }
+    
+    .sast-modal-body{
+        padding:20px 22px;
+        overflow-y:auto;
+        flex:1;
+    }
+    .sast-filter-group{
+        margin-bottom:20px;
+    }
+    .sast-filter-group:last-child{
+        margin-bottom:0;
+    }
+    .sast-filter-group label{
+        display:block;
+        margin-bottom:8px;
+        font-weight:600;
+        font-size:13px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+    }
+    
+    .sast-checkbox-label{
+        display:flex;
+        align-items:center;
+        gap:10px;
+        cursor:pointer;
+        font-size:14px;
+        color:#0f172a;
+        font-family:'Fira Sans',sans-serif;
+    }
+    .sast-checkbox-label input{
+        width:16px;
+        height:16px;
+        cursor:pointer;
+        accent-color:#0891b2;
+        margin:0;
+    }
+    .sast-checkbox-label span{
+        font-weight:400;
+    }
+    
+    .sast-filter-hint{
+        font-size:11px;
+        color:#64748b;
+        margin-top:6px;
+        margin-left:26px;
+        line-height:1.5;
+        font-family:'Fira Sans',sans-serif;
+    }
+    
+    .sast-select{
+        width:100%;
+        padding:9px 12px;
+        border:1px solid #e3e8f0;
+        border-radius:6px;
+        font-size:13px;
+        font-family:'Fira Sans',sans-serif;
+        background:#f8fafc;
+        color:#0f172a;
+        cursor:pointer;
+        transition:border-color 0.15s;
+    }
+    .sast-select:hover{
+        border-color:#0891b2;
+    }
+    .sast-select:focus{
+        outline:none;
+        border-color:#0891b2;
+        box-shadow:0 0 0 3px rgba(8,145,178,0.15);
+    }
+    
+    .sast-modal-footer{
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        padding:14px 22px;
+        border-top:1px solid #e3e8f0;
+        background:#f8fafc;
+        border-radius:0 0 12px 12px;
+        flex-shrink:0;
+    }
+    
+    .sast-btn{
+        padding:8px 18px;
+        border-radius:6px;
+        font-size:13px;
+        font-weight:600;
+        cursor:pointer;
+        border:none;
+        font-family:'Fira Sans',sans-serif;
+        transition:all 0.15s;
+        line-height:1.2;
+    }
+    .sast-btn-secondary{
+        background:#ffffff;
+        color:#64748b;
+        border:1px solid #e3e8f0;
+    }
+    .sast-btn-secondary:hover{
+        background:#f1f5f9;
+        color:#0f172a;
+    }
+    .sast-btn-primary{
+        background:#0891b2;
+        color:#ffffff;
+    }
+    .sast-btn-primary:hover{
+        background:#0e7490;
+    }
+
+    /* Таблица SAST (если классы отличаются) */
+    .sast-table-wrapper{
+        overflow-x:auto;
+    }
+</style>
 </head>
 <body>
-    <div class="report-container">
-        <div class="report-header">
-            <h1><i class="fas fa-shield-halved"></i> Hercules | Blender</h1>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <h1><i class="fas fa-shield-halved"></i> Hercules | Blender</h1>
+                <button class="save-btn" id="saveReportBtn" type="button">
+                    <i class="fas fa-download"></i>
+                    <span>Save report</span>
+                </button>
+            </div>
             <p>Comprehensive security analysis — SCA &amp; SAST</p>
-            <div class="report-meta">
+            <div class="meta">
                 <span><i class="fas fa-calendar"></i> Generated: ${generated}</span>
                 <span><i class="fas fa-cubes"></i> SCA: ${scaCount}</span>
                 <span><i class="fas fa-code"></i> SAST: ${sastCount}</span>
             </div>
         </div>
 
-        <div class="report-tabs">
-            <button class="report-tab active" data-tab="summary"><i class="fas fa-chart-pie"></i> Summary</button>
-            <button class="report-tab" data-tab="sca"><i class="fas fa-cubes"></i> SCA <span class="tab-badge">${scaCount}</span></button>
-            <button class="report-tab" data-tab="sast"><i class="fas fa-code"></i> SAST <span class="tab-badge">${sastCount}</span></button>
+        <div class="tabs">
+            <button class="tab active" data-tab="summary"><i class="fas fa-chart-pie"></i> Summary</button>
+            <button class="tab" data-tab="sca"><i class="fas fa-cubes"></i> SCA <span class="badge-count">${scaCount}</span></button>
+            <button class="tab" data-tab="sast"><i class="fas fa-code"></i> SAST <span class="badge-count">${sastCount}</span></button>
         </div>
 
-        <div class="report-content">
+        <div class="content">
             <div class="tab-pane active" id="tab-summary">
                 ${summaryHtml}
             </div>
@@ -1214,7 +2254,7 @@ function generateHTMLReport(report) {
             </div>
         </div>
 
-        <div class="report-footer">
+        <div class="footer">
             <p>Generated with <strong>Hercules | Blender</strong> · Comprehensive security analysis</p>
             <p>SCA based on public CVE databases · SAST based on static code analysis rules</p>
         </div>
@@ -1222,10 +2262,10 @@ function generateHTMLReport(report) {
 
     <script>
     // Tabs
-    document.querySelectorAll('.report-tab').forEach(function(tab){
+    document.querySelectorAll('.tab').forEach(function(tab){
         tab.addEventListener('click', function(){
             var target = tab.getAttribute('data-tab');
-            document.querySelectorAll('.report-tab').forEach(function(t){t.classList.remove('active');});
+            document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
             document.querySelectorAll('.tab-pane').forEach(function(p){p.classList.remove('active');});
             tab.classList.add('active');
             var pane = document.getElementById('tab-' + target);
@@ -1290,10 +2330,10 @@ function generateHTMLReport(report) {
             var component = (row.getAttribute('data-component') || '').toLowerCase();
 
             var show = true;
-            if (currentScaFilter === 'critical') show = show && severity === 'critical';
-            else if (currentScaFilter === 'high') show = show && severity === 'high';
-            else if (currentScaFilter === 'medium') show = show && severity === 'medium';
-            else if (currentScaFilter === 'low') show = show && severity === 'low';
+            if (currentScaFilter === 'critical') show = show && severity.includes('critical');
+            else if (currentScaFilter === 'high') show = show && severity.includes('high');
+            else if (currentScaFilter === 'medium') show = show && severity.includes('medium');
+            else if (currentScaFilter === 'low') show = show && severity.includes('low');
             if (currentScaReachable) show = show && reachable;
             if (searchText) show = show && component.indexOf(searchText) !== -1;
 
@@ -1414,6 +2454,23 @@ function generateHTMLReport(report) {
             modal.style.display = 'none';
         };
         modal.onclick = function(e){ if (e.target === modal) modal.style.display = 'none'; };
+    }
+
+    // Save report button
+    var saveBtn = document.getElementById('saveReportBtn');
+    if (saveBtn) {
+        saveBtn.onclick = function(){
+            var htmlContent = document.documentElement.outerHTML;
+            var blob = new Blob([htmlContent], { type: 'text/html' });
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = 'blender_report_' + new Date().toISOString().slice(0,19).replace(/:/g, '-') + '.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        };
     }
 
     setTimeout(function(){ filterSca(); filterSast(); }, 150);

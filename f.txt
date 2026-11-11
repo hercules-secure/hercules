@@ -1,0 +1,11 @@
+Top scanned sources — горизонтальный bar chart
+
+Running scans — виджет с прогресс-барами активных сканов
+
+Findings trend — линия «новые vs закрытые» за 30 дней
+
+Filter по периоду — 7d / 30d / 90d / All
+
+Export dashboard — PDF/PNG одним кликом
+
+Widget customization — drag & drop + сохранять пресеты в localStorage
