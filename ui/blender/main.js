@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // TOKEN MODAL
     // ============================================================
 
-    function openTokenModal({ host, request, errorMessage }) {
+     function openTokenModal({ host, request, errorMessage }) {
         pendingAnalysisRequest = request || null;
 
         const modal = document.getElementById('tokenModal');
@@ -98,74 +98,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modal.classList.add('show');
         setTimeout(() => input && input.focus(), 50);
-    }
+     }
 
-    window.closeTokenModal = function () {
-        const modal = document.getElementById('tokenModal');
-        if (modal) modal.classList.remove('show');
-        pendingAnalysisRequest = null;
-    };
+        window.closeTokenModal = function () {
+            const modal = document.getElementById('tokenModal');
+            if (modal) modal.classList.remove('show');
+            pendingAnalysisRequest = null;
+        };
 
-    const tokenToggle = document.getElementById('tokenToggleVisibility');
-    const tokenInput = document.getElementById('tokenInput');
-    const tokenSubmit = document.getElementById('tokenSubmitBtn');
+        const tokenToggle = document.getElementById('tokenToggleVisibility');
+        const tokenInput = document.getElementById('tokenInput');
+        const tokenSubmit = document.getElementById('tokenSubmitBtn');
 
-    if (tokenToggle && tokenInput) {
-        tokenToggle.addEventListener('click', () => {
-            tokenInput.type = tokenInput.type === 'password' ? 'text' : 'password';
-            const icon = tokenToggle.querySelector('i');
-            if (icon) {
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            }
-        });
-    }
-
-    if (tokenSubmit) {
-        tokenSubmit.addEventListener('click', async () => {
-            const input = document.getElementById('tokenInput');
-            const errEl = document.getElementById('tokenError');
-
-            const token = (input?.value || '').trim();
-            if (!token) {
-                if (errEl) {
-                    errEl.hidden = false;
-                    errEl.textContent = 'Введите токен.';
+        if (tokenToggle && tokenInput) {
+            tokenToggle.addEventListener('click', () => {
+                tokenInput.type = tokenInput.type === 'password' ? 'text' : 'password';
+                const icon = tokenToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.toggle('fa-eye');
+                    icon.classList.toggle('fa-eye-slash');
                 }
-                return;
-            }
+            });
+        }
 
-            const req = pendingAnalysisRequest;
-            window.closeTokenModal();
+        if (tokenSubmit) {
+            tokenSubmit.addEventListener('click', async () => {
+                const input = document.getElementById('tokenInput');
+                const errEl = document.getElementById('tokenError');
 
-            if (req && typeof req.retry === 'function') {
-                try {
-                    await req.retry(token);
-                } catch (e) {
-                    if (e.status === 403) {
-                        openTokenModal({
-                            host: req.host,
-                            request: req,
-                            errorMessage: 'Токен не подошёл (403). Проверьте scope read_repository.'
-                        });
-                    } else {
-                        stopProgressEmulation();
-                        showAlert(`Error: ${e.message}`, 'error');
-                        activateButton(startBtn);
+                const token = (input?.value || '').trim();
+                if (!token) {
+                    if (errEl) {
+                        errEl.hidden = false;
+                        errEl.textContent = 'Введите токен.';
+                    }
+                    return;
+                }
+
+                const req = pendingAnalysisRequest;
+                window.closeTokenModal();
+
+                if (req && typeof req.retry === 'function') {
+                    try {
+                        await req.retry(token);
+                    } catch (e) {
+                        if (e.status === 403) {
+                            openTokenModal({
+                                host: req.host,
+                                request: req,
+                                errorMessage: 'Токен не подошёл (403). Проверьте scope read_repository.'
+                            });
+                        } else {
+                            stopProgressEmulation();
+                            showAlert(`Error: ${e.message}`, 'error');
+                            activateButton(startBtn);
+                        }
                     }
                 }
-            }
-        });
-    }
+            });
+        }
 
-    if (tokenInput) {
-        tokenInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                document.getElementById('tokenSubmitBtn')?.click();
-            }
-        });
-    }
+        if (tokenInput) {
+            tokenInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('tokenSubmitBtn')?.click();
+                }
+            });
+        }
 
     // ============================================================
     // ACCESS CHECKER (как в SCA)
@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         await runBlenderAnalysis(repo, branch, token, access.host);
                     }
                 },
-                errorMessage: 'Репозиторий защищён. Введите токен доступа.'
+          errorMessage: 'Repository is protected. Enter an access token.'
             });
             return;
         }

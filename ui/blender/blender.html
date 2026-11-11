@@ -281,41 +281,41 @@
 
       <!-- TOKEN MODAL -->
     <div id="tokenModal" class="settings-modal">
-        <div class="settings-content">
-            <div class="settings-header">
-                <h3><i class="fas fa-key"></i> Требуется токен доступа</h3>
-                <span class="settings-close" onclick="closeTokenModal()">&times;</span>
-            </div>
+    <div class="settings-content">
+        <div class="settings-header">
+            <h3><i class="fas fa-key"></i> Access token required</h3>
+            <span class="settings-close" onclick="closeTokenModal()">&times;</span>
+        </div>
 
-            <p class="token-hint">
-                Репозиторий на <strong id="tokenHost">GitLab</strong> защищён.
-                Введите Personal Access Token с правом <code>read_repository</code>
-                (или <code>read_api</code>).
-            </p>
+        <p class="token-hint">
+            The repository on <strong id="tokenHost">GitLab</strong> is protected.
+            Enter a Personal Access Token with the <code>read_repository</code>
+            (or <code>read_api</code>) scope.
+        </p>
 
-            <div class="token-field">
-                <input type="password" id="tokenInput" placeholder="PRIVATE-TOKEN / Personal Access Token"
-                       autocomplete="off" spellcheck="false">
-                <button class="header-btn" type="button" id="tokenToggleVisibility" title="Показать/скрыть" style="border: none;">
-                    <i class="fas fa-eye"></i>
-                </button>
-            </div>
+        <div class="token-field">
+            <input type="password" id="tokenInput" placeholder="PRIVATE-TOKEN / Personal Access Token"
+                   autocomplete="off" spellcheck="false">
+            <button class="header-btn" type="button" id="tokenToggleVisibility" title="Show/Hide" style="border: none;">
+                <i class="fas fa-eye"></i>
+            </button>
+        </div>
 
-            <label class="token-remember">
-                <input type="checkbox" id="tokenRemember" checked>
-                Запомнить на этой машине (localStorage)
-            </label>
+        <label class="token-remember">
+            <input type="checkbox" id="tokenRemember" checked>
+            Remember on this machine (localStorage)
+        </label>
 
-            <div id="tokenError" class="token-error" hidden></div>
+        <div id="tokenError" class="token-error" hidden></div>
 
-            <div class="token-actions">
-                <button class="header-btn" type="button" onclick="closeTokenModal()" style="border: none;">Отмена</button>
-                <button class="start-button" type="button" id="tokenSubmitBtn">
-                    <i class="fas fa-unlock"></i> Применить и повторить
-                </button>
-            </div>
+        <div class="token-actions">
+
+            <button class="start-button" type="button" id="tokenSubmitBtn">
+                <i class="fas fa-unlock"></i> Apply and retry
+            </button>
         </div>
     </div>
+</div>
 
 </body>
 </html>

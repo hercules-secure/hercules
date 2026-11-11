@@ -1325,6 +1325,18 @@ a:hover, a:focus, a:active, a:visited { text-decoration: none; color: inherit; }
     transform: translateY(-1px);
 }
 
+.sast-btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: none;
+    color: var(--accent-ink);
+    box-shadow: 0 0 16px var(--logo-glow);
+}
+
+.sast-btn-primary:hover {
+    color: var(--accent-ink);
+    box-shadow: 0 0 24px var(--logo-glow-strong);
+    transform: translateY(-1px);
+}
 .sast-btn-secondary {
     background: var(--toggle-bg);
     color: var(--text-dim);
