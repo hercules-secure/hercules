@@ -1,8 +1,8 @@
 {
   "info": {
-    "versionNumber": "v1.0.9",
+    "versionNumber": "v1.0.10",
     "licenseType": "Геркулес",
-    "licenseExpiry": "бессрочно"
+    "build": "adelina"
   },
   "auth": {
     "authEnabled": false,

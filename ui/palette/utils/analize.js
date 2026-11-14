@@ -667,7 +667,7 @@ function showAnalysisResultsModal(results) {
                     font-weight: 500;
                     transition: all 0.2s;
                 ">
-                    <i class="fas fa-check"></i> Закрыть
+                    <i class="fas fa-check"></i> Close
                 </button>
             </div>
         </div>
