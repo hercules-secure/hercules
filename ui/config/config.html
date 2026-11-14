@@ -1211,7 +1211,7 @@
                         </select>
                     </div>
                 </div>
-                    <div class="settings-section" style="margin-top: 24px;">
+<div class="settings-section" style="margin-top: 24px;">
     <div class="settings-section-title">
         <i class="fas fa-comments black-icon"></i>
         <span>Collaboration</span>
@@ -1226,7 +1226,7 @@
             </div>
         </div>
         <label class="toggle-switch">
-            <input type="checkbox" id="collabEnabled" data-path="collaboration.enabled">
+            <input type="checkbox" id="collabEnabled" data-path="collaboration.disabled">
             <span class="toggle-slider"></span>
         </label>
     </div>
@@ -1309,6 +1309,85 @@
                 </div>
             </div>
             <button class="btn-primary" id="collabTestBtn">
+                <i class="fas fa-vial"></i> Test
+            </button>
+        </div>
+    </div>
+</div>
+<div class="settings-section" style="margin-top: 24px;">
+    <div class="settings-section-title">
+        <i class="fas fa-database black-icon"></i>
+        <span>Storage</span>
+    </div>
+    <div class="section-divider"></div>
+
+    <div class="setting-row">
+        <div class="setting-info">
+            <div class="setting-label">Use external storage</div>
+            <div class="setting-description">
+                Store data in a remote key-value server instead of local storage
+            </div>
+        </div>
+        <label class="toggle-switch">
+            <input type="checkbox" id="storageEnabled" data-path="storage.enabled">
+            <span class="toggle-slider"></span>
+        </label>
+    </div>
+
+    <div id="storageSettings" style="display: none; margin-left: 24px; margin-bottom: 20px;">
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Server URL</div>
+                <div class="setting-description">
+                    Base URL of the key-value storage server
+                </div>
+            </div>
+            <input type="text" id="storageServerUrl" class="settings-input" style="width: 400px;"
+                data-path="storage.serverUrl"
+                placeholder="https://kv.example.com">
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">API key</div>
+                <div class="setting-description">
+                    Secret key for authenticating with the storage server
+                </div>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+                <input type="text" id="storageApiKey" class="settings-input" style="width: 300px; -webkit-text-security: disc;"
+                    data-path="storage.apiKey" placeholder="••••••••" autocomplete="off" spellcheck="false">
+                <button type="button" class="btn-secondary" id="storageToggleKey"
+                    style="padding: 8px 12px;" title="Show/hide">
+                    <i class="fas fa-eye"></i>
+                </button>
+                <button type="button" class="btn-secondary" id="storageCopyKey"
+                    style="padding: 8px 12px;" title="Copy">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Namespace</div>
+                <div class="setting-description">
+                    Key prefix / tenant identifier (optional)
+                </div>
+            </div>
+            <input type="text" id="storageNamespace" class="settings-input" style="width: 300px;"
+                data-path="storage.namespace"
+                placeholder="hercules-team">
+        </div>
+
+        <div class="setting-row">
+            <div class="setting-info">
+                <div class="setting-label">Test connection</div>
+                <div class="setting-description">
+                    Verify that the storage server is reachable
+                </div>
+            </div>
+            <button class="btn-primary" id="storageTestBtn">
                 <i class="fas fa-vial"></i> Test
             </button>
         </div>
@@ -1719,9 +1798,11 @@
     <script type="module" src="client.js"></script>
     <script type="module" src="config.js"></script>
     <script type="module" src="integration.js"></script>
+    <script type="module" src="storage.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
+    
 
     <script>
         /* ============================================================

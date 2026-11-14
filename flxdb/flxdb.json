@@ -1,8 +1,15 @@
 {
   "assets": {
-    "list": []
+    "list": [
+    ]
   },
   "notes": {
+    "list": []
+  },
+  "donors": {
+    "list": []
+  },
+  "collaboration": {
     "list": []
   }
 }

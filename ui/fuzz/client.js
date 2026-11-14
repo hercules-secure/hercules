@@ -52,9 +52,6 @@ function validateStartButton() {
     startBtn.classList.toggle('active', isActive);
 }
 
-// ============================================================
-// RESET STATE
-// ============================================================
 
 function resetAllState() {
     resetAllProgress();
@@ -88,10 +85,6 @@ function resetAllState() {
     const fileInput = document.getElementById('fileInput');
     if (fileInput) fileInput.value = '';
 }
-
-// ============================================================
-// DISPLAY SPECIFICATION
-// ============================================================
 
 function displaySpecInfo(data) {
     const infoContainer = document.getElementById('specPreview');
@@ -138,10 +131,6 @@ function displaySpecInfo(data) {
     
     infoContainer.classList.add('active');
 }
-
-// ============================================================
-// POLL STATUS
-// ============================================================
 
 function checkFuzzStatus() {
     if (!fuzzTaskId) return;
@@ -206,9 +195,8 @@ function getAuthHeaders() {
     return {};
 }
 
-// ============================================================
-// MAIN FUNCTION - START FUZZING
-// ============================================================
+
+
 async function startFuzzing() {
     
     const startBtn = document.getElementById('start-btn');
@@ -586,9 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
     startBtn.disabled = true;
 });
 
-// ============================================================
-// REGISTER IN window
-// ============================================================
+
 
 window.startFuzzing = startFuzzing;
 window.checkFuzzStatus = checkFuzzStatus;

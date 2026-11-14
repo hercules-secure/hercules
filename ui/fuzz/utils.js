@@ -136,7 +136,7 @@ function showErrorModal(title, message) {
                 cursor: pointer;
                 font-family: Ubuntu;
             ">
-                Закрыть
+                Close
             </button>
         </div>
     `;
@@ -376,7 +376,7 @@ function startProgressEmulator() {
                 emulatorProgress = 100;
                 stepId = 'done';
                 stopProgressEmulator();
-                showToolNotification('Анализ успешно завершен!', 'success');
+                showToolNotification('Analysis completed successfully!', 'success');
             }
             
             // Обновляем градусник
