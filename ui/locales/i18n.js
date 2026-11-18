@@ -1,14 +1,15 @@
-let TRANSLATIONS = {};
+        let TRANSLATIONS = {};
         let currentLang = 'en';
 
         function detectLang() {
+
             const saved = localStorage.getItem('hercules_lang');
             if (saved && ['ru', 'en', 'it'].includes(saved)) return saved;
 
-            const browserLang = (navigator.language || 'en').slice(0, 2).toLowerCase();
+            const browserLang = (navigator.language || 'ru').slice(0, 2).toLowerCase();
             if (['ru', 'en', 'it'].includes(browserLang)) return browserLang;
 
-            return 'en'; // fallback
+            return 'ru'; // fallback
         }
 
         async function loadTranslations(lang) {
@@ -22,7 +23,7 @@ let TRANSLATIONS = {};
             } catch (e) {
                 console.warn('Failed to load translations for', lang, e);
                 if (lang !== 'en') {
-                    await loadTranslations('en');
+                    await loadTranslations('ru');
                 }
             }
         }

@@ -3,10 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+    <link rel="stylesheet" href="/css/all.min.css">
     <title>Hercules — Sign in</title>
     <link rel="icon" type="image/x-icon" href="/rocket.ico">
 
@@ -18,7 +16,7 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
-
+        <script type="text/javascript" src="../locales/i18n.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -385,89 +383,6 @@
     </div>
 
     <script>
-
-        let TRANSLATIONS = {};
-        let currentLang = 'en';
-
-        function detectLang() {
-            const saved = localStorage.getItem('hercules_lang');
-            if (saved && ['ru', 'en', 'it'].includes(saved)) return saved;
-
-            const browserLang = (navigator.language || 'en').slice(0, 2).toLowerCase();
-            if (['ru', 'en', 'it'].includes(browserLang)) return browserLang;
-
-            return 'en'; // fallback
-        }
-
-        async function loadTranslations(lang) {
-            try {
-                const res = await fetch(`/locales/${lang}.json`);
-                if (!res.ok) throw new Error('not found');
-                TRANSLATIONS = await res.json();
-                currentLang = lang;
-                localStorage.setItem('hercules_lang', lang);
-                applyTranslations();
-            } catch (e) {
-                console.warn('Failed to load translations for', lang, e);
-                if (lang !== 'en') {
-                    await loadTranslations('en');
-                }
-            }
-        }
-
-        function t(key) {
-            return TRANSLATIONS[key] || key;
-        }
-
-        function applyTranslations() {
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (TRANSLATIONS[key]) el.textContent = TRANSLATIONS[key];
-            });
-
-            // Плейсхолдеры
-            const usernameInput = document.getElementById('username');
-            if (usernameInput && TRANSLATIONS.placeholderUsername) {
-                usernameInput.placeholder = TRANSLATIONS.placeholderUsername;
-            }
-
-            // Title страницы
-            if (TRANSLATIONS.title) document.title = TRANSLATIONS.title;
-
-            // Язык html
-            document.documentElement.lang = currentLang;
-        }
-
-        // ============================================================
-        // ТЕМА
-        // ============================================================
-        const themeToggle = document.getElementById('themeToggle');
-        const root = document.documentElement;
-
-        function applyTheme(theme) {
-            root.setAttribute('data-theme', theme);
-            localStorage.setItem('hercules_theme', theme);
-        }
-
-        function toggleTheme() {
-            const current = root.getAttribute('data-theme') || 'dark';
-            applyTheme(current === 'dark' ? 'light' : 'dark');
-        }
-
-        if (themeToggle) themeToggle.addEventListener('click', toggleTheme);
-
-        if (window.matchMedia) {
-            const mq = window.matchMedia('(prefers-color-scheme: dark)');
-            mq.addEventListener('change', (e) => {
-                if (!localStorage.getItem('hercules_theme')) {
-                    applyTheme(e.matches ? 'dark' : 'light');
-                }
-            });
-        }
-
-        // ============================================================
-        // ЛОГИКА ВХОДА
-        // ============================================================
         const loginBtn = document.getElementById('loginBtn');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
