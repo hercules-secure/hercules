@@ -1221,8 +1221,9 @@ SCAPopupReporter.prototype.showPopup = function() {
             </div>
         </div>
         <div class="sca-popup-footer">
-            <button id="downloadJsonBtn" class="sca-btn sca-btn-json"><i class="fas fa-file-code"></i> Download JSON</button>
             <button id="downloadHtmlBtn" class="sca-btn sca-btn-html"><i class="fas fa-file-arrow-down"></i> Download HTML</button>
+            <button id="downloadJsonBtn" class="sca-btn sca-btn-json"><i class="fas fa-file-code"></i> Download JSON</button>
+            
         </div>
     `;
 
@@ -1729,14 +1730,10 @@ SCAPopupReporter.prototype.generateFullHTMLReport = function() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Hercules | SCA - ${new Date().toLocaleDateString()}</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Fira Sans',sans-serif;background:#f4f6fb;padding:24px;color:#0f172a;min-height:100vh;}
+        body{font-family:monospace;background:#f4f6fb;padding:24px;color:#0f172a;min-height:100vh;}
         .container{max-width:1600px;margin:0 auto;background:#fff;border-radius:12px;border:1px solid #e3e8f0;box-shadow:0 4px 24px rgba(15,23,42,0.06);overflow:hidden;}
 
         .header{background:#fff;padding:28px 32px;border-bottom:1px solid #e3e8f0;}

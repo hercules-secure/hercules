@@ -565,14 +565,10 @@ function generateFullHTMLReport(results) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>Hercules | SAST - ${new Date().toLocaleDateString()}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Fira Sans', sans-serif; background: #f5f5f5; padding: 20px; color: #333; }
+        body { font-family: monospace; background: #f5f5f5; padding: 20px; color: #333; }
         .container { max-width: 1400px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
         .header { background: #0a0a12; color: white; padding: 40px; border-bottom: 2px solid #00ffc8; }
         .header h1 { font-size: 32px; margin-bottom: 10px; }
