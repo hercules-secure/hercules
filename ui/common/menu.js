@@ -9,7 +9,7 @@ async function loadMenu() {
     
     try {
 
-        const lang = localStorage.getItem('hercules_lang')
+        const lang = localStorage.getItem('hercules_lang') == null ? 'ru' : localStorage.getItem('hercules_lang');
         const response = await fetch(`/addons/api/extensions/installed/${lang}`);
 
        

@@ -25,7 +25,7 @@ function loadJSZip() {
         }
 
         const script = document.createElement('script');
-        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        script.src = '/js/jszip.min.js';
         script.onload = () => resolve();
         script.onerror = () => reject(new Error('Failed to load JSZip'));
         document.head.appendChild(script);
@@ -926,10 +926,8 @@ function generateHTMLReport(report) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hercules | Blender - Security Report</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Fira+Sans:wght@300;400;500;600;700&display=swap">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/all.min.css">
+    <link rel="stylesheet" href="/css/fonts.css">
     <style>
     /* ============================================================
        CSS VARIABLES (fallback для контента из summary/sca/sast)
