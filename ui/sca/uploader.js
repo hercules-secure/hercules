@@ -649,6 +649,4 @@ function initSCAUploader() {
 }
 
 window.initSCAUploader = initSCAUploader;
-// window.initSASTUploader = initSASTUploader;
-// window.initFUZZUploader = initFUZZUploader;
 window.FileUploader = FileUploader;

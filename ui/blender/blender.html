@@ -38,7 +38,7 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Tools</span>
+                        <span data-i18n="tool.menu.header"></span>
                     </div>
                     <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
@@ -55,21 +55,26 @@
 
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
+                    
                     <a href="/history">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
                             <div class="tool-info">
-                                <span class="tool-name">History</span>
-                                <span class="tool-desc">Scan log</span>
+                                <span class="tool-name" data-i18n="tool.menu.history"></span>
+                                <span class="tool-desc" data-i18n="tool.menu.history.desc"></span>
                             </div>
                         </div>
                     </a>
                     <a href="/config">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
                             <div class="tool-info">
-                                <span class="tool-name">Settings</span>
-                                <span class="tool-desc">Manage parameters</span>
+                                <span class="tool-name" data-i18n="tool.menu.config" ></span>
+                                <span class="tool-desc" data-i18n="tool.menu.config.desc"></span>
                             </div>
                         </div>
                     </a>
@@ -83,11 +88,11 @@
             <div class="top-bar">
                 <div class="top-bar-title">
                     <i class="fas fa-blender black-icon"></i>
-                    <span id="pageTitle">Select source</span>
+                    <span id="pageTitle" data-i18n="common.text.select.source"></span>
                 </div>
                 <div class="top-bar-actions">
                     <button class="header-btn" onclick="showToolInfo('blender')">
-                        <i class="fas fa-info-circle"></i> Tool info
+                        <i class="fas fa-info-circle"></i> <span data-i18n="common.btn.info"></span>
                     </button>
                     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
                         <i class="fas fa-sun icon-sun"></i>
@@ -99,13 +104,16 @@
             <div class="workspace-card">
                 <div class="source-selector">
                     <button class="source-btn active" onclick="switchSource('git')">
-                        <i class="fab fa-git-alt"></i> URL
+                        <i class="fab fa-git-alt"></i> 
+                        <span data-i18n="common.page.source.type.url"></span>
                     </button>
                     <button class="source-btn" onclick="switchSource('archive')">
-                        <i class="fas fa-file-archive"></i> Archive
+                        <i class="fas fa-file-archive"></i> 
+                        <span data-i18n="common.page.source.type.arch"></span>
                     </button>
                     <button class="source-btn" onclick="switchSource('local')">
-                        <i class="fas fa-folder-open"></i> Local project
+                        <i class="fas fa-folder-open"></i>
+                        <span data-i18n="common.page.source.type.local"></span> 
                     </button>
                 </div>
 
@@ -114,7 +122,8 @@
                         <input type="text" id="repo" placeholder="Paste repository link"
                             aria-label="GitHub or GitLab repository link">
                         <button class="start-button" id="start-btn" type="button" disabled>
-                            <i class="fas fa-play"></i>Start analysis
+                            <i class="fas fa-play"></i>
+                            <span data-i18n="common.btn.analysys"></span>
                         </button>
                     </div>
                     <div class="tech-stack">
@@ -145,7 +154,7 @@
                             <i class="fas fa-cloud-upload-alt black-icon"></i>
                         </div>
                         <div class="upload-text">
-                            Click to select archive<br>
+                            <span data-i18n="blender.page.source.arch"></span> <br>
                             <div class="icons-row">
                                 <span class="format-badge"><i class="fas fa-file-archive" style="color: #FC6D26;" title="Upload archive"></i></span>
                             </div>
@@ -160,7 +169,8 @@
                     </div>
                     <div id="archiveFileInfo" class="file-info"></div>
                     <button class="start-button" id="archive-start-btn" type="button" disabled style="margin-top: 15px; width: 100%;">
-                        <i class="fas fa-play"></i>Start archive analysis
+                        <i class="fas fa-play"></i>
+                        <span data-i18n="common.btn.analysys"></span>
                     </button>
                 </div>
 
@@ -170,7 +180,7 @@
                             <i class="fas fa-cloud-upload-alt black-icon"></i>
                         </div>
                         <div class="upload-text">
-                            Click to select local project<br>
+                            <span data-i18n="blender.page.source.arch"></span><br>
                             <div class="icons-row">
                                 <span class="format-badge"><i class="fas fa-folder-open" style="color: #eab308;" title="Select local project"></i></span>
                             </div>
@@ -182,7 +192,8 @@
                     </div>
                     <div id="localFolderInfo" class="file-info"></div>
                     <button class="start-button" id="local-start-btn" type="button" disabled style="margin-top: 15px; width: 100%;">
-                        <i class="fas fa-play"></i>Start project analysis
+                        <i class="fas fa-play"></i>
+                        <span data-i18n="common.btn.analysys"></span>
                     </button>
                 </div>
             </div>
@@ -190,7 +201,7 @@
             <div class="thermometer-progress">
                 <div class="overall-progress-section">
                     <div class="overall-progress-header">
-                        <span>Overall analysis progress</span>
+                        <span data-i18n="blender.progress.title"></span>
                         <span class="overall-percent" id="overallPercent">0%</span>
                     </div>
                     <div class="overall-progress-container">
@@ -200,27 +211,27 @@
                     <div class="thermometer-marks" id="thermometerMarks">
                         <div class="thermometer-mark" data-step="1">
                             <div class="mark-dot" id="markDot1"></div>
-                            <div class="mark-label" id="markLabel1">Loading</div>
+                            <div class="mark-label" id="markLabel1" data-i18n="blender.page.load"></div>
                         </div>
                         <div class="thermometer-mark" data-step="2">
                             <div class="mark-dot" id="markDot2"></div>
-                            <div class="mark-label" id="markLabel2">Scanning</div>
+                            <div class="mark-label" id="markLabel2" data-i18n="blender.page.scanning"></div>
                         </div>
                         <div class="thermometer-mark" data-step="3">
                             <div class="mark-dot" id="markDot3"></div>
-                            <div class="mark-label" id="markLabel3">Components</div>
+                            <div class="mark-label" id="markLabel3" data-i18n="blender.page.components"></div>
                         </div>
                         <div class="thermometer-mark" data-step="4">
                             <div class="mark-dot" id="markDot4"></div>
-                            <div class="mark-label" id="markLabel4">Code analysis</div>
+                            <div class="mark-label" id="markLabel4" data-i18n="blender.page.code"></div>
                         </div>
                         <div class="thermometer-mark" data-step="5">
                             <div class="mark-dot" id="markDot5"></div>
-                            <div class="mark-label" id="markLabel5">Vulnerabilities</div>
+                            <div class="mark-label" id="markLabel5" data-i18n="blender.page.vuln"></div>
                         </div>
                         <div class="thermometer-mark" data-step="7">
                             <div class="mark-dot" id="markDot7"></div>
-                            <div class="mark-label" id="markLabel7">Generating report</div>
+                            <div class="mark-label" id="markLabel7" data-i18n="blender.page.report"></div>
                         </div>
                     </div>
                 </div>
@@ -260,7 +271,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list"></i>Key features</h3>
+                <h3><i class="fas fa-list"></i><span data-i18n="tool.info.header"></span></h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -274,6 +285,7 @@
     <script type="module" src="utils.js"></script>
     <script type="module" src="main.js"></script>
     <script type="text/javascript" src="modal.js"></script>
+    <script type="text/javascript" src="../locales/i18n.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>

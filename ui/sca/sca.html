@@ -954,7 +954,7 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Tools</span>
+                        <span data-i18n="tool.menu.header"></span>
                     </div>
                     <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
@@ -978,8 +978,8 @@
                                 <i class="fas fa-history black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">History</span>
-                                <span class="tool-desc">Scan log</span>
+                                <span class="tool-name" data-i18n="tool.menu.history"></span>
+                                <span class="tool-desc" data-i18n="tool.menu.history.desc"></span>
                             </div>
                         </div>
                     </a>
@@ -989,8 +989,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Settings</span>
-                                <span class="tool-desc">Manage parameters</span>
+                                <span class="tool-name" data-i18n="tool.menu.config" ></span>
+                                <span class="tool-desc" data-i18n="tool.menu.config.desc"></span>
                             </div>
                         </div>
                     </a>
@@ -1003,11 +1003,11 @@
             <div class="top-bar">
                 <div class="top-bar-title">
                     <i class="fas fa-cubes black-icon"></i>
-                    <span id="pageTitle">Select source</span>
+                    <span id="pageTitle" data-i18n="common.text.select.source"></span>
                 </div>
                 <div class="top-bar-actions">
                     <button class="header-btn" onclick="showToolInfo('sca')">
-                        <i class="fas fa-info-circle"></i> Tool info
+                        <i class="fas fa-info-circle"></i> <span data-i18n="common.btn.info"></span>
                     </button>
                     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
                         <i class="fas fa-sun icon-sun"></i>
@@ -1021,29 +1021,30 @@
                     <input type="text" id="repo" placeholder="Paste repository link"
                         aria-label="GitHub or GitLab repository link">
                     <button class="start-button" id="start-btn" type="button" disabled>
-                        <i class="fas fa-play"></i>Start analysis
+                        <i class="fas fa-play"></i>
+                        <span data-i18n="common.btn.analysys"></span>
                     </button>
                 </div>
 
                 <div class="tech-stack">
-                    <div class="platforms-row">
-                        <span class="format-badge">
-                            <i class="fab fa-github" style="color: #e6edf7;"></i>
-                            <span>GitHub</span>
-                        </span>
-                        <span class="format-badge">
-                            <i class="fab fa-gitlab" style="color: #FC6D26;"></i>
-                            <span>GitLab</span>
-                        </span>
+                        <div class="platforms-row">
+                            <span class="format-badge">
+                                <i class="fab fa-github" style="color: var(--text);"></i>
+                                <span>GitHub</span>
+                            </span>
+                            <span class="format-badge">
+                                <i class="fab fa-gitlab" style="color: #FC6D26;"></i>
+                                <span>GitLab</span>
+                            </span>
+                        </div>
                     </div>
-                </div>
 
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">
                         <i class="fas fa-cloud-upload-alt black-icon"></i>
                     </div>
                     <div class="upload-text">
-                        Click to select archive or local project<br>
+                        <span data-i18n="common.btn.source.arch.local"></span><br>
                         <div class="icons-row">
                             <span class="format-badge"><i class="fas fa-file-archive" style="color: #FC6D26;" title="Upload archive"></i></span>
                             <span class="format-badge"><i class="fas fa-folder-open" style="color: #eab308;" title="Upload local project"></i></span>
@@ -1060,15 +1061,15 @@
 
                 <div class="card-table" style="margin-top: 24px;">
                     <div class="card-section">
-                        <h2 class="section-title">Preparation</h2>
+                        <h2 class="section-title" data-i18n="sca.page.step.preparation"></h2>
 
                         <div class="card">
                             <div class="card-header">
                                 <span class="task-id">1.1</span>
-                                <span class="task-status pending">Pending</span>
+                                <span class="task-status pending" data-i18n="common.page.step.pending"></span>
                             </div>
                             <div class="card-body">
-                                <h4>Data collection</h4>
+                                <h4 data-i18n="sca.page.data.collection"></h4>
                                 <div class="progress-container">
                                     <div class="progress" style="width: 0%"></div>
                                 </div>
@@ -1077,15 +1078,15 @@
                     </div>
 
                     <div class="card-section">
-                        <h3 class="section-title">Composition analysis</h3>
+                        <h3 class="section-title" data-i18n="sca.page.analysis"></h3>
 
                         <div class="card">
                             <div class="card-header">
                                 <span class="task-id">2.1</span>
-                                <span class="task-status pending">Pending</span>
+                                <span class="task-status pending" data-i18n="common.page.step.pending"></span>
                             </div>
                             <div class="card-body">
-                                <h4>Dependency list generation</h4>
+                                <h4 data-i18n="sca.page.gen.dependency"></h4>
                                 <div class="progress-container">
                                     <div class="progress" style="width: 0%"></div>
                                 </div>
@@ -1095,10 +1096,10 @@
                         <div class="card">
                             <div class="card-header">
                                 <span class="task-id">2.2</span>
-                                <span class="task-status pending">Pending</span>
+                                <span class="task-status pending" data-i18n="common.page.step.pending"></span>
                             </div>
                             <div class="card-body">
-                                <h4>Dependency analysis</h4>
+                                <h4 data-i18n="sca.page.dependency.analysis"></h4>
                                 <div class="progress-container">
                                     <div class="progress" style="width: 0%"></div>
                                 </div>
@@ -1113,7 +1114,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list"></i>Key features</h3>
+                <h3><i class="fas fa-list"></i><span data-i18n="tool.info.header"></span></h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -1126,6 +1127,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
     <script type="text/javascript" src="uploader.js"></script>
+      <script type="text/javascript" src="../locales/i18n.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>

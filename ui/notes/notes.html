@@ -25,7 +25,7 @@
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
-                    <div class="tools-title"><i class="fas fa-tools black-icon"></i><span>Tools</span></div>
+                    <div class="tools-title"><i class="fas fa-tools black-icon"></i><span data-i18n="tool.menu.header"></span></div>
                     <button class="collapse-btn" id="collapseBtn" title="Collapse menu"><i class="fas fa-chevron-left"></i></button>
                 </div>
                 <div class="tool-divider"></div>
@@ -34,16 +34,27 @@
                 </div>
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
+                    
                     <a href="/history">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
-                            <div class="tool-info"><span class="tool-name">History</span><span class="tool-desc">Scan log</span></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name" data-i18n="tool.menu.history"></span>
+                                <span class="tool-desc" data-i18n="tool.menu.history.desc"></span>
+                            </div>
                         </div>
                     </a>
                     <a href="/config">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
-                            <div class="tool-info"><span class="tool-name">Settings</span><span class="tool-desc">Manage parameters</span></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name" data-i18n="tool.menu.config" ></span>
+                                <span class="tool-desc" data-i18n="tool.menu.config.desc"></span>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -55,15 +66,15 @@
             <div class="top-bar">
                 <div class="top-bar-title">
                     <i class="fas fa-note-sticky black-icon"></i>
-                    <span>Notes &amp; Tasks</span>
+                    <span data-i18n="notes.info.header">Notes &amp; Tasks</span>
                 </div>
                 <div class="top-bar-actions">
                     <div class="segmented" id="kindToggle">
-                        <button class="segment active" data-kind="note">Note</button>
-                        <button class="segment" data-kind="task">Task</button>
+                        <button class="segment active" data-kind="note" data-i18n="notes.switch.notes">Note</button>
+                        <button class="segment" data-kind="task" data-i18n="notes.switch.task">Task</button>
                     </div>
                     <button class="header-btn" id="newBtn" style="cursor: pointer;">
-                        <i class="fas fa-plus"></i> New
+                        <i class="fas fa-plus"></i> <span data-i18n="common.btn.new">New</span>
                     </button>
                     <button class="theme-toggle btn btn-secondary" id="themeToggle">
                         <i class="fas fa-sun icon-sun"></i>
@@ -75,9 +86,9 @@
             <div class="notes-layout">
                 <div class="notes-sidebar">
                     <div class="notes-tabs">
-                        <button class="notes-tab active" data-filter="all">All</button>
-                        <button class="notes-tab" data-filter="task">Tasks</button>
-                        <button class="notes-tab" data-filter="note">Notes</button>
+                        <button class="notes-tab active" data-filter="all" data-i18n="notes.filter.all">All</button>
+                        <button class="notes-tab" data-filter="task" data-i18n="notes.filter.tasks">Tasks</button>
+                        <button class="notes-tab" data-filter="note" data-i18n="notes.filter.notes">Notes</button>
                     </div>
                     <div class="notes-list" id="notesList">
                         <div class="notes-empty"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
@@ -92,7 +103,7 @@
 
                     <div class="editor-active" id="editorActive" style="display:none;">
                         <div class="editor-head">
-                            <span class="editor-kind" id="editorKind">Note</span>
+                            <span class="editor-kind" id="editorKind" data-i18n="notes.switch.notes">Note</span>
                             <span class="editor-status-badge" id="editorStatusBadge" style="display:none;"></span>
                         </div>
 
@@ -134,8 +145,8 @@
                         <textarea id="noteBody" placeholder="Write in Markdown...&#10;&#10;# Heading&#10;- list item&#10;`code`"></textarea>
 
                         <div class="toolbar">
-                            <button class="btn btn-secondary" id="deleteBtn"><i class="fas fa-trash-can"></i> Delete</button>
-                            <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i> Save</button>
+                            <button class="btn btn-secondary" id="deleteBtn"><i class="fas fa-trash-can"></i> <span data-i18n="common.btn.delete">Delete</span></button>
+                            <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i><span data-i18n="common.btn.save"> Save</span></button>
                         </div>
                     </div>
                 </div>
@@ -183,5 +194,6 @@
     <script type="text/javascript" src="../common/modal.js"></script>
     <script type="text/javascript" src="modals.js"></script>
     <script type="text/javascript" src="notes.js"></script>
+    <script type="text/javascript" src="../locales/i18n.js"></script>
 </body>
 </html>

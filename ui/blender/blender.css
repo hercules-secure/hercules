@@ -228,6 +228,24 @@ a:hover, a:focus, a:active, a:visited { text-decoration: none; color: inherit; }
     margin-left: 6px;
 }
 
+        .header-btn {
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border: 1px solid transparent;
+            background: var(--toggle-bg);
+            border-color: var(--border);
+            color: var(--text);
+        }
 .top-bar .top-bar-actions .header-btn {
     height: 26px;
     padding: 0 10px;

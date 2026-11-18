@@ -223,7 +223,7 @@
     "router": "./addons/fuzz/router.js",
     "ui": "./ui/fuzz/fuzz.html",
     "order": 3,
-    "free": false,
+    "free": true,
   "features": {
     "key": [
       {
@@ -362,7 +362,7 @@
     "router": "./addons/blender/router.js",
     "ui": "./ui/blender/blender.html",
     "order": 4,
-    "free": false,
+    "free": true,
     "features": {
       "sca": [
         {
@@ -699,5 +699,179 @@
       }
     ]
   }
-}
+},
+{
+    "id": "cmdb",
+    "name": "CMDB",
+    "version": "1.0.0",
+    "shortDesc": "Инвентаризация инфраструктуры",
+    "description": "База данных управления конфигурациями — единый источник достоверной информации о серверах, базах данных, сетевом оборудовании, приложениях и ответственных лицах во всей вашей инфраструктуре",
+    "icon": "fas fa-cubes",
+    "url": "/cmdb",
+    "router": "./addons/cmdb/router.js",
+    "ui": "./ui/cmdb.html",
+    "order": 8,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-server",         "iconColor": "#3B82F6", "name": "Реестр активов" },
+            { "icon": "fas fa-user-tie",       "iconColor": "#10B981", "name": "Учёт владельцев и ответственных" },
+            { "icon": "fas fa-diagram-project", "iconColor": "#8B5CF6", "name": "Карта взаимосвязей" },
+            { "icon": "fas fa-clock-rotate-left", "iconColor": "#F59E0B", "name": "История изменений" }
+        ],
+        "assetTypes": [
+            { "icon": "fas fa-server",     "iconColor": "#3B82F6", "name": "Серверы" },
+            { "icon": "fas fa-database",   "iconColor": "#10B981", "name": "Базы данных" },
+            { "icon": "fas fa-network-wired", "iconColor": "#8B5CF6", "name": "Сеть" },
+            { "icon": "fas fa-hard-drive", "iconColor": "#F59E0B", "name": "Хранилища" },
+            { "icon": "fas fa-window-restore", "iconColor": "#EC4899", "name": "Приложения" },
+            { "icon": "fas fa-cube",       "iconColor": "#6B7280", "name": "Прочее" }
+        ],
+        "attributes": [
+            { "icon": "fas fa-tag",        "iconColor": "#22d3ee", "name": "Команда и тип" },
+            { "icon": "fas fa-circle-check", "iconColor": "#10B981", "name": "Статус (активен / обслуживание)" },
+            { "icon": "fas fa-code-branch", "iconColor": "#8B5CF6", "name": "Git-репозиторий" },
+            { "icon": "fas fa-book",       "iconColor": "#F59E0B", "name": "Ссылка на документацию" },
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "Отчёт о безопасности" }
+        ],
+        "sources": [
+            { "icon": "fas fa-plus",       "iconColor": "#22d3ee", "name": "Ручной ввод" },
+            { "icon": "fas fa-file-import", "iconColor": "#10B981", "name": "Импорт из JSON/YAML" },
+            { "icon": "fas fa-clone",      "iconColor": "#8B5CF6", "name": "Клонирование существующего актива" }
+        ],
+        "reports": [
+            { "icon": "fab fa-html5", "iconColor": "#E44D26", "name": "HTML" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "notes",
+    "name": "Заметки",
+    "version": "1.0.0",
+    "shortDesc": "Инженерная база знаний",
+    "description": "Личный и командный блокнот для инженеров — фиксируйте инструкции (runbooks), сниппеты, чек-листы и задачи со статусами, приоритетами и сроками выполнения",
+    "icon": "fas fa-note-sticky",
+    "url": "/notes",
+    "router": "./addons/notes/router.js",
+    "ui": "./ui/notes/notes.html",
+    "order": 9,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-note-sticky",  "iconColor": "#22d3ee", "name": "Markdown-заметки" },
+            { "icon": "fas fa-list-check",   "iconColor": "#10B981", "name": "Трекер задач" },
+            { "icon": "fas fa-magnifying-glass", "iconColor": "#8B5CF6", "name": "Полнотекстовый поиск" },
+            { "icon": "fas fa-tags",         "iconColor": "#F59E0B", "name": "Теги и фильтры" }
+        ],
+        "noteTypes": [
+            { "icon": "fas fa-note-sticky", "iconColor": "#22d3ee", "name": "Заметка" },
+            { "icon": "fas fa-list-check",  "iconColor": "#10B981", "name": "Задача" }
+        ],
+        "taskFields": [
+            { "icon": "fas fa-circle-half-stroke", "iconColor": "#3B82F6", "name": "Статус (к выполнению / в работе / готово)" },
+            { "icon": "fas fa-flag",        "iconColor": "#EF4444", "name": "Приоритет (низкий / средний / высокий / критический)" },
+            { "icon": "fas fa-user",        "iconColor": "#8B5CF6", "name": "Исполнитель" },
+            { "icon": "fas fa-calendar-day", "iconColor": "#F59E0B", "name": "Срок выполнения" }
+        ],
+        "views": [
+            { "icon": "fas fa-layer-group", "iconColor": "#22d3ee", "name": "Все" },
+            { "icon": "fas fa-list-check",  "iconColor": "#10B981", "name": "Задачи" },
+            { "icon": "fas fa-note-sticky", "iconColor": "#8B5CF6", "name": "Заметки" }
+        ],
+        "reports": [
+            { "icon": "fab fa-markdown", "iconColor": "#000000", "name": "Markdown" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "collaboration",
+    "name": "Коммуникации",
+    "version": "1.0.0",
+    "shortDesc": "Центр командного взаимодействия",
+    "description": "Внутренний мессенджер для команды — каналы, личные чаты, треды и единый контекст во всех модулях Hercules",
+    "icon": "fas fa-comments",
+    "url": "/collaboration",
+    "router": "./addons/collaboration/router.js",
+    "ui": "./ui/collaboration/collaboration.html",
+    "order": 10,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-comments",     "iconColor": "#22d3ee", "name": "Обмен сообщениями в реальном времени" },
+            { "icon": "fas fa-hashtag",      "iconColor": "#8B5CF6", "name": "Каналы" },
+            { "icon": "fas fa-comment-dots", "iconColor": "#10B981", "name": "Личные сообщения" },
+            { "icon": "fas fa-reply-all",    "iconColor": "#F59E0B", "name": "Треды (ветки обсуждений)" }
+        ],
+        "chatTypes": [
+            { "icon": "fas fa-hashtag",      "iconColor": "#8B5CF6", "name": "Канал" },
+            { "icon": "fas fa-user",         "iconColor": "#22d3ee", "name": "Личное сообщение" },
+            { "icon": "fas fa-users",        "iconColor": "#10B981", "name": "Групповой чат" }
+        ],
+        "messageFeatures": [
+            { "icon": "fab fa-markdown",     "iconColor": "#000000", "name": "Markdown" },
+            { "icon": "fas fa-code",         "iconColor": "#F7DF1E", "name": "Блоки кода" },
+            { "icon": "fas fa-paperclip",    "iconColor": "#3B82F6", "name": "Вложения" },
+            { "icon": "fas fa-at",           "iconColor": "#EC4899", "name": "Упоминания" },
+            { "icon": "fas fa-face-smile",   "iconColor": "#F59E0B", "name": "Реакции" }
+        ],
+        "integrations": [
+            { "icon": "fas fa-bell",         "iconColor": "#22d3ee", "name": "Уведомления о сканировании" },
+            { "icon": "fas fa-link",         "iconColor": "#8B5CF6", "name": "Обмен результатами" },
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "Комнаты инцидентов" }
+        ],
+        "reports": [
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "donor",
+    "name": "Доноры данных",
+    "version": "1.0.0",
+    "shortDesc": "Реестр источников данных",
+    "description": "Реестр источников и поставщиков данных — отслеживайте, кто и какие данные передаёт, в каком формате, как часто и куда они направляются",
+    "icon": "fas fa-database",
+    "url": "/donor",
+    "router": "./addons/donor/router.js",
+    "ui": "./ui/donor/donor.html",
+    "order": 11,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-database",      "iconColor": "#22d3ee", "name": "Реестр источников" },
+            { "icon": "fas fa-user-tie",      "iconColor": "#10B981", "name": "Учёт поставщиков" },
+            { "icon": "fas fa-arrows-turn-right", "iconColor": "#8B5CF6", "name": "Маршрутизация (куда передаётся)" },
+            { "icon": "fas fa-clock",         "iconColor": "#F59E0B", "name": "Частота и расписание" }
+        ],
+        "sourceTypes": [
+            { "icon": "fas fa-plug",          "iconColor": "#3B82F6", "name": "API" },
+            { "icon": "fas fa-database",      "iconColor": "#10B981", "name": "База данных" },
+            { "icon": "fas fa-file-lines",    "iconColor": "#F59E0B", "name": "Лог" },
+            { "icon": "fas fa-file-export",   "iconColor": "#8B5CF6", "name": "Экспорт файла" }
+        ],
+        "formats": [
+            { "icon": "far fa-file-code",     "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+    {
+    "id": "home",
+    "name": "Главная",
+    "version": "1.0.0",
+    "shortDesc": "Активность и статистика",
+    "description": "Персональная панель управления — последние действия во всех модулях Hercules, счетчики в реальном времени, а также статистика с анализом тенденций и отчетами",
+    "icon": "fas fa-home",
+    "url": "/home",
+    "router": "./addons/home/router.js",
+    "ui": "./ui/home/home.html",
+    "order": 0,
+    "enabled": true,
+    "free": true
+    }
 ]

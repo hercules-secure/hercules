@@ -1915,10 +1915,7 @@ function handleReportData(reportData) {
     }
 }
 
-// ============================================================
-// GLOBAL EXPORTS
-// ============================================================
-
+ 
 window.showToolNotification = showToolNotification;
 window.setActiveTool = setActiveTool;
 window.updateTaskStatus = updateTaskStatus;
