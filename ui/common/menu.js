@@ -8,7 +8,9 @@ async function loadMenu() {
 
     
     try {
-        const response = await fetch('/addons/api/extensions/installed');
+
+        const lang = localStorage.getItem('hercules_lang')
+        const response = await fetch(`/addons/api/extensions/installed/${lang}`);
 
        
         const data = await response.json();

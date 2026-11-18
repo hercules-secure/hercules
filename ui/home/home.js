@@ -266,7 +266,7 @@
             listEl.innerHTML = `
                 <div class="empty-row">
                     <i class="fas fa-wave-square"></i>
-                    No activity yet
+                    <span data-i18n="home.card.activity.empty">Нет активностей</span>
                 </div>
             `;
             return;
@@ -309,7 +309,7 @@
         listEl.innerHTML = `
             <div class="empty-row">
                 <i class="fas fa-note-sticky"></i>
-                No tasks yet
+                <span data-i18n="home.card.tasks.empty">Задач пока нет</span>
             </div>
         `;
         return;
@@ -444,8 +444,8 @@
             alerts.push({
                 sev: 'info',
                 icon: 'fa-server',
-                title: 'No assets yet',
-                desc: 'Add your first asset to CMDB',
+                title: 'Нет цифровых активов', // No assets yet
+                desc: 'Добавьте ваш первый актив в CMDB', // Add your first asset to CMDB
                 count: 0,
                 link: '/cmdb'
             });
@@ -512,7 +512,7 @@
 
         if (badge) {
             const unreadTotal = state.totals?.unread || chats.reduce((s, c) => s + (c.unread || 0), 0);
-            badge.textContent = unreadTotal > 0 ? `${unreadTotal} unread` : 'All read';
+         //   badge.textContent = unreadTotal > 0 ? `${unreadTotal} unread` : '';
             badge.className = 'dashboard-card-hint' + (unreadTotal > 0 ? ' has-unread' : '');
         }
 

@@ -325,11 +325,9 @@ function switchThermometerMode(mode) {
     if (mode === 'domovoy') {
         if (domovoyStepsEl) domovoyStepsEl.style.display = 'flex';
         if (metlaStepsEl) metlaStepsEl.style.display = 'none';
-        //if (title) title.textContent = 'Общий прогресс анализа';
     } else {
         if (domovoyStepsEl) domovoyStepsEl.style.display = 'none';
         if (metlaStepsEl) metlaStepsEl.style.display = 'flex';
-        //if (title) title.textContent = 'Общий прогресс анализа';
     }
     
     resetThermometer();
@@ -409,9 +407,6 @@ function stopProgressEmulator() {
     }
 }
 
-// ============================================================
-// ЗАМЕНА СТАРОЙ ФУНКЦИИ startProgressBars
-// ============================================================
 
 function startProgressBars() {
     startProgressEmulator();
@@ -421,3 +416,4 @@ function startProgressBars() {
 window.startProgressEmulator = startProgressEmulator;
 window.stopProgressEmulator = stopProgressEmulator;
 window.startProgressBars = startProgressBars;
+window.switchThermometerMode = switchThermometerMode;

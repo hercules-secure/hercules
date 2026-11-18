@@ -325,7 +325,7 @@ function showToolInfo(toolId) {
         return;
     }
     
-    header.innerHTML = '<h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>';
+    //header.innerHTML = '<h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>';
     leftContent.innerHTML = renderLeftPanel(tool);
     rightContent.innerHTML = renderRightPanel(tool);
     

@@ -24,7 +24,9 @@
         <div id="left">
             <div class="tools-section">
                 <div class="tools-header">
-                    <div class="tools-title"><i class="fas fa-tools black-icon"></i><span>Tools</span></div>
+                    <div class="tools-title"><i class="fas fa-tools black-icon"></i>
+                        <span data-i18n="tool.menu.header"></span>
+                    </div>
                     <button class="collapse-btn" id="collapseBtn" title="Collapse menu"><i class="fas fa-chevron-left"></i></button>
                 </div>
                 <div class="tool-divider"></div>
@@ -33,16 +35,27 @@
                 </div>
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
+                    
                     <a href="/history">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
-                            <div class="tool-info"><span class="tool-name">History</span><span class="tool-desc">Scan log</span></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name" data-i18n="tool.menu.history"></span>
+                                <span class="tool-desc" data-i18n="tool.menu.history.desc"></span>
+                            </div>
                         </div>
                     </a>
                     <a href="/config">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div>
-                            <div class="tool-info"><span class="tool-name">Settings</span><span class="tool-desc">Manage parameters</span></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name" data-i18n="tool.menu.config" ></span>
+                                <span class="tool-desc" data-i18n="tool.menu.config.desc"></span>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -54,10 +67,11 @@
             <div class="top-bar">
                 <div class="top-bar-title">
                     <i class="fas fa-comments black-icon"></i>
-                    <span>Collaboration</span>
+                    <span data-i18n="home.card.collaboration">Collaboration</span>
                 </div>
                 <div class="top-bar-actions">
-                    <button class="header-btn" id="newChatBtn" style="cursor: pointer;"><i class="fas fa-plus"></i> New collaboration</button>
+                    <button class="header-btn" id="newChatBtn" style="cursor: pointer;"><i class="fas fa-plus"></i> 
+                        <span data-i18n="common.btn.new"> New</span></button>
                     <button class="theme-toggle btn btn-secondary" id="themeToggle">
                         <i class="fas fa-sun icon-sun"></i>
                         <i class="fas fa-moon icon-moon"></i>
@@ -166,9 +180,9 @@
             </p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" data-close>Cancel</button>
+            <button class="btn btn-secondary" type="button" data-close data-i18n="common.btn.cancel">Cancel</button>
             <button class="btn btn-primary" type="button" id="newChatConfirm">
-                <i class="fas fa-plus"></i> Create
+                <i class="fas fa-plus"></i> <span data-i18n="common.btn.create"> Create</span>
             </button>
         </div>
     </div>
@@ -309,5 +323,6 @@
     <script type="text/javascript" src="../common/modal.js"></script>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
     <script type="module" src="collaboration.js"></script>
+    <script type="text/javascript" src="../locales/i18n.js"></script>
 </body>
 </html>

@@ -133,14 +133,7 @@
     // ============================================================
     function renderTable() {
         if (!currentRecords.length) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7" class="empty-state">
-                        <i class="fas fa-history"></i>
-                        <p>Scan history is empty</p>
-                    </td>
-                </tr>
-            `;
+            
             return;
         }
 

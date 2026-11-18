@@ -229,7 +229,7 @@
     color: var(--text);
     flex: 0 1 auto;
     min-width: 0;
-    max-width: 200px;
+    max-width: 225px;
     white-space: nowrap;
     overflow: hidden;
 }
@@ -1394,7 +1394,7 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Tools</span>
+                        <span data-i18n="tool.menu.header"></span>
                     </div>
                     <button class="collapse-btn" id="collapseBtn">
                         <i class="fas fa-chevron-left"></i>
@@ -1409,12 +1409,15 @@
                 </div>
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
+                    
                     <a href="/history">
                         <div class="tool-item">
-                            <div class="tool-icon"><i class="fas fa-history black-icon"></i></div>
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
                             <div class="tool-info">
-                                <span class="tool-name">History</span>
-                                <span class="tool-desc">Scan log</span>
+                                <span class="tool-name" data-i18n="tool.menu.history"></span>
+                                <span class="tool-desc" data-i18n="tool.menu.history.desc"></span>
                             </div>
                         </div>
                     </a>
@@ -1424,8 +1427,8 @@
                                 <i class="fas fa-cogs black-icon"></i>
                             </div>
                             <div class="tool-info">
-                                <span class="tool-name">Settings</span>
-                                <span class="tool-desc">Manage parameters</span>
+                                <span class="tool-name" data-i18n="tool.menu.config" ></span>
+                                <span class="tool-desc" data-i18n="tool.menu.config.desc"></span>
                             </div>
                         </div>
                     </a>
@@ -1438,17 +1441,17 @@
             <div class="top-bar">
                 <div class="top-bar-title">
                     <i class="fas fa-palette black-icon"></i>
-                    <span id="pageTitle">Threat Modeling &amp; Visualization <span class="badge-beta-gradient">Beta</span></span>
+                    <span id="pageTitle" data-i18n="palette.page.title"></span>
                 </div>
                 <div class="palette-topbar-right">
                     <div class="palette-elements-group">
                         <div class="element-library-item event" draggable="true" data-type="event-start">
                             <i class="fas fa-play-circle lib-icon"></i>
-                            Start
+                             <span data-i18n="palette.btn.start"> Start</span>
                         </div>
                         <div class="element-library-item event" draggable="true" data-type="event-end">
                             <span class="lib-icon"><i class="fas fa-stop-circle"></i></span>
-                            End
+                            <span data-i18n="palette.btn.end"></span> 
                         </div>
                         <div class="palette-elements-divider"></div>
                         <div class="element-library-item" draggable="true" data-type="asset">
@@ -1493,7 +1496,7 @@
                 </div>
                 <div class="top-bar-actions">
                     <button class="header-btn" onclick="showToolInfo('palette')">
-                        <i class="fas fa-info-circle"></i> Tool info
+                        <i class="fas fa-info-circle"></i> <span data-i18n="common.btn.info"></span>
                     </button>
                     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
                         <i class="fas fa-sun icon-sun"></i>
@@ -1766,7 +1769,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list"></i>Key features</h3>
+                <h3><i class="fas fa-list"></i><span data-i18n="tool.info.header">Key features</span></h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -1917,6 +1920,7 @@
     <script src="client.js"></script>
     <script src="utils/utils.js"></script>
     <script src="utils/analize.js"></script>
+    <script type="text/javascript" src="../locales/i18n.js"></script>
     <script src="../common/menu.js"></script>
     <script src="../common/sidebar.js"></script>
     <script src="../common/info.js"></script>

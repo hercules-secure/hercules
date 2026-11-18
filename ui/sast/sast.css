@@ -521,6 +521,10 @@
 
         .tech-stack {
             margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-start;
         }
 
         .platforms-row {

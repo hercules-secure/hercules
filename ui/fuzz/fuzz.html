@@ -38,7 +38,7 @@
                 <div class="tools-header">
                     <div class="tools-title" id="toolsTitle">
                         <i class="fas fa-tools black-icon"></i>
-                        <span>Tools</span>
+                        <span data-i18n="tool.menu.header"></span>
                     </div>
                     <button class="collapse-btn" id="collapseBtn" title="Collapse menu">
                         <i class="fas fa-chevron-left"></i>
@@ -53,8 +53,29 @@
                 </div>
                 <div class="tool-divider"></div>
                 <div class="tools-grid">
-                    <a href="/history"><div class="tool-item"><div class="tool-icon"><i class="fas fa-history black-icon"></i></div><div class="tool-info"><span class="tool-name">History</span><span class="tool-desc">Scan log</span></div></div></a>
-                    <a href="/config"><div class="tool-item"><div class="tool-icon"><i class="fas fa-cogs black-icon"></i></div><div class="tool-info"><span class="tool-name">Settings</span><span class="tool-desc">Manage parameters</span></div></div></a>
+                    
+                    <a href="/history">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-history black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name" data-i18n="tool.menu.history"></span>
+                                <span class="tool-desc" data-i18n="tool.menu.history.desc"></span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="/config">
+                        <div class="tool-item">
+                            <div class="tool-icon">
+                                <i class="fas fa-cogs black-icon"></i>
+                            </div>
+                            <div class="tool-info">
+                                <span class="tool-name" data-i18n="tool.menu.config" ></span>
+                                <span class="tool-desc" data-i18n="tool.menu.config.desc"></span>
+                            </div>
+                        </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -63,10 +84,10 @@
             <div class="top-bar">
                 <div class="top-bar-title">
                     <i class="fas fa-dragon black-icon"></i>
-                    <span>Select source</span>
+                    <span data-i18n="common.text.select.source"></span>
                 </div>
                 <div class="top-bar-actions">
-                    <button class="header-btn" onclick="showToolInfo('fuzz')"><i class="fas fa-info-circle"></i> Tool info</button>
+                    <button class="header-btn" onclick="showToolInfo('fuzz')"><i class="fas fa-info-circle"></i> <span data-i18n="common.btn.info"></span></button>
                     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme"><i class="fas fa-sun icon-sun"></i><i class="fas fa-moon icon-moon"></i></button>
                 </div>
             </div>
@@ -74,9 +95,12 @@
             <div class="workspace-card">
                 <!-- Кнопки режимов -->
                 <div class="mode-selector" id="modeSelector">
-                    <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy">Domovoy</button>
-                    <button class="mode-btn-mode" data-mode="metla" id="modeMetla">Broom <span class="badge-beta-gradient">Beta</span></button>
-                    <button class="mode-btn-mode" data-mode="scout" id="modeScout">Scout</button>
+                  <button class="mode-btn-mode active" data-mode="domovoy" id="modeDomovoy"
+                            onclick="switchThermometerMode('domovoy')" data-i18n="fuzz.btn.domovoy"></button>
+                    <button class="mode-btn-mode" data-mode="metla" id="modeMetla"
+                            onclick="switchThermometerMode('metla')" data-i18n="fuzz.btn.broom">...</button>
+                    <button class="mode-btn-mode" data-mode="scout" id="modeScout"
+                            onclick="switchThermometerMode('scout')" data-i18n="fuzz.btn.scout">Scout</button>
                 </div>
 
                 <!-- Поле ввода -->
@@ -85,7 +109,8 @@
                         <input type="text" id="specUrl" placeholder="Paste OpenAPI specification link (Swagger/OpenAPI)">
                     </div>
                     <button class="fuzz-start-btn" id="start-btn" type="button" disabled>
-                        <i class="fas fa-play" style="margin-right: 6px;"></i>Start
+                        <i class="fas fa-play" style="margin-right: 6px;"></i>
+                        <span data-i18n="common.btn.analysys"></span>
                     </button>
                 </div>
 
@@ -94,14 +119,14 @@
                     <div class="upload-area" id="uploadArea">
                         <div class="upload-icon"><i class="fas fa-cloud-upload-alt black-icon"></i></div>
                         <div class="upload-text">
-                            Click to select specification file<br>
+                            <span data-i18n="fuzz.page.source.spec"></span> <br>
                             <div class="icons-row">
                                 <span class="format-badge"><i class="fas fa-file-code" style="color: #f59e0b;"></i> JSON</span>
                                 <span class="format-badge"><i class="fas fa-file-alt" style="color: var(--text);"></i> YAML</span>
                                 <span class="format-badge"><i class="fas fa-file" style="color: #0d9488;"></i> YML</span>
                             </div>
                         </div>
-                        <div class="upload-hint">Supports Swagger 2.0, OpenAPI 3.0, OpenAPI 3.1</div>
+                        <div class="upload-hint" data-i18n="fuzz.page.source.spec.sub"></div>
                         <input type="file" id="fileInput" accept=".json,.yaml,.yml" style="display: none;">
                     </div>
                     <div class="file-info" id="fileInfo">
@@ -125,7 +150,7 @@
                 <!-- Прогресс-бар -->
                 <div class="progress-thermometer" id="progressThermometer">
                     <div class="thermometer-header">
-                        <span class="thermometer-title" id="thermometerTitle">Overall analysis progress</span>
+                        <span class="thermometer-title" id="thermometerTitle" data-i18n="blender.progress.title" ></span>
                         <span class="thermometer-percent" id="thermometerPercent">0%</span>
                     </div>
                     <div class="thermometer-track">
@@ -133,19 +158,50 @@
                     </div>
                     <div class="thermometer-steps" id="thermometerSteps">
                         <div class="thermometer-step domovoy-steps">
-                            <div class="step-item"><span class="step-dot" data-step="0"></span><span class="step-label">Loading</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="25"></span><span class="step-label">Generation</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="50"></span><span class="step-label">Fuzzing</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="75"></span><span class="step-label">Analysis</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="100"></span><span class="step-label">Report</span></div>
-                        </div>
-                        <div class="thermometer-step metla-steps" style="display: none;">
-                            <div class="step-item"><span class="step-dot" data-step="0"></span><span class="step-label">Discovery</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="25"></span><span class="step-label">Analysis</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="50"></span><span class="step-label">Generation</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="75"></span><span class="step-label">Fuzzing</span></div>
-                            <div class="step-item"><span class="step-dot" data-step="100"></span><span class="step-label">Report</span></div>
-                        </div>
+                                <div class="step-item">
+                                    <span class="step-dot" data-step="0"></span>
+                                    <span class="step-label" data-i18n="thermometer.domovoy.loading">Loading</span>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-dot" data-step="25"></span>
+                                    <span class="step-label" data-i18n="thermometer.domovoy.generation">Generation</span>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-dot" data-step="50"></span>
+                                    <span class="step-label" data-i18n="thermometer.domovoy.fuzzing">Fuzzing</span>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-dot" data-step="75"></span>
+                                    <span class="step-label" data-i18n="thermometer.domovoy.analysis">Analysis</span>
+                                </div>
+                                <div class="step-item">
+                                    <span class="step-dot" data-step="100"></span>
+                                    <span class="step-label" data-i18n="thermometer.domovoy.report">Report</span>
+                                </div>
+                            </div>  
+
+                <div class="thermometer-step metla-steps" style="display: none;">
+                    <div class="step-item">
+                        <span class="step-dot" data-step="0"></span>
+                        <span class="step-label" data-i18n="thermometer.metla.discovery">Discovery</span>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-dot" data-step="25"></span>
+                        <span class="step-label" data-i18n="thermometer.metla.analysis">Analysis</span>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-dot" data-step="50"></span>
+                        <span class="step-label" data-i18n="thermometer.metla.generation">Generation</span>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-dot" data-step="75"></span>
+                        <span class="step-label" data-i18n="thermometer.metla.fuzzing">Fuzzing</span>
+                    </div>
+                    <div class="step-item">
+                        <span class="step-dot" data-step="100"></span>
+                        <span class="step-label" data-i18n="thermometer.metla.report">Report</span>
+                    </div>
+                </div>
                     </div>
                 </div>
 
@@ -176,9 +232,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- МОДАЛКИ -->
-    <!-- ========================================== -->
+
 
     <!-- 1. Metla Detail Modal -->
     <div id="metlaDetailModal" class="metla-detail-modal">
@@ -233,8 +287,11 @@
                             <option value="bruteforce">Bruteforce</option>
                             <option value="full">Full</option>
                         </select>
-                        <button class="metla-detail-btn primary small" onclick="runMetlaAnalysis()"><i class="fas fa-play"></i> Run</button>
-                        <button class="metla-detail-btn small" onclick="saveMetlaRequest()"><i class="fas fa-save"></i> Save</button>
+                        <button class="metla-detail-btn primary small" onclick="runMetlaAnalysis()"><i class="fas fa-play"></i> 
+                            <span data-i18n="common.btn.run"> Run</span>
+                        </button>
+                        <button class="metla-detail-btn small" onclick="saveMetlaRequest()"><i class="fas fa-save"></i> 
+                            <span data-i18n="common.btn.save">Save</span></button>
                     </div>
                 </div>
             </div>
@@ -261,7 +318,7 @@
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
-                <h3><i class="fas fa-list"></i> Key features</h3>
+                <h3><i class="fas fa-list"></i><span data-i18n="tool.info.header">Key features</span></h3>
                 <span class="settings-close" onclick="closeToolModal()">&times;</span>
             </div>
             <div class="unified-layout">
@@ -300,6 +357,7 @@
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="../common/modal.js"></script>
+    <script type="text/javascript" src="../locales/i18n.js"></script>
 
     <script>
         (function() {

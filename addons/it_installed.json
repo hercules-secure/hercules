@@ -17,12 +17,12 @@
         {
           "icon": "fas fa-shield-alt",
           "iconColor": "#EF4444",
-          "name": "Scoperta vulnerabilità"
+          "name": "Scoperta delle vulnerabilità"
         },
         {
           "icon": "fas fa-chart-line",
           "iconColor": "#10B981",
-          "name": "Analisi versioni"
+          "name": "Analisi delle versioni"
         },
         {
           "icon": "fas fa-file-export",
@@ -110,10 +110,10 @@
   },
   {
     "id": "sast",
-    "name": "Supervisore",
+    "name": "Supervisor",
     "version": "1.0.0",
-    "shortDesc": "Analisi statica del codice sorgente",
-    "description": "Analisi approfondita della sicurezza del codice sorgente — trova vulnerabilità, segreti e falle di sicurezza prima che arrivino in produzione",
+    "shortDesc": "Test statico di sicurezza delle applicazioni",
+    "description": "Analisi approfondita della sicurezza del codice sorgente — individua vulnerabilità, segreti e difetti di sicurezza prima che raggiungano la produzione",
     "icon": "fas fa-code",
     "url": "/sast",
     "webhookEndpoint": "/api/sast/git",
@@ -126,22 +126,22 @@
         {
           "icon": "fas fa-shield-alt",
           "iconColor": "#3B82F6",
-          "name": "Rilevazione vulnerabilità e debolezze"
+          "name": "Rilevamento di vulnerabilità e debolezze"
         },
         {
           "icon": "fas fa-key",
           "iconColor": "#F59E0B",
-          "name": "Scoperta segreti e credenziali"
+          "name": "Scoperta di segreti e credenziali"
         },
         {
           "icon": "fas fa-code-branch",
           "iconColor": "#667eea",
-          "name": "Analisi del flusso dei dati"
+          "name": "Analisi del flusso di dati"
         },
         {
           "icon": "fas fa-crosshairs",
           "iconColor": "#EC4899",
-          "name": "Analisi dei dati contaminati (Taint)"
+          "name": "Analisi del taint"
         }
       ],
       "languages": [
@@ -227,24 +227,24 @@
     "name": "Baba Yaga",
     "version": "1.0.0",
     "shortDesc": "Test dinamici e fuzzing",
-    "description": "Potente motore di fuzzing dinamico per applicazioni, servizi web e API — trova crash, casi limite e falle di sicurezza",
+    "description": "Potente motore di fuzzing dinamico per applicazioni, servizi web e API — individua crash, casi limite e difetti di sicurezza",
     "icon": "fas fa-radiation",
     "url": "/fuzz",
     "router": "./addons/fuzz/router.js",
     "ui": "./ui/fuzz/fuzz.html",
     "order": 3,
-    "free": false,
+    "free": true,
     "features": {
       "key": [
         {
           "icon": "fas fa-chart-line",
           "iconColor": "#10B981",
-          "name": "Analisi sicurezza API"
+          "name": "Analisi di sicurezza delle API"
         },
         {
           "icon": "fas fa-plug",
           "iconColor": "#3B82F6",
-          "name": "Generazione automatica di test"
+          "name": "Generazione automatizzata dei test"
         }
       ],
       "protocols": [
@@ -333,17 +333,25 @@
           "icon": "fas fa-house",
           "iconColor": "black",
           "name": "Domovoy",
-          "badge": "bianco",
+          "badge": "FUZZ",
           "badgeColor": "#d4edda",
           "badgeTextColor": "#155724"
         },
         {
           "icon": "fas fa-radiation",
           "iconColor": "black",
-          "name": "Scopa",
-          "badge": "nero",
+          "name": "Broom",
+          "badge": "DAST",
           "badgeColor": "#f8d7da",
           "badgeTextColor": "#721c24"
+        },
+        {
+          "icon": "fas fa-binoculars",
+          "iconColor": "black",
+          "name": "Scout",
+          "badge": "TECH",
+          "badgeColor": "#8B5CF6",
+          "badgeTextColor":"white"
         }
       ],
       "reports": [
@@ -365,30 +373,30 @@
     "name": "Blender",
     "version": "1.0.0",
     "shortDesc": "Analisi di sicurezza unificata",
-    "description": "Analizzatore di sicurezza all-in-one che combina SCA e SAST — trova vulnerabilità nel codice e nelle dipendenze da un'unica interfaccia",
+    "description": "Analizzatore di sicurezza tutto-in-uno che combina SCA e SAST — individua vulnerabilità nel codice e nelle dipendenze da un'unica interfaccia",
     "icon": "fas fa-flask",
     "url": "/blender",
     "webhookEndpoint": "/api/blender/analyze/git",
     "router": "./addons/blender/router.js",
     "ui": "./ui/blender/blender.html",
     "order": 4,
-    "free": false,
+    "free": true,
     "features": {
       "sca": [
         {
           "icon": "fas fa-chart-pie",
           "iconColor": "#F59E0B",
-          "name": "Statistiche dipendenze"
+          "name": "Statistiche delle dipendenze"
         },
         {
           "icon": "fas fa-gavel",
           "iconColor": "#8B5CF6",
-          "name": "Conformità licenze"
+          "name": "Conformità delle licenze"
         },
         {
           "icon": "fas fa-code-branch",
           "iconColor": "#667eea",
-          "name": "Analisi raggiungibilità"
+          "name": "Analisi di raggiungibilità"
         },
         {
           "icon": "fas fa-plug",
@@ -398,39 +406,39 @@
         {
           "icon": "fas fa-chart-line",
           "iconColor": "#10B981",
-          "name": "Analisi versioni"
+          "name": "Analisi delle versioni"
         }
       ],
       "sast": [
         {
           "icon": "fas fa-shield-alt",
           "iconColor": "#EF4444",
-          "name": "Rilevazione vulnerabilità e debolezze"
+          "name": "Rilevamento di vulnerabilità e debolezze"
         },
         {
           "icon": "fas fa-code-branch",
           "iconColor": "#667eea",
-          "name": "Analisi raggiungibilità"
+          "name": "Analisi di raggiungibilità"
         },
         {
           "icon": "fas fa-diagram-project",
           "iconColor": "#DC2626",
-          "name": "Analisi flusso dati"
+          "name": "Analisi del flusso di dati"
         },
         {
           "icon": "fas fa-chart-line",
           "iconColor": "#06B6D4",
-          "name": "Analisi call graph"
+          "name": "Analisi del grafo delle chiamate"
         },
         {
           "icon": "fas fa-crosshairs",
           "iconColor": "#EC4899",
-          "name": "Analisi Taint (dati contaminati)"
+          "name": "Analisi del taint"
         },
         {
           "icon": "fas fa-key",
           "iconColor": "#F59E0B",
-          "name": "Scoperta segreti"
+          "name": "Scoperta dei segreti"
         }
       ],
       "languages": [
@@ -577,79 +585,79 @@
     "id": "palette",
     "name": "Palette",
     "version": "1.0.0",
-    "shortDesc": "Modellazione e visualizzazione delle minacce",
-    "description": "Modellazione delle minacce, diagrammi di flusso dati (DFD) e visualizzazione dell'architettura di sicurezza con STRIDE, CIA e analisi dei rischi",
+    "shortDesc": "Modellazione delle minacce e visualizzazione",
+    "description": "Modellazione delle minacce, diagrammi di flusso dei dati (DFD) e visualizzazione dell'architettura di sicurezza con STRIDE, CIA e analisi dei rischi",
     "icon": "fas fa-solid fa-palette",
     "url": "/palette",
     "router": "./addons/palette/router.js",
     "ui": "./ui/palette/palette.html",
     "order": 7,
-    "free": false,
+    "free": true,
     "features": {
       "key": [
         {
           "icon": "fas fa-vector-square",
           "iconColor": "#8B5CF6",
-          "name": "Costruzione diagrammi DFD"
+          "name": "Costruttore di diagrammi DFD"
         },
         {
           "icon": "fas fa-shield-virus",
           "iconColor": "#EF4444",
-          "name": "Modellazione minacce (STRIDE)"
+          "name": "Modellazione delle minacce (STRIDE)"
         },
         {
           "icon": "fas fa-arrows-alt-h",
           "iconColor": "#3B82F6",
-          "name": "Mappatura flussi dati"
+          "name": "Mappatura del flusso di dati"
         },
         {
           "icon": "fas fa-layer-group",
           "iconColor": "#10B981",
-          "name": "Livellamento e raggruppamento"
+          "name": "Livelli e raggruppamenti"
         }
       ],
       "elements": [
         {
           "icon": "fas fa-database",
           "iconColor": "#3B82F6",
-          "name": "Asset (Server, Database)"
+          "name": "Asset (server, database)"
         },
         {
           "icon": "fas fa-skull",
           "iconColor": "#EF4444",
-          "name": "Minacce (Attacchi, Vulnerabilità)"
+          "name": "Minacce (attacchi, vulnerabilità)"
         },
         {
           "icon": "fas fa-file-alt",
           "iconColor": "#F59E0B",
-          "name": "Dati (Informazioni, File)"
+          "name": "Dati (informazioni, file)"
         },
         {
           "icon": "fas fa-user",
           "iconColor": "#6366F1",
-          "name": "Attori (Utenti, Attaccanti)"
+          "name": "Attori (utenti, aggressori)"
         },
         {
           "icon": "fas fa-network-wired",
           "iconColor": "#EC4899",
-          "name": "Rete (Segmenti, Canali)"
+          "name": "Rete (segmenti, canali)"
         }
       ],
       "analysis": [
         {
           "icon": "fas fa-arrow-trend-up",
           "iconColor": "#8B5CF6",
-          "name": "Analisi superficie d'attacco"
+          "name": "Analisi della superficie di attacco"
         },
         {
           "icon": "fas fa-triangle-exclamation",
           "iconColor": "#EF4444",
-          "name": "Valutazione rischi CIA"
+          "name": "Valutazione del rischio CIA"
         },
         {
           "icon": "fas fa-chart-pie",
           "iconColor": "#10B981",
-          "name": "Statistiche minacce"
+          "name": "Statistiche delle minacce"
         },
         {
           "icon": "fas fa-download",
@@ -709,5 +717,196 @@
         }
       ]
     }
-  }
+  },
+  {
+    "id": "cmdb",
+    "name": "CMDB",
+    "version": "1.0.0",
+    "shortDesc": "Inventario dell'infrastruttura",
+    "description": "Database di gestione della configurazione — un'unica fonte di verità per server, database, apparati di rete, applicazioni e proprietari in tutta l'infrastruttura",
+    "icon": "fas fa-cubes",
+    "url": "/cmdb",
+    "router": "./addons/cmdb/router.js",
+    "ui": "./ui/cmdb.html",
+    "order": 8,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-server",         "iconColor": "#3B82F6", "name": "Registro degli asset" },
+            { "icon": "fas fa-user-tie",       "iconColor": "#10B981", "name": "Tracciamento di proprietari e custodi" },
+            { "icon": "fas fa-diagram-project", "iconColor": "#8B5CF6", "name": "Mappatura delle relazioni" },
+            { "icon": "fas fa-clock-rotate-left", "iconColor": "#F59E0B", "name": "Cronologia delle modifiche" }
+        ],
+        "assetTypes": [
+            { "icon": "fas fa-server",     "iconColor": "#3B82F6", "name": "Server" },
+            { "icon": "fas fa-database",   "iconColor": "#10B981", "name": "Database" },
+            { "icon": "fas fa-network-wired", "iconColor": "#8B5CF6", "name": "Rete" },
+            { "icon": "fas fa-hard-drive", "iconColor": "#F59E0B", "name": "Storage" },
+            { "icon": "fas fa-window-restore", "iconColor": "#EC4899", "name": "Applicazioni" },
+            { "icon": "fas fa-cube",       "iconColor": "#6B7280", "name": "Altro" }
+        ],
+        "attributes": [
+            { "icon": "fas fa-tag",        "iconColor": "#22d3ee", "name": "Team e tipo" },
+            { "icon": "fas fa-circle-check", "iconColor": "#10B981", "name": "Stato (attivo / manutenzione)" },
+            { "icon": "fas fa-code-branch", "iconColor": "#8B5CF6", "name": "Repository Git" },
+            { "icon": "fas fa-book",       "iconColor": "#F59E0B", "name": "Link alla documentazione" },
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "Report di sicurezza" }
+        ],
+        "sources": [
+            { "icon": "fas fa-plus",       "iconColor": "#22d3ee", "name": "Inserimento manuale" },
+            { "icon": "fas fa-file-import", "iconColor": "#10B981", "name": "Importa da JSON/YAML" },
+            { "icon": "fas fa-clone",      "iconColor": "#8B5CF6", "name": "Clona asset esistente" }
+        ],
+        "reports": [
+            { "icon": "fab fa-html5", "iconColor": "#E44D26", "name": "HTML" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "notes",
+    "name": "Note",
+    "version": "1.0.0",
+    "shortDesc": "Base di conoscenza ingegneristica",
+    "description": "Blocco note personale e di team per ingegneri — raccogli runbook, snippet, checklist e attività con stati, priorità e scadenze",
+    "icon": "fas fa-note-sticky",
+    "url": "/notes",
+    "router": "./addons/notes/router.js",
+    "ui": "./ui/notes/notes.html",
+    "order": 9,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-note-sticky",  "iconColor": "#22d3ee", "name": "Note Markdown" },
+            { "icon": "fas fa-list-check",   "iconColor": "#10B981", "name": "Gestione delle attività" },
+            { "icon": "fas fa-magnifying-glass", "iconColor": "#8B5CF6", "name": "Ricerca full-text" },
+            { "icon": "fas fa-tags",         "iconColor": "#F59E0B", "name": "Tag e filtri" }
+        ],
+        "noteTypes": [
+            { "icon": "fas fa-note-sticky", "iconColor": "#22d3ee", "name": "Nota" },
+            { "icon": "fas fa-list-check",  "iconColor": "#10B981", "name": "Attività" }
+        ],
+        "taskFields": [
+            { "icon": "fas fa-circle-half-stroke", "iconColor": "#3B82F6", "name": "Stato (da fare / in corso / completata)" },
+            { "icon": "fas fa-flag",        "iconColor": "#EF4444", "name": "Priorità (bassa / media / alta / critica)" },
+            { "icon": "fas fa-user",        "iconColor": "#8B5CF6", "name": "Assegnatario" },
+            { "icon": "fas fa-calendar-day", "iconColor": "#F59E0B", "name": "Data di scadenza" }
+        ],
+        "views": [
+            { "icon": "fas fa-layer-group", "iconColor": "#22d3ee", "name": "Tutto" },
+            { "icon": "fas fa-list-check",  "iconColor": "#10B981", "name": "Attività" },
+            { "icon": "fas fa-note-sticky", "iconColor": "#8B5CF6", "name": "Note" }
+        ],
+        "reports": [
+            { "icon": "fab fa-markdown", "iconColor": "#000000", "name": "Markdown" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+  {
+    "id": "collaboration",
+    "name": "Collaborazione",
+    "version": "1.0.0",
+    "shortDesc": "Hub di collaborazione del team",
+    "description": "Messaggistica interna per il team — canali, chat dirette, thread e contesto condiviso in tutti i moduli di Hercules",
+    "icon": "fas fa-comments",
+    "url": "/collaboration",
+    "router": "./addons/collaboration/router.js",
+    "ui": "./ui/collaboration/collaboration.html",
+    "order": 10,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-comments",     "iconColor": "#22d3ee", "name": "Messaggistica in tempo reale" },
+            { "icon": "fas fa-hashtag",      "iconColor": "#8B5CF6", "name": "Canali" },
+            { "icon": "fas fa-comment-dots", "iconColor": "#10B981", "name": "Messaggi diretti" },
+            { "icon": "fas fa-reply-all",    "iconColor": "#F59E0B", "name": "Thread" }
+        ],
+        "chatTypes": [
+            { "icon": "fas fa-hashtag",      "iconColor": "#8B5CF6", "name": "Canale" },
+            { "icon": "fas fa-user",         "iconColor": "#22d3ee", "name": "Messaggio diretto" },
+            { "icon": "fas fa-users",        "iconColor": "#10B981", "name": "Chat di gruppo" }
+        ],
+        "messageFeatures": [
+            { "icon": "fab fa-markdown",     "iconColor": "#000000", "name": "Markdown" },
+            { "icon": "fas fa-code",         "iconColor": "#F7DF1E", "name": "Blocchi di codice" },
+            { "icon": "fas fa-paperclip",    "iconColor": "#3B82F6", "name": "Allegati" },
+            { "icon": "fas fa-at",           "iconColor": "#EC4899", "name": "Menzioni" },
+            { "icon": "fas fa-face-smile",   "iconColor": "#F59E0B", "name": "Reazioni" }
+        ],
+        "integrations": [
+            { "icon": "fas fa-bell",         "iconColor": "#22d3ee", "name": "Notifiche di scansione" },
+            { "icon": "fas fa-link",         "iconColor": "#8B5CF6", "name": "Condivisione dei risultati" },
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "Sale per incidenti" }
+        ],
+        "reports": [
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+  {
+    "id": "donor",
+    "name": "Data Donors",
+    "version": "1.0.0",
+    "shortDesc": "Registro delle sorgenti dati",
+    "description": "Registro delle sorgenti e dei fornitori di dati — tieni traccia di chi fornisce cosa, in quale formato, con quale frequenza e dove finisce",
+    "icon": "fas fa-database",
+    "url": "/donor",
+    "router": "./addons/donor/router.js",
+    "ui": "./ui/donor/donor.html",
+    "order": 11,
+    "enabled": true,
+    "free": true,
+    "features": {
+        "key": [
+            { "icon": "fas fa-database",      "iconColor": "#22d3ee", "name": "Registro delle sorgenti" },
+            { "icon": "fas fa-user-tie",      "iconColor": "#10B981", "name": "Tracciamento dei fornitori" },
+            { "icon": "fas fa-arrows-turn-right", "iconColor": "#8B5CF6", "name": "Mappatura delle destinazioni" },
+            { "icon": "fas fa-clock",         "iconColor": "#F59E0B", "name": "Frequenza e pianificazione" }
+        ],
+        "sourceTypes": [
+            { "icon": "fas fa-plug",          "iconColor": "#3B82F6", "name": "API" },
+            { "icon": "fas fa-database",      "iconColor": "#10B981", "name": "Database" },
+            { "icon": "fas fa-file-lines",    "iconColor": "#F59E0B", "name": "Log" },
+            { "icon": "fas fa-file-export",   "iconColor": "#8B5CF6", "name": "Esportazione file" }
+        ],
+        "formats": [
+            { "icon": "far fa-file-code",     "iconColor": "#F7DF1E", "name": "JSON" },
+            { "icon": "fas fa-table",         "iconColor": "#10B981", "name": "CSV" },
+            { "icon": "fas fa-file-csv",      "iconColor": "#22d3ee", "name": "Parquet" },
+            { "icon": "fab fa-xml",           "iconColor": "#F59E0B", "name": "XML" }
+        ],
+        "destinations": [
+            { "icon": "fas fa-shield-halved", "iconColor": "#EF4444", "name": "SIEM" },
+            { "icon": "fas fa-warehouse",     "iconColor": "#3B82F6", "name": "Data Warehouse" },
+            { "icon": "fas fa-cloud",         "iconColor": "#8B5CF6", "name": "Object Storage (S3)" },
+            { "icon": "fas fa-chart-line",    "iconColor": "#10B981", "name": "Piattaforma di analytics" }
+        ],
+        "sources": [
+            { "icon": "fas fa-plus",          "iconColor": "#22d3ee", "name": "Inserimento manuale" },
+            { "icon": "fas fa-file-import",   "iconColor": "#10B981", "name": "Importa da JSON/YAML" }
+        ],
+        "reports": [
+            { "icon": "fab fa-html5", "iconColor": "#E44D26", "name": "HTML" },
+            { "icon": "far fa-file-code", "iconColor": "#F7DF1E", "name": "JSON" }
+        ]
+    }
+},
+{
+    "id": "home",
+    "name": "Home",
+    "version": "1.0.0",
+    "shortDesc": "Dashboard, attività e analisi",
+    "description": "Dashboard personale — attività recenti in tutti i moduli di Hercules, contatori in tempo reale e statistiche con trend e report",
+    "icon": "fas fa-home",
+    "url": "/home",
+    "router": "./addons/home/router.js",
+    "ui": "./ui/home/home.html",
+    "order": 0,
+    "enabled": true,
+    "free": true
+}
 ]
