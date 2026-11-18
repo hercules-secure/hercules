@@ -91,10 +91,9 @@ function generateCriticalAlertHTML(reportData) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SECURITY ALERT: Критические уязвимости найдены</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Alef:wght@400;700&display=swap');
         
         body {
-            font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            font-family: monospace;
             line-height: 1.6;
             color: #1a1a2e;
             background-color: #f5f5f5;
@@ -398,10 +397,9 @@ function generateFullReportHTML(reportData) {
 //     <meta charset="UTF-8">
 //     <title>Отчет безопасности Hercules</title>
 //     <style>
-//         @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Alef:wght@400;700&display=swap');
         
 //         body {
-//             font-family: 'Ubuntu', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+//             font-family: monospace;
 //             line-height: 1.6;
 //             color: #333;
 //             margin: 0;
