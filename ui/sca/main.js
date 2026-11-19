@@ -45,21 +45,33 @@ function setActiveTool(element, toolName) {
 }
 
 function updateTaskStatus(taskId, status) {
-    var statusMap = {
-        'pending': 'Pending',
-        'in-progress': 'In progress',
-        'completed': 'Completed'
+    
+    const statusKeys = {
+        'pending': 'task.pending',
+        'in-progress': 'task.inProgress',
+        'completed': 'task.completed'
     };
     
     var taskElement = findTaskElement(taskId);
     if (taskElement) {
         var statusElement = taskElement.querySelector('.task-status');
         if (statusElement) {
-            statusElement.textContent = statusMap[status] || status;
+            var key = statusKeys[status];
+            
+            if (key) {
+                statusElement.setAttribute('data-i18n', key);
+                
+                statusElement.textContent = typeof t === 'function' ? t(key) : status;
+            } else {
+                statusElement.removeAttribute('data-i18n');
+                statusElement.textContent = status;
+            }
+            
             statusElement.className = 'task-status ' + status;
         }
     }
 }
+
 
 function animateProgress(taskId, targetPercent, duration, callback) {
     var taskElement = findTaskElement(taskId);
@@ -997,186 +1009,8 @@ var SCAPopupReporter = function(reportData) {
 };
 
 SCAPopupReporter.prototype.showPopup = function() {
-    var overlay = document.createElement('div');
-    overlay.className = 'sca-popup-overlay';
-    var popup = document.createElement('div');
-    popup.className = 'sca-popup';
-
-    var styles = document.createElement('style');
-    styles.textContent = `
-        .sca-popup-overlay{
-            position:fixed;inset:0;background:rgba(15,23,42,0.65);
-            display:flex;justify-content:center;align-items:center;
-            z-index:9999;font-family:'Fira Sans',sans-serif;padding:16px;
-            backdrop-filter:blur(2px);
-        }
-        .sca-popup{
-            background:#fff;width:96vw;max-width:1600px;max-height:92vh;
-            border-radius:12px;border:1px solid #e3e8f0;
-            box-shadow:0 24px 60px rgba(15,23,42,0.35);
-            display:flex;flex-direction:column;overflow:hidden;
-            animation:sca-slideIn 0.25s ease-out;
-        }
-        @keyframes sca-slideIn{from{transform:translateY(-16px);opacity:0}to{transform:translateY(0);opacity:1}}
-
-        .sca-popup-header{
-            padding:18px 24px;background:#fff;color:#0f172a;
-            display:flex;justify-content:space-between;align-items:center;
-            border-bottom:1px solid #e3e8f0;
-        }
-        .sca-popup-title{
-            font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;
-            letter-spacing:-0.01em;
-        }
-        .sca-popup-title i{color:#0891b2;font-size:18px;}
-        .sca-popup-title .sub{color:#64748b;font-weight:400;font-size:13px;margin-left:8px;}
-        .sca-popup-close{
-            background:none;border:none;color:#64748b;font-size:22px;cursor:pointer;
-            width:34px;height:34px;display:flex;align-items:center;justify-content:center;
-            border-radius:6px;transition:all 0.15s;
-        }
-        .sca-popup-close:hover{background:#f1f5f9;color:#0f172a;}
-
-        .sca-popup-content{
-            padding:20px 24px;overflow-y:auto;flex:1;background:#f4f6fb;
-        }
-
-        .sca-stats-grid{
-            display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:18px;
-        }
-        .sca-stat-card{
-            background:#fff;padding:16px;border-radius:10px;
-            border:1px solid #e3e8f0;text-align:center;transition:border-color 0.15s;
-        }
-        .sca-stat-card:hover{border-color:#0891b2;}
-        .sca-stat-number{
-            font-size:28px;font-weight:700;color:#0f172a;
-            font-family:'Fira Code',monospace;line-height:1;
-        }
-        .sca-stat-number.c-total{color:#0891b2;}
-        .sca-stat-number.c-vuln{color:#fd7e14;}
-        .sca-stat-number.c-critical{color:#dc3545;}
-        .sca-stat-number.c-high{color:#fd7e14;}
-        .sca-stat-number.c-moderate{color:#d97706;}
-        .sca-stat-number.c-low{color:#16a34a;}
-        .sca-stat-label{font-size:12px;color:#64748b;margin-top:8px;}
-
-        .sca-toolbar{
-            display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:center;
-            background:#fff;padding:12px;border:1px solid #e3e8f0;border-radius:10px;
-        }
-        .sca-search-input{
-            flex:1;min-width:220px;padding:9px 14px;border:1px solid #e3e8f0;border-radius:6px;
-            font-size:13px;font-family:'Fira Sans',sans-serif;background:#fff;color:#0f172a;
-            transition:border-color 0.15s;
-        }
-        .sca-search-input:focus{outline:none;border-color:#0891b2;}
-        .sca-filter-select{
-            padding:9px 14px;border:1px solid #e3e8f0;border-radius:6px;background:#fff;
-            font-size:13px;font-family:'Fira Sans',sans-serif;cursor:pointer;color:#0f172a;
-        }
-        .sca-filter-select:focus{outline:none;border-color:#0891b2;}
-        .sca-block-count{
-            font-size:12px;color:#64748b;font-family:'Fira Code',monospace;
-            margin-left:auto;padding:6px 12px;background:#f8fafc;border-radius:6px;
-        }
-
-        .sca-component-block{
-            background:#fff;border:1px solid #e3e8f0;border-radius:10px;
-            margin-bottom:10px;overflow:hidden;transition:border-color 0.15s;
-        }
-        .sca-component-block:hover{border-color:#cbd5e1;}
-
-        .sca-component-header{
-            padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;
-            align-items:center;user-select:none;transition:background 0.15s;
-            flex-wrap:wrap;gap:8px;background:#fff;
-        }
-        .sca-component-header:hover{background:#f8fafc;}
-        .sca-component-name{
-            font-weight:600;font-size:14px;display:flex;align-items:center;gap:10px;
-            flex-wrap:wrap;color:#0f172a;
-        }
-        .sca-component-name strong{font-weight:700;}
-        .sca-component-version{
-            font-weight:400;color:#64748b;font-size:12px;
-            font-family:'Fira Code',monospace;padding:2px 8px;background:#f1f5f9;border-radius:4px;
-        }
-        .sca-component-badge{
-            font-size:11px;padding:3px 10px;border-radius:4px;font-weight:600;
-            font-family:'Fira Code',monospace;text-transform:uppercase;letter-spacing:0.04em;
-            display:inline-flex;align-items:center;gap:6px;
-        }
-        .sca-component-badge.ok{background:#dcfce7;color:#15803d;}
-        .sca-component-badge.issues{background:#fef3c7;color:#a16207;}
-        .sca-component-badge.critical{background:#fee2e2;color:#b91c1c;}
-        .sca-component-stats{
-            font-size:12px;color:#64748b;display:flex;gap:12px;align-items:center;
-            font-family:'Fira Code',monospace;
-        }
-        .sca-component-arrow{
-            font-size:14px;color:#94a3b8;transition:transform 0.2s;margin-left:4px;
-        }
-        .sca-component-arrow.open{transform:rotate(180deg);}
-
-        .sca-component-body{
-            display:none;padding:0 18px 18px;border-top:1px solid #f1f5f9;background:#fff;
-        }
-        .sca-component-body.open{display:block;}
-
-        .sca-vuln-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px;}
-        .sca-vuln-table th{
-            background:#f8fafc;padding:10px 12px;text-align:left;font-weight:700;
-            border-bottom:1px solid #e3e8f0;font-size:10px;color:#64748b;
-            text-transform:uppercase;letter-spacing:0.05em;
-        }
-        .sca-vuln-table td{
-            padding:10px 12px;border-bottom:1px solid #f1f5f9;vertical-align:top;font-size:12px;
-        }
-        .sca-vuln-table tr:last-child td{border-bottom:none;}
-        .sca-vuln-table tr:hover{background:#f8fafc;}
-
-        .sca-severity-badge{
-            display:inline-block;padding:2px 8px;border-radius:4px;
-            font-size:10px;font-weight:700;font-family:'Fira Code',monospace;
-            text-transform:uppercase;letter-spacing:0.04em;
-        }
-        .sca-severity-CRITICAL{background:#fee2e2;color:#b91c1c;}
-        .sca-severity-HIGH{background:#ffedd5;color:#c2410c;}
-        .sca-severity-MODERATE{background:#fef3c7;color:#a16207;}
-        .sca-severity-LOW{background:#dcfce7;color:#15803d;}
-        .sca-severity-UNKNOWN{background:#f1f5f9;color:#64748b;}
-
-        .sca-cve-link{
-            color:#0891b2;text-decoration:none;font-family:'Fira Code',monospace;
-            font-weight:600;font-size:12px;
-        }
-        .sca-cve-link:hover{text-decoration:underline;}
-
-        .sca-empty-state{text-align:center;padding:40px;color:#94a3b8;font-size:13px;}
-
-        .sca-remediation{font-size:11px;color:#64748b;line-height:1.5;}
-        .sca-vuln-description{font-size:12px;color:#475569;max-width:520px;line-height:1.5;}
-        .sca-safe-text{
-            color:#15803d;font-weight:500;font-size:13px;
-            display:flex;align-items:center;justify-content:center;gap:6px;padding:14px;
-        }
-
-        .sca-popup-footer{
-            padding:14px 24px;background:#f8fafc;border-top:1px solid #e3e8f0;
-            display:flex;justify-content:flex-end;gap:10px;
-        }
-        .sca-btn{
-            padding:9px 18px;border:none;border-radius:6px;font-size:13px;font-weight:600;
-            font-family:'Fira Sans',sans-serif;cursor:pointer;transition:all 0.15s;
-            display:inline-flex;align-items:center;gap:8px;
-        }
-        .sca-btn i{font-size:13px;}
-        .sca-btn-html{background:#0891b2;color:#fff;}
-        .sca-btn-html:hover{background:#0e7490;}
-        .sca-btn-json{background:#10b981;color:#fff;}
-        .sca-btn-json:hover{background:#0e9f6e;}
-    `;
+    var overlay = document.getElementById('scaOverlay');
+    if (!overlay) return;
 
     var stats = this.extractStats();
     var groupedComponents = this.groupComponents();
@@ -1185,56 +1019,100 @@ SCAPopupReporter.prototype.showPopup = function() {
         totalVulns += groupedComponents[i].vulns.length;
     }
 
-    popup.innerHTML = `
-        <div class="sca-popup-header">
-            <div class="sca-popup-title">
-                <i class="fas fa-cubes"></i>
-                SCA Analysis Results
-                <span class="sub">${groupedComponents.length} components · ${totalVulns} vulnerabilities</span>
-            </div>
-            <button class="sca-popup-close" id="closePopup" aria-label="Close"><i class="fas fa-xmark"></i></button>
-        </div>
-        <div class="sca-popup-content">
-            <div class="sca-stats-grid">
-                <div class="sca-stat-card"><div class="sca-stat-number c-total">${stats.components}</div><div class="sca-stat-label">Components</div></div>
-                <div class="sca-stat-card"><div class="sca-stat-number c-vuln">${totalVulns}</div><div class="sca-stat-label">Vulnerabilities</div></div>
-                <div class="sca-stat-card"><div class="sca-stat-number c-critical">${stats.critical}</div><div class="sca-stat-label">Critical</div></div>
-                <div class="sca-stat-card"><div class="sca-stat-number c-high">${stats.high}</div><div class="sca-stat-label">High</div></div>
-                <div class="sca-stat-card"><div class="sca-stat-number c-moderate">${stats.moderate}</div><div class="sca-stat-label">Moderate</div></div>
-                <div class="sca-stat-card"><div class="sca-stat-number c-low">${stats.low}</div><div class="sca-stat-label">Low</div></div>
-            </div>
+    document.getElementById('headerCompCount').textContent = groupedComponents.length;
+    document.getElementById('headerVulnCount').textContent = totalVulns;
+    document.getElementById('scaBlockCount').textContent = groupedComponents.length;
 
-            <div class="sca-toolbar">
-                <input type="text" class="sca-search-input" id="scaSearch" placeholder="Search component...">
-                <select class="sca-filter-select" id="scaFilter">
-                    <option value="all">All components</option>
-                    <option value="has-issues">With vulnerabilities</option>
-                    <option value="no-issues">Without vulnerabilities</option>
-                    <option value="critical">Critical only</option>
-                    <option value="high">High only</option>
-                </select>
-                <span class="sca-block-count">${groupedComponents.length} components</span>
-            </div>
+    document.getElementById('statComponents').textContent = stats.components;
+    document.getElementById('statVulns').textContent = totalVulns;
+    document.getElementById('statCritical').textContent = stats.critical;
+    document.getElementById('statHigh').textContent = stats.high;
+    document.getElementById('statModerate').textContent = stats.moderate;
+    document.getElementById('statLow').textContent = stats.low;
 
-            <div id="scaComponents">
-                ${this.renderComponentBlocks(groupedComponents)}
-            </div>
-        </div>
-        <div class="sca-popup-footer">
-            <button id="downloadHtmlBtn" class="sca-btn sca-btn-html"><i class="fas fa-file-arrow-down"></i> Download HTML</button>
-            <button id="downloadJsonBtn" class="sca-btn sca-btn-json"><i class="fas fa-file-code"></i> Download JSON</button>
-            
-        </div>
-    `;
+    document.getElementById('scaSearch').value = '';
+    document.getElementById('scaFilter').value = 'all';
+    document.getElementById('scaComponents').innerHTML = this.renderComponentBlocks(groupedComponents);
 
-    document.head.appendChild(styles);
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
+    // Показываем оверлей поверх всей страницы
+    overlay.style.display = 'flex';
 
-    this.addEventListeners(overlay);
     this.initComponentToggles(overlay);
-    this.initSearchFilter(overlay);
+
+    if (!overlay.dataset.initialized) {
+        this.addEventListeners(overlay);
+        this.initSearchFilter(overlay);
+        overlay.dataset.initialized = 'true';
+    }
 };
+
+
+// SCAPopupReporter.prototype.showPopup = function() {
+//     var overlay = document.createElement('div');
+//     overlay.className = 'sca-popup-overlay';
+//     var popup = document.createElement('div');
+//     popup.className = 'sca-popup';
+
+//     var styles = document.createElement('style');
+
+
+//     var stats = this.extractStats();
+//     var groupedComponents = this.groupComponents();
+//     var totalVulns = 0;
+//     for (var i = 0; i < groupedComponents.length; i++) {
+//         totalVulns += groupedComponents[i].vulns.length;
+//     }
+
+//     popup.innerHTML = `
+//         <div class="sca-popup-header">
+//             <div class="sca-popup-title">
+//                 <i class="fas fa-cubes"></i>
+//                 SCA Analysis Results
+//                 <span class="sub">${groupedComponents.length} components · ${totalVulns} vulnerabilities</span>
+//             </div>
+//             <button class="sca-popup-close" id="closePopup" aria-label="Close"><i class="fas fa-xmark"></i></button>
+//         </div>
+//         <div class="sca-popup-content">
+//             <div class="sca-stats-grid">
+//                 <div class="sca-stat-card"><div class="sca-stat-number c-total">${stats.components}</div><div class="sca-stat-label">Components</div></div>
+//                 <div class="sca-stat-card"><div class="sca-stat-number c-vuln">${totalVulns}</div><div class="sca-stat-label">Vulnerabilities</div></div>
+//                 <div class="sca-stat-card"><div class="sca-stat-number c-critical">${stats.critical}</div><div class="sca-stat-label">Critical</div></div>
+//                 <div class="sca-stat-card"><div class="sca-stat-number c-high">${stats.high}</div><div class="sca-stat-label">High</div></div>
+//                 <div class="sca-stat-card"><div class="sca-stat-number c-moderate">${stats.moderate}</div><div class="sca-stat-label">Moderate</div></div>
+//                 <div class="sca-stat-card"><div class="sca-stat-number c-low">${stats.low}</div><div class="sca-stat-label">Low</div></div>
+//             </div>
+
+//             <div class="sca-toolbar">
+//                 <input type="text" class="sca-search-input" id="scaSearch" placeholder="Search component...">
+//                 <select class="sca-filter-select" id="scaFilter">
+//                     <option value="all">All components</option>
+//                     <option value="has-issues">With vulnerabilities</option>
+//                     <option value="no-issues">Without vulnerabilities</option>
+//                     <option value="critical">Critical only</option>
+//                     <option value="high">High only</option>
+//                 </select>
+//                 <span class="sca-block-count">${groupedComponents.length} components</span>
+//             </div>
+
+//             <div id="scaComponents">
+//                 ${this.renderComponentBlocks(groupedComponents)}
+//             </div>
+//         </div>
+//         <div class="sca-popup-footer">
+//             <button id="downloadHtmlBtn" class="sca-btn sca-btn-html"><i class="fas fa-file-arrow-down"></i> Download HTML</button>
+//             <button id="downloadJsonBtn" class="sca-btn sca-btn-json"><i class="fas fa-file-code"></i> Download JSON</button>
+            
+//         </div>
+//     `;
+
+//     document.head.appendChild(styles);
+//     overlay.appendChild(popup);
+//     document.body.appendChild(overlay);
+
+//     this.addEventListeners(overlay);
+//     this.initComponentToggles(overlay);
+//     this.initSearchFilter(overlay);
+// };
 
 // ============================================================
 // COMPONENT GROUPING
@@ -1748,7 +1626,7 @@ SCAPopupReporter.prototype.generateFullHTMLReport = function() {
         .stat-card{background:#f8fafc;border:1px solid #e3e8f0;border-radius:10px;padding:18px;text-align:center;transition:border-color 0.15s;}
         .stat-card:hover{border-color:#0891b2;}
         .stat-card .label{font-size:12px;color:#64748b;margin-bottom:8px;}
-        .stat-card .value{font-size:30px;font-weight:700;font-family:'Fira Code',monospace;line-height:1;}
+        .stat-card .value{font-size:30px;font-weight:700;font-family: monospace;line-height:1;}
         .v-total{color:#0891b2}.v-vuln{color:#fd7e14}.v-critical{color:#dc3545}
         .v-high{color:#fd7e14}.v-moderate{color:#d97706}.v-low{color:#16a34a}
 
@@ -1841,9 +1719,7 @@ SCAPopupReporter.prototype.generateFullHTMLReport = function() {
 </html>`;
 };
 
-// ============================================================
-// ADD EVENT LISTENERS
-// ============================================================
+
 
 SCAPopupReporter.prototype.addEventListeners = function(overlay) {
     var self = this;
@@ -1852,7 +1728,8 @@ SCAPopupReporter.prototype.addEventListeners = function(overlay) {
     if (closePopupBtn) {
         closePopupBtn.addEventListener('click', function() {
             if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
+                 overlay.style.display = 'none';
+
             }
             if (typeof ProgressReset !== 'undefined') {
                 ProgressReset.resetAllProgress();
@@ -1863,7 +1740,8 @@ SCAPopupReporter.prototype.addEventListeners = function(overlay) {
     overlay.addEventListener('click', function(e) {
         if (e.target === overlay) {
             if (document.body.contains(overlay)) {
-                document.body.removeChild(overlay);
+               overlay.style.display = 'none';
+
             }
             if (typeof ProgressReset !== 'undefined') {
                 ProgressReset.resetAllProgress();

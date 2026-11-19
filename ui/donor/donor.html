@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="/css/fonts.css">
   <link rel="icon" type="image/x-icon" href="../../rocket.ico">
   <link rel="stylesheet" href="../common/sidebar.css">
+
   <link rel="stylesheet" href="base.css">
   <script>
     (function() {
@@ -104,13 +105,12 @@
       </div>
     </div>
   </div>
-
-  <!-- Modal -->
-  <div class="modal-overlay" id="modal">
+ <div class="modal-overlay" id="modal">
     <div class="modal">
         <div class="modal-header">
             <div class="modal-title" id="modalTitle">
-                <i class="fas fa-plus-circle"></i> Add data source
+                <i class="fas fa-plus-circle"></i>
+                <span data-i18n="donor.modal.titleAdd">Upload Data Contract</span>
             </div>
             <button class="modal-close" type="button" onclick="closeModal()">&times;</button>
         </div>
@@ -118,128 +118,30 @@
         <div class="modal-body">
             <input type="hidden" id="fId">
 
-            <!-- Identification -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="fName">Name <span class="required">*</span></label>
-                    <input type="text" id="fName" placeholder="NVD">
-                </div>
-                <div class="form-group">
-                    <label for="fProvider">Provider</label>
-                    <input type="text" id="fProvider" placeholder="NIST">
-                </div>
-            </div>
-
-            <!-- Method + Endpoint -->
-            <div class="form-row" style="display: grid; grid-template-columns: 100px 1fr; gap: 1rem;">
-                <div class="form-group">
-                    <label for="fMethod">Method</label>
-                    <select id="fMethod">
-                        <option value="GET">GET</option>
-                        <option value="POST">POST</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="fEndpoint">API endpoint <span class="required">*</span></label>
-                    <input type="text" id="fEndpoint" placeholder="https://services.nvd.nist.gov/rest/json/cves/2.0">
-                </div>
-            </div>
-
-            <!-- Body — только для POST -->
-            <div class="form-group" id="bodyBlock" style="display:none;">
-                <label for="fBody">Request body <span class="hint">(JSON)</span></label>
-                <textarea id="fBody" rows="4" placeholder='{"key": "value"}'></textarea>
-            </div>
-
-            <!-- Type / Format / Status — в одну строку -->
-            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem;">
-                <div class="form-group">
-                    <label for="fType">Source type</label>
-                    <select id="fType">
-                        <option value="api">API</option>
-                        <option value="database">Database</option>
-                        <option value="log">Log feed</option>
-                        <option value="file_export">File export</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="fFormat">Response format</label>
-                    <select id="fFormat">
-                        <option value="json">JSON</option>
-                        <option value="csv">CSV</option>
-                        <option value="parquet">Parquet</option>
-                        <option value="xml">XML</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="fStatus">Status</label>
-                    <select id="fStatus">
-                        <option value="active">Active</option>
-                        <option value="paused">Paused</option>
-                        <option value="error">Error</option>
-                        <option value="deprecated">Deprecated</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Auth -->
-            <div class="form-group">
-                <label for="fAuth">Authentication</label>
-                <select id="fAuth">
-                    <option value="in">Public — no credentials required</option>
-                    <option value="out">Requires credentials</option>
-                </select>
-            </div>
-
-            <div id="authBlock" style="display:none;">
-                <div class="form-group">
-                    <label for="fAuthMethod">Auth method</label>
-                    <select id="fAuthMethod">
-                        <option value="api_key">API Key</option>
-                        <option value="login">Login + Password</option>
-                    </select>
-                </div>
-
-                <div id="authApiKey">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="fApiKeyHeader">Header name</label>
-                            <input type="text" id="fApiKeyHeader" placeholder="X-Api-Key" value="X-Api-Key">
-                        </div>
-                        <div class="form-group">
-                            <label for="fApiKey">Key</label>
-                            <input type="password" id="fApiKey" placeholder="sk-...">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-row" id="authLogin" style="display:none;">
-                    <div class="form-group">
-                        <label for="fLogin">Login</label>
-                        <input type="text" id="fLogin" autocomplete="off">
-                    </div>
-                    <div class="form-group">
-                        <label for="fPassword">Password</label>
-                        <input type="password" id="fPassword" autocomplete="new-password">
-                    </div>
-                </div>
+            <div class="upload-drop" id="contractUploadDrop">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p id="contractDropTitle" data-i18n="donor.page.select.contract">Click or drag file here</p>
+                <small id="contractDropHint" data-i18n="donor.page.select.contract.format">YAML, YML, JSON — up to 1 MB</small>
+                <input type="file" id="contractFileInput" accept=".yaml,.yml,.json" hidden>
             </div>
         </div>
 
         <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" onclick="closeModal()">Cancel</button>
-            <button class="btn btn-primary" type="button" id="saveBtn">
-                <i class="fas fa-save"></i> Save
+            <button class="btn btn-secondary" type="button" onclick="closeModal()" data-i18n="common.btn.cancel">Cancel</button>
+            <button class="btn btn-primary" type="button" id="saveBtn" disabled>
+                <i class="fas fa-save"></i>
+                <span data-i18n="common.btn.save">Save</span>
             </button>
         </div>
     </div>
 </div>
-<!-- Delete confirm modal -->
+
 <div class="modal-overlay modal-danger" id="deleteModal">
     <div class="modal">
         <div class="modal-header">
             <div class="modal-title">
-                <i class="fas fa-trash-can"></i> Delete source
+                <i class="fas fa-trash-can"></i> 
+                <span data-i18n="donor.modal.title.delete"></span>
             </div>
             <button class="modal-close" type="button" onclick="closeDeleteModal()">&times;</button>
         </div>
@@ -253,25 +155,26 @@
             </p>
         </div>
         <div class="modal-footer">
-            <button class="btn btn-secondary" type="button" onclick="closeDeleteModal()">Cancel</button>
+            <button class="btn btn-secondary" type="button" onclick="closeDeleteModal()" data-i18n="common.btn.cancel"></button>
             <button class="btn btn-primary" type="button" id="deleteConfirmBtn">
-                <i class="fas fa-trash-can"></i> Delete
+                <i class="fas fa-trash-can"></i> 
+                <span data-i18n="common.btn.delete"></span>
             </button>
         </div>
     </div>
 </div>
   <div id="toast" class="toast"></div>
+           <script type="text/javascript" src="../locales/i18n.js"></script>
       <script type="text/javascript" src="donor.js"></script>
     <script type="text/javascript" src="../common/preloader.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
-    <!-- <script type="text/javascript" src="../common/modal.js"></script> -->
-         <script type="text/javascript" src="../locales/i18n.js"></script>
  <script>
 
 loadMeta().then(load);
     loadMenu();
   </script>
+
 </body>
 </html>

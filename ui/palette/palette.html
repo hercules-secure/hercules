@@ -1453,41 +1453,42 @@
                         <div class="palette-elements-divider"></div>
                         <div class="element-library-item" draggable="true" data-type="asset">
                             <span class="lib-icon"><i class="fas fa-puzzle-piece"></i></span>
-                            Component
+                            <span data-i18n="palette.btn.component"></span>
                         </div>
                    
                         <div class="palette-elements-divider"></div>
                         <div class="element-library-item gate" draggable="true" data-type="gate-or">
                             <span class="lib-icon"><i class="fas fa-code-fork"></i></span>
-                            OR
+                            <span data-i18n="palette.btn.or"></span>
                         </div>
                         <div class="element-library-item gate" draggable="true" data-type="gate-if">
                             <span class="lib-icon"><i class="fas fa-question-circle"></i></span>
-                            IF
+                            <span data-i18n="palette.btn.if"></span>
                         </div>
                         
                         <div class="palette-elements-divider"></div>
                         <button class="source-btn" data-source="code" onclick="openCodeFileModal()">
-                            <i class="fas fa-code lib-icon"></i><span>Code</span>
+                            <i class="fas fa-code lib-icon"></i><span data-i18n="palette.btn.code">Code</span>
                         </button>
                         <button onclick="openProjectModal()" class="source-btn" data-source="project">
-                            <i class="fas fa-folder lib-icon"></i> <span>Project</span>
+                            <i class="fas fa-folder lib-icon"></i> <span data-i18n="palette.btn.project">Project</span>
                         </button>
                         <button class="source-btn" data-source="sbom" onclick="openSbomFileModal()">
-                            <i class="fas fa-file-code lib-icon"></i> <span>SBOM</span>
+                            <i class="fas fa-file-code lib-icon"></i> <span data-i18n="palette.btn.sbom">SBOM</span>
                         </button>
                         <button class="source-btn" data-source="ci" onclick="openYAMLModal()">
-                            <i class="fas fa-code-branch lib-icon"></i><span>CI/CD</span>
+                            <i class="fas fa-code-branch lib-icon"></i><span data-i18n="palette.btn.cicd">CI/CD</span>
                         </button>
                         <div class="palette-elements-divider"></div>
                         <button class="action-btn" id="exportModelBtn">
-                            <i class="fas fa-download"></i> Export
+                            <i class="fas fa-download"></i> <span data-i18n="palette.btn.export"></span>
                         </button>
                         <button class="action-btn primary" id="importModelBtn">
-                            <i class="fas fa-upload"></i> Import
+                            <i class="fas fa-upload"></i> <span data-i18n="palette.btn.import"></span>
                         </button>
                         <button class="action-btn danger" id="clearCanvasBtn">
-                            <i class="fas fa-trash"></i> Clear
+                            <i class="fas fa-trash"></i> 
+                            <span data-i18n="common.btn.clear"></span>
                         </button>
                     </div>
                 </div>
@@ -1508,8 +1509,8 @@
                         <div class="palette-canvas-grid"></div>
                         <div class="palette-empty" id="paletteEmpty">
                             <i class="fas fa-palette"></i>
-                            <h3>Start modeling</h3>
-                            <p>Drag elements from the library to the canvas</p>
+                            <h3 data-i18n="palette.canvas.title"></h3>
+                            <p data-i18n="palette.canvas.title.desc"></p>
                         </div>
                         <div id="canvasElements"></div>
                         <div id="canvasConnections"></div>
@@ -1518,51 +1519,54 @@
                 </div>
 
                 <div class="palette-tool-card">
-                    <div class="card-title">
-                        <i class="fas fa-copy"></i> Templates
-                    </div>
-                    <div class="flow-tools-list">
-                        <div class="flow-tool-item" draggable="true" data-template="web-app">
-                            <div class="tool-icon"><i class="fas fa-globe"></i></div>
-                            <div class="tool">
-                                <div class="tool-name">Web Application</div>
-                            </div>
-                        </div>
-                        <div class="flow-tool-item" draggable="true" data-template="api">
-                            <div class="tool-icon"><i class="fas fa-plug"></i></div>
-                            <div class="tool">
-                                <div class="tool-name">API Service</div>
-                            </div>
-                        </div>
-                        <div class="flow-tool-item" draggable="true" data-template="database">
-                            <div class="tool-icon"><i class="fas fa-database"></i></div>
-                            <div class="tool">
-                                <div class="tool-name">Database</div>
-                            </div>
-                        </div>
-                        <div class="flow-tool-item" draggable="true" data-template="microservices">
-                            <div class="tool-icon"><i class="fas fa-cubes"></i></div>
-                            <div class="tool">
-                                <div class="tool-name">Microservices</div>
-                            </div>
-                        </div>
-                        <div class="flow-tool-item" draggable="true" data-template="cloud">
-                            <div class="tool-icon"><i class="fas fa-cloud"></i></div>
-                            <div class="tool">
-                                <div class="tool-name">Cloud Infrastructure</div>
-                            </div>
-                        </div>
-                        <div class="flow-tool-item" draggable="true" data-template="devops">
-                            <div class="tool-icon"><i class="fas fa-code-branch"></i></div>
-                            <div class="tool">
-                                <div class="tool-name">CI/CD Pipeline</div>
-                            </div>
-                        </div>
-                        <div class="hint">
-                            <i class="fas fa-info-circle"></i> Drag to canvas to build flow
-                        </div>
-                    </div>
-                </div>
+    <div class="card-title">
+        <i class="fas fa-copy"></i>
+        <span data-i18n="palette.canvas.template.title">Templates</span>
+    </div>
+    <div class="flow-tools-list">
+        <div class="flow-tool-item" draggable="true" data-template="web-app">
+            <div class="tool-icon"><i class="fas fa-globe"></i></div>
+            <div class="tool">
+                <div class="tool-name" data-i18n="palette.canvas.template.webApp">Web Application</div>
+            </div>
+        </div>
+        <div class="flow-tool-item" draggable="true" data-template="api">
+            <div class="tool-icon"><i class="fas fa-plug"></i></div>
+            <div class="tool">
+                <div class="tool-name" data-i18n="palette.canvas.template.api">API Service</div>
+            </div>
+        </div>
+        <div class="flow-tool-item" draggable="true" data-template="database">
+            <div class="tool-icon"><i class="fas fa-database"></i></div>
+            <div class="tool">
+                <div class="tool-name" data-i18n="palette.canvas.template.database">Database</div>
+            </div>
+        </div>
+        <div class="flow-tool-item" draggable="true" data-template="microservices">
+            <div class="tool-icon"><i class="fas fa-cubes"></i></div>
+            <div class="tool">
+                <div class="tool-name" data-i18n="palette.canvas.template.microservices">Microservices</div>
+            </div>
+        </div>
+        <div class="flow-tool-item" draggable="true" data-template="cloud">
+            <div class="tool-icon"><i class="fas fa-cloud"></i></div>
+            <div class="tool">
+                <div class="tool-name" data-i18n="palette.canvas.template.cloud">Cloud Infrastructure</div>
+            </div>
+        </div>
+        <div class="flow-tool-item" draggable="true" data-template="devops">
+            <div class="tool-icon"><i class="fas fa-code-branch"></i></div>
+            <div class="tool">
+                <div class="tool-name" data-i18n="palette.canvas.template.devops">CI/CD Pipeline</div>
+            </div>
+        </div>
+        <div class="hint">
+            <i class="fas fa-info-circle"></i>
+            <span data-i18n="palette.canvas.template.hint">Drag to canvas to build flow</span>
+        </div>
+    </div>
+</div>
+
             </div>
         </div>
     </div>

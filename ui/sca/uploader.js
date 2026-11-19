@@ -67,66 +67,72 @@ class FileUploader {
     }
 
     showMenu(targetElement, position = 'bottom') {
+    this.removeMenu();
+
+    this.menu = document.createElement('div');
+    this.menu.className = 'file-uploader-menu';
+    this.menu.innerHTML = `
+        <div class="uploader-menu-item" data-type="archive">
+            <i class="fas fa-file-archive" style="color: orange"></i>
+            <div>
+                <div class="uploader-menu-title" data-i18n="common.menu.upload.archive">Upload archive</div>
+            </div>
+        </div>
+        <div class="uploader-menu-item" data-type="folder">
+            <i class="fas fa-folder-open" style="color: #8e9016; font-size: 18px"></i>
+            <div>
+                <div class="uploader-menu-title" data-i18n="common.menu.local.project">Local project</div>
+            </div>
+        </div>
+    `;
+
+    this.menu.style.cssText = `
+        position: absolute;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        padding: 8px 0;
+        min-width: 280px;
+        z-index: 10000;
+        border: 1px solid #e2e8f0;
+        font-family: 'Fira Sans', sans-serif;
+    `;
+
+    const rect = targetElement.getBoundingClientRect();
+    this.menu.style.top = rect.bottom + 8 + 'px';
+    this.menu.style.left = rect.left + 'px';
+
+    this.addMenuStyles();
+
+    this.menu.querySelector('[data-type="archive"]').addEventListener('click', () => {
+        this.selectArchive();
         this.removeMenu();
+    });
 
-        this.menu = document.createElement('div');
-        this.menu.className = 'file-uploader-menu';
-        this.menu.innerHTML = `
-            <div class="uploader-menu-item" data-type="archive">
-                <i class="fas fa-file-archive" style="color: orange"></i>
-                <div>
-                    <div class="uploader-menu-title">Upload archive</div>
-                </div>
-            </div>
-            <div class="uploader-menu-item" data-type="folder">
-                <i class="fas fa-folder-open" style="color: #8e9016; font-size: 18px"></i>
-                <div>
-                    <div class="uploader-menu-title">Local project</div>
-                </div>
-            </div>
-        `;
+    this.menu.querySelector('[data-type="folder"]').addEventListener('click', () => {
+        this.selectFolder();
+        this.removeMenu();
+    });
 
-        this.menu.style.cssText = `
-            position: absolute;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            padding: 8px 0;
-            min-width: 280px;
-            z-index: 10000;
-            border: 1px solid #e2e8f0;
-            font-family: 'Fira Sans', sans-serif;
-        `;
-
-        const rect = targetElement.getBoundingClientRect();
-        this.menu.style.top = rect.bottom + 8 + 'px';
-        this.menu.style.left = rect.left + 'px';
-
-        this.addMenuStyles();
-
-        this.menu.querySelector('[data-type="archive"]').addEventListener('click', () => {
-            this.selectArchive();
+    const closeHandler = (e) => {
+        if (this.menu && !this.menu.contains(e.target) && e.target !== targetElement) {
             this.removeMenu();
-        });
+            document.removeEventListener('click', closeHandler);
+        }
+    };
 
-        this.menu.querySelector('[data-type="folder"]').addEventListener('click', () => {
-            this.selectFolder();
-            this.removeMenu();
-        });
+    setTimeout(() => {
+        document.addEventListener('click', closeHandler);
+    }, 10);
 
-        const closeHandler = (e) => {
-            if (this.menu && !this.menu.contains(e.target) && e.target !== targetElement) {
-                this.removeMenu();
-                document.removeEventListener('click', closeHandler);
-            }
-        };
+    document.body.appendChild(this.menu);
 
-        setTimeout(() => {
-            document.addEventListener('click', closeHandler);
-        }, 10);
-
-        document.body.appendChild(this.menu);
+    // Применяем переводы ко вновь добавленному меню
+    if (typeof loadTranslations === 'function') {
+        loadTranslations(detectLang());
     }
+}
+
 
     addMenuStyles() {
         if (document.getElementById('uploader-menu-styles')) return;

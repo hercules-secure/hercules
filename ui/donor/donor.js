@@ -163,8 +163,6 @@ window.openAdd = function () {
         if (el) el.value = v;
     };
 
-    $('modalTitle').innerHTML = '<i class="fas fa-plus-circle"></i> Add source';
-
     ['fName','fProvider','fEndpoint','fBody','fDescription','fContact','fOwner',
      'fApiKey','fLogin','fPassword'].forEach(id => setVal(id, ''));
 
@@ -404,4 +402,126 @@ $('modal').addEventListener('click', (e) => { if (e.target === $('modal')) close
 // закрытие по Esc
 document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && $('modal').classList.contains('active')) closeModal();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dropZone = document.getElementById('contractUploadDrop');
+    const fileInput = document.getElementById('contractFileInput');
+    const dropTitle = document.getElementById('contractDropTitle');
+    const dropHint = document.getElementById('contractDropHint');
+    const saveBtn = document.getElementById('saveBtn');
+
+    const MAX_SIZE = 1024 * 1024; // 1 МБ
+    const ALLOWED_EXT = ['.yaml', '.yml', '.json'];
+
+    let selectedFile = null;
+
+    // 1. Клик по зоне загрузки открывает системное окно выбора файла
+    dropZone.addEventListener('click', (e) => {
+        // Защита от двойного срабатывания, если кликнули прямо по скрытому input
+        if (e.target !== fileInput) {
+            fileInput.click();
+        }
+    });
+
+    // 2. Обработка выбора файла через диалоговое окно
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            processFile(file);
+        }
+    });
+
+    // 3. Обработка перетаскивания (Drag & Drop)
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const file = e.dataTransfer?.files?.[0];
+        if (file) {
+            processFile(file);
+        }
+    });
+
+    // 4. Валидация и обновление текста в зоне загрузки
+    function processFile(file) {
+        const fileName = file.name.toLowerCase();
+        const isValidExt = ALLOWED_EXT.some(ext => fileName.endsWith(ext));
+
+        if (!isValidExt) {
+            setError('Неподдерживаемый формат файла', 'Нужен файл YAML, YML или JSON');
+            return;
+        }
+
+        if (file.size > MAX_SIZE) {
+            setError('Файл слишком большой', 'Максимальный размер — 1 МБ');
+            return;
+        }
+
+        // Всё ок — сохраняем файл и активируем кнопку Save
+        selectedFile = file;
+        dropZone.classList.remove('error');
+        dropZone.classList.add('has-file');
+        dropTitle.textContent = file.name;
+        dropHint.textContent = `${(file.size / 1024).toFixed(1)} КБ — нажмите, чтобы заменить`;
+        if (saveBtn) saveBtn.disabled = false;
+    }
+
+    function setError(title, hint) {
+        selectedFile = null;
+        fileInput.value = '';
+        dropZone.classList.remove('has-file');
+        dropZone.classList.add('error');
+        dropTitle.textContent = title;
+        dropHint.textContent = hint;
+        if (saveBtn) saveBtn.disabled = true;
+    }
+
+    // 5. Клик по кнопке "Сохранить"
+    if (saveBtn) {
+        saveBtn.addEventListener('click', async () => {
+            if (!selectedFile) return;
+
+            const formData = new FormData();
+            formData.append('contract', selectedFile);
+
+            try {
+                saveBtn.disabled = true;
+
+                // Замените URL на ваш реальный эндпоинт
+                const response = await fetch('/api/donors/contract', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Ошибка сервера: ${response.status}`);
+                }
+
+                // Закрываем модалку и сбрасываем состояние
+                resetContractUpload();
+                if (typeof closeModal === 'function') closeModal();
+            } catch (err) {
+                setError('Не удалось загрузить контракт', err.message);
+            }
+        });
+    }
+
+    // Функция сброса (можно вызывать внутри closeModal)
+    window.resetContractUpload = function () {
+        selectedFile = null;
+        fileInput.value = '';
+        dropZone.classList.remove('has-file', 'error', 'dragover');
+        dropTitle.textContent = 'Нажмите или перетащите файл контракта сюда';
+        dropHint.textContent = 'OpenAPI / Swagger или похожая схема (YAML, JSON) — до 1 МБ';
+        if (saveBtn) saveBtn.disabled = true;
+    };
 });

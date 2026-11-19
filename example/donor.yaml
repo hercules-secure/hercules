@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: API поставщика данных (Orders Data Feed)
+  version: 1.0.0
+  description: >
+    REST API для регулярной выгрузки данных о заказах в DWH и внешние системы.
+    SLA: обновление данных каждые 5 минут, доступность 99.9%.
+  contact:
+    name: Команда поставщика данных
+    email: data-provider@company.ru
+
+servers:
+  - url: https://company.ru
+    description: Production сервер
+
+security:
+  - ApiKeyAuth: []
+
+paths:
+  /orders:
+    get:
+      summary: Получить список заказов за период
+      description: Возвращает порцию записей, изменённых или созданных за указанный интервал.
+      parameters:
+        - name: updated_from
+          in: query
+          required: true
+          description: Начало периода выборки (UTC, ISO-8601)
+          schema:
+            type: string
+            format: date-time
+            example: "2026-11-19T00:00:00Z"
+
+        - name: limit
+          in: query
+          required: false
+          description: Количество записей на страницу (макс. 1000)
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 1000
+
+        - name: cursor
+          in: query
+          required: false
+          description: Курсор для получения следующей страницы
+          schema:
+            type: string
+            example: "eyJpZCI6MTAwfQ=="
+
+      responses:
+        "200":
+          description: Успешная выгрузка данных
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - items
+                  - next_cursor
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/OrderRecord"
+                  next_cursor:
+                    type: string
+                    nullable: true
+                    example: "eyJpZCI6MjAwfQ=="
+                    description: Токен следующей страницы (null, если данных больше нет)
+
+        "400":
+          description: Некорректные параметры запроса
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+        "401":
+          description: Ошибка авторизации (неверный API-ключ)
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+  schemas:
+    OrderRecord:
+      type: object
+      required:
+        - order_id
+        - user_id
+        - amount
+        - status
+        - created_at
+        - updated_at
+      properties:
+        order_id:
+          type: string
+          example: "ORD-00491827"
+          description: Уникальный идентификатор заказа
+        user_id:
+          type: integer
+          format: int64
+          example: 981234
+          description: Идентификатор клиента
+        amount:
+          type: number
+          format: double
+          minimum: 0
+          example: 2490.00
+          description: Сумма заказа в рублях
+        status:
+          type: string
+          enum: [new, paid, shipped, cancelled]
+          example: "paid"
+          description: Актуальный статус заказа
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-11-18T14:22:05Z"
+          description: Дата создания заказа (UTC)
+        updated_at:
+          type: string
+          format: date-time
+          example: "2026-11-18T14:25:10Z"
+          description: Дата последнего обновления записи (для инкрементальной загрузки)
+
+    ErrorResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: string
+          example: "INVALID_DATE_FORMAT"
+        message:
+          type: string
+          example: "Параметр updated_from должен быть в формате ISO-8601"
