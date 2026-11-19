@@ -159,29 +159,42 @@ export class HerculesMainApp {
     }
 
     updateTaskStatus(taskId, status) {
-        const statusMap = {
-            'pending': 'Pending',
-            'in-progress': 'In progress',
-            'completed': 'Completed'
-        };
-        
-        const taskElement = this.findTaskElement(taskId);
-        if (taskElement) {
-            const statusElement = taskElement.querySelector('.task-status');
-            if (statusElement) {
-                statusElement.textContent = statusMap[status] || status;
-                statusElement.className = `task-status ${status}`;
+    // 1. Связываем системный статус с ключом из ваших файлов переводов
+    const statusKeys = {
+        'pending': 'task.pending',
+        'in-progress': 'task.inProgress',
+        'completed': 'task.completed'
+    };
+    
+    const taskElement = this.findTaskElement(taskId);
+    if (taskElement) {
+        const statusElement = taskElement.querySelector('.task-status');
+        if (statusElement) {
+            const key = statusKeys[status];
+            
+            if (key) {
+                statusElement.setAttribute('data-i18n', key);
+            
+                statusElement.textContent = typeof t === 'function' ? t(key) : status;
+            } else {
+                statusElement.removeAttribute('data-i18n');
+                statusElement.textContent = status;
             }
-            const progressElement = taskElement.querySelector('.progress');
-            if (progressElement && status !== 'in-progress') {
-                if (status === 'completed') {
-                    progressElement.style.width = '100%';
-                } else if (status === 'pending') {
-                    progressElement.style.width = '0%';
-                }
+            
+            statusElement.className = `task-status ${status}`;
+        }
+
+        const progressElement = taskElement.querySelector('.progress');
+        if (progressElement && status !== 'in-progress') {
+            if (status === 'completed') {
+                progressElement.style.width = '100%';
+            } else if (status === 'pending') {
+                progressElement.style.width = '0%';
             }
         }
     }
+}
+
 
     animateProgress(taskId, targetPercent, duration, callback) {
         const taskElement = this.findTaskElement(taskId);

@@ -279,3 +279,42 @@ code, pre, th, input, select, textarea, .badge, .mono {
     padding: 0.5rem 0;
     font-family: 'Fira Sans', sans-serif;
 }
+
+/* ===== UPLOAD DROP ===== */
+    .upload-drop {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      background: var(--bg-input);
+    }
+
+    .upload-drop:hover,
+    .upload-drop.dragover {
+      border-color: var(--accent);
+      background: var(--bg-input-focus);
+      box-shadow: 0 0 0 3px var(--logo-glow), 0 0 20px var(--logo-glow);
+    }
+
+    .upload-drop i {
+      font-size: 2rem;
+      color: var(--accent);
+      display: block;
+      margin-bottom: 12px;
+      filter: drop-shadow(0 0 8px var(--logo-glow-strong));
+    }
+
+    .upload-drop p {
+      font-family: 'Fira Sans', sans-serif;
+      font-size: 0.85rem;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .upload-drop small {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.68rem;
+      color: var(--text-dim);
+    }

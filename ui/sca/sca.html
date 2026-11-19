@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="../common/modal.css">
     <link rel="stylesheet" href="../common/scroll.css">
     <link rel="icon" type="image/x-icon" href="../rocket.ico">
+    <link rel="stylesheet" href="modal.css">
 
     <script>
         (function() {
@@ -1107,6 +1108,88 @@
             </div>
         </div>
     </div>
+
+    <!-- модалка результата -->
+    <div class="sca-popup-overlay" id="scaOverlay" style="display: none;">
+    <div id="scaPopup" class="sca-popup">
+        <div class="sca-popup-header">
+            <div class="sca-popup-title">
+                <i class="fas fa-cubes"></i>
+                <span data-i18n="sca.title">Результаты SCA-анализа</span>
+                <span class="sub" id="scaHeaderSub">
+                    <span id="headerCompCount">0</span> <span data-i18n="sca.count.components"></span> · 
+                    <span id="headerVulnCount">0</span> <span data-i18n="sca.count.vulns">уязвимостей</span>
+                </span>
+            </div>
+            <button class="sca-popup-close" id="closePopup" aria-label="Закрыть" data-i18n-aria="sca.close">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="sca-popup-content">
+            <div class="sca-stats-grid">
+                <div class="sca-stat-card">
+                    <div class="sca-stat-number c-total" id="statComponents">0</div>
+                    <div class="sca-stat-label" data-i18n="sca.stats.components">Компоненты</div>
+                </div>
+                <div class="sca-stat-card">
+                    <div class="sca-stat-number c-vuln" id="statVulns">0</div>
+                    <div class="sca-stat-label" data-i18n="sca.stats.vulnerabilities">Уязвимости</div>
+                </div>
+                <div class="sca-stat-card">
+                    <div class="sca-stat-number c-critical" id="statCritical">0</div>
+                    <div class="sca-stat-label" data-i18n="sca.stats.critical">Критические</div>
+                </div>
+                <div class="sca-stat-card">
+                    <div class="sca-stat-number c-high" id="statHigh">0</div>
+                    <div class="sca-stat-label" data-i18n="sca.stats.high">Высокие</div>
+                </div>
+                <div class="sca-stat-card">
+                    <div class="sca-stat-number c-moderate" id="statModerate">0</div>
+                    <div class="sca-stat-label" data-i18n="sca.stats.moderate">Средние</div>
+                </div>
+                <div class="sca-stat-card">
+                    <div class="sca-stat-number c-low" id="statLow">0</div>
+                    <div class="sca-stat-label" data-i18n="sca.stats.low">Низкие</div>
+                </div>
+            </div>
+
+            <div class="sca-toolbar">
+                <input 
+                    type="text" 
+                    class="sca-search-input" 
+                    id="scaSearch" 
+                    placeholder="Поиск компонента..." 
+                    data-i18n-placeholder="sca.search_placeholder"
+                >
+                <select class="sca-filter-select" id="scaFilter">
+                    <option value="all" data-i18n="sca.filter.all">Все компоненты</option>
+                    <option value="has-issues" data-i18n="sca.filter.has_issues">С уязвимостями</option>
+                    <option value="no-issues" data-i18n="sca.filter.no_issues">Без уязвимостей</option>
+                    <option value="critical" data-i18n="sca.filter.critical">Только критические</option>
+                    <option value="high" data-i18n="sca.filter.high">Только высокие</option>
+                </select>
+                <span class="sca-block-count">
+                    <span id="scaBlockCount">0</span> <span data-i18n="sca.components_word">компонентов</span>
+                </span>
+            </div>
+
+            <div id="scaComponents"></div>
+        </div>
+
+        <div class="sca-popup-footer">
+            <button id="downloadHtmlBtn" class="sca-btn sca-btn-html">
+                <i class="fas fa-file-arrow-down"></i> 
+                <span data-i18n="common.btn.download.html"></span>
+            </button>
+            <button id="downloadJsonBtn" class="sca-btn sca-btn-json">
+                <i class="fas fa-file-code"></i> 
+                <span data-i18n="common.btn.download.json"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
 
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">

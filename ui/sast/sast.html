@@ -19,6 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <link rel="stylesheet" href="sast.css">
+     <link rel="stylesheet" href="modal.css">
     <link rel="stylesheet" href="../common/sidebar.css">
     <link rel="stylesheet" href="../common/modal.css">
     <script>
@@ -149,17 +150,6 @@
                         </div>
                         <input type="file" id="fileInput" accept=".zip,.tar,.gz,.tgz,.7z" style="display: none;">
                     </div>
-
-                    <div class="file-info" id="fileInfo">
-                        <div class="file-details">
-                            <i class="fas fa-file-archive" style="color: var(--accent); font-size: 20px;"></i>
-                            <span class="file-name" id="fileName"></span>
-                            <span class="file-size" id="fileSize"></span>
-                            <span class="remove-file" onclick="removeFile()">
-                                <i class="fas fa-times"></i>
-                            </span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="card-table">
@@ -226,15 +216,82 @@
             </div>
         </div>
     </div>
+<template id="sastModalTemplate">
+    <div class="modal-container">
+        <div class="modal-header">
+            <h3>
+                <i class="fas fa-shield-halved"></i>
+                <span data-i18n="sast.modal.title">SAST Analysis Results</span>
+                <span class="sub">
+                    <span id="sastSubTotal">0</span> <span data-i18n="sast.modal.issues">issues</span> · 
+                    <span id="sastSubCriticalHigh">0</span> <span data-i18n="sast.modal.criticalHighShort">critical/high</span>
+                </span>
+            </h3>
+            <button class="modal-close" data-i18n-aria="common.btn.close" aria-label="Close">
+                <i class="fas fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div id="sastMetadataContainer"></div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div id="sastCountTotal" class="stat-number c-total">0</div>
+                    <div class="stat-label" data-i18n="sast.severity.total">Total</div>
+                </div>
+                <div class="stat-card">
+                    <div id="sastCountCritical" class="stat-number c-critical">0</div>
+                    <div class="stat-label" data-i18n="sast.severity.critical">Critical</div>
+                </div>
+                <div class="stat-card">
+                    <div id="sastCountHigh" class="stat-number c-high">0</div>
+                    <div class="stat-label" data-i18n="sast.severity.high">High</div>
+                </div>
+                <div class="stat-card">
+                    <div id="sastCountMedium" class="stat-number c-medium">0</div>
+                    <div class="stat-label" data-i18n="sast.severity.medium">Medium</div>
+                </div>
+                <div class="stat-card">
+                    <div id="sastCountLow" class="stat-number c-low">0</div>
+                    <div class="stat-label" data-i18n="sast.severity.low">Low</div>
+                </div>
+                <div class="stat-card">
+                    <div id="sastCountInfo" class="stat-number c-info">0</div>
+                    <div class="stat-label" data-i18n="sast.severity.info">Info</div>
+                </div>
+            </div>
+
+            <h4 class="section-title">
+                <i class="fas fa-triangle-exclamation" style="color:#dc3545;"></i>
+                <span data-i18n="sast.modal.criticalHighSection">Critical &amp; High Vulnerabilities</span>
+                <span id="sastCriticalHighPill" class="count-pill">0</span>
+            </h4>
+            <div id="vulnerabilities-list"></div>
+        </div>
+
+        <div class="modal-footer">
+            <button id="downloadHtmlBtn" class="btn btn-html">
+                <i class="fas fa-file-arrow-down"></i> 
+                <span data-i18n="common.btn.download.html"></span>
+            </button>
+            <button id="downloadReportBtn" class="btn btn-download">
+                <i class="fas fa-file-code"></i> 
+                <span data-i18n="common.btn.download.json"></span>
+            </button>
+        </div>
+    </div>
+</template>
+
 
     <script src="/js/jszip.min.js"></script>
     <script src="uploader.js"></script>
+        <script type="text/javascript" src="../locales/i18n.js"></script>
     <script type="module" src="main.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="../common/modal.js"></script>
-    <script type="text/javascript" src="../locales/i18n.js"></script>
 
     <script>
         (function() {
