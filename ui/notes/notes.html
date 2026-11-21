@@ -94,60 +94,60 @@
                 </div>
 
                 <div class="notes-editor" id="notesEditor">
-                    <div class="editor-empty" id="editorEmpty">
-                        <i class="fas fa-note-sticky"></i>
-                        <p>Select an item or create a new one</p>
-                    </div>
+    <div class="editor-empty" id="editorEmpty">
+        <i class="fas fa-note-sticky"></i>
+        <p data-i18n="notes.empty">Select an item or create a new one</p>
+    </div>
 
-                    <div class="editor-active" id="editorActive" style="display:none;">
-                        <div class="editor-head">
-                            <span class="editor-kind" id="editorKind" data-i18n="notes.switch.notes">Note</span>
-                            <span class="editor-status-badge" id="editorStatusBadge" style="display:none;"></span>
-                        </div>
+    <div class="editor-active" id="editorActive" style="display:none;">
+        <div class="editor-head">
+            <span class="editor-kind" id="editorKind" data-i18n="notes.switch.notes">Note</span>
+            <span class="editor-status-badge" id="editorStatusBadge" style="display:none;"></span>
+        </div>
 
-                        <input type="text" id="noteTitle" class="title-input" placeholder="Title...">
+        <input type="text" id="noteTitle" class="title-input" placeholder="Title..." data-i18n-placeholder="notes.title.placeholder">
 
-                        <div class="task-fields" id="taskFields" style="display:none;">
-                            <div class="task-field-row">
-                                <div class="task-field">
-                                    <label>Status</label>
-                                    <select id="taskStatus">
-                                        <option value="todo">To do</option>
-                                        <option value="in_progress">In progress</option>
-                                        <option value="done">Done</option>
-                                        <option value="cancelled">Cancelled</option>
-                                    </select>
-                                </div>
-                                <div class="task-field">
-                                    <label>Priority</label>
-                                    <select id="taskPriority">
-                                        <option value="low">Low</option>
-                                        <option value="medium">Medium</option>
-                                        <option value="high">High</option>
-                                        <option value="critical">Critical</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="task-field-row">
-                                <div class="task-field">
-                                    <label>Assignee</label>
-                                    <input type="text" id="taskAssignee" placeholder="Who is responsible">
-                                </div>
-                                <div class="task-field">
-                                    <label>Due date</label>
-                                    <input type="date" id="taskDue">
-                                </div>
-                            </div>
-                        </div>
-
-                        <textarea id="noteBody" placeholder="Write in Markdown...&#10;&#10;# Heading&#10;- list item&#10;`code`"></textarea>
-
-                        <div class="toolbar">
-                            <button class="btn btn-secondary" id="deleteBtn"><i class="fas fa-trash-can"></i> <span data-i18n="common.btn.delete">Delete</span></button>
-                            <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i><span data-i18n="common.btn.save"> Save</span></button>
-                        </div>
-                    </div>
+        <div class="task-fields" id="taskFields" style="display:none;">
+            <div class="task-field-row">
+                <div class="task-field">
+                    <label data-i18n="notes.task.status.label">Status</label>
+                    <select id="taskStatus">
+                        <option value="todo" data-i18n="notes.task.status.todo">To do</option>
+                        <option value="in_progress" data-i18n="notes.task.status.in_progress">In progress</option>
+                        <option value="done" data-i18n="notes.task.status.done">Done</option>
+                        <option value="cancelled" data-i18n="notes.task.status.cancelled">Cancelled</option>
+                    </select>
                 </div>
+                <div class="task-field">
+                    <label data-i18n="notes.task.priority.label">Priority</label>
+                    <select id="taskPriority">
+                        <option value="low" data-i18n="notes.task.priority.low">Low</option>
+                        <option value="medium" data-i18n="notes.task.priority.medium">Medium</option>
+                        <option value="high" data-i18n="notes.task.priority.high">High</option>
+                        <option value="critical" data-i18n="notes.task.priority.critical">Critical</option>
+                    </select>
+                </div>
+            </div>
+            <div class="task-field-row">
+                <div class="task-field">
+                    <label data-i18n="notes.task.assignee.label">Assignee</label>
+                    <input type="text" id="taskAssignee" placeholder="Who is responsible" data-i18n-placeholder="notes.task.assignee.placeholder">
+                </div>
+                <div class="task-field">
+                    <label data-i18n="notes.task.due.label">Due date</label>
+                    <input type="date" id="taskDue">
+                </div>
+            </div>
+        </div>
+
+        <textarea id="noteBody" placeholder="Write in Markdown...&#10;&#10;# Heading&#10;- list item&#10;`code`" data-i18n-placeholder="notes.body.placeholder"></textarea>
+
+        <div class="toolbar">
+            <button class="btn btn-secondary" id="deleteBtn"><i class="fas fa-trash-can"></i> <span data-i18n="common.btn.delete">Delete</span></button>
+            <button class="btn btn-primary" id="saveBtn"><i class="fas fa-save"></i><span data-i18n="common.btn.save"> Save</span></button>
+        </div>
+    </div>
+</div>
             </div>
         </div>
     </div>
@@ -184,7 +184,7 @@
             </div>
         </div>
     </div>
-
+    <script type="text/javascript" src="../locales/i18n.js"></script>
     <script type="text/javascript" src="../common/preloader.js"></script>
     <script type="text/javascript" src="../common/info.js"></script>
     <script type="text/javascript" src="../common/menu.js"></script>
@@ -192,6 +192,6 @@
     <script type="text/javascript" src="../common/modal.js"></script>
     <script type="text/javascript" src="modals.js"></script>
     <script type="text/javascript" src="notes.js"></script>
-    <script type="text/javascript" src="../locales/i18n.js"></script>
+
 </body>
 </html>

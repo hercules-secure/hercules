@@ -72,87 +72,93 @@
     </div>
 
     <!-- ===== CENTER ===== -->
-    <div id="center">
-      <div class="top-bar">
-        <div class="top-bar-title">
-          <i class="fas fa-cubes black-icon"></i>
-          <span>CMDB</span>
+   <div id="center">
+  <div class="top-bar">
+    <div class="top-bar-title">
+      <i class="fas fa-cubes black-icon"></i>
+      <span data-i18n="cmdb.page.title">CMDB</span>
+    </div>
+    <div class="top-bar-actions">
+      <div class="header-actions">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search by name, team, owner..." data-i18n-placeholder="cmdb.page.search.placeholder" id="globalSearch">
         </div>
-        <div class="top-bar-actions">
-          <div class="header-actions">
-            <div class="search-box">
-              <i class="fas fa-search"></i>
-              <input type="text" placeholder="Search by name, team, owner..." id="globalSearch">
-            </div>
-            <button class="header-btn" id="addAssetBtn"><i class="fas fa-plus"></i> <span data-i18n="common.btn.new"> Add</span></button>
-          </div>
-          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
-            <i class="fas fa-sun icon-sun"></i>
-            <i class="fas fa-moon icon-moon"></i>
-          </button>
-        </div>
+        <button class="header-btn" id="addAssetBtn"><i class="fas fa-plus"></i> <span data-i18n="common.btn.new">Добавить</span></button>
       </div>
+      <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme" data-i18n-aria-label="cmdb.page.theme.toggle" data-i18n-title="cmdb.page.theme.toggle">
+        <i class="fas fa-sun icon-sun"></i>
+        <i class="fas fa-moon icon-moon"></i>
+      </button>
+    </div>
+  </div>
 
-      <div class="stats-grid">
-        <div class="stat-card"><div class="stat-icon"><i class="fas fa-server"></i></div><div class="stat-info"><h3 id="totalCount">0</h3><p>Total assets</p></div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fas fa-circle-check"></i></div><div class="stat-info"><h3 id="activeCount">0</h3><p>Active</p></div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-info"><h3 id="maintenanceCount">0</h3><p>Under maintenance</p></div></div>
-        <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h3 id="teamCount">0</h3><p>Teams</p></div></div>
-      </div>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-server"></i></div><div class="stat-info"><h3 id="totalCount">0</h3><p data-i18n="cmdb.page.stats.total_assets">Total assets</p></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-circle-check"></i></div><div class="stat-info"><h3 id="activeCount">0</h3><p data-i18n="cmdb.page.stats.active">Active</p></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-info"><h3 id="maintenanceCount">0</h3><p data-i18n="cmdb.page.stats.under_maintenance">Under maintenance</p></div></div>
+    <div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-info"><h3 id="teamCount">0</h3><p data-i18n="cmdb.page.stats.teams">Teams</p></div></div>
+  </div>
 
-      <div class="filter-bar">
-        <div class="filter-group">
-          <label><i class="fas fa-tag"></i> Type</label>
-          <select id="typeFilter">
-            <option value="all">All</option>
-            <option value="server">Server</option>
-            <option value="network">Network</option>
-            <option value="database">Database</option>
-            <option value="storage">Storage</option>
-            <option value="application">Application</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label><i class="fas fa-circle"></i> Status</label>
-          <select id="statusFilter">
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="maintenance">Maintenance</option>
-          </select>
-        </div>
-        <div class="filter-clear" id="clearFilters"><i class="fas fa-rotate-left"></i> Reset</div>
-      </div>
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label><i class="fas fa-tag"></i> <span data-i18n="cmdb.page.filter.type.label">Type</span></label>
+      <select id="typeFilter">
+        <option value="all" data-i18n="cmdb.page.filter.type.all">All</option>
+        <option value="server" data-i18n="cmdb.page.filter.type.server">Server</option>
+        <option value="network" data-i18n="cmdb.page.filter.type.network">Network</option>
+        <option value="database" data-i18n="cmdb.page.filter.type.database">Database</option>
+        <option value="storage" data-i18n="cmdb.page.filter.type.storage">Storage</option>
+        <option value="application" data-i18n="cmdb.page.filter.type.application">Application</option>
+        <option value="other" data-i18n="cmdb.page.filter.type.other">Other</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label><i class="fas fa-circle"></i> <span data-i18n="cmdb.page.filter.status.label">Status</span></label>
+      <select id="statusFilter">
+        <option value="all" data-i18n="cmdb.page.filter.status.all">All</option>
+        <option value="active" data-i18n="cmdb.page.filter.status.active">Active</option>
+        <option value="inactive" data-i18n="cmdb.page.filter.status.inactive">Inactive</option>
+        <option value="maintenance" data-i18n="cmdb.page.filter.status.maintenance">Maintenance</option>
+      </select>
+    </div>
+    <div class="filter-clear" id="clearFilters"><i class="fas fa-rotate-left"></i> <span data-i18n="cmdb.page.filter.reset">Reset</span></div>
+  </div>
 
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Team</th>
-              <th>Name</th>
-              <th>Owner</th>
-              <th>IT Custodian</th>
-              <th>Type</th>
-              <th>Status</th>
-              <th>Links</th>
-              <th style="text-align:right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="assetTableBody">
-            <tr><td colspan="8" class="empty-state"><i class="fas fa-spinner fa-spin" style="font-size:2rem;"></i><br>Loading...</td></tr>
-          </tbody>
-        </table>
-        <div class="table-footer">
-          <div class="pagination">
-            <span id="pageInfo">1-6</span>
-            <span class="active-page">1</span>
-            <span>2</span>
-            <span>3</span>
-          </div>
-        </div>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th data-i18n="cmdb.page.table.header.team">Team</th>
+          <th data-i18n="cmdb.page.table.header.name">Name</th>
+          <th data-i18n="cmdb.page.table.header.owner">Owner</th>
+          <th data-i18n="cmdb.page.table.header.it_custodian">IT Custodian</th>
+          <th data-i18n="cmdb.page.table.header.type">Type</th>
+          <th data-i18n="cmdb.page.table.header.status">Status</th>
+          <th data-i18n="cmdb.page.table.header.links">Links</th>
+          <th style="text-align:right;" data-i18n="cmdb.page.table.header.actions">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="assetTableBody">
+        <tr>
+          <td colspan="8" class="empty-state">
+            <i class="fas fa-database" style="font-size:2rem; opacity:0.3; display:block; margin-bottom:0.5rem;"></i>
+            <span data-i18n="cmdb.page.table.empty">Nothing found</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="table-footer">
+      <div class="pagination">
+        <span id="pageInfo">1-6</span>
+        <span class="active-page">1</span>
+        <span>2</span>
+        <span>3</span>
       </div>
     </div>
+  </div>
+</div>
+
   </div>
 
 
@@ -259,13 +265,13 @@
     <div id="addStepSource">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-plus-circle"></i> Add asset
+          <i class="fas fa-plus-circle"></i> <span data-i18n="cmdb.modal.title.add">Add asset</span>
         </div>
         <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
       </div>
 
       <div class="modal-body">
-        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.25rem; font-family: 'Fira Sans', sans-serif;">
+        <p style="color: var(--text-dim); font-size: 0.85rem; margin-bottom: 1.25rem; font-family: 'Fira Sans', sans-serif;" data-i18n="cmdb.step.source.desc">
           How would you like to provide the asset description?
         </p>
 
@@ -273,8 +279,8 @@
           <button class="source-option" data-source="file">
             <div class="source-icon"><i class="fas fa-file-arrow-up"></i></div>
             <div class="source-info">
-              <span class="source-name">Upload file</span>
-              <span class="source-desc">JSON, YAML, or Markdown with asset details</span>
+              <span class="source-name" data-i18n="cmdb.step.source.file.name">Upload file</span>
+              <span class="source-desc" data-i18n="cmdb.step.source.file.desc">JSON, YAML, or Markdown with asset details</span>
             </div>
             <i class="fas fa-chevron-right source-arrow"></i>
           </button>
@@ -282,8 +288,8 @@
           <button class="source-option" data-source="git">
             <div class="source-icon"><i class="fab fa-git-alt"></i></div>
             <div class="source-info">
-              <span class="source-name">From Git repository</span>
-              <span class="source-desc">Parse README, manifest.yaml, or custom manifest</span>
+              <span class="source-name" data-i18n="cmdb.step.source.git.name">From Git repository</span>
+              <span class="source-desc" data-i18n="cmdb.step.source.git.desc">Parse README, manifest.yaml, or custom manifest</span>
             </div>
             <i class="fas fa-chevron-right source-arrow"></i>
           </button>
@@ -291,8 +297,8 @@
           <button class="source-option" data-source="manual">
             <div class="source-icon"><i class="fas fa-keyboard"></i></div>
             <div class="source-info">
-              <span class="source-name">Enter manually</span>
-              <span class="source-desc">Fill in the form fields yourself</span>
+              <span class="source-name" data-i18n="cmdb.step.source.manual.name">Enter manually</span>
+              <span class="source-desc" data-i18n="cmdb.step.source.manual.desc">Fill in the form fields yourself</span>
             </div>
             <i class="fas fa-chevron-right source-arrow"></i>
           </button>
@@ -300,7 +306,7 @@
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('addModal')">Cancel</button>
+        <button class="btn btn-secondary" onclick="closeModal('addModal')" data-i18n="common.btn.cancel">Cancel</button>
       </div>
     </div>
 
@@ -308,7 +314,7 @@
     <div id="addStepFile" style="display: none;">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-file-arrow-up"></i> Upload file
+          <i class="fas fa-file-arrow-up"></i> <span data-i18n="cmdb.step.file.title">Upload file</span>
         </div>
         <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
       </div>
@@ -316,17 +322,17 @@
       <div class="modal-body">
         <div class="upload-drop" id="assetUploadDrop">
           <i class="fas fa-cloud-upload-alt"></i>
-          <p>Click or drag <strong>manifest.yaml</strong> here</p>
-          <small>YAML, YML, JSON — up to 1 MB</small>
+          <p><span data-i18n="cmdb.step.file.drop.prefix">Click or drag</span> <strong>manifest.yaml</strong> <span data-i18n="cmdb.step.file.drop.suffix">here</span></p>
+          <small data-i18n="cmdb.step.file.limit">YAML, YML, JSON — up to 1 MB</small>
           <input type="file" id="assetFileInput" accept=".yaml,.yml,.json" hidden>
         </div>
         <p id="assetFileError" class="field-error" style="display: none;"></p>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-back>Back</button>
+        <button class="btn btn-secondary" data-back data-i18n="common.btn.back">Back</button>
         <button class="btn btn-primary" id="assetFileNext" disabled>
-          <i class="fas fa-arrow-right"></i> Next
+          <i class="fas fa-arrow-right"></i> <span data-i18n="common.btn.next">Next</span>
         </button>
       </div>
     </div>
@@ -335,31 +341,31 @@
     <div id="addStepGit" style="display: none;">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fab fa-git-alt"></i> From Git repository
+          <i class="fab fa-git-alt"></i> <span data-i18n="cmdb.step.git.title">From Git repository</span>
         </div>
         <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
       </div>
 
       <div class="modal-body">
         <div class="form-group">
-          <label for="assetGitUrl">Repository URL <span class="required">*</span></label>
+          <label for="assetGitUrl"><span data-i18n="cmdb.form.git.url.label">Repository URL</span> <span class="required">*</span></label>
           <input type="text" id="assetGitUrl" placeholder="https://github.com/org/repo">
         </div>
         <div class="form-group">
-          <label for="assetGitBranch">Branch</label>
+          <label for="assetGitBranch" data-i18n="cmdb.form.git.branch.label">Branch</label>
           <input type="text" id="assetGitBranch" placeholder="main">
         </div>
         <div class="form-group">
-          <label for="assetGitPath">Manifest path</label>
+          <label for="assetGitPath" data-i18n="cmdb.form.git.path.label">Manifest path</label>
           <input type="text" id="assetGitPath" placeholder="manifest.yaml">
         </div>
         <p id="assetGitError" class="field-error" style="display: none;"></p>
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-back>Back</button>
+        <button class="btn btn-secondary" data-back data-i18n="common.btn.back">Back</button>
         <button class="btn btn-primary" id="assetGitNext">
-          <i class="fas fa-download"></i> Fetch & continue
+          <i class="fas fa-download"></i> <span data-i18n="common.btn.fetch_continue">Fetch & continue</span>
         </button>
       </div>
     </div>
@@ -368,7 +374,7 @@
     <div id="addStepForm" style="display: none;">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-plus-circle"></i> Add asset
+          <i class="fas fa-plus-circle"></i> <span data-i18n="cmdb.modal.title.add">Add asset</span>
         </div>
         <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
       </div>
@@ -379,77 +385,77 @@
         <!-- Team + Asset name в одну строку -->
         <div class="form-row">
           <div class="form-group">
-            <label for="addTeam">Team <span class="required">*</span></label>
-            <input type="text" id="addTeam" placeholder="Example: DevOps Team">
+            <label for="addTeam"><span data-i18n="cmdb.form.team.label">Team</span> <span class="required">*</span></label>
+            <input type="text" id="addTeam" placeholder="Example: DevOps Team" data-i18n-placeholder="cmdb.form.team.placeholder">
           </div>
           <div class="form-group">
-            <label for="addName">Asset name <span class="required">*</span></label>
-            <input type="text" id="addName" placeholder="Example: Web-Server-01">
+            <label for="addName"><span data-i18n="cmdb.form.name.label">Asset name</span> <span class="required">*</span></label>
+            <input type="text" id="addName" placeholder="Example: Web-Server-01" data-i18n-placeholder="cmdb.form.name.placeholder">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="addOwner">Owner <span class="required">*</span></label>
-            <input type="text" id="addOwner" placeholder="Owner name">
+            <label for="addOwner"><span data-i18n="cmdb.form.owner.label">Owner</span> <span class="required">*</span></label>
+            <input type="text" id="addOwner" placeholder="Owner name" data-i18n-placeholder="cmdb.form.owner.placeholder">
           </div>
           <div class="form-group">
-            <label for="addCustodian">IT Custodian <span class="required">*</span></label>
-            <input type="text" id="addCustodian" placeholder="IT Custodian name">
+            <label for="addCustodian"><span data-i18n="cmdb.form.custodian.label">IT Custodian</span> <span class="required">*</span></label>
+            <input type="text" id="addCustodian" placeholder="IT Custodian name" data-i18n-placeholder="cmdb.form.custodian.placeholder">
           </div>
         </div>
 
         <div class="form-group">
-          <label for="addEmail">Email <span class="required">*</span></label>
-          <input type="email" id="addEmail" placeholder="owner@company.com">
+          <label for="addEmail"><span data-i18n="cmdb.form.email.label">Email</span> <span class="required">*</span></label>
+          <input type="email" id="addEmail" placeholder="owner@company.com" data-i18n-placeholder="cmdb.form.email.placeholder">
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label for="addType">Type <span class="required">*</span></label>
+            <label for="addType"><span data-i18n="cmdb.form.type.label">Type</span> <span class="required">*</span></label>
             <select id="addType">
-              <option value="server">Server</option>
-              <option value="network">Network</option>
-              <option value="database">Database</option>
-              <option value="storage">Storage</option>
-              <option value="application">Application</option>
-              <option value="other">Other</option>
+              <option value="server" data-i18n="cmdb.option.type.server">Server</option>
+              <option value="network" data-i18n="cmdb.option.type.network">Network</option>
+              <option value="database" data-i18n="cmdb.option.type.database">Database</option>
+              <option value="storage" data-i18n="cmdb.option.type.storage">Storage</option>
+              <option value="application" data-i18n="cmdb.option.type.application">Application</option>
+              <option value="other" data-i18n="cmdb.option.type.other">Other</option>
             </select>
           </div>
           <div class="form-group">
-            <label for="addStatus">Status <span class="required">*</span></label>
+            <label for="addStatus"><span data-i18n="cmdb.form.status.label">Status</span> <span class="required">*</span></label>
             <select id="addStatus">
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="maintenance">Maintenance</option>
+              <option value="active" data-i18n="cmdb.option.status.active">Active</option>
+              <option value="inactive" data-i18n="cmdb.option.status.inactive">Inactive</option>
+              <option value="maintenance" data-i18n="cmdb.option.status.maintenance">Maintenance</option>
             </select>
           </div>
         </div>
 
         <div class="form-group">
-          <label for="addDescription">Description</label>
-          <textarea id="addDescription" placeholder="Brief asset description"></textarea>
+          <label for="addDescription" data-i18n="cmdb.form.description.label">Description</label>
+          <textarea id="addDescription" placeholder="Brief asset description" data-i18n-placeholder="cmdb.form.description.placeholder"></textarea>
         </div>
         <div class="form-group">
-          <label for="addGit">Git <span class="required">*</span></label>
+          <label for="addGit"><span data-i18n="cmdb.form.git.label">Git</span> <span class="required">*</span></label>
           <input type="text" id="addGit" placeholder="https://github.com/org/repo">
         </div>
         <div class="form-group">
-          <label for="addStack">Stack</label>
-          <input type="text" id="addStack" placeholder="Example: Node.js, React, PostgreSQL">
+          <label for="addStack" data-i18n="cmdb.form.stack.label">Stack</label>
+          <input type="text" id="addStack" placeholder="Example: Node.js, React, PostgreSQL" data-i18n-placeholder="cmdb.form.stack.placeholder">
         </div>
 
         <div class="form-group">
-          <label for="addDocs">Documentation</label>
-          <input type="text" id="addDocs" placeholder="https://wiki.company.com/docs">
+          <label for="addDocs" data-i18n="cmdb.form.docs.label">Documentation</label>
+          <input type="text" id="addDocs" placeholder="https://wiki.company.com/docs" data-i18n-placeholder="cmdb.form.docs.placeholder">
         </div>
 
       </div>
 
       <div class="modal-footer">
-        <button class="btn btn-secondary" data-back>Back</button>
+        <button class="btn btn-secondary" data-back data-i18n="common.btn.back">Back</button>
         <button class="btn btn-primary" id="addSubmitBtn">
-          <i class="fas fa-save"></i> Create
+          <i class="fas fa-save"></i> <span data-i18n="common.btn.create">Create</span>
         </button>
       </div>
     </div>

@@ -144,43 +144,45 @@
     </div>
 
     <!-- ============ NEW COLLABORATION MODAL ============ -->
-    <div class="modal-overlay" id="newChatModal">
+<div class="modal-overlay" id="newChatModal">
     <div class="modal">
         <div class="modal-header">
-            <div class="modal-title"><i class="fas fa-comments"></i> New collaboration</div>
+            <div class="modal-title"><i class="fas fa-comments"></i> <span data-i18n="collab.modal.title">New collaboration</span></div>
             <button class="modal-close" type="button" data-close>&times;</button>
         </div>
         <div class="modal-body">
             <div class="form-group">
-                <label for="newChatName">Name <span class="required">*</span></label>
-                <input type="text" id="newChatName" placeholder="general" maxlength="64" autocomplete="off">
+                <label for="newChatName"><span data-i18n="collab.modal.name.label">Name</span> <span class="required">*</span></label>
+                <input type="text" id="newChatName" placeholder="general" maxlength="64" autocomplete="off" data-i18n-placeholder="collab.modal.name.placeholder">
             </div>
 
             <div class="form-group">
-                <label>Visibility</label>
+                <label data-i18n="collab.modal.visibility.label">Visibility</label>
                 <div class="visibility-toggle" id="newChatVisibility">
                     <button type="button" class="visibility-option active" data-value="private">
                         <i class="fas fa-lock"></i>
-                        <span class="visibility-label">Private</span>
-                        <span class="visibility-desc">Only invited members</span>
+                        <span class="visibility-label" data-i18n="collab.modal.visibility.private.label">Private</span>
+                        <span class="visibility-desc" data-i18n="collab.modal.visibility.private.desc">Only invited members</span>
                     </button>
                     <button type="button" class="visibility-option" data-value="public">
                         <i class="fas fa-globe"></i>
-                        <span class="visibility-label">Public</span>
-                        <span class="visibility-desc">Anyone on the team</span>
+                        <span class="visibility-label" data-i18n="collab.modal.visibility.public.label">Public</span>
+                        <span class="visibility-desc" data-i18n="collab.modal.visibility.public.desc">Anyone on the team</span>
                     </button>
                 </div>
             </div>
 
             <p class="hint-text">
                 <i class="fas fa-info-circle"></i>
-                Names starting with <code>#</code> are channels, otherwise it's a direct chat.
+                <span data-i18n="collab.modal.hint">Names starting with <code>#</code> are channels, otherwise it's a direct chat.</span>
             </p>
         </div>
+
+
         <div class="modal-footer">
             <button class="btn btn-secondary" type="button" data-close data-i18n="common.btn.cancel">Cancel</button>
             <button class="btn btn-primary" type="button" id="newChatConfirm">
-                <i class="fas fa-plus"></i> <span data-i18n="common.btn.create"> Create</span>
+                <i class="fas fa-plus"></i> <span data-i18n="common.btn.create">Create</span>
             </button>
         </div>
     </div>
