@@ -277,26 +277,6 @@ function renderRightPanel(tool) {
             <div class="version">Version ${tool.version}</div>
             <div class="description">${tool.description}</div>
             <hr class="divider">
-            
-            ${!tool.free ? `
-                <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
-                    ${showBtn ? `
-                        <span style="color: black; font-family: 'Ubuntu'; font-size: 15px">Available with license</span>
-                        <span style="padding: 4px 12px; color: black; font-weight: 700; letter-spacing: 0.5px; font-family: 'Ubuntu'; font-size: 15px;">
-                            Hercules Plus
-                        </span>
-                        <button class="upgrade-btn" onclick="showLicenseModal('${tool.id}')">
-                            <i class="fas fa-credit-card"></i>
-                            <span>Upgrade license</span>
-                        </button>
-                    ` : `
-                       <span style="color: #10b981; font-family: 'Ubuntu'; font-size: 11px; display: inline-flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-check" style="font-size: 11px;"></i> 
-                            License active ${expiresAt ? `until ${formatDate(expiresAt)}` : 'perpetual'}
-                        </span>
-                    `}
-                </div>
-            ` : ''}
         </div>
     `;
 }

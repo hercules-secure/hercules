@@ -157,38 +157,47 @@
     // ============================================================
     // SELECT
     // ============================================================
-    function selectItem(id) {
-        const item = items.find(x => x.id === id);
-        if (!item) return;
+function selectItem(id) {
+    const item = items.find(x => x.id === id);
+    if (!item) return;
 
-        currentId = id;
-        const kind = item.kind || 'note';
+    currentId = id;
+    const kind = item.kind || 'note';
 
-        $('editorEmpty').style.display = 'none';
-        $('editorActive').style.display = 'flex';
+    $('editorEmpty').style.display = 'none';
+    $('editorActive').style.display = 'flex';
 
-        $('editorKind').textContent = kind === 'task' ? 'Task' : 'Note';
-        $('noteTitle').value = item.title || '';
-        $('noteBody').value = item.body || '';
+    // ИСПОЛЬЗУЕМ ВАШИ КЛЮЧИ (switch вместо kind)
+    const kindKey = kind === 'task' ? 'notes.switch.task' : 'notes.switch.notes';
+    $('editorKind').textContent = t(kindKey);
+    
+    // Обновляем data-i18n для смены языка на лету
+    $('editorKind').setAttribute('data-i18n', kindKey);
 
-        if (kind === 'task') {
-            $('taskFields').style.display = 'flex';
-            $('taskStatus').value = item.status || 'todo';
-            $('taskPriority').value = item.priority || 'medium';
-            $('taskAssignee').value = item.assignee || '';
-            $('taskDue').value = item.due || '';
+    $('noteTitle').value = item.title || '';
+    $('noteBody').value = item.body || '';
 
-            const badge = $('editorStatusBadge');
-            badge.style.display = 'inline-block';
-            badge.className = `editor-status-badge status-${item.status || 'todo'}`;
-            badge.textContent = statusLabel(item.status || 'todo');
-        } else {
-            $('taskFields').style.display = 'none';
-            $('editorStatusBadge').style.display = 'none';
-        }
+    if (kind === 'task') {
+        $('taskFields').style.display = 'flex';
+        $('taskStatus').value = item.status || 'todo';
+        $('taskPriority').value = item.priority || 'medium';
+        $('taskAssignee').value = item.assignee || '';
+        $('taskDue').value = item.due || '';
 
-        renderList();
+        const badge = $('editorStatusBadge');
+        badge.style.display = 'inline-block';
+        const currentStatus = item.status || 'todo';
+        badge.className = `editor-status-badge status-${currentStatus}`;
+        
+        // Переводим бейдж статуса (ключи совпадают с вашими)
+        badge.textContent = t(`notes.task.status.${currentStatus}`);
+    } else {
+        $('taskFields').style.display = 'none';
+        $('editorStatusBadge').style.display = 'none';
     }
+
+    renderList();
+}
 
     // ============================================================
     // TOGGLE DONE
