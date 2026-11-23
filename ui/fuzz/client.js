@@ -8,8 +8,6 @@ let specLoaded = false;
 let fuzzTaskId = null;
 let statusCheckInterval = null;
 
-
-
 function resetStartButton() {
     const startBtn = document.getElementById('start-btn');
     if (startBtn) {
@@ -51,7 +49,6 @@ function validateStartButton() {
     startBtn.disabled = !isActive;
     startBtn.classList.toggle('active', isActive);
 }
-
 
 function resetAllState() {
     resetAllProgress();
@@ -195,8 +192,6 @@ function getAuthHeaders() {
     return {};
 }
 
-
-
 async function startFuzzing() {
     
     const startBtn = document.getElementById('start-btn');
@@ -208,14 +203,12 @@ async function startFuzzing() {
     const modeElement = document.querySelector('.mode-btn-mode.active');
     const mode = modeElement?.getAttribute('data-mode') === 'metla' ? 1 : 0;
     
-
     // === MODE 1 - METLA ===
     if (mode === 1) {
         
         const metlaTargetUrl = document.getElementById('specUrl');
         const targetUrl = metlaTargetUrl?.value.trim();
         
-       
         if (!targetUrl) {
             showValidationMessage('Enter application URL', 'invalid');
             return;
@@ -301,7 +294,6 @@ async function startFuzzing() {
         return;
     }
     
-    
     // === MODE 0 - DOMOVOY ===
     if (!url && !selectedFile) {
         showValidationMessage('Enter URL or select a file', 'invalid');
@@ -326,7 +318,7 @@ async function startFuzzing() {
         } else {
             throw new Error('No specification source');
         }
-        console.log(mode)
+        
         const response = await fetch('/api/fuzz', {
             method: 'POST',
             headers: getAuthHeaders(),
@@ -458,7 +450,79 @@ function handleFileSelect(file) {
         if (fileInfo) fileInfo.style.display = 'flex';
         
         showValidationMessage('File selected: ' + file.name, 'success');
+        
+        parseSpecificationLocal(file);
+
         validateStartButton();
+    }
+}
+
+async function parseSpecificationLocal(file) {
+    try {
+        const text = await file.text();
+        let spec;
+
+        if (file.name.endsWith('.json')) {
+            spec = JSON.parse(text);
+        } else {
+            if (typeof jsyaml === 'undefined') {
+                throw new Error('Библиотека jsyaml не найдена!');
+            }
+            spec = jsyaml.load(text);
+        }
+
+        let format = 'Unknown';
+        if (spec.swagger === '2.0') format = 'Swagger 2.0';
+        else if (spec.openapi && spec.openapi.startsWith('3.')) format = 'OpenAPI 3.x';
+
+        const titleEl = document.getElementById('specTitle');
+        const versionEl = document.getElementById('specVersion');
+        const formatEl = document.getElementById('specFormat');
+
+        if (titleEl) titleEl.textContent = (spec.info && spec.info.title) || 'Unknown';
+        if (versionEl) versionEl.textContent = (spec.info && spec.info.version) || '?';
+        if (formatEl) formatEl.textContent = format;
+
+        let count = 0;
+        const container = document.getElementById('specEndpoints');
+        if (container) {
+            container.innerHTML = '';
+            const paths = spec.paths || {};
+
+            for (const [path, methods] of Object.entries(paths)) {
+                for (const [method] of Object.entries(methods)) {
+                    if (['get', 'post', 'put', 'delete', 'patch'].includes(method.toLowerCase())) {
+                        const div = document.createElement('div');
+                        div.className = 'endpoint-item';
+                        div.innerHTML = `
+                            <span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span>
+                            <span style="color: var(--text-secondary);">${escapeHtml(path)}</span>
+                        `;
+                        container.appendChild(div);
+                        count++;
+                    }
+                }
+            }
+            if (count === 0) {
+                container.innerHTML = '<div class="endpoint-item">No endpoints found</div>';
+            }
+        }
+
+        const preview = document.getElementById('specPreview');
+        if (preview) preview.classList.add('active');
+
+        const baseUrlInput = document.getElementById('baseUrl');
+        if (baseUrlInput && spec.servers && spec.servers.length > 0) {
+            baseUrlInput.value = spec.servers[0].url.replace(/\/$/, '');
+        } else if (baseUrlInput && spec.host) {
+            const scheme = (spec.schemes && spec.schemes[0]) || 'https';
+            baseUrlInput.value = `${scheme}://${spec.host}${spec.basePath || ''}`.replace(/\/$/, '');
+        }
+
+        currentSpec = spec;
+
+    } catch (error) {
+        showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
     }
 }
 
@@ -573,8 +637,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     startBtn.disabled = true;
 });
-
-
 
 window.startFuzzing = startFuzzing;
 window.checkFuzzStatus = checkFuzzStatus;

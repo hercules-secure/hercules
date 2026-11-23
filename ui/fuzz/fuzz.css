@@ -760,12 +760,32 @@ a:hover, a:focus, a:active, a:visited { text-decoration: none; color: inherit; }
 
 .spec-endpoints {
     display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    max-height: 200px;
-    overflow-y: auto;
+    flex-wrap: wrap;          /* Разрешаем перенос на новые строки */
+    align-content: flex-start;
+    gap: 8px;
+    
+    /* Вот тут задаем ограничение высоты и включаем скролл */
+    max-height: 120px;        /* Высота примерно на 3-4 строки */
+    overflow-y: auto;         /* Вертикальный скролл, если не влезает */
+    padding-right: 4px;       /* Отступ, чтобы скроллбар не прилипал к тексту */
 }
 
+/* Делаем скроллбар аккуратным */
+.spec-endpoints::-webkit-scrollbar {
+    width: 6px;
+}
+.spec-endpoints::-webkit-scrollbar-track {
+    background: transparent;
+}
+.spec-endpoints::-webkit-scrollbar-thumb {
+    background: var(--border-hover);
+    border-radius: 10px;
+}
+.spec-endpoints::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+/* Стили для самих плашек (оставляем как было) */
 .spec-endpoints .endpoint-item {
     display: flex;
     align-items: center;

@@ -412,7 +412,271 @@ function startProgressBars() {
     startProgressEmulator();
 }
 
-// Экспортируем для использования
+// ============================================================
+// ЛОГИКА ПАРСИНГА СПЕЦИФИКАЦИИ (Перенесено из client.js)
+// ============================================================
+
+// async function parseSpecification(file) {
+//     console.log("[DEBUG] parseSpecification НАЧАЛАСЬ");
+    
+//     try {
+//         const text = await file.text();
+//         let spec;
+        
+//         if (file.name.endsWith('.json')) {
+//             spec = JSON.parse(text);
+//         } else {
+//             if (typeof jsyaml === 'undefined') {
+//                 throw new Error('Библиотека jsyaml не найдена!');
+//             }
+//             spec = jsyaml.load(text);
+//         }
+        
+//         currentSpec = spec;
+        
+//         // Определяем формат
+//         let format = 'Unknown';
+//         if (spec.swagger === '2.0') format = 'Swagger 2.0';
+//         else if (spec.openapi?.startsWith('3.')) format = 'OpenAPI 3.x';
+        
+//         // Заполняем UI
+//         const specTitle = document.getElementById('specTitle');
+//         const specVersion = document.getElementById('specVersion');
+//         const specFormat = document.getElementById('specFormat');
+        
+//         if (specTitle) specTitle.textContent = spec.info?.title || 'Unknown';
+//         if (specVersion) specVersion.textContent = spec.info?.version || '?';
+//         if (specFormat) specFormat.textContent = format;
+        
+//         // Рендерим эндпоинты
+//         const endpointsContainer = document.getElementById('specEndpoints');
+//         if (endpointsContainer) {
+//             endpointsContainer.innerHTML = '';
+//             const paths = spec.paths || {};
+//             let count = 0;
+            
+//             for (const [path, methods] of Object.entries(paths)) {
+//                 for (const [method] of Object.entries(methods)) {
+//                     if (['get', 'post', 'put', 'delete', 'patch'].includes(method.toLowerCase())) {
+//                         const div = document.createElement('div');
+//                         div.className = 'endpoint-item';
+//                         div.innerHTML = `
+//                             <span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span>
+//                             <span style="color: var(--text-secondary);">${escapeHtml(path)}</span>
+//                         `;
+//                         endpointsContainer.appendChild(div);
+//                         count++;
+//                     }
+//                 }
+//             }
+//             if (count === 0) endpointsContainer.innerHTML = '<div class="endpoint-item">No endpoints found</div>';
+//         }
+        
+//         // Показываем блок
+//         const specPreview = document.getElementById('specPreview');
+//         if (specPreview) specPreview.classList.add('active');
+        
+//         // Обновляем Base URL
+//         const baseUrlInput = document.getElementById('baseUrl');
+//         if (baseUrlInput && spec.servers && spec.servers.length > 0) {
+//             baseUrlInput.value = spec.servers[0].url.replace(/\/$/, '');
+//         }
+        
+//         showToolNotification('Спецификация успешно загружена', 'success');
+        
+//     } catch (error) {
+//         console.error('Ошибка парсинга:', error);
+//         alert('Ошибка парсинга файла:\n' + error.message);
+//     }
+// }
+
+// async function handleFile(file, source = 'file') {
+//     console.log("[DEBUG] handleFile вызвана для файла:", file.name);
+//     if (!file) return;
+    
+//     selectedFile = file;
+    
+//     const fileInfo = document.getElementById('fileInfo');
+//     const fileName = document.getElementById('fileName');
+//     const fileSize = document.getElementById('fileSize');
+    
+//     if (fileName) fileName.textContent = file.name;
+//     if (fileSize) fileSize.textContent = (file.size / 1024).toFixed(2) + ' KB';
+    
+//     if (fileInfo) fileInfo.classList.add('active');
+    
+//     // Запускаем парсинг
+//     //await parseSpecification(file);
+// }
+
+// console.log("=== UTILS.JS ЗАГРУЖЕН, ФУНКЦИИ ЭКСПОРТИРОВАНЫ ===");
+// alert("Скрипт utils.js загружен! Функция parseSpecification: " + (typeof parseSpecification));
+
+// window.handleFile = handleFile;
+// window.parseSpecification = parseSpecification;
+
+// ============================================================
+// ЛОГИКА ЗАГРУЗКИ И ПАРСИНГА СПЕЦИФИКАЦИИ
+// ============================================================
+
+window.parseSpecification = async function(file) {
+    try {
+        console.log("[DEBUG] Парсинг файла:", file.name);
+        const text = await file.text();
+        let spec;
+
+        if (file.name.endsWith('.json')) {
+            spec = JSON.parse(text);
+        } else {
+            if (typeof jsyaml === 'undefined') {
+                throw new Error('Библиотека jsyaml не найдена!');
+            }
+            spec = jsyaml.load(text);
+        }
+
+        // Определяем формат
+        let format = 'Unknown';
+        if (spec.swagger === '2.0') format = 'Swagger 2.0';
+        else if (spec.openapi && spec.openapi.startsWith('3.')) format = 'OpenAPI 3.x';
+
+        // Заполняем UI
+        const titleEl = document.getElementById('specTitle');
+        const versionEl = document.getElementById('specVersion');
+        const formatEl = document.getElementById('specFormat');
+
+        if (titleEl) titleEl.textContent = (spec.info && spec.info.title) || 'Unknown';
+        if (versionEl) versionEl.textContent = (spec.info && spec.info.version) || '?';
+        if (formatEl) formatEl.textContent = format;
+
+        // Рендерим эндпоинты
+        const container = document.getElementById('specEndpoints');
+        if (container) {
+            container.innerHTML = '';
+            const paths = spec.paths || {};
+            let count = 0;
+
+            for (const [path, methods] of Object.entries(paths)) {
+                for (const [method] of Object.entries(methods)) {
+                    if (['get', 'post', 'put', 'delete', 'patch'].includes(method.toLowerCase())) {
+                        const div = document.createElement('div');
+                        div.className = 'endpoint-item';
+                        div.innerHTML = `
+                            <span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span>
+                            <span style="color: var(--text-secondary);">${escapeHtml(path)}</span>
+                        `;
+                        container.appendChild(div);
+                        count++;
+                    }
+                }
+            }
+            if (count === 0) {
+                container.innerHTML = '<div class="endpoint-item">No endpoints found</div>';
+            }
+        }
+
+        // Показываем блок
+        const preview = document.getElementById('specPreview');
+        if (preview) preview.classList.add('active');
+
+        // Обновляем Base URL, если есть
+        const baseUrlInput = document.getElementById('baseUrl');
+        if (baseUrlInput && spec.servers && spec.servers.length > 0) {
+            baseUrlInput.value = spec.servers[0].url.replace(/\/$/, '');
+        } else if (baseUrlInput && spec.host) {
+            const scheme = (spec.schemes && spec.schemes[0]) || 'https';
+            baseUrlInput.value = `${scheme}://${spec.host}${spec.basePath || ''}`.replace(/\/$/, '');
+        }
+
+        // Сохраняем в глобальную переменную для дальнейшего использования
+        window.currentSpec = spec;
+        
+        console.log("[DEBUG] Парсинг успешно завершен. Найдено эндпоинтов:", count);
+
+    } catch (error) {
+        console.error("[DEBUG] Ошибка парсинга:", error);
+        showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
+    }
+};
+
+window.parseSpecification = async function(file) {
+    try {
+        console.log("[DEBUG] Парсинг файла:", file.name);
+        const text = await file.text();
+        let spec;
+
+        if (file.name.endsWith('.json')) {
+            spec = JSON.parse(text);
+        } else {
+            if (typeof jsyaml === 'undefined') {
+                throw new Error('Библиотека jsyaml не найдена!');
+            }
+            spec = jsyaml.load(text);
+        }
+
+        // Определяем формат
+        let format = 'Unknown';
+        if (spec.swagger === '2.0') format = 'Swagger 2.0';
+        else if (spec.openapi && spec.openapi.startsWith('3.')) format = 'OpenAPI 3.x';
+
+        // Заполняем UI
+        const titleEl = document.getElementById('specTitle');
+        const versionEl = document.getElementById('specVersion');
+        const formatEl = document.getElementById('specFormat');
+
+        if (titleEl) titleEl.textContent = (spec.info && spec.info.title) || 'Unknown';
+        if (versionEl) versionEl.textContent = (spec.info && spec.info.version) || '?';
+        if (formatEl) formatEl.textContent = format;
+
+        // Рендерим эндпоинты
+        let count = 0; // Вынесли объявление наверх
+        const container = document.getElementById('specEndpoints');
+        if (container) {
+            container.innerHTML = '';
+            const paths = spec.paths || {};
+
+            for (const [path, methods] of Object.entries(paths)) {
+                for (const [method] of Object.entries(methods)) {
+                    if (['get', 'post', 'put', 'delete', 'patch'].includes(method.toLowerCase())) {
+                        const div = document.createElement('div');
+                        div.className = 'endpoint-item';
+                        div.innerHTML = `
+                            <span class="method-badge method-${method.toUpperCase()}">${method.toUpperCase()}</span>
+                            <span style="color: var(--text-secondary);">${escapeHtml(path)}</span>
+                        `;
+                        container.appendChild(div);
+                        count++;
+                    }
+                }
+            }
+            if (count === 0) {
+                container.innerHTML = '<div class="endpoint-item">No endpoints found</div>';
+            }
+        }
+
+        // Показываем блок
+        const preview = document.getElementById('specPreview');
+        if (preview) preview.classList.add('active');
+
+        // Обновляем Base URL, если есть
+        const baseUrlInput = document.getElementById('baseUrl');
+        if (baseUrlInput && spec.servers && spec.servers.length > 0) {
+            baseUrlInput.value = spec.servers[0].url.replace(/\/$/, '');
+        } else if (baseUrlInput && spec.host) {
+            const scheme = (spec.schemes && spec.schemes[0]) || 'https';
+            baseUrlInput.value = `${scheme}://${spec.host}${spec.basePath || ''}`.replace(/\/$/, '');
+        }
+
+        // Сохраняем в глобальную переменную для дальнейшего использования
+        window.currentSpec = spec;
+        
+        console.log("[DEBUG] Парсинг успешно завершен. Найдено эндпоинтов:", count);
+
+    } catch (error) {
+        console.error("[DEBUG] Ошибка парсинга:", error);
+        showValidationMessage('Ошибка парсинга: ' + error.message, 'invalid');
+    }
+};
+
 window.startProgressEmulator = startProgressEmulator;
 window.stopProgressEmulator = stopProgressEmulator;
 window.startProgressBars = startProgressBars;
