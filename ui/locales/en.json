@@ -71,7 +71,7 @@
   "notes.task.due.label": "Due date",
   "notes.body.placeholder": "Write in Markdown...\n\n# Heading\n- list item\n`code`",
   "palette.page.title":"Modeling and Visualization",
-    "palette.btn.start":"Start",
+  "palette.btn.start":"Start",
     "palette.btn.end":"Stop",
       "palette.btn.or": "Or",
   "palette.btn.if": "If",

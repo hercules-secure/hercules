@@ -170,8 +170,8 @@
   window.openEditModal = function(id) {
     const asset = allAssets.find(a => a.id === id);
     if (!asset) return;
-    document.getElementById('formModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit asset';
-    document.getElementById('formSubmitBtn').innerHTML = '<i class="fas fa-save"></i> Update';
+    // document.getElementById('formModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit asset';
+    // document.getElementById('formSubmitBtn').innerHTML = '<i class="fas fa-save"></i> Update';
     document.getElementById('formTeam').value = asset.team || '';
     document.getElementById('formName').value = asset.name;
     document.getElementById('formOwner').value = asset.owner || '';
@@ -537,8 +537,7 @@
     parsedFileData = null;
     if (fileInput) fileInput.value = '';
     if (fileError) fileError.style.display = 'none';
-    if (fileNext) fileNext.disabled = true;
-    if (drop) drop.querySelector('p').textContent = 'Click or drag file here';
+    if (fileNext) fileNext.disabled = true; 
     if (gitError) gitError.style.display = 'none';
     const urlEl = document.getElementById('assetGitUrl'); if (urlEl) urlEl.value = '';
     const brEl = document.getElementById('assetGitBranch'); if (brEl) brEl.value = '';
