@@ -447,141 +447,7 @@ class FileUploader {
     }
 }
 
-// function initSASTUploader(herculesApp) {
-//     const uploadArea = document.getElementById('uploadArea');
-//     if (!uploadArea) return null;
 
-//     const formatFileSize = (bytes) => {
-//         if (bytes < 1024) return bytes + ' B';
-//         if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
-//         return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
-//     };
-
-//     const uploader = new FileUploader({
-//         acceptArchive: '.zip,.tar,.gz,.tgz,.7z',
-//         maxSize: 2000 * 1024 * 1024,
-//         compressOnClient: true,
-//         onFileSelected: (file) => {
-//             const app = herculesApp || window.herculesApp;
-
-//             if (app) {
-//                 app.selectedFile = file;
-//                 app.selectedProject = null;
-//                 app.currentArchiveId = null;
-
-//                 if (app.repoInput) {
-//                     app.repoInput.value = '';
-//                     if (app.showValidationMessage) app.showValidationMessage('', '');
-//                     app.isUrlLocked = false;
-//                     app.repoInput.disabled = false;
-//                     app.repoInput.style.backgroundColor = '';
-//                     app.repoInput.style.opacity = '';
-//                 }
-
-//                 const fileName = document.getElementById('fileName');
-//                 const fileSize = document.getElementById('fileSize');
-//                 const fileInfo = document.getElementById('fileInfo');
-
-//                 if (fileName) fileName.textContent = file.name;
-//                 if (fileSize) fileSize.textContent = formatFileSize(file.size);
-//                 if (fileInfo) fileInfo.classList.add('active');
-
-//                 if (app.startButton) {
-//                     app.startButton.disabled = false;
-//                     app.startButton.classList.add('active');
-//                 }
-
-//                 if (typeof showToolNotification === 'function') {
-//                     showToolNotification(`File selected: ${file.name}`, 'success');
-//                 }
-//             } else if (typeof showToolNotification === 'function') {
-//                 showToolNotification('herculesApp not found', 'error');
-//             }
-//         },
-//         onError: (error) => {
-//             if (typeof showToolNotification === 'function') {
-//                 showToolNotification(error, 'error');
-//             } else {
-//                 console.error('[FileUploader]', error);
-//             }
-//         }
-//     });
-
-//     uploader.attachToElement(uploadArea, { menuPosition: 'bottom' });
-
-//     return uploader;
-// }
-
-// function initFUZZUploader() {
-//     const uploadArea = document.getElementById('uploadArea');
-//     if (!uploadArea) return null;
-
-//     const errorHandler = new HerculesErrorHandler('fuzz');
-
-//     const uploader = new FileUploader({
-//         acceptArchive: '.json,.yaml,.yml',
-//         acceptFolder: false,
-//         button: document.getElementById('start-url-btn'),
-//         onFileSelected: (file) => {
-//             if (typeof showToolNotification === 'function') {
-//                 showToolNotification(`Fuzz testing: ${file.name}...`);
-//             }
-
-//             if (window.herculesApp) {
-//                 window.herculesApp.updateTaskStatus('1.1', 'in-progress');
-//                 window.herculesApp.animateProgress('1.1', 100, 800, () => {
-//                     window.herculesApp.updateTaskStatus('1.1', 'completed');
-//                 });
-//             }
-
-//             const formData = new FormData();
-//             formData.append('spec', file);
-//             formData.append('baseUrl', document.getElementById('baseUrl')?.value || '');
-
-//             fetch('/api/fuzz', {
-//                 method: 'POST',
-//                 body: formData
-//             }).then(async res => {
-//                 if (res.status === 429) {
-//                     const data = await res.json();
-//                     await errorHandler.handleRateLimit(data, { button: document.getElementById('start-url-btn') });
-//                     throw new Error('RATE_LIMIT_EXCEEDED');
-//                 }
-//                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
-//                 return res.json();
-//             }).then(result => {
-//                 if (window.herculesApp) {
-//                     window.herculesApp.updateTaskStatus('2.1', 'in-progress');
-//                     window.herculesApp.animateProgress('2.1', 100, 2000, () => {
-//                         window.herculesApp.updateTaskStatus('2.1', 'completed');
-//                         window.herculesApp.updateTaskStatus('2.2', 'completed');
-//                     });
-//                 }
-
-//                 if (typeof displayFUZZResults === 'function') {
-//                     displayFUZZResults(result);
-//                 }
-//                 if (typeof showToolNotification === 'function') {
-//                     showToolNotification('Fuzzing completed', 'success');
-//                 }
-
-//             }).catch(error => {
-//                 if (error.message !== 'RATE_LIMIT_EXCEEDED') {
-//                     if (typeof showToolNotification === 'function') {
-//                         showToolNotification('Error: ' + error.message, 'error');
-//                     }
-//                 }
-//                 if (window.herculesApp) {
-//                     window.herculesApp.updateTaskStatus('2.1', 'error');
-//                 }
-//             });
-//         }
-//     });
-
-//     uploader.attachToElement(uploadArea);
-
-//     return uploader;
-// }
 
 function initSCAUploader() {
     const uploadArea = document.getElementById('uploadArea');
@@ -592,7 +458,7 @@ function initSCAUploader() {
         button: document.getElementById('start-btn'),
         onFileSelected: async (file) => {
             if (typeof showToolNotification === 'function') {
-                showToolNotification(`Uploading and analyzing: ${file.name}...`);
+                showToolNotification(t('sca.page.alert.upload') + ': ' + file.name);
             }
 
             if (window.herculesApp) {
