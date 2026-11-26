@@ -155,36 +155,38 @@ function normalizeSev(s) {
         <div class="vuln-stats" style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
             <div class="summary-card critical" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #dc2626;">${vulnerabilityStats.critical}</div>
-                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">Critical</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.critical')}</div>
             </div>
             <div class="summary-card high" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #f97316;">${vulnerabilityStats.high}</div>
-                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">High</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.high')}</div>
             </div>
             <div class="summary-card medium" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #eab308;">${vulnerabilityStats.medium}</div>
-                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">Medium</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.medium')}</div>
             </div>
             <div class="summary-card low" style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                 <div class="card-value" style="font-size: 28px; font-weight: 700; color: #22c55e;">${vulnerabilityStats.low}</div>
-                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">Low</div>
+                <div class="card-label" style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.low')}</div>
             </div>
         </div>
 
-        <div class="filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-            <input type="text" id="vulnSearch" placeholder="Search by component or CVE..." class="search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); border-radius: 5px; outline: none;">
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="filter-btn active" data-filter="all">All (${allVulnerabilities.length})</button>
-                <button class="filter-btn" data-filter="critical">Critical (${allVulnerabilities.filter(v => v.severity === 'critical').length})</button>
-                <button class="filter-btn" data-filter="high">High (${allVulnerabilities.filter(v => v.severity === 'high').length})</button>
-                <button class="filter-btn" data-filter="medium">Medium (${allVulnerabilities.filter(v => v.severity === 'medium').length})</button>
-                <button class="filter-btn" data-filter="low">Low (${allVulnerabilities.filter(v => v.severity === 'low').length})</button>
-                <button class="filter-btn" data-filter="reachable">Reachable (${allVulnerabilities.filter(v => v.reachable === true).length})</button>
-            </div>
-        </div>
+
+<div class="filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
+    <input type="text" id="vulnSearch" placeholder="${t('blender.modal.searchPlaceholder')}" class="search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); border-radius: 5px; outline: none;">
+    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <button class="filter-btn active" data-filter="all">${t('blender.modal.all')} (${allVulnerabilities.length})</button>
+        <button class="filter-btn" data-filter="critical">${t('blender.modal.critical')} (${allVulnerabilities.filter(v => v.severity === 'critical').length})</button>
+        <button class="filter-btn" data-filter="high">${t('blender.modal.high')} (${allVulnerabilities.filter(v => v.severity === 'high').length})</button>
+        <button class="filter-btn" data-filter="medium">${t('blender.modal.medium')} (${allVulnerabilities.filter(v => v.severity === 'medium').length})</button>
+        <button class="filter-btn" data-filter="low">${t('blender.modal.low')} (${allVulnerabilities.filter(v => v.severity === 'low').length})</button>
+        <button class="filter-btn" data-filter="reachable">${t('blender.modal.reachable')} (${allVulnerabilities.filter(v => v.reachable === true).length})</button>
+    </div>
+</div>
+
     `;
 
-    html += `<h4 style="margin-bottom: 16px; color: var(--text);">Dependencies found: ${dependencies.length}</h4>`;
+   html += `<h4 style="margin-bottom: 16px; color: var(--text);">${t('blender.modal.dependenciesFound')}: ${dependencies.length}</h4>`;
 
     for (const [manager, items] of Object.entries(grouped)) {
         html += `
@@ -199,13 +201,14 @@ function normalizeSev(s) {
                         <thead>
                             <tr style="background: var(--bg-input);">
                                 <th style="width: 30px; padding: 10px;"></th>
-                                <th style="padding: 10px; text-align: left;">Package</th>
-                                <th style="padding: 10px; text-align: left;">Version</th>
-                                <th style="padding: 10px; text-align: left;">Source</th>
-                                <th style="padding: 10px; text-align: center;">Vulnerabilities</th>
-                                <th style="padding: 10px; text-align: left;">License</th>
-                                <th style="padding: 10px; text-align: center;">Reachable</th>
+                                <th style="padding: 10px; text-align: left;">${t('blender.modal.package')}</th>
+                                <th style="padding: 10px; text-align: left;">${t('blender.modal.version')}</th>
+                                <th style="padding: 10px; text-align: left;">${t('blender.modal.source')}</th>
+                                <th style="padding: 10px; text-align: center;">${t('blender.modal.vulnerabilities')}</th>
+                                <th style="padding: 10px; text-align: left;">${t('blender.modal.license')}</th>
+                                <th style="padding: 10px; text-align: center;">${t('blender.modal.reachable')}</th>
                             </tr>
+
                         </thead>
                         <tbody id="vulnTableBody">
                             ${items.map((dep, idx) => {
@@ -249,31 +252,31 @@ function normalizeSev(s) {
                                 <tr class="dep-details-row" data-details-idx="${idx}" data-details-manager="${manager}" style="display: none; background: var(--bg-input);">
                                     <td colspan="7" style="padding: 15px 20px;">
                                         <div style="background: var(--bg-card); border-radius: 8px; padding: 16px; border: 1px solid var(--border); color: var(--text);">
-                                            <div><strong>Dependency Details</strong></div>
+                                            <div><strong>${t('blender.modal.dependencyDetails')}</strong></div>
                                             <div style="margin-top: 12px;">
-                                                <strong>License:</strong> ${escapeHtml(dep.license || 'UNKNOWN')}
+                                                <strong>${t('blender.modal.license')}:</strong> ${escapeHtml(dep.license || 'UNKNOWN')}
                                                 ${dep.licenseInfo ? `<span style="margin-left: 12px; padding: 2px 8px; border-radius: 12px; font-size: 11px; background: ${dep.licenseInfo.risk === 'high' ? '#fee2e2' : '#dcfce7'}; color: ${dep.licenseInfo.risk === 'high' ? '#dc2626' : '#16a34a'};">${dep.licenseInfo.type || 'unknown'}</span>` : ''}
                                             </div>
-                                            ${dep.licenseInfo?.recommendation ? `<div style="margin-top: 8px;"><strong>Recommendation:</strong> ${escapeHtml(dep.licenseInfo.recommendation)}</div>` : ''}
+                                            ${dep.licenseInfo?.recommendation ? `<div style="margin-top: 8px;"><strong>${t('blender.modal.recommendation')}:</strong> ${escapeHtml(dep.licenseInfo.recommendation)}</div>` : ''}
                                             ${dep.usageFiles && dep.usageFiles.length > 0 ? `
                                                 <div style="margin-top: 12px;">
-                                                    <strong>Usage files (${dep.usageFiles.length}):</strong>
+                                                    <strong>${t('blender.modal.usageFiles')} (${dep.usageFiles.length}):</strong>
                                                     <ul style="margin-top: 8px; margin-left: 8px; list-style: none; padding-left: 0; max-height: 200px; overflow-y: auto;">
                                                         ${dep.usageFiles.map(f => `<li style="font-family: monospace; font-size: 12px; padding: 4px 0;">${escapeHtml(f)}</li>`).join('')}
                                                     </ul>
                                                 </div>
                                                 ` : dep.isReachable === true ? `
                                                 <div style="margin-top: 12px; padding: 8px; background: #fee2e2; border-radius: 6px; color: #dc2626;">
-                                                    <i class="fas fa-exclamation-triangle"></i> Vulnerability is reachable, but no specific usage files found
+                                                    <i class="fas fa-exclamation-triangle"></i> ${t('blender.modal.reachableNoFiles')}
                                                 </div>
                                                 ` : dep.isReachable === false ? `
                                                 <div style="margin-top: 12px; padding: 8px; background: #dcfce7; border-radius: 6px; color: #16a34a;">
-                                                    <i class="fas fa-check-circle"></i> Vulnerability is not reachable - component is not used in the code
+                                                    <i class="fas fa-check-circle"></i> ${t('blender.modal.notReachable')}
                                                 </div>
                                                 ` : ''}
                                                 ${dep.vulnerabilities && dep.vulnerabilities.vulnerabilities ? `
                                                 <div style="margin-top: 12px;">
-                                                    <strong>Found CVE (${dep.vulnerabilities.vulnerabilities.length}):</strong>
+                                                    <strong>${t('blender.modal.foundCve')} (${dep.vulnerabilities.vulnerabilities.length}):</strong>
                                                     <div style="max-height: 300px; overflow-y: auto; margin-top: 8px;">
                                                         ${dep.vulnerabilities.vulnerabilities.map(v => `
                                                             <div style="padding: 6px 0; border-bottom: 1px solid var(--border);">
@@ -502,18 +505,18 @@ function generateCodeHTML(report) {
                                 </span>
                             </div>
                             <div style="margin-bottom: 12px;">
-                                <strong>Description:</strong>
-                                <p style="margin-top: 4px; color: var(--text-dim);">${escapeHtmlStatic(issue.message || 'No description')}</p>
+                                <strong>${t('blender.modal.description')}:</strong>
+                                <p style="margin-top: 4px; color: var(--text-dim);">${escapeHtmlStatic(issue.message || t('blender.modal.noDescription'))}</p>
                             </div>
                             <div style="margin-bottom: 12px;">
-                                <strong>Location:</strong>
+                                <strong>${t('blender.modal.location')}:</strong>
                                 <div style="margin-top: 4px; font-family: monospace; font-size: 12px; background: var(--bg-input); padding: 6px 10px; border-radius: 4px;">
                                     ${escapeHtmlStatic(fullPath)}:${line}
                                 </div>
                             </div>
                             ${codeBlock && codeBlock.lines ? `
                                 <div style="margin-bottom: 12px;">
-                                    <strong>Code block:</strong>
+                                    <strong>${t('blender.modal.codeBlock')}:</strong>
                                     <pre style="margin-top: 8px; background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px;">${codeBlock.lines.map(function(l) {
                                         const prefix = l.isVulnerable ? '→' : ' ';
                                         const lineNum = String(l.number).padStart(4, ' ');
@@ -523,19 +526,20 @@ function generateCodeHTML(report) {
                                 </div>
                             ` : issue.snippet ? `
                                 <div style="margin-bottom: 12px;">
-                                    <strong>Code snippet:</strong>
+                                    <strong>${t('blender.modal.codeSnippet')}:</strong>
                                     <pre style="margin-top: 8px; background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; font-size: 12px;">${escapeHtmlStatic(issue.snippet)}</pre>
                                 </div>
                             ` : ''}
                             ${issue.recommendation ? `
                                 <div style="margin-top: 12px; padding: 12px; background: rgba(59,130,246,0.08); border-left: 3px solid var(--accent); border-radius: 4px;">
-                                    <strong style="color: var(--accent);"><i class="fas fa-lightbulb"></i> Recommendation:</strong>
+                                    <strong style="color: var(--accent);"><i class="fas fa-lightbulb"></i> ${t('blender.modal.recommendation')}:</strong>
                                     <p style="margin-top: 4px; color: var(--text);">${escapeHtmlStatic(issue.recommendation)}</p>
                                 </div>
                             ` : ''}
                         </div>
                     </td>
                 </tr>
+
             `;
         }
         return html;
@@ -585,38 +589,39 @@ function generateCodeHTML(report) {
             <div style="display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;">
                 <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${statistics.critical}</div>
-                    <div style="font-size: 12px; color: var(--text-dim);">Critical</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.critical')}</div>
                 </div>
                 <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #f97316;">${statistics.high}</div>
-                    <div style="font-size: 12px; color: var(--text-dim);">High</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.high')}</div>
                 </div>
                 <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #eab308;">${statistics.medium}</div>
-                    <div style="font-size: 12px; color: var(--text-dim);">Medium</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.medium')}</div>
                 </div>
                 <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #22c55e;">${statistics.low}</div>
-                    <div style="font-size: 12px; color: var(--text-dim);">Low</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.low')}</div>
                 </div>
                 <div style="flex: 1; background: var(--bg-input); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border);">
                     <div style="font-size: 28px; font-weight: 700; color: #3b82f6;">${statistics.info}</div>
-                    <div style="font-size: 12px; color: var(--text-dim);">Info</div>
+                    <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.info')}</div>
                 </div>
             </div>
 
             <div class="sast-filter-bar" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-                <input type="text" id="sast-search-${uniqueId}" placeholder="Search by file, rule or description..." class="sast-search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); border-radius: 5px; outline: none;">
+                <input type="text" id="sast-search-${uniqueId}" placeholder="${t('blender.modal.sastSearchPlaceholder')}" class="sast-search-box" style="flex: 1; min-width: 200px; padding: 8px 12px; border: 1px solid var(--border); background: var(--bg-input); color: var(--text); border-radius: 5px; outline: none;">
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                    <button class="sast-filter-btn active" data-filter="all">All (${statistics.total})</button>
-                    <button class="sast-filter-btn" data-filter="critical">Critical (${statistics.critical})</button>
-                    <button class="sast-filter-btn" data-filter="high">High (${statistics.high})</button>
-                    <button class="sast-filter-btn" data-filter="medium">Medium (${statistics.medium})</button>
-                    <button class="sast-filter-btn" data-filter="low">Low (${statistics.low})</button>
-                    <button class="sast-filter-btn" data-filter="info">Info (${statistics.info})</button>
+                    <button class="sast-filter-btn active" data-filter="all">${t('blender.modal.all')} (${statistics.total})</button>
+                    <button class="sast-filter-btn" data-filter="critical">${t('blender.modal.critical')} (${statistics.critical})</button>
+                    <button class="sast-filter-btn" data-filter="high">${t('blender.modal.high')} (${statistics.high})</button>
+                    <button class="sast-filter-btn" data-filter="medium">${t('blender.modal.medium')} (${statistics.medium})</button>
+                    <button class="sast-filter-btn" data-filter="low">${t('blender.modal.low')} (${statistics.low})</button>
+                    <button class="sast-filter-btn" data-filter="info">${t('blender.modal.info')} (${statistics.info})</button>
                 </div>
                 ${filterBarHtml}
             </div>
+
 
             ${filterModalHtml}
 
@@ -625,11 +630,11 @@ function generateCodeHTML(report) {
                     <thead>
                         <tr style="background: var(--bg-input);">
                             <th style="width: 30px; padding: 10px;"></th>
-                            <th style="padding: 10px; text-align: left;">Severity</th>
-                            <th style="padding: 10px; text-align: left;">Rule</th>
-                            <th style="padding: 10px; text-align: left;">Description</th>
-                            <th style="padding: 10px; text-align: left;">File</th>
-                            <th style="padding: 10px; text-align: center;">Line</th>
+                            <th style="padding: 10px; text-align: left;">${t('blender.modal.severity')}</th>
+                            <th style="padding: 10px; text-align: left;">${t('blender.modal.rule')}</th>
+                            <th style="padding: 10px; text-align: left;">${t('blender.modal.description')}</th>
+                            <th style="padding: 10px; text-align: left;">${t('blender.modal.file')}</th>
+                            <th style="padding: 10px; text-align: center;">${t('blender.modal.line')}</th>
                         </tr>
                     </thead>
                     <tbody id="sast-table-body-${uniqueId}">
@@ -829,46 +834,46 @@ function generateSummaryHTML(report) {
         <div class="stats-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
             <div class="stat-card" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;">
                 <div class="stat-number" style="font-size: 32px; font-weight: bold; color: var(--accent);">${scaStats.totalDependencies || 0}</div>
-                <div class="stat-label" style="font-size: 12px; color: var(--text-dim);">Dependencies</div>
+                <div class="stat-label" style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.dependencies')}</div>
             </div>
             <div class="stat-card" style="background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center;">
                 <div class="stat-number" style="font-size: 32px; font-weight: bold; color: var(--accent);">${sastIssues.length}</div>
-                <div class="stat-label" style="font-size: 12px; color: var(--text-dim);">SAST issues</div>
+                <div class="stat-label" style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.sastIssues')}</div>
             </div>
         </div>
 
         <div style="background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
             <div style="color: var(--accent-ink); text-align: center;">
-                <div style="font-size: 14px; opacity: 0.9;">Overall risk</div>
+                <div style="font-size: 14px; opacity: 0.9;">${t('blender.modal.overallRisk')}</div>
                 <div style="font-size: 36px; font-weight: 700;">${totalCritical + totalHigh}</div>
-                <div style="font-size: 12px; opacity: 0.8;">critical and high vulnerabilities</div>
+                <div style="font-size: 12px; opacity: 0.8;">${t('blender.modal.criticalAndHighDesc')}</div>
             </div>
         </div>
 
         <div style="margin-bottom: 24px;">
-            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--text);">Critical and High Vulnerabilities</h3>
+            <h3 style="margin-bottom: 16px; font-size: 18px; color: var(--text);">${t('blender.modal.criticalAndHighTitle')}</h3>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                 <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;">
                     <div style="padding: 12px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600;">
-                        Composition Analysis
+                        ${t('blender.modal.compositionAnalysis')}
                     </div>
                     <div style="padding: 16px;">
                         <div style="display: flex; gap: 16px; margin-bottom: 16px;">
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${scaCritical}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">Critical</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.critical')}</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #f97316;">${scaHigh}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">High</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.high')}</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #eab308;">${scaMedium}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">Medium</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.medium')}</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #22c55e;">${scaLow}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">Low</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.low')}</div>
                             </div>
                         </div>
                     </div>
@@ -876,25 +881,25 @@ function generateSummaryHTML(report) {
 
                 <div style="background: var(--bg-card); border-radius: 12px; border: 1px solid var(--border); overflow: hidden;">
                     <div style="padding: 12px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); color: var(--text); font-weight: 600;">
-                        Source Code Analysis
+                        ${t('blender.modal.sourceCodeAnalysis')}
                     </div>
                     <div style="padding: 16px;">
                         <div style="display: flex; gap: 16px; margin-bottom: 16px;">
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #dc2626;">${sastCritical}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">Critical</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.critical')}</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #f97316;">${sastHigh}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">High</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.high')}</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #eab308;">${sastMedium}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">Medium</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.medium')}</div>
                             </div>
                             <div style="flex: 1; text-align: center;">
                                 <div style="font-size: 28px; font-weight: 700; color: #22c55e;">${sastLow}</div>
-                                <div style="font-size: 12px; color: var(--text-dim);">Low</div>
+                                <div style="font-size: 12px; color: var(--text-dim);">${t('blender.modal.low')}</div>
                             </div>
                         </div>
                     </div>
@@ -902,6 +907,7 @@ function generateSummaryHTML(report) {
             </div>
         </div>
     `;
+
 }
 
 function generateHTMLReport(report) {
