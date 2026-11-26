@@ -243,23 +243,25 @@
     <div id="resultModal" class="result-modal-overlay">
         <div class="result-modal-container">
             <div class="result-modal-header">
-                <h3>Analysis results</h3>
+                <h3 data-i18n="blender.modal.header">Analysis results</h3>
                 <button class="result-modal-close" onclick="closeResultModal()">&times;</button>
             </div>
             <div class="result-modal-body">
                 <div class="result-tabs">
-                    <button class="result-tab active" onclick="showResultTab('summary')">Overview</button>
-                    <button class="result-tab" onclick="showResultTab('dependencies')">Dependencies</button>
-                    <button class="result-tab" onclick="showResultTab('code')">Code analysis</button>
+                    <button class="result-tab active" onclick="showResultTab('summary')" data-i18n="common.report.overview">Overview</button>
+                    <button class="result-tab" onclick="showResultTab('dependencies')" data-i18n="common.report.dependency">Dependencies</button>
+                    <button class="result-tab" onclick="showResultTab('code')" data-i18n="common.report.sast">Code analysis</button>
                 </div>
                 <div id="resultContent" class="result-content"></div>
             </div>
             <div class="result-modal-footer">
                 <button class="btn-download-html" onclick="downloadHTML()">
-                    <i class="fab fa-html5"></i> Download HTML
+                    <i class="fab fa-html5"></i> 
+                    <span data-i18n="common.btn.download.html">Download HTML</span>
                 </button>
                 <button class="btn-download" onclick="downloadJSON()">
-                    <i class="fas fa-download"></i> Download JSON
+                    <i class="fas fa-download"></i> 
+                    <span data-i18n="common.btn.download.json">Download JSON</span>
                 </button>
             </div>
         </div>
