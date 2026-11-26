@@ -162,97 +162,97 @@
   </div>
 
 
-  <!-- ===== EDIT MODAL ===== -->
 <div class="modal-overlay" id="formModal">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title" id="formModalTitle">
-        <i class="fas fa-pen"></i> Edit asset
+        <i class="fas fa-pen"></i> 
+        <span data-i18n= "cmdb.form.edit.asset.header"> Edit asset</span>
       </div>
       <button class="modal-close" onclick="closeModal('formModal')">&times;</button>
     </div>
     <div class="modal-body">
 
-      <!-- Team + Asset name в одну строку -->
       <div class="form-row">
         <div class="form-group">
-          <label for="formTeam">Team <span class="required">*</span></label>
+          <label for="formTeam"><span data-i18n="cmdb.form.team.label">Team</span> <span class="required">*</span></label>
           <input type="text" id="formTeam" placeholder="Example: DevOps Team">
         </div>
         <div class="form-group">
-          <label for="formName">Asset name <span class="required">*</span></label>
+          <label for="formName"><span data-i18n="cmdb.form.name.label"> Asset name </span><span class="required">*</span></label>
           <input type="text" id="formName" placeholder="Example: Web-Server-01">
         </div>
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="formOwner">Owner <span class="required">*</span></label>
+          <label for="formOwner"><span data-i18n="cmdb.form.owner.label">Owner</span><span class="required">*</span></label>
           <input type="text" id="formOwner" placeholder="Owner name">
         </div>
         <div class="form-group">
-          <label for="formCustodian">IT Custodian <span class="required">*</span></label>
+          <label for="formCustodian"><span data-i18n="cmdb.form.custodian.label">IT Custodian</span> <span class="required">*</span></label>
           <input type="text" id="formCustodian" placeholder="IT Custodian name">
         </div>
       </div>
 
       <div class="form-group">
-        <label for="formEmail">Email <span class="required">*</span></label>
+        <label for="formEmail"><span data-i18n="cmdb.form.email.label">Email</span><span class="required">*</span></label>
         <input type="email" id="formEmail" placeholder="owner@company.com">
       </div>
 
       <div class="form-row">
         <div class="form-group">
-          <label for="formType">Type <span class="required">*</span></label>
+          <label for="formType"><span data-i18n="cmdb.form.type.label">Type</span> <span class="required">*</span></label>
           <select id="formType">
-            <option value="server">Server</option>
-            <option value="network">Network</option>
-            <option value="database">Database</option>
-            <option value="storage">Storage</option>
-            <option value="application">Application</option>
-            <option value="other">Other</option>
+              <option value="service" data-i18n="cmdb.option.type.service">Server</option>
+              <option value="server" data-i18n="cmdb.option.type.server">Server</option>
+              <option value="network" data-i18n="cmdb.option.type.network">Network</option>
+              <option value="database" data-i18n="cmdb.option.type.database">Database</option>
+              <option value="storage" data-i18n="cmdb.option.type.storage">Storage</option>
+              <option value="application" data-i18n="cmdb.option.type.application">Application</option>
+              <option value="other" data-i18n="cmdb.option.type.other">Other</option>
           </select>
         </div>
         <div class="form-group">
-          <label for="formStatus">Status <span class="required">*</span></label>
+          <label for="formStatus"><span data-i18n="cmdb.form.status.label">Status</span> <span class="required">*</span></label>
           <select id="formStatus">
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="maintenance">Maintenance</option>
+              <option value="active" data-i18n="cmdb.option.status.active">Active</option>
+              <option value="inactive" data-i18n="cmdb.option.status.inactive">Inactive</option>
+              <option value="maintenance" data-i18n="cmdb.option.status.maintenance">Maintenance</option>
           </select>
         </div>
       </div>
 
       <div class="form-group">
-        <label for="formDescription">Description</label>
+        <label for="formDescription"><span data-i18n="cmdb.form.description.label"></span></label>
         <textarea id="formDescription" placeholder="Brief asset description"></textarea>
       </div>
 
       <div class="form-group">
-        <label for="formGit">Git <span class="required">*</span></label>
+        <label for="formGit"><span data-i18n="cmdb.form.git.label">Git</span> <span class="required">*</span></label>
         <input type="text" id="formGit" placeholder="https://github.com/org/repo">
       </div>
 
       <div class="form-group">
-        <label for="formStack">Stack</label>
+        <label for="formStack"><span data-i18n="cmdb.form.stack.label">Stack</span></label>
         <input type="text" id="formStack" placeholder="Example: Node.js, React, PostgreSQL">
       </div>
 
       <div class="form-group">
-        <label for="formDocs">Documentation</label>
+        <label for="formDocs"><span data-i18n="cmdb.form.docs.label">Documentation</span></label>
         <input type="text" id="formDocs" placeholder="https://wiki.company.com/docs">
       </div>
 
       <div class="form-group">
-        <label for="formSecurity">Security assessment report</label>
+        <label for="formSecurity"><span data-i18n="cmdb.form.docs.security.report">Security assessment report</span></label>
         <input type="text" id="formSecurity" placeholder="https://security.company.com/report">
       </div>
 
       <input type="hidden" id="formEditId" value="">
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('formModal')">Cancel</button>
-      <button class="btn btn-primary" id="formSubmitBtn"><i class="fas fa-save"></i> Update</button>
+      <button class="btn btn-secondary" onclick="closeModal('formModal')" data-i18n="common.btn.cancel">Cancel</button>
+      <button class="btn btn-primary" id="formSubmitBtn" data-i18n="common.btn.refresh">Update</button>
     </div>
   </div>
 </div>
@@ -314,7 +314,7 @@
     <div id="addStepFile" style="display: none;">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-file-arrow-up"></i> <span data-i18n="cmdb.step.file.title">Upload file</span>
+          <i class="fas fa-file-arrow-up"></i> <span data-i18n="cmdb.step.source.file.name">Upload file</span>
         </div>
         <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
       </div>
@@ -322,9 +322,9 @@
       <div class="modal-body">
         <div class="upload-drop" id="assetUploadDrop">
           <i class="fas fa-cloud-upload-alt"></i>
-          <p><span data-i18n="cmdb.step.file.drop.prefix">Click or drag</span> <strong>manifest.yaml</strong> <span data-i18n="cmdb.step.file.drop.suffix">here</span></p>
-          <small data-i18n="cmdb.step.file.limit">YAML, YML, JSON — up to 1 MB</small>
-          <input type="file" id="assetFileInput" accept=".yaml,.yml,.json" hidden>
+          <p data-i18n="cmdb.step.file.drop.prefix">Click or drag</p>
+          <small data-i18n="cmdb.step.file.limit" data-i18n="cmdb.step.file.drop.format">YAML — up to 1 MB</small>
+          <input type="file" id="assetFileInput" accept=".yaml,.yml" hidden>
         </div>
         <p id="assetFileError" class="field-error" style="display: none;"></p>
       </div>
@@ -341,7 +341,7 @@
     <div id="addStepGit" style="display: none;">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fab fa-git-alt"></i> <span data-i18n="cmdb.step.git.title">From Git repository</span>
+          <i class="fab fa-git-alt"></i> <span data-i18n="cmdb.step.source.git.name">From Git repository</span>
         </div>
         <button class="modal-close" onclick="closeModal('addModal')">&times;</button>
       </div>
@@ -365,7 +365,7 @@
       <div class="modal-footer">
         <button class="btn btn-secondary" data-back data-i18n="common.btn.back">Back</button>
         <button class="btn btn-primary" id="assetGitNext">
-          <i class="fas fa-download"></i> <span data-i18n="common.btn.fetch_continue">Fetch & continue</span>
+          <i class="fas fa-download"></i> <span data-i18n="common.btn.continue">Fetch & continue</span>
         </button>
       </div>
     </div>
@@ -467,21 +467,23 @@
     <div class="modal">
       <div class="modal-header">
         <div class="modal-title">
-          <i class="fas fa-trash-can"></i> Delete asset
+          <i class="fas fa-trash-can"></i> 
+          <span data-i18n="cmdb.form.delete.asset.header">Delete asset</span>
         </div>
         <button class="modal-close" onclick="closeModal('deleteModal')">&times;</button>
       </div>
       <div class="modal-body">
         <div class="warning-text">
           <i class="fas fa-exclamation-triangle"></i>
-          Are you sure you want to delete asset <strong id="deleteAssetName"></strong>?
+          <span data-i18n="cmdb.alert.text"> Are you sure you want to delete asset </span><strong id="deleteAssetName"></strong>?
         </div>
-        <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;">This action is irreversible. All asset data will be lost.</p>
+        <p style="color: var(--text-dim); font-size: 0.85rem; margin-top: 0.5rem;" data-i18n="cmdb.alert.text.sub">
+          This action is irreversible. All asset data will be lost.</p>
         <input type="hidden" id="deleteAssetId" value="">
       </div>
       <div class="modal-footer">
-        <button class="btn btn-secondary" onclick="closeModal('deleteModal')">Cancel</button>
-        <button class="btn btn-primary" id="deleteConfirmBtn"><i class="fas fa-trash-can"></i> Delete</button>
+        <button class="btn btn-secondary" onclick="closeModal('deleteModal')" data-i18n="common.btn.cancel">Cancel</button>
+        <button class="btn btn-primary" id="deleteConfirmBtn" data-i18n="common.btn.delete">Delete</button>
       </div>
     </div>
   </div>

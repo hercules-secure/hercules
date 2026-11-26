@@ -62,7 +62,7 @@ function showWorkflowNameModal(callback) {
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s;
-            ">Cancel</button>
+            " data-i18n="common.btn.cancel">Cancel</button>
             <button class="alert-confirm-btn" style="
                 padding: 10px 32px;
                 border: none;
@@ -121,7 +121,7 @@ var exportBtn = document.getElementById('exportModelBtn');
 if (exportBtn) {
     exportBtn.addEventListener('click', function() {
         if (elements.length === 0) {
-            showCustomAlert('Notice', 'No elements to export', 'warning');
+            showCustomAlert(t('palette.alert.btn.notice.title'), t('palette.alert.btn.notice.text'), 'warning');
             return;
         }
         
@@ -137,7 +137,9 @@ if (exportBtn) {
             a.download = workflowName.toLowerCase().replace(/\s+/g, '-') + '-' + new Date().toISOString().split('T')[0] + '.json';
             a.click();
             URL.revokeObjectURL(url);
-            showCustomAlert('Success', 'Workflow "' + workflowName + '" exported', 'success');
+            showCustomAlert(
+                t('palette.alert.btn.success.title')
+                , 'Workflow "' + workflowName + '" exported', 'success');
         });
     });
 }
@@ -189,7 +191,7 @@ if (importBtn) {
                         if (elements.length > 0) {
                             if (emptyState) emptyState.classList.add('hidden');
                         }
-                        showCustomAlert('Success', 'Workflow imported', 'success');
+                        showCustomAlert(t('palette.alert.btn.success.title'), 'Workflow imported', 'success');
                     }
                 } catch (err) {
                     showCustomAlert('Error', 'Import error: ' + err.message, 'error');
@@ -206,17 +208,19 @@ if (clearBtn) {
     clearBtn.addEventListener('click', function() {
         if (elements.length === 0) return;
         showCustomAlert(
-            'Confirmation',
-            'Delete all elements from canvas?',
+            t('palette.alert.btn.delete.title'), 
+            t('palette.alert.btn.delete.text'), 
             'warning',
-            'Delete',
+            t('palette.alert.btn.delete'), 
             function() {
                 elements = [];
                 connections = [];
                 selectedElement = null;
                 renderElements();
                 if (emptyState) emptyState.classList.remove('hidden');
-                showCustomAlert('Done', 'Canvas cleared', 'success');
+                showCustomAlert(t('palette.alert.btn.done.title'), 
+                t('palette.alert.btn.done.text')
+                , 'success');
             }
         );
     });
@@ -417,7 +421,9 @@ function loadTemplateData(template) {
             'Continue',
             function() {
                 applyTemplate(data);
-                showCustomAlert('Success', 'Template "' + templateName + '" loaded!', 'success');
+                showCustomAlert(
+                    t('palette.alert.btn.success.title')
+                    , 'Template "' + templateName + '" loaded!', 'success');
             }
         );
         return;
