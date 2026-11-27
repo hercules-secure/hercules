@@ -345,16 +345,16 @@
 <body>
     <div class="login-container">
         <div class="login-card">
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
+            <!-- <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" title="Toggle theme">
                 <i class="fas fa-sun icon-sun"></i>
                 <i class="fas fa-moon icon-moon"></i>
-            </button>
+            </button> -->
 
             <div class="login-header">
                 <div class="logo-icon">
                     <i class="fas fa-rocket"></i>
                 </div>
-                <h2>Hercules</h2>
+                <h2 data-i18n="title">Hercules</h2>
             </div>
 
             <div class="login-subtitle" data-i18n="subtitle">AppSec / DevSecOps Platform</div>
@@ -494,12 +494,6 @@
                 // ignore
             }
         }
-
-        // ============================================================
-        // ИНИЦИАЛИЗАЦИЯ
-        // ============================================================
-        const initialLang = detectLang();
-        loadTranslations(initialLang);
         checkExistingSession();
     </script>
 </body>
