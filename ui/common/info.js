@@ -82,7 +82,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.key?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Key features</h4>
+                <h4>${t('tool.panel.keyFeatures')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.key, 2)}
                 </div>
@@ -93,7 +93,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.sources?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Supported sources</h4>
+                <h4>${t('tool.panel.supportedSources')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.sources, 2)}
                 </div>
@@ -104,7 +104,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.analysis?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Modeling</h4>
+                <h4>${t('tool.panel.modeling')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.analysis, 2)}
                 </div>
@@ -115,7 +115,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.visual?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Visualization</h4>
+                <h4>${t('tool.panel.visualization')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.visual, 2)}
                 </div>
@@ -126,7 +126,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.elements?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Elements</h4>
+                <h4>${t('tool.panel.elements')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.elements, 2)}
                 </div>
@@ -137,7 +137,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.modes?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Modes</h4>
+                <h4>${t('tool.panel.modes')}</h4>
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                     ${tool.features.modes.map(m => `
                         <div class="settings-option" style="flex: 1; min-width: 160px;">
@@ -158,7 +158,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.sca?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Composition analysis</h4>
+                <h4>${t('tool.panel.compositionAnalysis')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.sca, 2)}
                 </div>
@@ -169,7 +169,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.sast?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Source code analysis</h4>
+                <h4>${t('tool.panel.sourceCodeAnalysis')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.sast, 2)}
                 </div>
@@ -180,7 +180,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.languages?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Supported languages</h4>
+                <h4>${t('tool.panel.supportedLanguages')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.languages, 2)}
                 </div>
@@ -191,7 +191,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.ecosystems?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Supported ecosystems</h4>
+                <h4>${t('tool.panel.supportedEcosystems')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${renderColumns(tool.features.ecosystems, 2)}
                 </div>
@@ -202,7 +202,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.protocols?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Supported API protocols</h4>
+                <h4>${t('tool.panel.supportedApiProtocols')}</h4>
                 ${renderGrid(tool.features.protocols)}
             </div>
         `;
@@ -211,7 +211,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.specifications?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Supported specifications</h4>
+                <h4>${t('tool.panel.supportedSpecifications')}</h4>
                 ${renderGrid(tool.features.specifications)}
             </div>
         `;
@@ -220,7 +220,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.network?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Network analysis</h4>
+                <h4>${t('tool.panel.networkAnalysis')}</h4>
                 ${renderGrid(tool.features.network)}
             </div>
         `;
@@ -229,7 +229,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.vulnerabilities?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Vulnerability search</h4>
+                <h4>${t('tool.panel.vulnerabilitySearch')}</h4>
                 ${renderGrid(tool.features.vulnerabilities)}
             </div>
         `;
@@ -238,7 +238,7 @@ function renderLeftPanel(tool) {
     if (tool.features?.reports?.length > 0) {
         html += `
             <div class="settings-section">
-                <h4>Report formats</h4>
+                <h4>${t('tool.panel.reportFormats')}</h4>
                 <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                     ${tool.features.reports.map(r => `
                         <div class="settings-option">
@@ -253,6 +253,7 @@ function renderLeftPanel(tool) {
     
     return html;
 }
+
 
 function formatDate(dateString) {
     if (!dateString) return '';
@@ -305,7 +306,6 @@ function showToolInfo(toolId) {
         return;
     }
     
-    //header.innerHTML = '<h3><i class="fas fa-list" style="color: black;"></i>Key features</h3>';
     leftContent.innerHTML = renderLeftPanel(tool);
     rightContent.innerHTML = renderRightPanel(tool);
     

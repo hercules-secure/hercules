@@ -788,7 +788,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         await runBlenderAnalysis(repo, branch, token, access.host);
                     }
                 },
-          errorMessage: 'Repository is protected. Enter an access token.'
+          errorMessage: t('token.modal.protectedError') //'Repository is protected. Enter an access token.'
             });
             return;
         }

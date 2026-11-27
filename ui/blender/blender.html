@@ -89,6 +89,9 @@
                     <span id="pageTitle" data-i18n="common.text.select.source"></span>
                 </div>
                 <div class="top-bar-actions">
+                    <button class="header-btn" id="show-rules-btn">
+                        <i class="fa-solid fa-shield-halved"></i> <span data-i18n="common.btn.rules"></span>
+                    </button>
                     <button class="header-btn" onclick="showToolInfo('blender')">
                         <i class="fas fa-info-circle"></i> <span data-i18n="common.btn.info"></span>
                     </button>
@@ -266,8 +269,6 @@
             </div>
         </div>
     </div>
-
-    <!-- UNIFIED MODAL (key features) -->
     <div id="unifiedModal" class="settings-modal">
         <div class="settings-content">
             <div class="settings-header">
@@ -290,16 +291,21 @@
     <script type="text/javascript" src="../common/menu.js"></script>
     <script type="text/javascript" src="../common/sidebar.js"></script>
     <script type="text/javascript" src="blender.js"></script>
+    <script type="module">
+        import { openRulesModal } from '../common/rules.js';
+        document.getElementById('show-rules-btn')
+            .addEventListener('click', () => openRulesModal());
+    </script>
 
       <!-- TOKEN MODAL -->
-    <div id="tokenModal" class="settings-modal">
+<div id="tokenModal" class="settings-modal">
     <div class="settings-content">
         <div class="settings-header">
-            <h3><i class="fas fa-key"></i> Access token required</h3>
+            <h3><i class="fas fa-key"></i> <span data-i18n="token.modal.title">Access token required</span></h3>
             <span class="settings-close" onclick="closeTokenModal()">&times;</span>
         </div>
 
-        <p class="token-hint">
+        <p class="token-hint" data-i18n="token.modal.hint">
             The repository on <strong id="tokenHost">GitLab</strong> is protected.
             Enter a Personal Access Token with the <code>read_repository</code>
             (or <code>read_api</code>) scope.
@@ -307,27 +313,28 @@
 
         <div class="token-field">
             <input type="password" id="tokenInput" placeholder="PRIVATE-TOKEN / Personal Access Token"
+                   data-i18n-placeholder="token.modal.placeholder"
                    autocomplete="off" spellcheck="false">
-            <button class="header-btn" type="button" id="tokenToggleVisibility" title="Show/Hide" style="border: none;">
+            <button class="header-btn" type="button" id="tokenToggleVisibility" title="Show/Hide" data-i18n-title="token.modal.toggleVisibility" style="border: none;">
                 <i class="fas fa-eye"></i>
             </button>
         </div>
 
         <label class="token-remember">
             <input type="checkbox" id="tokenRemember" checked>
-            Remember on this machine (localStorage)
+            <span data-i18n="token.modal.remember">Remember on this machine (localStorage)</span>
         </label>
 
         <div id="tokenError" class="token-error" hidden></div>
 
         <div class="token-actions">
-
             <button class="start-button" type="button" id="tokenSubmitBtn">
-                <i class="fas fa-unlock"></i> Apply and retry
+                <i class="fas fa-unlock"></i> <span data-i18n="token.modal.submit">Apply and retry</span>
             </button>
         </div>
     </div>
 </div>
+
 
 </body>
 </html>
